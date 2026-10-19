@@ -57,7 +57,7 @@ function readerAlreadyReady() {
  * Sidebar + TOC state; persists across chapter navigations within a course.
  *
  * The first render must match the server (both panels open, skeleton shown), so stored
- * preferences are applied in a layout effect — before paint, but after hydration. Reading
+ * preferences are applied in a layout effect: before paint, but after hydration. Reading
  * sessionStorage during render made the sidebar toggle mismatch and React discarded the
  * whole reader tree on every load.
  */
