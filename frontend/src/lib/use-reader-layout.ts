@@ -9,17 +9,21 @@ function sidebarStorageKey(courseSlug: string) {
   return `buildment:reader:sidebar:${courseSlug}`;
 }
 
+/** Below this width both side panels leave too little room for the text, so the TOC starts closed. */
+const ROOMY_QUERY = "(min-width: 1280px)";
+
 function readSidebarPrefs(courseSlug: string, mobile: boolean) {
+  const tocDefault = mobile || !window.matchMedia(ROOMY_QUERY).matches;
   try {
     const raw = sessionStorage.getItem(sidebarStorageKey(courseSlug));
-    if (!raw) return { left: mobile, right: mobile };
+    if (!raw) return { left: mobile, right: tocDefault };
     const parsed = JSON.parse(raw) as { left?: boolean; right?: boolean };
     return {
       left: parsed.left ?? mobile,
-      right: parsed.right ?? mobile,
+      right: parsed.right ?? tocDefault,
     };
   } catch {
-    return { left: mobile, right: mobile };
+    return { left: mobile, right: tocDefault };
   }
 }
 
