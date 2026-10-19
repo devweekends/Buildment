@@ -42,33 +42,41 @@ export function useIsMobile() {
 }
 
 function readerAlreadyReady() {
-  return typeof window !== "undefined" && sessionStorage.getItem(READY_KEY) === "1";
-}
-
-/** Sidebar + TOC state; persists across chapter navigations within a course. */
-function initialPrefs(courseSlug: string) {
-  if (typeof window === "undefined") {
-    return { left: false, right: false };
+  try {
+    return sessionStorage.getItem(READY_KEY) === "1";
+  } catch {
+    return false;
   }
-  const mobile = window.matchMedia(MOBILE_QUERY).matches;
-  return readSidebarPrefs(courseSlug, mobile);
 }
 
+/**
+ * Sidebar + TOC state; persists across chapter navigations within a course.
+ *
+ * The first render must match the server (both panels open, skeleton shown), so stored
+ * preferences are applied in a layout effect — before paint, but after hydration. Reading
+ * sessionStorage during render made the sidebar toggle mismatch and React discarded the
+ * whole reader tree on every load.
+ */
 export function useReaderLayout(courseSlug: string) {
   const isMobile = useIsMobile();
-  const [leftCollapsed, setLeftCollapsed] = useState(() => initialPrefs(courseSlug).left);
-  const [rightCollapsed, setRightCollapsed] = useState(() => initialPrefs(courseSlug).right);
+  const [leftCollapsed, setLeftCollapsed] = useState(false);
+  const [rightCollapsed, setRightCollapsed] = useState(false);
   // Content must stay visible on first paint — hiding until useLayoutEffect caused blank
   // screens when hydration failed or was slow ("Compiled" in terminal but empty page).
   const [visible] = useState(true);
-  const [skipSkeleton] = useState(() => readerAlreadyReady());
+  const [skipSkeleton, setSkipSkeleton] = useState(false);
 
   useLayoutEffect(() => {
     const mobile = window.matchMedia(MOBILE_QUERY).matches;
     const prefs = readSidebarPrefs(courseSlug, mobile);
     setLeftCollapsed((prev) => (prev === prefs.left ? prev : prefs.left));
     setRightCollapsed((prev) => (prev === prefs.right ? prev : prefs.right));
-    sessionStorage.setItem(READY_KEY, "1");
+    if (readerAlreadyReady()) setSkipSkeleton(true);
+    try {
+      sessionStorage.setItem(READY_KEY, "1");
+    } catch {
+      /* ignore */
+    }
   }, [courseSlug]);
 
   useEffect(() => {

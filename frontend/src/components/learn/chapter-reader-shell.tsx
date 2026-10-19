@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useRef, useEffect, useLayoutEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { ChapterSidebar, SidebarToggle } from "@/components/learn/chapter-sidebar";
 import { ChapterToc, TocToggle } from "@/components/learn/chapter-toc";
@@ -192,6 +192,10 @@ export function ChapterReaderShell({
     window.addEventListener("buildment:quiz-perfect", onQuizPerfect);
     return () => window.removeEventListener("buildment:quiz-perfect", onQuizPerfect);
   }, [readerMode, exitFocusMode]);
+
+  useLayoutEffect(() => {
+    if (skipSkeleton) setShowSkeleton(false);
+  }, [skipSkeleton]);
 
   useEffect(() => {
     if (!showSkeleton) return;
