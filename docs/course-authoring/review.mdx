@@ -1,0 +1,53 @@
+---
+title: Independent course review
+status: draft v1
+---
+
+# Independent course review
+
+This is gate S3 in [`tracks.mdx`](tracks.mdx): a check by someone who did not write the course.
+It can be a person or a separate AI agent run, but never the author checking their own work. The
+reviewer fixes what they find and lists every change, so the course owner can see what moved.
+
+Chapters are often written module by module, by different people or agents in parallel. That is
+fast, but each writer only sees their own module, so this review is also where the course becomes
+one consistent piece.
+
+## 1. Answer keys
+
+For every `quiz` and `predict` fence:
+
+1. Read the question and options **without** looking at the key. Pick your answer.
+2. Compare it with `correct` (a zero-based index) or `correctOptionId`.
+3. Fix any mismatch, any question with two defensible answers, and any question that is really a
+   matter of opinion. Opinion questions become `openquestion` fences.
+4. Check that `explanations` has one entry per option, in the same order, and that each one
+   explains its own option.
+5. Check that the right option is not given away by length or wording, and that its position
+   varies across questions.
+
+## 2. Continuity across modules
+
+- Facts and numbers agree everywhere (for example, how many words fit in a five-minute talk).
+- "Next" lines and references like "in module 2 you learned" describe what that module really
+  teaches.
+- Scenario names are not reused for different people across modules, and the same example is
+  not repeated in several chapters.
+- The capstone uses the tools the earlier modules actually taught, with the same names.
+
+## 3. Plain English and tone
+
+- Short sentences, common words, no idioms without an explanation.
+- Every business term is explained the first time it appears.
+- Hardship is treated with respect. Resilience is never framed as a mindset problem.
+
+## 4. Facts
+
+Check every named person, book, study, model and date. Remove anything that cannot be verified.
+No invented statistics.
+
+## 5. Re-verify and report
+
+Run `content:validate:source` and `content:audit` for the course again; both must be clean. Then
+report: how many questions were checked, every change grouped by type, and anything a human
+subject reviewer (gate S5) should decide.

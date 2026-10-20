@@ -1,0 +1,347 @@
+---
+title: Course authoring playbook (people and AI agents)
+status: draft v1
+---
+
+# Course authoring playbook
+
+**Reads:** [`tracks.mdx`](tracks.mdx), [`02-content-authoring.mdx`](../02-content-authoring.mdx),
+[`03-blocks-registry.mdx`](../03-blocks-registry.mdx), [`content/import/README.md`](../../content/import/README.md),
+[`content/import/STYLE.md`](../../content/import/STYLE.md)
+
+This is the process for building a course from a brief to a reviewed pull request. It is written
+so that a person or an AI coding agent (Claude Code, Codex or any other) can follow it step by step
+and get the same result every time. An agent should treat this folder as its instructions and not
+rely on its own copy of the rules: when the process changes, change it here.
+
+The steps are: read the inputs, plan, get the plan approved, write, verify, click through as a
+student, open the PR. First decide the course's track in [`tracks.mdx`](tracks.mdx): soft-skills
+courses use the gates there, and engineering courses add the course factory process in
+`agent-ip/`.
+
+## 1. Inputs
+
+### The course brief
+
+Every course starts from a brief. It can be a section of a pipeline file, an issue, or a message,
+but it must answer:
+
+| Field | What it holds |
+|---|---|
+| Course name | The working title |
+| Learners | Who they are, their English level, devices and connection |
+| Topics | What the course must teach |
+| Practice | The activities learners should do, not just read about |
+| Good fits | Which buildment blocks suit which practice (optional) |
+| Notes | Constraints, such as activities that need a live mentor session |
+
+### The pipeline file
+
+When several courses are planned, they are tracked in a Markdown pipeline file with an audience
+section, shared rules, a status table and one brief per course:
+
+```md
+## Pipeline
+
+| # | Course | Status |
+|---|---|---|
+| 3 | Decision-Making & Professional Judgment | Building now |
+| 4 | Communication & Articulating Ideas | Next |
+
+### 3. Decision-Making & Professional Judgment
+- **Topics:** ...
+- **Practice:** ...
+- **Good fits in buildment:** ...
+```
+
+Rules in the pipeline file's shared sections apply on top of this playbook. Update the course's
+Status cell when it moves (for example "Building now", "In review (PR link)", "Merged").
+
+## 2. Plan
+
+A course is a folder under `content/import/<course-slug>/`. Start it with a `course.yaml` that holds
+the catalog metadata and the full plan. The importer reads the metadata and module titles, and
+`content:audit` fails when the lesson files and the plan disagree, so the plan stays honest.
+
+```yaml
+slug: decision-making               # must equal the folder name
+title: "Decision-Making & Professional Judgment"
+description: "Two or three sentences for the catalog card."
+projectGoal: "One sentence: what the learner can do or has produced at the end."
+difficulty: Beginner                # Beginner | Medium | Advanced
+estimatedHours: 10
+coverUrl: "https://..."             # optional; keep it small
+modules:
+  - dir: 01-what-a-good-decision-is
+    title: "What a good decision is"
+    summary: "Optional one line."
+    lessons:
+      - file: 01.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "One line: what this chapter teaches or practices."
+```
+
+Plan every module on the same spine:
+
+1. `NN.01-set-the-scene.md`: why the module matters, a scenario, key terms, what the learner will
+   practice. Required by the audit.
+2. Teaching and practice chapters: one idea each, 10 to 20 minutes. Each one has at least one
+   checkpoint (a predict, a quiz, or a short open question). No chapter is reading only.
+3. An optional `NN.NN-quiz.md` chapter for a set of graded scenario questions. The audit warns when
+   a module of 8 or more chapters has none.
+4. `NN.NN-checklist.md` last: the module gate (see "Gate chapters" below). Required by the audit.
+
+End the course with a capstone module where learners apply what they learned to a real situation
+of their own, submitted as an open question for mentor review.
+
+**Stop after the plan.** Share `course.yaml` with the course owner and wait for approval before
+writing chapters. Changing a plan is cheap; rewriting twenty chapters is not.
+
+## 3. Write
+
+### Files and frontmatter
+
+- Module folders are `NN-slug`, chapter files are `MM.NN-slug.md` (Markdown, not `.mdx`).
+- `*-quiz.md` opens in quiz mode. `*-checklist.md` is a gate. Both drop optional enrichment
+  (`BigWordAlert`, `RealWorldEvent`, `MustRead`, `InterestingRead`, `ChapterRecap`) on import, so
+  leave those out of quiz and checklist files.
+- Never edit `content/transformed/`. `content:import` rewrites it on every run.
+
+```yaml
+---
+title: "Set the scene"
+module: 1
+lesson: 1
+stepType: Read            # Read | Learn | Build | Check (quiz files) | Gate (checklist files)
+summary: "One or two sentences shown under the title."
+estimatedMinutes: 15
+---
+```
+
+Do not number the title and do not start with an `# H1`: the reader shows the title already.
+
+### Audience rules
+
+These apply to every course unless its brief says otherwise.
+
+- **Plain English for second-language readers.** Short sentences, common words, one idea per
+  sentence. Explain any idiom, business term or abbreviation the first time it appears, ideally in
+  a `BigWordAlert`.
+- **No em dashes** anywhere: prose, quizzes, titles, metadata. Use a colon, a comma or two
+  sentences.
+- **Phone and low-bandwidth friendly.** Short paragraphs, small tables (cells under 120
+  characters), few images, no autoplay or required video. Prefer a `mermaid` diagram or a table to
+  an image. Any video is optional and linked, never the only way to learn something.
+- **Real scenarios.** Use situations the learners will meet: remote teams across time zones,
+  freelance clients, startups, NGOs, unreliable power or internet, studying while working. Be
+  respectful and never make light of a learner's situation.
+- **Explain why before what.** Follow [`STYLE.md`](../../content/import/STYLE.md) for voice and
+  lesson shape.
+
+### Prose and MDX
+
+- Bare `{`, `}` and `<` in prose are escaped by the importer. Code spans and fences are left alone.
+- Component props must be double-quoted strings, numbers in braces (`readMinutes={4}`), or arrays
+  of double-quoted strings (`points={["a", "b"]}`).
+- Only components on the reader's allowlist exist (see `componentNames` in
+  `server/scripts/validate-course-source.ts`). Anything else fails validation.
+- A `## Common questions` section becomes an accordion. Each entry is a `**Q: question?**` line
+  with `A: answer` on the very next line, entries separated by a blank line.
+- ` ```mermaid ` fences render as diagrams.
+
+[`03-blocks-registry.mdx`](../03-blocks-registry.mdx) describes what each block does and how it is
+graded and reported. The syntax below is how the importer expects them in lesson files.
+
+### Which interactive block to use
+
+| Moment in the lesson | Block | Graded? |
+|---|---|---|
+| "What would you do?" right before the explanation | `predict` fence | Auto, optional |
+| A situation with one defensible best answer | `quiz` fence, `type: mcq` | Auto |
+| Opinion, judgment, or a personal example | `openquestion` fence | Mentor review |
+| Evidence of work (a memo, a doc, a recording) | `openquestion` with a URL | Mentor review |
+| Required outside reading | `MustRead` | Confirmed by learner |
+| Private reflection | `## Learning log` in a gate | Autosaved, private |
+
+Author every interaction on purpose. The importer never adds questions on its own.
+
+### Quiz rules
+
+- **One defensible answer.** If thoughtful people could disagree, it is not a quiz. Move it to an
+  open question or a learning log question.
+- **An explanation for every option.** `explanations` has one reason per option, in the same order
+  as `options`, saying why that option is right or wrong. Learners see it after answering. The
+  audit fails a new course's multiple-choice quiz without one reason per option.
+- **Plausible distractors.** Wrong options should be mistakes a real person makes, not jokes.
+- **No length giveaways.** The right option must not be clearly the longest: give wrong options
+  believable detail instead. The audit warns when the right option is more than 1.25 times the
+  longest wrong one. List the right predict option second about half the time.
+- **Check the answer key twice.** After writing, re-read each question cold, pick the answer you
+  would choose, and compare it with `correct`. Then have a second reviewer (a person or a separate
+  agent pass) run the full [independent review](review.mdx) before the PR. Note in the PR that
+  this was done.
+- `correct` is the zero-based index of the right option. Vary its position across questions.
+- Avoid the phrases "skip it" and "skip to" anywhere in a `*-quiz.md` chapter: the audit treats
+  them as leftover placeholder copy and fails the chapter.
+
+```quiz
+type: mcq
+question: "Your client wants the feature by Friday. Power cuts mean you can work about four hours a day. What do you do first?"
+options:
+  - "Tell the client today what you can deliver by Friday and offer a date for the rest"
+  - "Say yes and work through the night when power returns"
+  - "Wait until Thursday to see how far you get"
+correct: 0
+explanations:
+  - "Right. Sharing the real constraint early lets the client plan, and offers a clear path."
+  - "This hides the risk. If power fails again, the client finds out too late to adjust."
+  - "Waiting removes the client's chance to change plans while there is still time."
+```
+
+A `type: short` quiz becomes a mentor-reviewed answer with a model answer:
+
+```quiz
+type: short
+question: "In 2 to 3 sentences, ..."
+modelAnswer: "Shown to the learner after they submit."
+```
+
+### Predict
+
+Exactly two options, a `correctOptionId` that matches one of them, and a one or two sentence
+explanation. Place it immediately before the explanation it sets up. Not in quiz chapters.
+
+```predict
+prompt: "Two job offers: higher pay with a long notice period, or lower pay starting next week. Which question matters most first?"
+options:
+  - id: cash-runway
+    label: "How many weeks can I cover my costs without new income?"
+  - id: brand
+    label: "Which company is better known?"
+correctOptionId: cash-runway
+explanation: "Your runway decides how much risk you can take. Reputation matters, but only once the basics are covered."
+```
+
+### Open questions
+
+Use when the answer is worth a mentor's time: a decision memo, a defense of a choice, a recording
+of the learner explaining an idea. Never as "what was your takeaway?" filler.
+
+```openquestion
+prompt: "Write a short decision memo: which option, why, the main risk, and what would change your mind."
+required: true
+minWords: 120
+allowSpeechInput: true
+modelAnswer: "Optional sample shown after review."
+```
+
+For links to a recording or document, add `allowUrl: true`, `urlRequired: true`, `urlLabel` and
+`urlHint`, and set `minWords: 0`.
+
+### Presentation and enrichment
+
+```mdx
+<BigWordAlert term="Trade-off" plainEnglish="Getting more of one thing means getting less of another." whyItMatters="Most work decisions are trade-offs, not right or wrong answers." />
+
+<Callout type="tip" title="Optional title">
+Markdown body. type: info | tip | warning | success
+</Callout>
+
+<LearningObjectives items={["Name the trade-off in a decision", "Write a short decision memo"]} />
+
+<ChapterRecap points={["Point one", "Point two", "Point three"]} />
+
+<MustRead title="Title" url="https://..." source="Publisher" description="Why and which part." readMinutes={10} />
+```
+
+`ComparePanel`/`CompareColumn`, `InterestingRead`, `RealWorldEvent`, `ProjectPreview`, `FileTree`
+and `TerminalBlock` are also available; copy their syntax from an existing course before using
+them. Only link to sources you have confirmed exist. Link-only `video`, `diagram`, `walkthrough`
+and `roadmap` fences are described in `server/src/shared/blocks/*/schema.ts`; a fence that fails
+its schema stays visible as raw YAML in the reader.
+
+### Gate chapters
+
+```md
+## Module 1 checklist
+
+- [ ] Something the learner can check is true, not a feeling
+- [ ] ...
+
+## Learning log
+
+1. **Question one?** What to cover.
+2. **Question two?** ...
+3. **Question three?** ...
+
+(optional openquestion fence for evidence)
+
+## All boxes ticked?
+
+Mark this chapter complete, then continue to **Next module title**.
+```
+
+The audit requires `stepType: Gate`, a `## Learning log` heading and at least 3 numbered questions.
+A heading containing "checklist" makes the list tracked ticks, and learning log answers autosave.
+
+## 4. Verify
+
+Run from `server/` with Postgres up (`docker compose up -d` at the repo root) and `server/.env`
+pointing at it. On a fresh database, run `pnpm db:ready` and `pnpm db:seed` first.
+
+```bash
+pnpm content:validate:source --course <slug>
+pnpm content:audit --course <slug>
+pnpm content:import --course <slug>
+pnpm content:validate <slug>
+```
+
+| Command | Passes when |
+|---|---|
+| `content:validate:source` | Every chapter compiles as the reader will compile it, and `course.yaml` is valid |
+| `content:audit` | 0 errors. Fix warnings too, or say in the PR why one stays |
+| `content:import` | It prints the course, module, chapter and block counts. It only touches the named course |
+| `content:validate` | Every stored chapter compiles from the database |
+
+## 5. Click through as a student
+
+With the API on `:4000` and the web app on `:3000`, sign in as `mentee1@buildment.dev` with the dev
+login, set the browser to a phone width (about 375 px), open `/catalog/<course-slug>`, enroll, and
+go through every chapter:
+
+- Every quiz, predict, open question, recap and objective shows as a block, never as raw YAML.
+- Answer each quiz once, including one wrong answer per chapter, and read the explanations.
+- Nothing scrolls sideways on a phone: tables, diagrams and code fit or scroll inside their box.
+- Chapters unlock in order: the first chapter of the next module stays locked until the gate is
+  complete (see [`04-progress-and-gating.mdx`](../04-progress-and-gating.mdx)).
+- Note anything that loads slowly or looks broken, and fix it before the PR.
+
+## 6. Pull request
+
+One course per PR, opened on `devweekends/Buildment` against `main` with `asifrazadev` as reviewer.
+Commit in small, logical steps (plan, then each module), with no AI attribution in commits or the
+PR text.
+
+PR checklist:
+
+- [ ] `content/import/<course-slug>/` with `course.yaml` and every planned chapter
+- [ ] No changes to `content/transformed/` for other courses (import churn)
+- [ ] `content:validate:source` and `content:audit` output pasted, 0 errors
+- [ ] `content:import` counts pasted
+- [ ] Student click-through done at phone width, with anything left unchecked listed
+- [ ] Answer keys checked twice, by the author and a second reviewer
+- [ ] Opinion-based questions are open questions, not graded quizzes
+- [ ] No em or en dashes (the audit fails any chapter of a new course that contains one)
+- [ ] A subject reviewer is named for the content review before learners use it
+
+After opening the PR, set the course's Status in the pipeline file to "In review" with the PR link.
+
+## Files in this folder
+
+| File | What it covers |
+|---|---|
+| [`README.mdx`](README.mdx) | This playbook |
+| [`tracks.mdx`](tracks.mdx) | Engineering and soft-skills tracks, and their gates |
+| [`review.mdx`](review.mdx) | The independent review a separate person or agent runs before the PR |
+| [`roadmap.mdx`](roadmap.mdx) | Planned authoring work and how it moves into the platform |
+| [`plans/`](plans/) | Course plans that need approval before writing, such as variants |

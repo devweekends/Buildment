@@ -1,0 +1,71 @@
+---
+title: Course tracks
+status: draft v1
+---
+
+# Course tracks
+
+Not every course is the same kind of product. A track sets the size of a course, what the learner
+produces, and which gates it passes before learners see it. Pick the track in the course brief and
+record it in `course.yaml` as a comment at the top, for example `# track: soft-skills`.
+
+| | Engineering track | Soft-skills track |
+|---|---|---|
+| Example | FreshMarket multi-vendor marketplace | Decision-Making & Professional Judgment |
+| Size | 210 to 280 hours over 3 to 4 weeks | 8 to 20 hours, about 25 to 40 chapters |
+| Learner produces | A deployed product they can defend | Written and recorded evidence: memos, messages, plans, reflections |
+| Chapter shape | Build, verify, reflect | Scenario, concept, practice, reflect |
+| Variants | 5 or 6 differentiated variants | None by default |
+| Detailed process | The agent IP (`agent-ip/`, see Aqib's course factory) | This folder |
+
+## Engineering track
+
+Engineering courses follow the full course factory process in `agent-ip/`: research dossier,
+curriculum roadmap confirmed by at least two instructors, detailed blueprint, sample chapter,
+full draft, blind critics, variants and publish sign-off. The verification and import steps in
+[`README.mdx`](README.mdx) still apply, because they are how any course reaches the platform.
+
+## Soft-skills track
+
+Soft-skills courses teach judgment and communication through scenarios. They are shorter and have
+no product to deploy, so the engineering gates would cost more than they protect. They still need
+real checks, because a wrong answer key or a careless scenario teaches the wrong lesson to every
+learner.
+
+### Gates
+
+| Gate | What passes it | Who decides |
+|---|---|---|
+| S0 Brief | The brief names the learners, topics, practice and constraints | Course owner |
+| S1 Plan | `course.yaml` with every module and chapter, each with a goal | Course owner approves before writing |
+| S2 Draft | Every planned chapter written; validate and audit clean | Author |
+| S3 Independent check | A reviewer who did not write the course re-answers every quiz and predict cold, and reviews wording for second-language readers | A second person or a separate agent pass |
+| S4 Platform check | Imported locally and clicked through as a student at phone width | Author |
+| S5 Content review | A mentor or subject expert reads the course before learners use it | Mentor or subject expert |
+
+No author approves their own S3. An agent may run S3 for another agent's draft, but S5 is always a
+person.
+
+### What a soft-skills course contains
+
+- **Short teaching chapters**, 10 to 20 minutes each, with a `BigWordAlert` for the central term.
+- **Scenario quizzes** with one defensible answer and an explanation for every option.
+- **Predict-then-reveal** at "what would you do?" moments.
+- **Open questions** for anything opinion-based, and for evidence a mentor should read: a memo, a
+  message draft, a plan, or a link to a recorded explanation.
+- **A gate per module**: checklist, learning log and, where useful, an open question.
+- **A capstone** where the learner applies the course to a real situation of their own.
+
+### Recordings and low bandwidth
+
+An open question can accept a link to a video or audio recording. The platform only counts a
+link-only submission as complete when `minWords` is 0. When a written answer is the main evidence,
+keep `minWords` and make the link optional; when a recording can replace the writing, set
+`minWords: 0` and say so in the prompt. Never make a recording the only way to complete a chapter.
+
+## Variants and combinations
+
+A variant keeps a course's outcomes and changes its domain, users, hardest constraint and hero
+feature, so two learners finish with different portfolio projects. Variants are planned as
+roadmaps first and only written after the roadmap is approved. Variant plans live next to the
+other planning documents in [`plans/`](plans/).

@@ -1,0 +1,78 @@
+---
+title: Course authoring roadmap
+status: draft v1, from the October 2026 planning notes
+---
+
+# Course authoring roadmap
+
+Today courses are built locally: an author, or an AI agent such as Claude Code or Codex, follows
+[`README.mdx`](README.mdx), writes lesson files, and imports them. The goal is that the same
+process later runs inside the platform, so mentors and partners can create courses without a local
+setup. This page lists what is planned, what exists, and how the local pipeline maps to the
+platform.
+
+## From local pipeline to platform
+
+Each local step already has a platform counterpart or a clear place to live.
+
+| Local step today | In the platform later |
+|---|---|
+| `course.yaml` plan, approved in chat or a PR | A course plan screen: modules, chapters and goals, with an approve button |
+| Lesson `.md` files with fences | The in-app MDX editor already used by mentors, with the same blocks |
+| `content:validate:source` and `content:audit` | Publish checks that run when a mentor presses Publish |
+| `content:import` | Saving and publishing in the editor |
+| Independent review by a separate agent run | A review step in the mentor tools, using a different model from the writer |
+| Student click-through at phone width | A preview-as-student mode |
+| Mentor review of open questions | Exists: the review queue, with AI review drafts through OpenRouter |
+
+Keeping the rules in this folder, instead of inside one tool's agent files, is what makes that move
+possible: the platform can load the same rules as prompts and checks.
+
+## Planned work
+
+Estimates are from the planning notes and are rough.
+
+### Learning from team feedback (2 to 3 weeks)
+
+The agents should apply the review feedback from Aqib and Shehryar, captured in the course factory
+(`agent-ip/`). The content elements it covers:
+
+- asides, diagrams and interactive elements;
+- Big Word Alerts that are bold in the text and open details on click, with an optional
+  "explain more" from a small model (the contract is in the course factory; not built yet);
+- further reading, marked must-read or optional, to build curiosity;
+- real-world examples and use cases;
+- pros and cons, trade-offs, and alternatives, including uncommon advice;
+- options, tools, frameworks and open source, so learners reuse existing knowledge.
+
+Agent workflow items: research before writing, right-sized chapters, keeping a course within its
+time budget (for example 40 hours), and adaptive prerequisites.
+
+### Combinations (1 week)
+
+Variants of a course by industry or use case, design elements, and special interests or
+specializations. The first plan is
+[`plans/multi-vendor-marketplace-variants.mdx`](plans/multi-vendor-marketplace-variants.mdx).
+
+### Multi-agent, multi-provider orchestrator (1 month)
+
+One orchestrator that runs the phases (research, plan, write, critique, validate) with critique
+agents on a different model provider from the writers. Today this is done by hand with parallel
+agent runs and a separate review pass, as described in [`review.mdx`](review.mdx).
+
+### Human in the loop (1 month)
+
+Feedback from mentors, instructors and learners, sorted by the type of person giving it, flowing
+back into the course and the rules. Also: continuing a course after its first release with new
+modules.
+
+### Interactive elements
+
+Mind maps, roadmap.sh-style learning maps (the platform already has a `Roadmap` block), and
+NotebookLM-style study aids such as audio summaries.
+
+### Attention span and engagement (2 to 3 weeks)
+
+Knowing on which days a learner is productive, reminders (the API already sends inactivity
+nudges), adaptive help and hand-holding when a learner is stuck, engagement features, and mind
+maps for review.

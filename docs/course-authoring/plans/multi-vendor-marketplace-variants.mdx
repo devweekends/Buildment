@@ -1,0 +1,93 @@
+---
+title: Multi-vendor marketplace variants and combinations
+status: draft roadmap, waiting for instructor confirmation
+course: multi-vendor-marketplace
+track: engineering
+---
+
+# Multi-vendor marketplace: variants and combinations
+
+The FreshMarket course (`content/import/multi-vendor-marketplace/`, about 240 hours) is the general
+course. This plan proposes six variants so that two fellows who finish different variants leave
+with different portfolio projects, plus specializations that can be combined with any variant.
+
+This is a roadmap for instructors to confirm, not course content. No variant chapter is written
+until the instructors approve the variant (see the variant rules in `agent-ip/`, Aqib's course
+factory, and [`../tracks.mdx`](../tracks.mdx)).
+
+## What stays the same in every variant
+
+The spine and outcomes do not change, so every variant can be assessed the same way:
+
+- product scoping and actors, data modelling, authentication and authorization with vendor
+  isolation;
+- seller onboarding and a seller dashboard, a public catalogue with search and filters;
+- a cart or booking that spans several sellers and splits into per-seller orders at checkout;
+- payments in Stripe test mode, with webhooks;
+- media uploads, caching, background jobs and queues;
+- tests, deployment over HTTPS, and a defended architecture walkthrough;
+- the same stack (MongoDB, Express, React, Node, Redis, BullMQ, Cloudinary, Stripe) and the same
+  time budget (210 to 280 hours).
+
+## The six variants
+
+Each variant changes at least four of the six dimensions in the uniqueness contract: primary user
+journey, hardest constraint, data model, hero feature, visual and verbal identity, and capstone
+evidence.
+
+| Variant | Primary journey | Hardest constraint | Hero feature | Data-model change |
+|---|---|---|---|---|
+| **Craftly**: handmade goods | Buyer requests a custom piece, maker quotes, buyer pays | One-of-a-kind stock and made-to-order lead times | Custom request and quote flow | `CustomRequest`, `Quote`, `ProductionSlot` |
+| **GigBay**: freelance services | Buyer posts a brief, sellers offer, work ships in milestones | Paying per milestone with held funds and approval | Milestone orders with delivery approval | `Gig`, `Milestone`, `Delivery`, `Dispute` |
+| **KitShare**: equipment rental | Renter picks dates, owner confirms, item returns | Date-range availability with no double bookings | Availability calendar with holds and deposits | `Listing`, `Booking` (date range), `Deposit`, `ConditionReport` |
+| **HomeKitchen**: home-cook meals | Customer orders for a time slot in their area | Kitchen capacity per slot and delivery zones | Slot ordering with live capacity | `Kitchen`, `MenuItem` options, `DeliverySlot`, `Zone` |
+| **BookSwap**: student textbook exchange | Student lists a used book or a want, gets matched | Matching editions and condition, campus pickup | ISBN lookup and want-list matching | `Edition` (ISBN), `Copy` (condition), `WantList`, `PickupPoint` |
+| **TutorHub**: tutoring lessons | Learner books recurring lessons with a tutor | Recurring sessions across time zones | Time-zone-aware scheduling and lesson packages | `Tutor`, `AvailabilityRule`, `LessonPackage`, `Session` |
+
+### Capstone evidence per variant
+
+| Variant | What the fellow demos and defends |
+|---|---|
+| Craftly | A custom order from request to quote to paid order, and how lead times are shown honestly |
+| GigBay | A two-milestone job paid, delivered, approved, and one milestone disputed |
+| KitShare | Two renters trying the same dates, one blocked, and a deposit returned after a condition report |
+| HomeKitchen | A slot filling up under load, and orders rejected outside the delivery zone |
+| BookSwap | A want-list match by ISBN and condition, and a pickup arranged at a campus point |
+| TutorHub | A weekly lesson series booked across two time zones, including a daylight saving change |
+
+## Combinations
+
+A combination is one variant plus optional layers. The layers add depth and personal interest
+without changing the outcomes.
+
+| Axis | Options | What changes |
+|---|---|---|
+| Industry or use case | The six variants above; new ones need the uniqueness check | Domain, journey, constraint, data model, hero feature |
+| Design elements | Product name, palette, tone of voice, seed content, demo story | Visual and verbal identity, so projects look different in a portfolio |
+| Specialization (stretch) | Payments depth, search and recommendations, realtime order tracking, offline-friendly mobile web, AI-assisted listings, observability | One extra module of stretch hours, with its own evidence |
+
+Rules for combinations:
+
+- A specialization adds a stretch module; it never replaces a core module.
+- A combination must still fit the time budget: the core path stays within 210 hours.
+- Offline-friendly mobile web is a good default suggestion for fellows who learn on phones with
+  unreliable connections, because it is a skill they can demonstrate from their own situation.
+- A combination of design elements alone is not a variant: names and colours on the same product
+  are a reskin.
+
+## Open decisions for instructors
+
+1. Are these six the right domains for our fellows, or should one be replaced with an NGO or
+   local-economy use case?
+2. Should every fellow pick a variant, or do some take FreshMarket itself?
+3. Which specializations do we have mentors for today?
+4. Is the TutorHub time-zone constraint too hard for the core path, or should it be its stretch
+   module?
+5. Who are the two instructors who confirm each variant roadmap?
+
+## Next steps after confirmation
+
+For each confirmed variant: write its brief and full roadmap, have it confirmed, then derive the
+chapters from the general course module by module, changing the scenarios, data model, hero
+feature and capstone. Each variant then goes through the same validation, audit, import and
+click-through as any course in [`../README.mdx`](../README.mdx).
