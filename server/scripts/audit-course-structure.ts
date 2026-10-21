@@ -149,6 +149,15 @@ function auditInteractiveFences(moduleNum: number, fileName: string, body: strin
         modelAnswer?: unknown;
       } | null;
       const validQuestion = typeof config?.question === "string" && config.question.trim().length > 0;
+      if (config?.type === "mcq" && Array.isArray(config.options) &&
+        config.options.some((option) => typeof option !== "string" || !option.trim())) {
+        issues.push({
+          level: "error",
+          module: moduleNum,
+          file: fileName,
+          message: "Multiple-choice options must be non-empty text; quote numeric labels in YAML",
+        });
+      }
       const validMcq =
         config?.type === "mcq" &&
         Array.isArray(config.options) &&
