@@ -103,7 +103,7 @@ export function SpecialisationPanel({ courseSlug, track }: { courseSlug: string;
                   <h3 className="text-sm font-semibold">
                     {option.label}
                     {option.recommended ? (
-                      <span className="ml-2 font-normal text-muted-foreground">Suggested for {variant.productName}</span>
+                      <span className="ml-2 font-sans font-normal text-muted-foreground">Suggested for {variant.productName}</span>
                     ) : null}
                   </h3>
                   <p className="mt-0.5 text-sm leading-6 text-muted-foreground">{option.summary}</p>
