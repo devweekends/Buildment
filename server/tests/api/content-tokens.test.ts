@@ -83,6 +83,23 @@ describe("placeholders in block state", () => {
   });
 });
 
+describe("placeholders in mentor review", () => {
+  it("shows the mentor the prompt the learner read", async () => {
+    const blockId = `blk-oq-tok-${fx.course.id}`;
+    await prisma.block.create({
+      data: { id: blockId, chapterId: fx.chapterA.id, type: "OPEN_QUESTION", order: 5, points: 5, config: { prompt: "How does %%product.name%% avoid overselling?", minWords: 1 } },
+    });
+    const submitted = await request(app).post(`/api/v1/blocks/${blockId}/respond`).set(learner()).send({ text: "It reserves stock at checkout." });
+    expect(submitted.status).toBe(200);
+    const response = await prisma.response.findFirstOrThrow({ where: { blockId, userId: fx.learner.id } });
+
+    const detail = await request(app).get(`/api/v1/teach/review/${response.id}`).set(mentor());
+    expect(detail.status).toBe(200);
+    expect(detail.body.data.question.prompt).toBe("How does Hamesh avoid overselling?");
+    expect(detail.body.data.course).toEqual({ id: fx.course.id, slug: fx.course.slug, title: fx.course.title });
+  });
+});
+
 describe("publishing placeholders", () => {
   const saveAndPublish = async (source: string) => {
     expect((await request(app).put(`/api/v1/teach/chapters/${fx.chapterA.id}/draft`).set(mentor()).send({ source })).status).toBe(200);

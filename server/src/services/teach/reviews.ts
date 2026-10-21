@@ -1,6 +1,7 @@
 import type { AiReviewDraftResult, ReviewDetailView, ReviewQueueView } from "../../shared/api/teach.js";
 import { TEACH_ERROR_CODES } from "../../shared/api/teach.js";
 import { OpenQuestionConfigSchema, OpenQuestionPayloadSchema } from "../../shared/blocks/open-question/schema.js";
+import { applyTokens, contentTokenValues } from "../../shared/lib/content-tokens.js";
 import { parseSafeSubmissionUrl } from "../../shared/lib/safe-submission-url.js";
 import { prisma } from "../../db/prisma.js";
 import { ConflictError, NotFoundError, UnprocessableError } from "../../utils/errors.js";
@@ -65,7 +66,7 @@ async function requireReviewableResponse(user: SessionUser, responseId: string) 
     include: {
       user: { select: { id: true, name: true, email: true } },
       block: {
-        include: { chapter: { select: { id: true, title: true, course: { select: { id: true, slug: true, title: true } } } } },
+        include: { chapter: { select: { id: true, title: true, course: { select: { id: true, slug: true, title: true, familySlug: true } } } } },
       },
       review: { select: { score: true, verdict: true } },
     },
@@ -73,6 +74,13 @@ async function requireReviewableResponse(user: SessionUser, responseId: string) 
   if (!response) throw new NotFoundError("Submission not found");
   await requireCourseById(user, response.block.chapter.course.id, "SUBMISSION_EVALUATOR");
   return response;
+}
+
+/** The prompt as the learner read it: placeholders resolved with their variant. */
+async function learnerPrompt(response: { enrollmentId: string; block: { chapter: { course: { familySlug: string | null } } } }, prompt: string): Promise<string> {
+  const { familySlug } = response.block.chapter.course;
+  const enrollment = familySlug ? await prisma.enrollment.findUnique({ where: { id: response.enrollmentId }, select: { variantSlug: true } }) : null;
+  return applyTokens(prompt, contentTokenValues(familySlug, enrollment?.variantSlug));
 }
 
 /** One submission with the mentor-only question config and the learner's previous exchanges. */
@@ -101,12 +109,12 @@ export async function loadReviewDetail(user: SessionUser, responseId: string): P
     attempt: response.attempt,
     submittedAt: response.submittedAt.toISOString(),
     learner: response.user,
-    course: response.block.chapter.course,
+    course: { id: response.block.chapter.course.id, slug: response.block.chapter.course.slug, title: response.block.chapter.course.title },
     chapterTitle: response.block.chapter.title,
     block: { id: response.block.id, type: response.block.type, points: response.block.points },
     question: config.success
       ? {
-          prompt: config.data.prompt,
+          prompt: await learnerPrompt(response, config.data.prompt),
           minWords: config.data.minWords,
           maxWords: config.data.maxWords ?? null,
           rubric: config.data.rubric ?? null,
@@ -179,7 +187,7 @@ export async function generateAiReviewDraft(user: SessionUser, responseId: strin
     const result = await generateReviewDraft({
       courseTitle: response.block.chapter.course.title,
       chapterTitle: response.block.chapter.title,
-      prompt: config.data.prompt,
+      prompt: await learnerPrompt(response, config.data.prompt),
       rubric: config.data.rubric,
       sampleAnswer: config.data.sampleAnswer,
       answer: answerParts.filter(Boolean).join("\n\n"),
