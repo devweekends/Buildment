@@ -1,4 +1,5 @@
 import type { CourseBuilderChapter, CourseBuilderView, CourseDraftPreview, CourseSettingsView, CourseSlugResult } from "../../shared/api/teach.js";
+import { applyTokens, contentTokenValues } from "../../shared/lib/content-tokens.js";
 import { TEACH_ERROR_CODES } from "../../shared/api/teach.js";
 import { validateCoursePublish } from "../../shared/lib/course-publish-rules.js";
 import { slugify } from "../../shared/lib/mdx-headings.js";
@@ -125,18 +126,21 @@ export async function loadCourseDraftPreview(user: SessionUser, courseSlug: stri
   const course = await prisma.course.findUniqueOrThrow({
     where: { id: owned.id },
     select: {
-      id: true, slug: true, title: true, description: true, projectGoal: true, coverUrl: true, status: true,
+      id: true, slug: true, title: true, description: true, projectGoal: true, coverUrl: true, status: true, familySlug: true,
       modules: {
         orderBy: { order: "asc" },
         select: { id: true, title: true, chapters: { orderBy: { order: "asc" }, select: { id: true, title: true, slug: true, readerMode: true, publishedAt: true, source: true } } },
       },
     },
   });
+  // The preview reads like a learner who has not picked a variant yet.
+  const tokens = contentTokenValues(course.familySlug, null);
+  const { familySlug: _familySlug, modules, ...summary } = course;
   return {
-    course: course as CourseDraftPreview["course"],
-    modules: course.modules.map((module) => ({
+    course: summary as CourseDraftPreview["course"],
+    modules: modules.map((module) => ({
       ...module,
-      chapters: module.chapters.map((chapter) => ({ ...chapter, publishedAt: chapter.publishedAt?.toISOString() ?? null })),
+      chapters: module.chapters.map((chapter) => ({ ...chapter, source: applyTokens(chapter.source, tokens), publishedAt: chapter.publishedAt?.toISOString() ?? null })),
     })),
   };
 }

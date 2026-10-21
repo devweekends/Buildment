@@ -132,5 +132,12 @@ describe("publishing placeholders", () => {
   it("publishes tokens in prose and block prompts", async () => {
     const res = await saveAndPublish("Open your %%product.name%% dashboard.");
     expect(res.status).toBe(204);
+
+    // The mentor preview reads like a learner who has not picked a variant.
+    const preview = await request(app).get(`/api/v1/teach/courses/${fx.course.slug}/preview`).set(mentor());
+    expect(preview.status).toBe(200);
+    const chapter = preview.body.data.modules[0].chapters.find((c: { slug: string }) => c.slug === "chapter-a");
+    expect(chapter.source).toBe("Open your FreshMarket dashboard.");
+    expect(preview.body.data.course.familySlug).toBeUndefined();
   });
 });
