@@ -18,7 +18,7 @@ Prove that every technical instruction in the course works in the documented env
 
 ## Outputs
 
-Drafts and QA belong in `agent-ip/work/<course-slug>/`. Final import validation must use the assembled package in `content/import/<course-slug>/`; follow `README.md` → Work areas. During draft review, point the course audit at `agent-ip/work/<course-slug>/chapters/`.
+Drafts and QA belong in `agent-ip/work/<course-slug>/`. Final import validation must use the assembled package in `courses/<course-slug>/`; follow `README.md` → Work areas. During draft review, point the course audit at `agent-ip/work/<course-slug>/chapters/`.
 
 `work/<course-slug>/qa/technical-validation.md` using `08-templates.md` → Technical validation report, including:
 
@@ -49,7 +49,7 @@ Drafts and QA belong in `agent-ip/work/<course-slug>/`. Final import validation 
 9. **Check security.** Auth, validation, rate limits, secrets, answer leakage, IDOR, unsafe URLs.
 10. **Validate every canvas and SVG.** Run the model unit tests, check the default/min/max/edge cases, verify every control has a label and unit, keyboard-test the controls, check the text alternative, test the mobile width, confirm the unknown-slug fallback, and load the canvas in the reader. For SVG, confirm it is a component rather than a raw string, has a responsive `viewBox`, uses theme tokens, has `<title>`/`<desc>`, has no scripts/`foreignObject`/external hrefs, and passes visual regression in light and dark mode. Record the results in a canvas QA report.
 11. **Validate every static diagram asset.** Confirm the asset is hosted locally, the path resolves in the reader, the SVG is sanitized, the block has alt text and a caption, and the diagram is readable on mobile. A remote or unsanitized diagram asset is an S2 defect.
-12. **Run the course audit.** `node agent-ip/scripts/audit-course.mjs content/import/<course-slug>`. Record the result in the QA report; a failing audit blocks the gate.
+12. **Run the course audit.** `node agent-ip/scripts/audit-course.mjs courses/<course-slug>`. Record the result in the QA report; a failing audit blocks the gate.
 13. **Check reference consistency.** Compare the chapters with the course's reference build using `06-quality-gates.md` → Reference consistency. Record the result in `qa/reference-consistency.md`.
 14. **Deploy from scratch.** Follow the documented path. Record every deviation.
 15. **Run the pre-PR checks.** `content:validate:source`, `content:audit` and `content:import` for the course, a student click-through at 375px and desktop width in both themes, and one quiz answered right and one wrong (`06-quality-gates.md` → Before a pull request).
