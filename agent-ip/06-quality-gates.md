@@ -111,7 +111,7 @@ Use this whenever a chapter includes an interactive canvas. The full contract is
 The audit is executable. Run it at G3 and G5:
 
 ```bash
-node agent-ip/scripts/audit-course.mjs courses/<course-slug>
+node agent-ip/scripts/audit-course.mjs content/import/<course-slug>
 ```
 
 It checks, per chapter:
@@ -412,6 +412,8 @@ Every defect gets a location, a reason, and a suggested fix. "This feels weak" i
 Do not let a writer "fix" a structural problem by adding more prose. If the chapter teaches the wrong thing, the brief is wrong. Fix the brief first.
 
 ## Sign-off artifact
+
+Final learner-facing source MUST be in `content/import/<course-slug>/` for every course and variant, with `course.yaml` matching its slug and numbered module/lesson files. Run source validation, the structure audit with `--strict`, and the course audit against that final package. Keep drafts and all QA/sign-off evidence under `agent-ip/work/<course-slug>/`. CI must not publish from `courses/` or the work area. Follow `README.md` → Work areas.
 
 The publish package contains:
 

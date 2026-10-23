@@ -22,7 +22,8 @@ Produce variants that a learner would recognise as different products — not re
 - The family catalogue entry built from the intake: label, product name, summary, hardest constraint, theme and specialisation for each variant.
 - A variant roadmap for each variant, using the same instructor-facing structure as the general course.
 - `work/<variant-slug>/roadmap-confirmation.md` with the instructor panel's sign-off.
-- One complete course per variant in `work/<variant-slug>/`.
+- Draft chapters per variant in `agent-ip/work/<variant-slug>/chapters/`, with QA in `agent-ip/work/<variant-slug>/qa/`.
+- One reviewed final package per variant in `content/import/<variant-slug>/`, including its own `course.yaml` and numbered module/lesson files. Follow `README.md` → Work areas for promotion and validation.
 - `work/<course-slug>/variant-diff.md` using `08-templates.md` → Variant diff.
 - A variant scorecard for each.
 - A short demo narrative for each: who the product serves and what the learner shows.

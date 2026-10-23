@@ -53,7 +53,7 @@ The budget:
 | `OpenQuestion` | only at a gate/defense | ≤ 1 |
 | Diagrams | ≤ 1 | ≥ 1 |
 
-No component-only section. If a component can be removed without reducing understanding, remove it. Run `node agent-ip/scripts/audit-course.mjs courses/<course-slug>` before review; a chapter that fails the audit is not ready.
+No component-only section. If a component can be removed without reducing understanding, remove it. Run `node agent-ip/scripts/audit-course.mjs content/import/<course-slug>` before review; a chapter that fails the audit is not ready.
 
 ## Assessment blocks
 

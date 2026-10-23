@@ -203,6 +203,8 @@ The agents follow this IP; the IP improves from the review of their output. When
 
 ## The governance promise
 
+Final course and variant packages live exclusively in `content/import/<slug>/`; drafts, reviews, and QA live in `agent-ip/work/<slug>/`. Enforce `README.md` → Work areas at publish review. CI must consume the approved final package from the reviewed revision, never a draft directory or `courses/`.
+
 The system is working when:
 
 - a reviewer can point to the standard, not just an opinion;

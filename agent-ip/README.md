@@ -1,6 +1,6 @@
 # Agent IP — Course Factory
 
-**Status:** v0.4.2, draft for team review (v0.4 adds interactive-first; v0.4.1 adds audit and QA fixes; v0.4.2 adds AI course lessons)
+**Status:** v0.4.3, draft for team review (v0.4.3 standardizes final course and draft locations)
 **Owner:** Delivery lead (Sean) + course engineering
 **Applies to:** every course produced for the platform
 
@@ -59,7 +59,7 @@ See `11-visual-explanations.md` for the Excalidraw design rules, SVG export work
 The audit is executable, not a vibe check:
 
 ```bash
-node agent-ip/scripts/audit-course.mjs courses/<course-slug>
+node agent-ip/scripts/audit-course.mjs content/import/<course-slug>
 ```
 
 It measures prose depth, top-level and total component counts, assessment interactions, diagram coverage, and list-heavy chapters. It exits non-zero when a chapter misses the threshold. Run it at G3 and G5; the course auditor files defects from the result.
@@ -156,11 +156,17 @@ agent-ip/
 
 ## Work areas
 
-Do not write generated course content into this folder. Use:
+Paths are relative to the repository root. In role documents, `work/` means `agent-ip/work/`. This layout applies to every course and variant:
 
-- `agent-ip/work/<course-slug>/` for in-progress briefs, research, blueprints, critiques, and QA.
-- `courses/<course-slug>/` for approved course source ready to import.
-- `content/import/<course-slug>/` only when the platform importer is wired for that course.
+- `agent-ip/work/<course-slug>/chapters/` for draft chapters, preserving numbered module folders and lesson filenames.
+- `agent-ip/work/<course-slug>/` for draft manifests, briefs, research, blueprints, critiques, and approval records; put audit and validation reports in its `qa/` directory.
+- `content/import/<course-slug>/` is the only canonical location for final course source: `course.yaml`, numbered module/lesson Markdown files, and optional `COURSE-OUTLINE.md`.
+
+After content review and QA, assemble the complete final package in `content/import/<course-slug>/` on the course PR branch. Rerun source validation, the strict structure audit, and the course audit against that exact package. Keep drafts, QA, review notes, archives, and generated output in `agent-ip/work/<course-slug>/`. CI must publish only explicitly selected final packages from `content/import/`, after successful deployment or an approved manual run tied to a reviewed PR. A folder's presence alone does not authorize publication.
+
+Do not create or maintain final courses under `courses/`. When continuing a legacy course there, reconcile it with any existing import source before placing the reviewed final package in `content/import/<course-slug>/`. Preserve superseded drafts in `agent-ip/work/<course-slug>/archive/`; never blindly overwrite newer content. Historical logs keep their original paths; new assignments and context packs must use this layout.
+
+For draft reviews, run the course audit against `agent-ip/work/<course-slug>/chapters/`; for final validation, use `content/import/<course-slug>/`. Save reports in `agent-ip/work/<course-slug>/qa/`. The CI publishing workflow still requires implementation; this layout does not itself publish courses.
 
 ## Change control
 

@@ -1,5 +1,13 @@
 # Agent IP decision log
 
+## 2026-10-23: Canonical final course location (v0.4.3)
+
+**Status:** Requested by the user.
+
+**Decision:** All final courses and variants belong in `content/import/<slug>/` so CI can consume them. Drafts, research, reviews, and QA remain in `agent-ip/work/<slug>/`. Replace the previous `courses/` destination and conditional import-folder instruction. Review drafts first, then assemble and validate the final import package on the course PR branch.
+
+**Platform impact:** Instruction update only; existing course files are not moved and no publishing workflow is added. Historical logs retain their recorded paths. Agents must reconcile legacy sources when continuing those courses.
+
 ## 2026-10-23: Lessons from building the AI interview course (v0.4.2)
 
 **Status:** Draft for delivery lead and reviewer sign-off under `09-review-and-governance.md`.
