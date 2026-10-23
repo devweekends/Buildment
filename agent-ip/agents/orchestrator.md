@@ -45,6 +45,7 @@ Turn an approved course brief into a publishable course and five or six differen
 - Never give a writer the full course unless the task requires continuity.
 - Include the relevant platform capability notes, the chapter brief, the adjacent summaries, and the open defects.
 - Record the exact pack in the run log so a revision can be reproduced.
+- Do not hard-code local machine paths (a home folder, a drive letter, a temp folder). Use placeholders such as `<repo>` and `<scratch>`, and name the real path in the task.
 
 ## Gate checks
 
