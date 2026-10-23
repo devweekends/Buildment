@@ -74,7 +74,7 @@ Per teaching chapter:
 - No `openquestion` in teaching chapters (only set-the-scene, gates and the capstone).
 
 ### Quiz chapter (Check), file `NN.0X-quiz.md`
-Activities only: **six** ```quiz MCQ fences and nothing else after the frontmatter (no headings, no prose, no predicts, no components). Never use the words "skip it" or "skip to". Modules 4 to 7: at least one of the six is a **"check the AI's answer"** question: the question shows a short answer an AI tool gave (in single quotes inside the question), and the learner picks what is wrong with it or what to check first.
+Activities only: **five** ```quiz MCQ fences (agent-ip allows three to five) and nothing else after the frontmatter (no headings, no prose, no predicts, no components). Never use the words "skip it" or "skip to". Modules 4 to 7: at least one of the five is a **"check the AI's answer"** question: the question shows a short answer an AI tool gave (in single quotes inside the question), and the learner picks what is wrong with it or what to check first.
 
 ### Gate (Gate), file `NN.0X-checklist.md`, 400 or more prose words in total
 Copy the decision-making gate layout exactly:
@@ -127,7 +127,7 @@ explanations:
 ````
 - Three or four options (four is normal). One reason per option, in option order. The right one starts with "Right."
 - Wrong-option explanations are kind: they say what the option missed, never that the learner was silly.
-- **Option length:** the correct option must not be longer than the longest wrong option (never 10% longer). In a quiz chapter the correct option is the strictly longest in at most one of six questions. Write all options at the same level of detail. Vary the correct position (use each of 0 to 3 at least once in a quiz chapter).
+- **Option length:** the correct option must not be longer than the longest wrong option (never 10% longer). In a quiz chapter the correct option is the strictly longest in at most one of five questions. Write all options at the same level of detail. Vary the correct position (use each of 0 to 3 at least once in a quiz chapter).
 - No "all of the above", no joke options, no "Which is NOT".
 - **Opinion goes to an open question.** Each graded key must follow from a clear rule taught in the course or from arithmetic.
 - **Blind re-answer:** after writing each MCQ, cover the key and answer it from the question and options alone. If you hesitate between two options, rewrite. An independent blind review will re-answer every key later.

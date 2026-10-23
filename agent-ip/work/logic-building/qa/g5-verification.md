@@ -9,7 +9,9 @@ date: 2026-10-23
 
 ## Structure
 - 8 modules, 50 chapters, 806 minutes (about 13.4 hours) from chapter frontmatter, matching the roadmap and `estimatedHours: 13`.
-- Graded items: 89 multiple-choice questions and 34 predictions. Open questions: 8 (warm-up prompts, gates 2 to 7 and the capstone). Canvases: 3.
+- Graded items: 83 multiple-choice questions and 34 predictions. Open questions: 8 (warm-up prompts, gates 2 to 7 and the capstone). Canvases: 3. Each module quiz has five questions, within agent-ip's 3 to 5; it had six until the revision recorded in the decision log.
+- Diagrams: 31 Mermaid flowcharts, at least one in every module, each under 7 nodes and `flowchart TD`. All 31 parse with the reader's Mermaid 11. Chapters without one, by decision: 6.1 and 8.1 (a diagram would only repeat their lists), 3.5 and 7.4 (canvas chapters) and the 8.4 capstone.
+- agent-ip `audit-course.mjs`: no quiz-size flags. The remaining flags are prose under the 1,200 and 700 word minimums (a recorded exception, open decision 3), the five chapters above without a diagram, and the list-heavy 8.5 course gate.
 - `content:validate:source --course logic-building`: 50 chapters, 50 OK, 0 failed.
 - `content:audit --course logic-building`: 0 errors, 0 warnings.
 - No em or en dashes in the course, the work area or the canvas code. No AI product or company names, no links.
@@ -23,14 +25,16 @@ All 123 graded items were extracted without their keys into two batches and re-a
 | A | 1 to 4 | 62 | 62 |
 | B | 5 to 8 | 61 | 61 |
 
+After the review, one question was removed from each of the six module quizzes (three per batch), leaving 117 graded items: 59 in batch A and 58 in batch B. Every remaining item was in the reviewed set and matched its key. Quiz numbers below are the current ones.
+
 Items the reviewer marked medium or low confidence, and what was done:
 
 | Item | Issue | Action |
 |---|---|---|
 | 3.1, 3.4, 3.5 predicts; 2.5 quiz 2; 5.2, 6.4, 8.2 predicts | The reviewer lacked the chapter context (the rule, grid, chart or story right above the question) | Checked in each chapter: the context is present; no change |
 | 6.3 predict 2 | "Twisting words" against "only two choices" | Key matches; the chapter's example makes the twist explicit; no change |
-| 6.6 quiz 3 | Depends on the five scam signs taught in 6.4 | Key matches; the wrong options are each ruled out in their explanations; no change |
-| 3.3 predict 2, 3.6 quiz 4 | Answerable, but test the "reading a rule backwards" trap on purpose | Intended difficulty; no change |
+| 6.6 quiz 2 | Depends on the five scam signs taught in 6.4 | Key matches; the wrong options are each ruled out in their explanations; no change |
+| 3.3 predict 2, 3.6 quiz 3 | Answerable, but test the "reading a rule backwards" trap on purpose | Intended difficulty; no change |
 
 ## Canvases
 - `frontend` canvas tests: 7 files, 87 tests passed, including the label-fit checks at phone and desktop widths. Frontend typecheck clean.
