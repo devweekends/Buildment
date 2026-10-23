@@ -37,7 +37,7 @@ Position: course 13 sits **between course 9 and course 8**, and before the syste
 - **Prior knowledge:** plain English reading; everyday phone and computer use. Course 9 module 7 helps and is referred to, not required. Modules 1 to 3 need no coding. Modules 4 and 5 assume the fellow is starting a tech project and can use a terminal a little; every task there has a provided case for fellows who cannot run tools yet.
 - **Language:** Arabic first, English second. Short sentences, common words, every term defined on first use.
 - **Device and connection:** mostly phones, weak or expensive data, power cuts; some have a laptop part of the time. Light pages, no images, every interaction saves on its own. Audio and downloads are always optional and their size is stated.
-- **Time available:** about 20 hours: about 16 hours of chapters (1 hour a day over 3 to 4 weeks) and about 5 hours of short daily labs over two weeks for the capstone.
+- **Time available:** about 20 hours: about 16 hours of chapters (1 hour a day over 3 to 4 weeks) and about 5 hours of short daily labs over two weeks for the capstone. (At G2A and G5 this became about 22 hours; see `curriculum-roadmap.md`.)
 - **Motivation:** build a portfolio project that gets them hired; stop feeling that AI makes them useless; learn faster on a phone between power cuts.
 - **What they will do with the result:** a six-month project plan they follow after the course, a public GitHub lab log, and a habit of weekly write-ups that recruiters and clients can see.
 

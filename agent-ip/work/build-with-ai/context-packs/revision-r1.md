@@ -27,11 +27,11 @@ Two blind critics reviewed the draft: `../qa/critique-a.md` (pedagogy and assess
 
 - **Her first slice (chapter 1.5)** is built in weeks 1 to 2 (about 16 hours): save a link, open it by its short code, show a "link not found" page, and keep a click count the simplest way, as a number saved in the database. Chapter 5.4's question is how to count clicks later, when there are many (month 3, week 11), so 5.4 says "the simple counter from her first slice will not be enough when many people click".
 - **Caching (chapter 3.3)** is her week 7 area. Her five angles on caching happen in week 7. The "build or teach" angle is lab days 3 and 4 (log where each answer came from; stop the cache). Do not give her a separate "tiny cache in the app's memory" lab.
-- **Her lab log starts in week 5** (containers), and the ten lab days run over 17 days in weeks 5 to 7:
+- **Her lab log starts in week 7** (caching; corrected after the module 4 writer showed that a week 5 start put lab day 4 before her caching week), and the ten lab days run over 17 days in weeks 7 to 9. Qasir already runs in containers from her week 5 area:
 
   | Day | Lab |
   |---|---|
-  | 1 | Run Qasir with the app, a database and a cache in containers (week 5) |
+  | 1 | Run Qasir with the app, a database and a cache in containers (week 7) |
   | 2 | Save and read short links in the database (first try failed with no shape, chapter 4.2; redone the next evening) |
   | 3 | Make the log say where each answer came from: the cache or the database |
   | 4 | Stop the cache on purpose, then the database |
