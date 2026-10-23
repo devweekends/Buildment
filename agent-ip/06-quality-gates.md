@@ -318,6 +318,7 @@ Run these for every course a pull request touches, and list what you ran and wha
 - [ ] `pnpm --dir server content:import --course <slug>` succeeds against a local database.
 - [ ] A student click-through as a test learner (for example `mentee1@buildment.dev`) at 375px wide and at desktop width, in the light and dark themes. Every changed chapter loads without console errors.
 - [ ] Grading works: answer one quiz right and one wrong, then check the score, the explanations and the saved progress.
+- [ ] The PR says who re-answered the answer keys blind. If no person did, it asks a reviewer for a human key check (`05-assessment-and-motivation.md` → Answer-key check).
 
 ## Assessment validation
 

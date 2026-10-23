@@ -55,10 +55,11 @@ Design rules:
 
 An answer key written by the same agent that wrote the question is not checked.
 
-- **Re-answer every key blind.** A second agent from a different model family, or a person, answers every quiz question and prediction without the key or the explanations, and drafts an answer to every open question without the model answer.
+- **Re-answer every key blind.** A second agent from a different model family, or a person, answers every quiz question and prediction without the key or the explanations, and drafts an answer to every open question without the model answer. A model from the same family as the drafters is not independent, even a smaller one: it tends to share their mistakes, so its agreement does not count as the check.
 - **Compare.** Any disagreement is a defect until the question, the options or the key is fixed. Ambiguity counts as a disagreement.
 - **Check against the reference build.** Every key and model answer must match the course's reference code (`02-course-architecture.md` → Reference builds).
 - Record the check in the assessment plan.
+- **Say who checked in the PR:** a person, or a model of a different family from the drafters. If no person checked the keys, the PR asks a reviewer for a human key check before publish.
 
 ### Code exercise
 
