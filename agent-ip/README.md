@@ -1,6 +1,6 @@
 # Agent IP — Course Factory
 
-**Status:** v0.3, draft for team review
+**Status:** v0.3.1, draft for team review
 **Owner:** Delivery lead (Sean) + course engineering
 **Applies to:** every course produced for the platform
 
@@ -114,7 +114,8 @@ agent-ip/
 ├── decision-log.md                 ← IP changes and review state
 ├── proposals/                     ← written proposals awaiting governance review
 ├── scripts/
-│   └── audit-course.mjs            ← prose depth, component density, diagram coverage
+│   ├── audit-course.mjs            ← prose depth, component density, diagram coverage
+│   └── blind-keys.mjs              ← keyless batches and comparison for the blind answer-key check
 └── agents/
     ├── orchestrator.md
     ├── research.md
