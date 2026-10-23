@@ -116,7 +116,7 @@ Minutes are each chapter's `estimatedMinutes`. Total: 995 minutes, about 16.6 ho
 | Module | Gate evidence (open question with a Met / Partly / Not yet rubric, a pass rule and a mentor key) |
 |---|---|
 | 1 | One real or provided task split into what AI can help with, what it does not know, and the calls that stay yours |
-| 2 | A toolkit page: one tool per job with its free access checked and dated, a fallback, where work is saved, and three privacy rules |
+| 2 | A toolkit page: two tools per job (one may be a way to do it by hand), each checked and dated, a fallback, where work is saved, and three privacy rules |
 | 3 | One topic learned from five angles, a recall test with the gaps found, and one notes page |
 | 4 | Lab day 1: plan, what ran, what was broken on purpose and why, and the GitHub link; or a review of a provided lab log |
 | 5 | Month 1 of the six-month plan, week by week, with checked resources and one open-source project to study |

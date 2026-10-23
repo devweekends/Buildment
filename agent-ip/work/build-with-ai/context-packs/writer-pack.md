@@ -101,7 +101,7 @@ estimatedMinutes: <minutes from the roadmap>
 ---
 ```
 
-`NN.01-set-the-scene.md` is Read; teaching chapters are Learn; `06.05-capstone-your-project-start.md` is Build; `*-quiz.md` and `06.04-mixed-review.md` are Check; `*-checklist.md` is Gate.
+`NN.01-set-the-scene.md` is Read; teaching chapters are Learn; `06.05-capstone-your-project-start.md` is Build; `*-quiz.md` (including the mixed review `06.04-quiz.md`) are Check; `*-checklist.md` is Gate.
 
 **agent-ip prose minimums apply in full** (`02-course-architecture.md` → Prose depth), counted by `agent-ip/scripts/audit-course.mjs` over **paragraphs only**: headings, lists, numbered steps, tables, block quotes, components and fences do not count.
 
