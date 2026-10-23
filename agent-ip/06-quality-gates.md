@@ -272,6 +272,8 @@ The technical validator runs, not reads.
 - [ ] The project builds from a clean checkout.
 - [ ] The documented Node/runtime version works.
 - [ ] Every command in the chapter succeeds in the documented environment.
+- [ ] Every expected output a chapter shows, such as a test summary or a count, was copied from a real run at the course's pinned versions.
+- [ ] The course's pinned minimum for each package is at least the newest version any snippet needs. A snippet that needs version 1.2 cannot ship under a `>=1.0` pin.
 - [ ] Every code snippet compiles or is clearly labelled as partial.
 - [ ] Every code exercise's tests pass against the reference solution and fail against the starter.
 - [ ] Every API example has the correct method, path, auth, and response shape.
