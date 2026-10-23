@@ -2,6 +2,21 @@
 
 This document governs how course prose is written. It applies to every chapter, aside, callout, question, explanation, and piece of UI copy. The goal is writing that is specific, calm, and useful — the voice of a senior engineer sitting next to the learner, not a marketing page and not a language model filling a template.
 
+## Stable lesson identity for course updates
+
+Give every new module and lesson a unique `key` in `course.yaml`. Keep that key when its title,
+file path, module, or prose changes. A different key represents a different lesson; do not reuse
+an old key for unrelated work. This lets an update preserve the right learner history. A
+variant can keep the shared lesson key when it teaches the same goal, while a changed graded
+activity needs a separate activity identity.
+Write the shared lesson once. If only a sentence or section changes, add an exact
+`replacements` entry under that variant in `course.yaml`. If the lesson's task or flow
+changes, author a full file under `variants/<slug>/`. Do not duplicate unchanged
+lessons for every variant. Omitted keys stay unchanged in updates; list removals
+explicitly. Submit the package as a draft for the course creator to review.
+For a repository package, set `publication: create` or `publication: update`.
+Creation also names an existing creator account with `creatorEmail`.
+
 ## Voice
 
 - **Direct.** Say the thing. Prefer the active voice and the concrete verb.
