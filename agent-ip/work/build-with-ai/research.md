@@ -247,6 +247,7 @@ All facts in this section were checked on 2026-10-24. Every "Phrase it this way"
 - Windows minimum: 64-bit Windows 10 (22H2) or 11 (23H2 or later), 8 GB RAM, a 64-bit processor with SLAT, hardware virtualisation enabled, WSL 2.1.5 or later [S53]. Many fellows' laptops will not meet this.
 - **Browser option:** GitHub Codespaces (A7) runs Docker in the browser [S37, S38]. **Play with Docker is gone:** it was deprecated and unavailable from 1 March 2026; the Docker forum post names iximiuz labs and Google Cloud Shell as alternatives [S57] (not checked from Gaza; U11).
 - **`docker stop`:** the main process receives SIGTERM, then SIGKILL after a grace period (10 seconds by default for Linux containers) [S54]. Plain words: "asks the program to shut down, then forces it after a short wait."
+- **Compose v1 and v2:** old guides and AI plans may use `docker-compose` (with a hyphen), Compose v1 from 2014; the supported form is `docker compose` (v2) [S118]. A `version:` line at the top of a Compose file is obsolete and only produces a warning [S119].
 - **`docker compose stop`:** "Stops running containers without removing them. They can be started again with `docker compose start`" [S55].
 - Restart policies matter for the "watch what happens" moment: with `always`, a manually stopped container is restarted only when the Docker daemon restarts or you restart it; with `unless-stopped`, a stopped container stays stopped even after the daemon restarts [S56]. Writers must pick one policy for the worked example and say which.
 
@@ -714,8 +715,10 @@ Type key: P = primary research, standard, or the provider's own official page (h
 | S115 | "Connectivity in Gaza remains severely constrained." | OCHA, oPt Humanitarian Situation Report, 25 May 2026. https://www.unocha.org/publications/report/occupied-palestinian-territory/opt-humanitarian-situation-report-25-may-2026 | P | 2026-10-24 | High |
 | S116 | Anthropic's AI Fluency course teaches the 4D framework: Delegation, Description, Discernment, Diligence. | Anthropic Academy, "AI Fluency: Framework and Foundations." https://anthropic.skilljar.com/ai-fluency-framework-foundations | F | 2026-10-24 | High |
 | S117 | Coursera "Learning How to Learn" by Oakley and Sejnowski teaches study techniques for tough subjects. | Coursera course page. https://www.coursera.org/learn/learning-how-to-learn | F | 2026-10-24 | High |
+| S118 | Compose v1 was first released in 2014, written in Python and invoked with `docker-compose`; Compose v2, announced in 2020, is invoked with `docker compose`; the supported CLI versions today are Compose v2 and v5. (Added at G5 by the orchestrator.) | Docker Docs, "History and development of Docker Compose." https://docs.docker.com/compose/intro/history/ | P | 2026-10-24 | High |
+| S119 | The top-level `version` element in a Compose file is obsolete; Compose prints a warning that it is obsolete if it is used. (Added at G5 by the orchestrator.) | Docker Docs, "Version and name top-level elements." https://docs.docker.com/reference/compose-file/version-and-name/ | P | 2026-10-24 | High |
 
-**Count:** 117 claim rows (IDs S1 to S117; S83 is not used; S97 is split into S97a and S97b). Each row summarises one or more closely related claims from one source; **117 sourced claim rows**.
+**Count:** 119 claim rows (IDs S1 to S119; S118 and S119 added at G5; S83 is not used; S97 is split into S97a and S97b). Each row summarises one or more closely related claims from one source; **117 sourced claim rows**.
 
 ## Unverified claims (do not use as fact in learner-facing text)
 
