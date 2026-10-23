@@ -1,6 +1,6 @@
 # Agent IP — Course Factory
 
-**Status:** v0.3, draft for team review
+**Status:** v0.4, draft for team review
 **Owner:** Delivery lead (Sean) + course engineering
 **Applies to:** every course produced for the platform
 
