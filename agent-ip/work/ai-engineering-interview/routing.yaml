@@ -1,0 +1,28 @@
+---
+artifact: routing
+course: ai-engineering-interview
+version: 2
+owner: orchestrator
+---
+# Which model role runs which agent role. Only one model family was
+# available, so drafting and critique could not use different families.
+# Mitigation per 01-agent-system.md: separate subagent runs with separate
+# prompts and blind context, a smaller review model for critique and the
+# blind answer-key check, and human review before G5. Recorded as risk R1
+# in decision-log.md.
+roles:
+  orchestrator: { model: drafting model }
+  research: { model: drafting model }
+  curriculum-architect: { model: drafting model }
+  prerequisites-timeline: { model: review model }
+  project-designer: { model: drafting model, note: "capstone section of the roadmap, run inside the architect pass" }
+  interaction-designer: { model: drafting model }
+  assessment-designer: { model: drafting model }
+  interactive-canvas-builder: { model: drafting model }
+  chapter-writer: { model: drafting model }
+  technical-validator: { model: drafting model, note: "execution-based: runs Python, imports, audits" }
+  answer-key-blind-check: { model: review model, note: "same model family as the drafting model; a human key check is still needed" }
+  critic-pedagogy: { model: review model }
+  critic-slop-assessment: { model: review model }
+reduced_independence: true
+same_model_family: true
