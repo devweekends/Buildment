@@ -1,0 +1,26 @@
+# Decision log: building-habits
+
+| Date | Decision | Alternatives | Rationale | Owner |
+|---|---|---|---|---|
+| 2026-10-23 | Build course 12, a practical habit course, grounded in research rather than one book | Base it on one popular book; fold habits into course 6 (Ownership) | Sponsor asked for an "Atomic Habits type" course. No fellowship course teaches habit methods. A course built on one book would copy its framing; research lets us credit ideas to their authors and make the method our own. | Zeeshan (sponsor) |
+| 2026-10-23 | Follow agent-ip v0.4 in full, as course 10 did: G1 dossier before the roadmap, a registered canvas in every Learn chapter with a 14A spec, full prose minimums, blind keys, two blind critics with the scorecard, click-through before the PR | A lighter path | Sponsor instruction: use agent-ip in full. | Zeeshan (sponsor) |
+| 2026-10-23 | Draft chapters before G2B instructor sign-off; roadmap marked `drafted_before_roadmap: true`; G2B listed as pending in the PR | Wait for G2B | Sponsor's standing instruction, as with courses 3 to 10. An exception to G2B, not a change to it. G2C chapter briefs are replaced by one writer pack. | Zeeshan (sponsor) |
+| 2026-10-23 | Seven modules, 39 chapters, 945 minutes (`estimatedHours: 16`) | Eight modules and about 19 hours, as course 10 | The sponsor asked for about 10 to 16 hours. Full prose minimums fix the time per chapter, so the number of chapters sets the hours; seven modules cover the scope with three Learn chapters each. | Orchestrator |
+| 2026-10-23 | Difficulty `Beginner` | `Medium` | The course has no prerequisites. The catalog takes one label; modules 5 to 7 reach Medium (open decision 2). | Orchestrator |
+| 2026-10-23 | An optional "course habit" from gate 2, tracked to the capstone, with provided cases at every step | A capstone that starts its 30 days only after the course | A 30-day plan cannot be run and reviewed inside a 16-hour course unless it starts early. Optional, because some fellows' months are too disrupted, and the course never makes a fellow share hardship. | Orchestrator |
+| 2026-10-23 | Category soft-skills | tech | The catalog has only tech and soft-skills. | Orchestrator |
+| 2026-10-23 | No links and no MustRead, InterestingRead or RealWorldEvent blocks; researchers and authors named in prose only where the dossier supports the claim | Sourced reads per module | Same rule as courses 8 to 10; the dossier is the source of record. | Orchestrator |
+| 2026-10-24 | G1 dossier accepted with its outline changes applied to the roadmap and writer pack: teach the shape of habit formation before any number (66 days only as one study's median); "restart at the next cue" as the course's rule, with "never miss twice" credited to James Clear as advice; "the smallest version" as our own term instead of "tiny habits" or "two-minute rule"; "reminders are not cues"; willpower through the replication story; cue removal before in-the-moment monitoring; identity only as "repetitions are evidence"; "focused work" instead of "deep work"; the 5.3 canvas counts gaps without claiming back-to-back misses do more harm | Teach the popular versions | The dossier marks these popular claims as overstated or untested. Chapter 2.2 is retitled "start small" and 6.3 "Study and focused work habits" so no title borrows a book's coinage. | Curriculum architect (orchestrator) |
+| 2026-10-24 | Hamza's provided case in gate 4 is a money and routine habit (a sweet drink bought daily), never diet or weight | A food or weight case | Dossier: food cases risk eating-disorder territory, and several famous food studies are retracted. | Orchestrator |
+| 2026-10-24 | Writers draft directly in `content/import/building-habits/` instead of `agent-ip/work/building-habits/chapters/` | Draft in the work area and promote after QA | The server validators (`validate-course-source`, `audit-course-structure`) and the importer read only `content/import/`, and writers must run them on their own files. The course is not published by this PR; the QA reports live in `qa/`. Same as course 10. | Orchestrator |
+
+## Risks
+
+| # | Risk | Mitigation |
+|---|---|---|
+| R1 | One model family for drafting, critique and the blind key check | Separate agents with blind context, critics on a smaller model; a human key check and human review are requested in the PR |
+| R2 | Chapters drafted before G2B may need rework | Short roadmap with open decisions; the PR states the order of work |
+| R3 | 1,200-word chapters are long for second-language readers on phones | Short paragraphs, worked cases, interactions spaced through the text |
+| R4 | Popular habit claims (21 days, willpower as a muscle, streaks, identity first, big nudge effects) stated more strongly than the evidence supports | Writers follow the dossier's "phrase it this way" notes; critic B checks every research claim against the dossier |
+| R5 | Copying a popular book's wording or frameworks | The writer pack lists each author's coinages with how to credit them; critics check for borrowed framing |
+| R6 | Hardship or faith handled badly: drama, shame, or theological claims | Care rules in the brief and writer pack; provided cases at every personal prompt; critic B checks tone |
