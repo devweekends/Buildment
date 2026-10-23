@@ -14,8 +14,6 @@ Write the shared lesson once. If only a sentence or section changes, add an exac
 changes, author a full file under `variants/<slug>/`. Do not duplicate unchanged
 lessons for every variant. Omitted keys stay unchanged in updates; list removals
 explicitly. Submit the package as a draft for the course creator to review.
-For a repository package, set `publication: create` or `publication: update`.
-Creation also names an existing creator account with `creatorEmail`.
 
 ## Voice
 
