@@ -60,3 +60,11 @@ The 10.2 MLflow snippet was run with MLflow 3.17.2 and the 10.3 OpenTelemetry sn
 - Checked 375px light and dark, and desktop light and dark: chapter text, tables (scroll inside their own box, no page-level sideways scroll), Mermaid diagrams, predicts, the k slider canvas (keyboard: k 3 to 5 gives recall 0.50, precision 0.40, and the matching "What changed" sentence), the three sequence canvases, and the question banks.
 - All 79 chapter pages returned 200 with no render error text.
 - Coordinate clicks inside the proctored quiz at an emulated phone size opened the curriculum drawer instead of selecting an option. This looks like a test-harness effect of the emulated viewport, not a course problem, but it is worth a check on a real phone.
+
+## Interactive pass and capstone variants (2026-10-23)
+
+- 14 new canvases (18 in total, two per teaching module), nine on a new reusable slider renderer. Frontend canvas tests: 20 files, 200 tests pass, including a corner check on every slider canvas at its defaults, minimums and maximums. Typecheck and lint clean.
+- Found in the reader and fixed: slider specs hold functions, which a server component cannot pass to a client component, so slider pages fell back to client rendering and hung on "Loading workspace". The slider canvas now receives its slug and looks its spec up on the client.
+- Every teaching chapter now has three graded checks. The 62 new or changed graded items were re-answered blind by a separate review agent (same model family as the drafters, so a human check is still needed): 61 matched; the one mismatch (10.4, question 2) needed the chapter's example prices, and the key was confirmed by hand (serverless 10,000 x 2 s x 0.0001 = 2.00 dollars a day against one container copy at 1.20).
+- Eight capstone variants in the `ai-engineering-capstones` family. All accents pass WCAG AA (34 course-tracks and content-token tests pass). The variant picker lists all eight; after choosing Nakhla Ops, chapter 12.1 reads "which is Nakhla Ops right now".
+- Re-imported into a scratch database (206 blocks). All 79 chapter pages render with no canvas fallback, no leftover placeholder and no server error. Checked the token cost slider at 375px in dark mode, by keyboard: 7 chunks gives 0.00785 dollars a request and 2,355 dollars a month, with the matching "What changed" sentence.

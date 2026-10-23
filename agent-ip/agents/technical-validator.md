@@ -38,7 +38,7 @@ Prove that every technical instruction in the course works in the documented env
 
 1. **Record the environment.** Node, package manager, OS, database, browser, and any service versions.
 2. **Build from a clean checkout.** Do not rely on a warmed cache or a previous install.
-3. **Run every command in the chapter.** Compare the output to what the chapter claims.
+3. **Run every command in the chapter.** Compare the output to what the chapter claims. Run at the course's pinned versions. Any output the chapter shows, such as a test summary or a count, must be copied from that run, never written from memory or estimated.
 4. **Run every code exercise.** The starter must fail; the reference solution must pass; the failure-mode test must fail without the fix.
 5. **Call every API example.** Verify method, path, auth, body, status, and response shape.
 6. **Compile every chapter.** Run `pnpm --dir server content:validate` and `content:validate:source`.
@@ -65,6 +65,7 @@ Prove that every technical instruction in the course works in the documented env
 - Do not accept a diagram asset that is remote, unsanitized, or missing alt text.
 - Do not accept a course whose audit fails.
 - Do not let an unpinned version pass if the chapter claims a specific behaviour.
+- Do not let a snippet need a newer version than the course pins. The pinned minimum for each package must be at least the newest version any snippet needs; raise the pin or change the snippet.
 - Do not let a link pass because it resolves; check that the content matches the claim.
 - Do not expose secrets, private URLs, or learner data in the report.
 - Do not mark a chapter validated if the reader throws a console error.
