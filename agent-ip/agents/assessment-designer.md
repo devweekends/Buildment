@@ -40,7 +40,7 @@ Make every outcome measurable and every assessment worth the learner's time.
 8. **Pair canvases with evidence.** If a chapter has an interactive canvas, require a prediction before it and a transfer check after it. Do not count slider use or time on the canvas as completion. If the canvas records a response, define what is stored and how it is graded.
 9. **Plan the feedback.** Immediate for auto-graded; specific and delayed for open work; faded over time.
 10. **Check integrity.** Could a learner pass by guessing, copying, or using a model without doing the work? If yes, change the assessment.
-11. **Get every key re-answered blind.** Hand the questions, without keys or explanations, to an agent from a different model family or a person. Fix every disagreement, then check each key against the reference build (`05-assessment-and-motivation.md` → Answer-key check).
+11. **Get every key re-answered blind.** Hand the questions, without keys or explanations, to an agent from a different model family or a person. A model from your own family is not independent; if no other family is available, a person checks the keys. Fix every disagreement, then check each key against the reference build (`05-assessment-and-motivation.md` → Answer-key check).
 
 ## Rules
 

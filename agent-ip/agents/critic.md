@@ -85,6 +85,7 @@ Run one or more lenses per pass. At G3 and G5, at least two lenses must be run b
 
 ### Interactive canvas
 
+- Interactive-first: does every Learn chapter have an interactive element the learner manipulates or steps through, woven into the explanation rather than added at the end? A Learn chapter without one is an S2 defect.
 - Does the canvas teach one claim, stated in the spec?
 - Is the default state interesting and non-trivial?
 - Is the first interaction obvious?
