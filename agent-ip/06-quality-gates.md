@@ -272,6 +272,8 @@ The technical validator runs, not reads.
 - [ ] The project builds from a clean checkout.
 - [ ] The documented Node/runtime version works.
 - [ ] Every command in the chapter succeeds in the documented environment.
+- [ ] Every expected output a chapter shows, such as a test summary or a count, was copied from a real run at the course's pinned versions.
+- [ ] The course's pinned minimum for each package is at least the newest version any snippet needs. A snippet that needs version 1.2 cannot ship under a `>=1.0` pin.
 - [ ] Every code snippet compiles or is clearly labelled as partial.
 - [ ] Every code exercise's tests pass against the reference solution and fail against the starter.
 - [ ] Every API example has the correct method, path, auth, and response shape.
@@ -318,6 +320,7 @@ Run these for every course a pull request touches, and list what you ran and wha
 - [ ] `pnpm --dir server content:import --course <slug>` succeeds against a local database.
 - [ ] A student click-through as a test learner (for example `mentee1@buildment.dev`) at 375px wide and at desktop width, in the light and dark themes. Every changed chapter loads without console errors.
 - [ ] Grading works: answer one quiz right and one wrong, then check the score, the explanations and the saved progress.
+- [ ] The PR says who re-answered the answer keys blind. If no person did, it asks a reviewer for a human key check (`05-assessment-and-motivation.md` → Answer-key check).
 
 ## Assessment validation
 
@@ -329,7 +332,7 @@ Run these for every course a pull request touches, and list what you ran and wha
 - [ ] The correct answer is unambiguous to an expert.
 - [ ] Every answer key was re-answered blind and matches the reference build.
 - [ ] Every option has an explanation, shown one option per line.
-- [ ] The audit gives no option-length warning (the correct option 10% or more longer than the longest wrong one), and correct positions are spread across the set.
+- [ ] The audit gives no option-length warning (the correct option 10% or more longer than the longest wrong one) and no position warning (one position holds 70% or more of the course's correct answers), and correct positions are spread across the set.
 - [ ] No graded question depends on opinion; those are open questions.
 - [ ] Quiz chapters hold activities only, and their titles have no "Quiz:" prefix.
 - [ ] Open questions that accept a link-only answer set `minWords: 0`.

@@ -45,6 +45,7 @@ Turn an approved course brief into a publishable course and five or six differen
 - Never give a writer the full course unless the task requires continuity.
 - Include the relevant platform capability notes, the chapter brief, the adjacent summaries, and the open defects.
 - Record the exact pack in the run log so a revision can be reproduced.
+- Do not hard-code local machine paths (a home folder, a drive letter, a temp folder). Use placeholders such as `<repo>` and `<scratch>`, and name the real path in the task.
 
 ## Gate checks
 
@@ -62,7 +63,7 @@ If a check fails, return the artifact with a specific reason. "Not good enough" 
 
 ## Model routing
 
-- Keep a routing table in `work/<course-slug>/routing.yaml`.
+- Keep a routing table in `work/<course-slug>/routing.yaml`. Use role labels such as "drafting model" and "review model", never a model or vendor name, and state whether they share a model family (`01-agent-system.md` → Model policy).
 - Drafting and critique use different model families.
 - At least two critics at G3 and G5.
 - Technical validation is execution-based.
@@ -72,6 +73,7 @@ If a check fails, return the artifact with a specific reason. "Not good enough" 
 ## Rules
 
 - Do not write chapters, prose, quizzes, or code.
+- One coordinator per course branch. Before starting, check for an existing branch or worktree for the course (`git branch -a`, `git worktree list`). If one exists, continue it; do not start a parallel build. Never run two coordinators on one branch: parallel writers work on files you assign, never on the roadmap or shared work files. After a stall or restart, resume from the last commit and the run log.
 - Do not skip a gate because the schedule is tight. Cut scope instead.
 - Do not start G2C or assign a writer before G2B is signed by at least two instructors.
 - Do not treat instructor silence as approval. A gate needs a recorded decision.
