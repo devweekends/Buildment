@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * Course audit — prose depth, component density, interactions, diagrams.
+ * Course audit: prose depth, component density, interactions, diagrams,
+ * and the interactive-first rule (every Learn chapter has an interactive element).
  *
  * Usage:
  *   node agent-ip/scripts/audit-course.mjs courses/ticketline
@@ -93,6 +94,12 @@ for (const file of files) {
     (proseBody.match(/<TraceRequest\b/g) ?? []).length +
     (proseBody.match(/^```diagram$/gm) ?? []).length;
   const canvases = (proseBody.match(/<InteractiveCanvas\b/g) ?? []).length;
+  // Interactive-first (IP v0.4): every Learn chapter needs something the
+  // learner manipulates or steps through and sees change.
+  const interactives =
+    canvases +
+    (proseBody.match(/<(StateMachine|TraceRequest|VisualWalkthrough)\b/g) ?? []).length;
+  const isLearn = /^learn$/i.test(stepType);
   const bullets = (proseBody.match(/^\s*[-*]\s+/gm) ?? []).length;
 
   const minProse = isGate ? 700 : 1200;
@@ -103,6 +110,7 @@ for (const file of files) {
   if (interactions > interactionLimit) flags.push(`interactions ${interactions}>${interactionLimit}`);
   if (canvases > 1) flags.push(`canvases ${canvases}>1`);
   if (canvases > 0 && isGate) flags.push("canvas in gate");
+  if (isLearn && interactives < 1) flags.push("no interactive");
   if (!isGate && diagrams < 1) flags.push("no diagram");
   if (bullets > Math.max(12, paras.length) && bullets > paras.length * 1.5) {
     flags.push("list-heavy");
@@ -117,6 +125,7 @@ for (const file of files) {
     totalTags: tags.length,
     interactions,
     diagrams,
+    interactives,
     bullets,
     flags,
   });

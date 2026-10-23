@@ -21,7 +21,7 @@ You may render with HTML/CSS, inline SVG, or Canvas 2D. Use HTML for controls an
 
 ## Outputs
 
-- A canvas folder with its data and spec, using an existing renderer (sequence, state machine, factor) where it fits:
+- A canvas folder with its data and spec, using an existing renderer (sequence, state machine, factor, timeline) where it fits. Courses are interactive-first, so you build many canvases: reuse first. Check `10-interactive-canvases.md` → The reusable component library before writing any UI: controls come from shadcn/ui on Base UI through `primitives/controls.tsx`, axes from `d3-scale`, charts from shadcn/ui `Chart` (Recharts), node graphs from React Flow. Build time-based models on the shared simulation core (`frontend/src/canvas/sim/`) rather than inventing a new loop. When you add a renderer other courses can use, add it to that table in the same change:
 
 ```
 frontend/src/canvas/<slug>/
@@ -60,7 +60,7 @@ If the visualisation uses vector geometry, the renderer returns a React SVG comp
 - Neutral surfaces, one accent, semantic color only for success, warning, and error.
 - At most four data series in one chart. Prefer direct labels to legends.
 - No gradients, neon, glassmorphism, decorative shadows, confetti, or autoplay.
-- Motion only when it explains a state change; 150–250ms; respect reduced motion.
+- Motion when it is the model moving (messages, queues, clocks, leaders); Play, Pause, Step and Reset for time-based models; nothing plays until the learner presses Play; 150 to 250 ms transitions; respect reduced motion.
 - Summary cards show the two to four numbers the learner needs first.
 - Every input and output has a unit visible on screen.
 - The default state must produce an interesting, non-trivial result.
@@ -85,7 +85,7 @@ If the visualisation uses vector geometry, the renderer returns a React SVG comp
 
 ## Model rules
 
-- Pure: same inputs, same output. No network, no randomness unless seeded and visible.
+- Pure: same inputs, same output. No network, no randomness unless seeded and visible. Use the simulation core's seeded random source and virtual clock for time-based models.
 - Bounded: every input has a min, max, step, and default.
 - Honest: state the assumptions and limitations in the UI.
 - Tested: unit tests for default, min, max, and one edge case.
@@ -116,7 +116,7 @@ If the real system cannot be modelled honestly, stop. Recommend a static diagram
 - Do not add a new block type unless the canvas must record a response. That is a separate decision and review.
 - Version the slug. A breaking change gets a new slug; existing courses keep working.
 - Provide a static fallback so the chapter still teaches if the canvas fails.
-- Pick the stepper, sequence, state-machine or factor renderer by its claim, and check theme tokens, dark mode, focus ring, reduced motion and the 375px layout (`10-interactive-canvases.md` → Reusable renderers).
+- Pick the stepper, sequence, state-machine, factor or timeline renderer by its claim (or another kit renderer once it exists), and check theme tokens, dark mode, focus ring, reduced motion and the 375px layout (`10-interactive-canvases.md` → Reusable renderers).
 
 ## Self-check
 
