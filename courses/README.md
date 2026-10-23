@@ -30,21 +30,23 @@ There is no second generated course tree in the repository.
 ## Repository publishing
 
 [`publishing.yaml`](publishing.yaml) names `devweekends@gmail.com` as the instructor
-who owns repository-managed courses. After CI and the frontend deployment pass
-on `main`, the course workflow binds existing course records to that instructor.
+who owns repository-managed courses. When the backend deploys a commit from
+`main`, its release phase runs migrations and then binds existing course records
+to that instructor using the backend's existing `DATABASE_URL`.
 The former owner keeps course-creator access. The instructor account must already
 exist, have a verified email, have the Mentor or Admin role, and have ZIP import
-access. Configure the `COURSE_DATABASE_URL` GitHub Actions secret with the
-production database URL; the workflow will stop with an error until it is set.
+access. The backend release stops with an error if the account is not ready.
+The deployed backend must include the root `courses/` and `agent-ip/scripts/`
+directories; a server-only subtree deploy cannot publish repository courses.
 
 Course publication is explicit. Add `repositoryPublish: true` to a reviewed
-course's `course.yaml` in the approved PR. The workflow validates every opted-in
-package, then creates and publishes a new course or applies an immutable release
-to an existing one. It uses the same ZIP import and update services as the mentor
+course's `course.yaml` in the approved PR. CI validates every opted-in package.
+The backend release creates and publishes a new course or applies an immutable
+release to an existing one. It uses the same ZIP import and update services as the mentor
 workspace, so learner progress stays pinned to its prior release. A rerun with
 unchanged content skips the update preview and does not create another release.
-Courses without this field
-remain available as source packages but are not automatically published.
+Courses without this field remain available as source packages but are not
+automatically published.
 
 `cause-and-effect` is the first opted-in course. The other manifest-backed courses
 still need to pass their course audits before publication; `system-design` is a
@@ -108,11 +110,10 @@ imports never replace an existing course or learner history.
 The original parser and validators remain in `server/scripts/`. The separate
 `server/scripts/zip-import/worker.ts` reuses them through the existing production
 `tsx` dependency. Heroku includes these scripts; the container image also copies
-the shared schemas and MDX helpers they need. Runtime validation uses a bounded child process
+the shared schemas and MDX helpers they need. Runtime ZIP validation uses a bounded child process
 (15 seconds), then an atomic Postgres transaction (10 seconds). Temporary files
-are removed when the request finishes; no persistent filesystem, new service,
-config variable, or database migration is required on Heroku. Deploy the API and
-frontend changes together using the existing deployment workflow.
+are removed when the request finishes. Repository publishing adds a database
+migration and runs during the backend release phase.
 
 
 ### Quiz flow content

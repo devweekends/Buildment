@@ -4,9 +4,9 @@
 
 **Status:** Requested by the user; course-level human review remains required.
 
-**Decision:** The instructor configured in `courses/publishing.yaml` owns repository-managed courses. Existing owners retain course-creator access. A reviewed `courses/<slug>/course.yaml` opts in with `repositoryPublish: true`. After CI and frontend deployment pass on `main`, the workflow validates all opted-in packages and publishes them through the ZIP import and immutable release services. Packages without the flag are not auto-published. FreshMarket needs a manifest before it can opt in.
+**Decision:** The instructor configured in `courses/publishing.yaml` owns repository-managed courses. Existing owners retain course-creator access. A reviewed `courses/<slug>/course.yaml` opts in with `repositoryPublish: true`. CI validates opted-in packages; the backend release phase runs migrations and publishes them through the ZIP import and immutable release services using its existing `DATABASE_URL`. Packages without the flag are not auto-published. FreshMarket needs a manifest before it can opt in.
 
-**Platform impact:** Add the publishing workflow and command, require a production database secret, and bind existing course records to the configured instructor when the workflow runs. The legacy direct-row seeder remains for development only.
+**Platform impact:** Add the publishing command to the backend release phase and include the root course source in the deployed backend. Bind existing course records to the configured instructor when the release runs. No extra production database secret is needed. The legacy direct-row seeder remains for development only.
 
 ## 2026-10-23: One course source tree (v0.4.4)
 

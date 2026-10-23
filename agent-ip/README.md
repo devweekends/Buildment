@@ -162,11 +162,11 @@ Paths are relative to the repository root. In role documents, `work/` means `age
 - `agent-ip/work/<course-slug>/` for draft manifests, briefs, research, blueprints, critiques, and approval records; put audit and validation reports in its `qa/` directory.
 - `courses/<course-slug>/` is the only canonical location for course source: `course.yaml`, numbered module/lesson Markdown files, and optional `COURSE-OUTLINE.md`. FreshMarket predates `course.yaml` and uses seed metadata until it is migrated.
 
-After content review and QA, assemble the complete final package in `courses/<course-slug>/` on the course PR branch. Rerun source validation, the strict structure audit, and the course audit against that exact package. Keep drafts, QA, review notes, archives, and generated output in `agent-ip/work/<course-slug>/`. Set `repositoryPublish: true` in a reviewed `course.yaml` to opt in to automatic publication after CI and the frontend deployment pass on `main`. The instructor is named in `courses/publishing.yaml`. A folder's presence alone does not authorize publication.
+After content review and QA, assemble the complete final package in `courses/<course-slug>/` on the course PR branch. Rerun source validation, the strict structure audit, and the course audit against that exact package. Keep drafts, QA, review notes, archives, and generated output in `agent-ip/work/<course-slug>/`. Set `repositoryPublish: true` in a reviewed `course.yaml` to opt in to automatic publication during the backend release after the change reaches `main`. The instructor is named in `courses/publishing.yaml`. A folder's presence alone does not authorize publication.
 
 The migrated `courses/` tree includes legacy packages whose review is still pending. A package's presence does not imply approval or learner publication. Preserve superseded drafts in `agent-ip/work/<course-slug>/archive/`; never blindly overwrite newer content. Historical logs keep their original paths; new assignments and context packs must use this layout.
 
-For draft reviews, run the course audit against `agent-ip/work/<course-slug>/chapters/`; for final validation, use `courses/<course-slug>/`. Save reports in `agent-ip/work/<course-slug>/qa/`. The repository workflow publishes only opted-in packages and requires its production database secret and instructor account.
+For draft reviews, run the course audit against `agent-ip/work/<course-slug>/chapters/`; for final validation, use `courses/<course-slug>/`. Save reports in `agent-ip/work/<course-slug>/qa/`. The backend release publishes only opted-in packages and requires the configured instructor account.
 
 ## Change control
 
