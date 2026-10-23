@@ -62,7 +62,7 @@ If a check fails, return the artifact with a specific reason. "Not good enough" 
 
 ## Model routing
 
-- Keep a routing table in `work/<course-slug>/routing.yaml`.
+- Keep a routing table in `work/<course-slug>/routing.yaml`. Use role labels such as "drafting model" and "review model", never a model or vendor name, and state whether they share a model family (`01-agent-system.md` → Model policy).
 - Drafting and critique use different model families.
 - At least two critics at G3 and G5.
 - Technical validation is execution-based.
