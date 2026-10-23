@@ -66,6 +66,7 @@ Turn the chapter brief into prose that teaches a decision, shows a specific exam
 - Every technical claim is sourced or verified. Do not guess an API or a version.
 - Use the approved interactions only. Do not invent components or props.
 - When writing quiz, prediction, or knowledge-check options, keep every option at a similar length. Never make the correct option the longest or the only full sentence; length must not reveal the answer.
+- Courses are interactive-first: every Learn chapter teaches through the interactive element its brief names. Build the explanation around it: set up the question, ask for the prediction, send the learner to play, then explain what they saw. Do not bolt it on at the end.
 - If the chapter includes an approved interactive canvas, write the four copy blocks: **What this shows**, **Try this**, **What changed**, and **Limits of the model**. Describe the relationship, not the UI. Put a prediction before the canvas and a transfer check after it.
 - For an HLD behavior-under-change outcome, use only the approved registered canvas. If the brief has no canvas, use its documented worked trace or report the missing plan; do not replace the behavior with an unexplained static topology.
 - Do not write "have fun", "play around", or "explore the magic". Do not describe every control; the canvas should be self-evident.

@@ -1,6 +1,9 @@
 # Platform needs: variants and personalization
 
 **Status:** draft for the platform team and instructors
+**Architecture update (2026-10-23):** Section 1's proposal to create a separate `Course` row
+per variant is superseded. The agreed direction is one course with shared content, variant
+changes, and immutable learner releases. See `docs/12-course-variants-and-publishing.mdx`.
 **Scope:** what buildment must add so the multi-vendor marketplace family (six variants) and the personalization layer (`personalization-layer.md`) can run with a real cohort
 **Basis:** the code in this repository as read on 2026-10-20. Every "exists today" line names the file it comes from. Where something was looked for and not found, it says "not found".
 

@@ -389,7 +389,7 @@ Rules:
 
 A canvas is a small simulator or visualiser for one causal model: a token bucket, a seat-hold race, a cloud cost comparison, a queue under backpressure. It is not a block type and it does not create a response by default. It is a registered component that the interaction designer specifies and the canvas builder implements.
 
-Use a canvas only when the learner needs to manipulate inputs and see a relationship change. Do not use one when a static diagram or a worked example is enough. The full design language, model contract, platform integration, catalog, and QA are in `10-interactive-canvases.md`.
+Courses are interactive-first (IP v0.4): every Learn chapter teaches through at least one element the learner manipulates or steps through and sees change. Use a model-backed canvas when the learner needs to manipulate inputs and see a relationship change; use a step-through or an existing interactive diagram when the claim is about order or structure. Build canvases on the reusable renderers and the shared simulation core wherever possible. The full design language, model contract, simulation core, platform integration, catalog, and QA are in `10-interactive-canvases.md`.
 
 For HLD and system-design chapters, first draw the topology with `MermaidDiagram`. If the teaching claim is about what changes under load, failure, retries, cache expiry, or a routing decision, specify a model-backed canvas as a separate artifact. Record the decision in the interaction map even when Mermaid alone is sufficient. A new canvas requires an implemented, registered slug; do not insert a placeholder in MDX.
 
@@ -397,9 +397,9 @@ Canvases may be rendered with HTML/CSS, inline SVG, or Canvas 2D. Use HTML for c
 
 Placement:
 
-- Best in a **concept** or **decision** chapter, immediately before the decision it informs.
+- Required in every **Learn** (concept) chapter, as a canvas or a lighter interactive element; place it immediately before the decision it informs.
 - Never in a quiz or gate chapter.
-- At most one canvas per chapter; at most two per module.
+- Per chapter, at most one primary canvas plus one small step-through or toggle. No per-module cap.
 - A canvas counts as a high-effort interaction. Do not put it back to back with an `OpenQuestion` or a `CodeExercise`.
 - Pair it with a prediction before and a short check after. Do not count slider use as completion.
 
@@ -425,7 +425,7 @@ Introduce the diagram in prose, explain what to notice, and state the takeaway. 
 | Chapter archetype | Required | Optional | Never |
 |---|---|---|---|
 | Orientation | `ProjectPreview`, `Roadmap`, `LearningObjectives` | `Callout`, `BigWordAlert` | `Quiz` spam, `OpenQuestion` |
-| Concept | Prose, one worked example | `BigWordAlert`, `ComparePanel`, `MermaidDiagram`, `GlossaryTerm`, `Predict`, one interactive canvas when a causal model is the best teacher | `CodeExercise` for a concept the learner has not built; a canvas that only decorates |
+| Concept | Prose, one worked example, one interactive element (a canvas when a causal model is the best teacher, otherwise a step-through or interactive diagram), a `Predict` before it | `BigWordAlert`, `ComparePanel`, `MermaidDiagram`, `GlossaryTerm`, a quick-check quiz | `CodeExercise` for a concept the learner has not built; a canvas that only decorates |
 | Build | `Steps`, code fence, `FileTree` or `TerminalBlock` | `Callout`, `DiffBlock`, `ApiRequestPanel`, `TraceRequest` | `OpenQuestion` mid-build |
 | Verify | Acceptance criteria, one failure test | `Checklist`, `TraceRequest`, `DiffBlock` | New conceptual content |
 | Quiz | Three to five `quiz` fences | `openquestion`, `predict` or `codeexercise` fences | Lesson text, headings, `ChapterRecap`, `Checklist`, `InterestingRead`, `RealWorldEvent`, `BigWordAlert` |
@@ -443,7 +443,7 @@ Per chapter:
 - At most one quiz at a checkpoint or decision point. A quiz chapter may have three to five questions; a normal chapter should not have a quiz after every section.
 - At most one `OpenQuestion`, and only at a module gate or architecture defense.
 - At most one `CodeExercise`, and only when the build does not already prove the skill.
-- At most one interactive canvas. It counts as a high-effort interaction.
+- At least one interactive element in a Learn chapter; at most one primary canvas plus one small step-through or toggle. A canvas counts as a high-effort interaction.
 - At most one `InterestingRead`.
 - At most one `RealWorldEvent`.
 - At most three assessment interactions total (quiz + predict + open question). A dedicated quiz chapter may contain three to five quiz questions; treat that set as one assessment instrument for this budget, not as three to five separate interactions.
@@ -457,7 +457,7 @@ Per module:
 - One quiz chapter.
 - One gate chapter.
 - One capstone or milestone evidence point.
-- At most two interactive canvases.
+- No cap on interactive canvases; every Learn chapter has its own interactive element.
 
 If a chapter needs more than the budget, it is probably two chapters. Split it.
 

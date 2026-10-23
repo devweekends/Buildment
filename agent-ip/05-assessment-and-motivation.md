@@ -57,6 +57,7 @@ An answer key written by the same agent that wrote the question is not checked.
 
 - **Re-answer every key blind.** A second agent from a different model family, or a person, answers every quiz question and prediction without the key or the explanations, and drafts an answer to every open question without the model answer.
 - **Compare.** Any disagreement is a defect until the question, the options or the key is fixed. Ambiguity counts as a disagreement.
+- **Use the script.** `node agent-ip/scripts/blind-keys.mjs extract content/import/<slug> <out-dir>` writes keyless batches and a separate `keys.json`; give the reviewer only the batches, then run `compare <out-dir>`. The reviewer sees each question without its chapter, so open every item it marks medium or low in the chapter: if the context it needed is in the prose just above the question, record that and leave the item; otherwise rewrite it.
 - **Check against the reference build.** Every key and model answer must match the course's reference code (`02-course-architecture.md` → Reference builds).
 - Record the check in the assessment plan.
 

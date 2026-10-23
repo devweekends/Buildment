@@ -66,7 +66,7 @@ No invented APIs. No guessed versions. No dead links. No "this is best practice"
 
 A quiz, diagram, code exercise, or open question consumes attention and time. It must produce evidence that the learner understood something they could not have demonstrated by reading. If the same understanding is already proved by the build, do not add an interaction. Interaction density is budgeted in `04-interactive-playbook.md`.
 
-An interactive canvas is the most expensive interaction we build. It earns its place only when a small causal model is the best way to teach the claim: inputs the learner can manipulate, an output that changes immediately, and a limit the model can state honestly. It must be simple — neutral surfaces, one accent, semantic color only, direct labels, no gradients or decorative motion. It may be rendered with HTML/CSS, inline SVG, or Canvas 2D; SVG is the default for vector visuals, while HTML owns the controls. Raw author SVG is never injected into MDX. If the learner cannot state the claim after using it, the canvas is decoration and it should be cut. See `10-interactive-canvases.md`.
+Our courses are interactive-first: every concept chapter teaches through something the learner manipulates or steps through and sees change, because people understand a system faster by pushing it than by reading about it. Reusable renderers and a shared simulation core keep this affordable. An interactive canvas is still the most expensive interaction we build. It earns its place only when a small causal model is the best way to teach the claim: inputs the learner can manipulate, an output that changes immediately, and a limit the model can state honestly. It must be simple: neutral surfaces, one accent, semantic color only, direct labels, no gradients or decorative motion. It may be rendered with HTML/CSS, inline SVG, or Canvas 2D; SVG is the default for vector visuals, while HTML owns the controls. Raw author SVG is never injected into MDX. If the learner cannot state the claim after using it, the canvas is decoration and it should be cut. See `10-interactive-canvases.md`.
 
 ### Prose is the lesson; components are checkpoints
 
@@ -88,7 +88,7 @@ An audit script exists at `agent-ip/scripts/audit-course.mjs`. A chapter that ca
 
 ### A diagram must argue
 
-A diagram is not decoration. It must make a relationship, flow, boundary, or state change legible in a way prose cannot. At least one diagram is required per module and per concept-heavy chapter. Start HLD topology and request-flow diagrams with live Mermaid; use Entity/State/Trace for their specific relationships and static SVG when precise composition is necessary. Reserve interactive canvases for a causal change the learner needs to explore. A diagram that restates the paragraph above it is decoration. See `11-visual-explanations.md`.
+A diagram is not decoration. It must make a relationship, flow, boundary, or state change legible in a way prose cannot. At least one diagram is required per module and per concept-heavy chapter. Start HLD topology and request-flow diagrams with live Mermaid; use Entity/State/Trace for their specific relationships and static SVG when precise composition is necessary. Use an interactive canvas for a causal change the learner needs to explore. A diagram that restates the paragraph above it is decoration. See `11-visual-explanations.md`.
 
 ### 10. The learner must be able to defend the work
 

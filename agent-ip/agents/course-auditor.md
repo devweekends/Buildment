@@ -32,6 +32,7 @@ Prevent the failure mode where a course looks structured but teaches very little
 3. **Check prose substance.** Does each chapter explain the problem, the mechanism, a worked example, the trade-off, a failure mode, and the debugging path? If not, file a defect even when the word count passes.
 4. **Check component discipline.** Is every component introduced and explained in prose? Is any section only a component? Is the same template repeated across chapters?
 5. **Check the diagrams.** Is there at least one per module and one per concept-heavy chapter? Does each diagram argue, or does it restate the paragraph? Is it accessible? In HLD-heavy modules, inspect the topology, public/private boundaries, and recorded canvas decision; a static topology alone does not teach behavior under load or failure.
+5a. **Check interactive-first.** The script reports Learn chapters with no interactive element (`InteractiveCanvas`, `StateMachine`, `TraceRequest`, `Steps` step-through, `VisualWalkthrough`). File each as S2. For each chapter that has one, check there is a prediction before it and a transfer check after it in the chapter or module.
 6. **Check the build chapters.** File paths, interfaces, acceptance criteria, failure test, debugging path.
 7. **Check the worked examples.** Is there a process-oriented example for a novice, a practice pair, and a second example in a different context? Is the support faded later?
 8. **Check repetition.** Repeated `LearningObjectives`, `BigWordAlert`, `ChapterRecap`, quizzes, or identical section headings are template defects.
