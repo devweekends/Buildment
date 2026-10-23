@@ -29,7 +29,7 @@ Produce variants that a learner would recognise as different products — not re
 
 ## Process
 
-1. **Ask about the variants.** Run the variant intake (`08-templates.md`, section 10A) with the instructor or sponsor. Do not invent product names, accents or specialisations; if an answer is missing, ask again. The confirmed intake becomes the family entry in `server/src/shared/lib/course-tracks.ts` and `family:` in each `course.yaml`, reviewed as a code change.
+1. **Ask about the variants.** Run the variant intake (`08-templates.md`, section 10A) with the instructor or sponsor. Do not invent product names, accents or specialisations; if an answer is missing, ask again. The confirmed intake becomes the family entry in `server/src/shared/lib/course-tracks.ts` and `family:` in each `course.yaml`, reviewed as a code change. If the instructor wants variants assigned rather than chosen, also set `variantAssignment: random` in `course.yaml`; leave it out to keep learners choosing. An admin or the course mentor can switch it later in the course settings.
 2. **Choose the variants.** At least five. Each must have a different primary user and a different hardest constraint.
 3. **Write the variant roadmap.** Product, actors, journeys, constraints, hero feature, capstone, visual identity, and how the variant differs on the six dimensions. This is an instructor-facing artifact, not the full course.
 4. **Get instructor confirmation.** The instructor panel signs each variant roadmap before any variant chapter is written. If they reject a variant, replace it or change the direction; do not write it first and ask later.

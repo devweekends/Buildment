@@ -586,6 +586,7 @@ status: draft | confirmed
 |---|---|---|
 | What do learners call the course family? | | `label` |
 | Which variant does a learner get before they pick one? | | `defaultVariantSlug` |
+| Do learners pick their variant, or does the platform assign one at enrolment? Assigned variants are spread evenly and the learner cannot change them. | | `variantAssignment:` in `course.yaml`: `self_select` (the default) or `random` |
 
 ## Variant <n>
 | Question | Answer | Catalogue field |
