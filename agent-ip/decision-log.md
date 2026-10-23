@@ -1,6 +1,6 @@
 # Agent IP decision log
 
-## 2026-10-23: Lessons from building the AI interview course
+## 2026-10-23: Lessons from building the AI interview course (v0.4.2)
 
 **Status:** Draft for delivery lead and reviewer sign-off under `09-review-and-governance.md`.
 
@@ -9,6 +9,40 @@
 **Decision:** `content:audit` warns once per course when one position holds 70% or more of the correct answers (6 or more predictions, or 6 or more multiple-choice questions), documented in `04-interactive-playbook.md` → Option-length hygiene. Committed work files name models by role (`01-agent-system.md` → Model policy, `agents/orchestrator.md` → Model routing). A same-family re-answer does not check the keys, and the PR says who checked them (`05-assessment-and-motivation.md` → Answer-key check, `agents/assessment-designer.md`, `06-quality-gates.md` → Before a pull request). Expected output is copied from a real run at the pinned versions, and pins cover every snippet (`agents/technical-validator.md`, `06-quality-gates.md` → Technical validation checklist). Plain English lists the idioms with rewrites (`03-authoring-standards.md`). One coordinator per course branch (`agents/orchestrator.md` → Rules, `09-review-and-governance.md` → Pull requests). Context packs use path placeholders (`agents/orchestrator.md` → Context pack rules).
 
 **Platform impact:** The audit check is new code in `server/scripts/audit-course-structure.ts`, with tests. On existing courses it raises one new warning: `multi-vendor-marketplace` has the correct prediction first in 20 of 21. No course content changes in this change.
+
+**Review:** Delivery lead and one additional reviewer pending.
+
+## 2026-10-23: Audit fixes, canvas layout rules and a blind answer-key script (v0.4.1)
+
+**Status:** Draft for delivery lead and reviewer sign-off under `09-review-and-governance.md`.
+
+**Problem:** Building courses 9 (logic-building) and 10 (cause-and-effect) exposed four gaps.
+1. `scripts/audit-course.mjs` flagged every chapter of every course in the repository (course 8: 79 of 79). It did not count ```mermaid fences as diagrams, although the importer renders them as `MermaidDiagram`; its ```diagram count searched text with code fences already removed, so it never matched; and it required 700 prose words in quiz chapters, which must hold activities only (`04-interactive-playbook.md`).
+2. `10-interactive-canvases.md` said a state machine grid may be 3 by 3. On a phone the rows sit 150px apart in a 340px picture, so only two rows fit, and labels collided in ways the registry test did not catch. Course 9 shipped two such collisions to its first phone check.
+3. The blind answer-key check (`05-assessment-and-motivation.md`) had no tool, so courses 8 and 9 each wrote their own.
+4. The prose minimums do not fit short soft-skills courses, and courses record different exceptions.
+
+**Decision:**
+1. Fix the audit: count ```mermaid and ```diagram fences, and skip the prose minimum for `*-quiz.md` chapters. The thresholds themselves do not change. Course 8 goes from 79 to 35 flagged chapters; the remaining flags are real.
+2. State the phone layout rules for state machines (two rows, three-character labels across a row, no diagonal beside a parallel arrow) and enforce two of them in `frontend/tests/unit/canvas/registry.test.ts` (row at most 1, no overlapping edge labels). Every registered canvas passes; the course 9 collision fails the new test.
+3. Add `scripts/blind-keys.mjs` (extract keyless batches, compare answers) and point the answer-key check at it.
+4. Open `proposals/2026-10-23-prose-minimums-by-course-type.md`. No threshold changes until it is decided.
+
+**Platform impact:** Test and script changes only; no reader or importer behaviour changes.
+
+**Review:** Delivery lead and one additional reviewer pending.
+
+## 2026-10-23: Interactive-first courses (IP v0.4)
+
+**Status:** Approved by the architect (human sponsor) on 2026-10-23. Delivery lead and one additional reviewer pending under `09-review-and-governance.md`. Proposal: `proposals/2026-10-23-interactive-first.md`.
+
+**Problem:** Canvases were capped at one per chapter and two per module and treated as enrichment. A system design course with about 135 ideas that move over time (traffic, replicas, clocks, partitions) could only animate a few of them, and learners understand these systems faster by pushing them than by reading.
+
+**Decision:** Every Learn chapter teaches through at least one interactive element the learner manipulates or steps through, with predict before, "what changed" after and a transfer check. Per chapter: one primary canvas plus one small step-through or toggle; no per-module cap. Motion is allowed when it is the model moving, with Play, Pause, Step and Reset and a reduced-motion path. Time-based canvases build on a shared seeded simulation core (`frontend/src/canvas/sim/`) and reusable kit renderers, starting with `timeline`. The audit flags a Learn chapter with no interactive element.
+
+**Files changed:** `README.md`, `00-principles.md`, `04-interactive-playbook.md`, `10-interactive-canvases.md`, `agents/interaction-designer.md`, `agents/interactive-canvas-builder.md`, `agents/chapter-writer.md`, `agents/critic.md`, `agents/course-auditor.md`, `scripts/audit-course.mjs`. The `buildment-course-builder` agent wrapper (outside the repository) now points to this rule.
+
+**Platform impact:** New shared code under `frontend/src/canvas/sim/` and `renderers/timeline/`, proven by the system design sample chapters 8.4 and 10.6. Existing courses: the audit now reports 33 Learn chapters in `ai-engineering-interview` with no interactive element. Recommendation for the delivery lead: upgrade existing courses when each chapter is next edited, not in one sweep.
 
 **Review:** Delivery lead and one additional reviewer pending.
 
