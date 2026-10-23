@@ -21,7 +21,11 @@ Our learners are fellows in Gaza, on a fellowship. English is usually their seco
 - **Short sentences.** One idea per sentence, about 20 words or fewer.
 - **Common words.** "Use", not "utilise". "Start", not "commence".
 - **Define jargon on first use,** in one plain sentence. Use `GlossaryTerm` inline, or `BigWordAlert` for the chapter's central term (`04-interactive-playbook.md` → `GlossaryTerm` versus `BigWordAlert`).
-- **Explain or replace idioms and business phrases.** "Ballpark figure" means nothing to a reader who has never heard it.
+- **Explain or replace idioms and business phrases.** "Ballpark figure" means nothing to a reader who has never heard it. Idioms that slipped into past courses, with plain rewrites:
+  - "grades on vibes": grades by feel, with no written criteria.
+  - "a result you cannot reproduce is a rumour": a result you cannot reproduce cannot be trusted.
+  - "a dashboard with extra steps": only a dashboard, made more complicated.
+  - "in a blink": in well under a second.
 - **No wordplay or sarcasm** that only works for native speakers.
 
 ### Light pages
