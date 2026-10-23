@@ -1,0 +1,23 @@
+# Decision log: logic-building
+
+| Date | Decision | Alternatives | Rationale | Owner |
+|---|---|---|---|---|
+| 2026-10-22 | Draft a course brief only, and build on Monday | Build at once | Sponsor instruction on 2026-10-22 | Zeeshan (sponsor) |
+| 2026-10-23 | Draft chapters before G2B instructor sign-off, with the roadmap marked `drafted_before_roadmap: true` and the PR saying so | Stop after the roadmap and wait for G2B, as `01-agent-system.md` and `agents/orchestrator.md` require | Sponsor asked to complete the course, following the precedent of courses 3 to 8. This is an exception to the G2B rule, not a change to it. G2C (blueprint and chapter briefs) and the G3 human sample review are skipped for the same reason. Instructors may still reshape the roadmap; chapters will then be revised. | Zeeshan (sponsor) |
+| 2026-10-23 | Category `soft-skills`, difficulty Beginner, about 13 hours | A new "foundations" category | The catalog schema has only `tech` and `soft-skills`; adding a category is a platform change outside this course. Open decision 9 in the roadmap. | Orchestrator |
+| 2026-10-23 | Teaching chapters of 700 to 1,000 prose words, set-the-scene 350 to 650, gates 400 or more | agent-ip's 1,200 words per concept chapter and 700 per gate | Phone-first beginner course for second-language readers, where more short puzzles teach better than long prose. The brief recommended 500 to 800; 700 to 1,000 keeps closer to agent-ip. Recorded as an exception; open decision 3. | Orchestrator |
+| 2026-10-23 | Three canvases on existing renderers: `freelance-job-flowchart` (state machine, 2.5), `job-application-status` (state machine, 3.5), `check-the-ai-answer` (sequence, 7.4) | The brief's list: sequence, stepper, state machine and flip-a-factor canvases in modules 2 to 4 | The factor renderer is a weighted decision matrix, not a hidden-factor model, and course 3 already teaches matrices. A flowchart and a lifecycle fit the state machine; checking an AI answer is a conversation over time, which fits the sequence. Each canvas teaches one claim stated in its spec.md. Grids are kept to 4 columns by 2 rows so the narrow layout fits 340px. | Orchestrator |
+| 2026-10-23 | Every "check the AI's answer" exercise uses a captured answer written into the chapter; no exercise needs a live AI tool | Ask fellows to use an AI tool | Data cost, access and privacy. Live use stays optional. Open decision 4. | Orchestrator |
+| 2026-10-23 | No product or company names, no links, no MustRead, InterestingRead or RealWorldEvent blocks | One sourced read per module | Same rule as course 8; the course is general and AI products change quickly. | Orchestrator |
+| 2026-10-23 | No politics, religion or war as puzzle or argument material | Real public debates as fallacy examples | Respect for the fellows' situation; neutral topics teach the same skills. | Zeeshan (sponsor), via the brief |
+| 2026-10-23 | Module 1 gate has a learning log and no open question | An open question in every gate | Module 1 is a warm-up; a submitted answer this early adds mentor load without new evidence. | Orchestrator |
+| 2026-10-23 | Chapter briefs replaced by one writer pack; modules drafted by four parallel writers, then an independent blind answer-key review | One brief per chapter (G2C) | G2C skipped with G2B. The pack fixes voice, rules, canvases and the capstone so parallel writers stay consistent. | Orchestrator |
+
+## Risks
+
+| # | Risk | Mitigation |
+|---|---|---|
+| R1 | Only one model family is available, so the blind key check is not fully independent of drafting | Separate reviewer with no access to the keys while answering; a human key check before publishing is requested in the PR |
+| R2 | Chapters drafted before G2B may need rework | Roadmap kept short with explicit open decisions; the PR states the order of work |
+| R3 | Puzzles with two defensible answers frustrate beginners | Writers solve each puzzle twice; the blind reviewer flags any item where two options could be right |
+| R4 | Tone slides into academic or condescending | Writer pack sets a playful, kind voice; wrong-option explanations say what was missed, never blame |
