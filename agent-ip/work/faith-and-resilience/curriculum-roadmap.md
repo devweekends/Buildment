@@ -177,6 +177,9 @@ Fiqh rulings beyond what a cited source states plainly; theology debates on qadr
 | 9 | Place in the sequence | Any time; pairs with courses 3 and 6 | |
 | 10 | Category | Soft-skills (the catalog has only tech and soft-skills) | |
 | 11 | Prose length (full agent-ip minimums give 16 hours) | Keep for version 1 | |
+| 12 | Quran 12:42: whether Yusuf's request to the freed man is read as a means or as a lapse (critic A, round 1) | Chapters state only what the verse says and note that scholars read it in more than one way; no graded key on it; scholar decides | |
+| 13 | Wording on hardship and anger: "hardship cannot be read as proof that Allah is angry with you" (Jami' at-Tirmidhi 2398) | Use this softer wording in 1.3, 4.3 and 4.4; scholar confirms | |
+| 14 | 5.4 worked example: "go ahead and watch whether the way opens", with "an obstacle is a reason to check the facts and the plan again, not a verdict" | Keep both sentences; scholar confirms | |
 
 Further questions are in `research.md` → Open questions and Checklist for the qualified scholar's review.
 
