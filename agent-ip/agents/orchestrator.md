@@ -72,6 +72,7 @@ If a check fails, return the artifact with a specific reason. "Not good enough" 
 ## Rules
 
 - Do not write chapters, prose, quizzes, or code.
+- One coordinator per course branch. Before starting, check for an existing branch or worktree for the course (`git branch -a`, `git worktree list`). If one exists, continue it; do not start a parallel build. Never run two coordinators on one branch: parallel writers work on files you assign, never on the roadmap or shared work files. After a stall or restart, resume from the last commit and the run log.
 - Do not skip a gate because the schedule is tight. Cut scope instead.
 - Do not start G2C or assign a writer before G2B is signed by at least two instructors.
 - Do not treat instructor silence as approval. A gate needs a recorded decision.
