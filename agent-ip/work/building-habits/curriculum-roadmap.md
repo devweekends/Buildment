@@ -31,7 +31,7 @@ A practical, research-grounded course on building good habits and weakening unwa
 | O4 | Plan how to weaken an unwanted habit: its cue and need, cue removal, friction and a replacement routine | Quiz 4.5; gate 4 |
 | O5 | Track a habit simply and respond to a missed day with a restart plan | Quiz 5.5; gate 5; capstone part 3 |
 | O6 | Choose one habit to start first and place habits on real anchors in a daily rhythm | Quiz 6.5; gate 6 |
-| O7 | Design, run and review a 30-day plan with tracking data, and decide what to keep, change or drop | Chapter 7.2; capstone 7.4; course gate 7.5 |
+| O7 | Design a 30-day plan, run as much of it as the course allows, review the real days (or a provided month), and decide what to keep, change or drop | Chapter 7.2; capstone 7.4; course gate 7.5 |
 
 ## Shape
 | Part | Focus | Modules | Hours | Evidence at the end |
@@ -42,7 +42,7 @@ A practical, research-grounded course on building good habits and weakening unwa
 | 4 | The 30-day plan | 7 | 2.9 | The reviewed 30-day plan; toolkit and next 30 days |
 
 ## Module and chapter sequence
-Minutes are each chapter's `estimatedMinutes`. Total: 945 minutes, about 16 hours.
+Minutes are each chapter's `estimatedMinutes`. Total: 945 minutes over 40 chapters, about 16 hours.
 
 ### Module 1: How habits work (120 min)
 | # | Chapter | One-line outcome | Type | Min |
@@ -131,7 +131,7 @@ From gate 2, each fellow may choose one small habit, write it as a cue and a tin
 - **Five-minute demo:** the fellow walks a mentor through the plan and review.
 - **Defence questions:** What caused most of your missed days, and how do you know? What did you change after a miss? Why is your next change one change, not three? What will your hardest-day version be next month?
 - **Review:** a rubric with three levels per line (Met, Partly, Not yet), a pass rule, and a mentor key for each provided case in the model answer, about 15 minutes per capstone.
-- **Timing:** a course taken at one chapter a day gives about 25 days between gate 2 and the capstone. A fellow with fewer than 30 days of data reviews what they have, says so, and may submit the full review later, or uses a provided case.
+- **Timing:** between gate 2 and the capstone there are 27 chapters, about 580 minutes. At 45 to 60 minutes a day that is about two to three weeks, so most fellows reach the capstone with 10 to 20 days of their own tracking, not 30. The capstone reviews the real days they have, or a provided 30-day month. The plan keeps running after the course, and a fellow may send the full 30-day review to their mentor later. Gate 2 and chapter 7.4 say this plainly.
 
 ## Variants
 Not applicable for version 1. Scenario packs (study, freelance, family) are open decision 5.
@@ -150,6 +150,8 @@ Therapy and clinical topics (addiction, eating disorders, depression, trauma); n
 | 6 | Prayer times as anchors in module 6 | Keep as one natural example among meals, work shifts and power hours, with no theological claims | |
 | 7 | Capstone review load | Mentors, about 15 minutes each with the rubric | |
 | 8 | Prose length: full agent-ip minimums (1,200 and 700) | Keep for version 1, as in course 10 | |
+| 9 | May fellows answer gates and the capstone in Arabic, or add an Arabic voice note? | Accept English text; allow an Arabic voice note as an extra if mentors can review it | |
+| 10 | Should the full 30-day review, sent after the course, be reviewed by a mentor? | Yes, optional, with the same rubric | |
 
 Further open questions from research are listed in `research.md` → Open questions.
 

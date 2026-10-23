@@ -42,7 +42,7 @@ By the end, the learner can:
 4. **Plan** how to weaken a bad habit: find its cue and reward, remove or avoid the cue, add friction and choose a replacement.
 5. **Track** a habit simply and **respond** to a missed day with a restart plan instead of giving up.
 6. **Adapt** a habit for real conditions: power cuts, weak internet, prayer times, family duties and changed homes, with a smaller backup version.
-7. **Design, run and review** a 30-day habit plan with tracking data (their own, or a provided case), and decide what to keep, change or drop.
+7. **Design** a 30-day habit plan, **run** as much of it as the course allows, **review** the real days they have (or a provided 30-day case), and **decide** what to keep, change or drop.
 
 ## Demo
 In five minutes the fellow walks a mentor through their 30-day plan and review: the habit written as a cue and a tiny step, the friction they removed or added, the backup version for a hard day, the tracking record with its missed days, what they changed after the review and why.
