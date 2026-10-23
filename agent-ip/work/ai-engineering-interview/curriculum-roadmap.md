@@ -192,7 +192,7 @@ Purpose: build, measure and defend one small system end to end.
 Hours: 11.4 (685 min)
 | # | Chapter | One-line outcome | Type | Minutes |
 |---|---|---|---|---|
-| 12.1 | Set the scene | Choose a scenario; read the brief, must-haves and rubric | Read | 25 |
+| 12.1 | Set the scene | Choose one of eight projects; read the brief, must-haves and rubric | Read | 25 |
 | 12.2 | Build the service | Combine retrieval, agent, approval and service in one tested repository | Build | 360 |
 | 12.3 | Evaluate and write the report | Run the eval, fix one failure, write the report and design note | Build | 160 |
 | 12.4 | Record your mock-interview defence | Record the walkthrough and probe answers; submit the repository | Build | 110 |
@@ -227,14 +227,14 @@ Four canvases, each one teaching one claim, built on the existing renderers and 
 | 12 | Checklist and final learning log. The repository, report and defence are submitted in 12.3 and 12.4. |
 
 ## Capstone
-- Scenarios (pick one, all fictional composites): a document assistant for an NGO's or microfinance lender's policy documents; a customer support agent for a small online shop that can look up orders and request refunds; an internal knowledge bot for a remote software team's runbooks and decisions.
+- Projects (pick one, or be assigned one; all fictional composites): eight capstone variants in the course family `ai-engineering-capstones`, each with its own users, documents, risky action and hard problem: Karmel Help (support agent), Sanabel Desk (policy assistant), Nakhla Ops (runbook bot), Shifa Desk (clinic front desk), Marj Reports (field reports), Daris (bilingual course tutor), Aqd Check (contract review) and Rafiq (onboarding buddy). Plans in `capstone-variants.md`.
 - What the learner submits: a repository link with a small RAG plus agent service (retrieval with citations, one tool call that needs human approval, a FastAPI endpoint with validation, retries and a timeout), a golden set of at least 20 questions, an evaluation report with recall@k, precision@k, MRR and a faithfulness check, a regression eval that runs as a test, structured logs or traces, a README and a one-page design note; then a recorded five-minute walkthrough and answers to three follow-up probes.
 - Must run with no paid API key: tests and the eval use a deterministic fake model; a real or local model is optional behind an adapter.
 - How a mentor reviews it: the rubric in 12.1 (design, evaluation, engineering, safety, communication), in under 45 minutes. The mentor then sends one to three follow-up probes; the learner answers by resubmitting.
 - Out of scope for the capstone: a public deployed URL, authentication, object storage, training or fine-tuning a model, GPU work. Deployment and auth are taught and designed (module 10, gate 10.7) but not required to run.
 
 ## Variants
-None (sponsor decision, 2026-10-22). Suggested follow-on specialisation tracks, roadmap only: RAG-heavy (document intelligence), agent-heavy (workflow automation with approvals), MLOps-heavy (evaluation and monitoring platforms).
+The course is shared; only the capstone varies. Eight capstone variants (2026-10-23, sponsor request) are planned in `capstone-variants.md`, with G6 instructor confirmation pending. Learners choose one on the course page, or the course assigns one once per-course random assignment ships. Specialisation tracks follow the variant: retrieval depth, agent workflows with approvals, or evaluation and LLM operations.
 
 ## Out of scope
 - Training models, fine-tuning walkthroughs beyond the RAG versus fine-tuning decision, GPU infrastructure, transformer internals beyond what an application engineer is asked.
