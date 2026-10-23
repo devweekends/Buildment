@@ -2,6 +2,19 @@
 
 This document governs how course prose is written. It applies to every chapter, aside, callout, question, explanation, and piece of UI copy. The goal is writing that is specific, calm, and useful — the voice of a senior engineer sitting next to the learner, not a marketing page and not a language model filling a template.
 
+## Stable lesson identity for course updates
+
+Give every new module and lesson a unique `key` in `course.yaml`. Keep that key when its title,
+file path, module, or prose changes. A different key represents a different lesson; do not reuse
+an old key for unrelated work. This lets an update preserve the right learner history. A
+variant can keep the shared lesson key when it teaches the same goal, while a changed graded
+activity needs a separate activity identity.
+Write the shared lesson once. If only a sentence or section changes, add an exact
+`replacements` entry under that variant in `course.yaml`. If the lesson's task or flow
+changes, author a full file under `variants/<slug>/`. Do not duplicate unchanged
+lessons for every variant. Omitted keys stay unchanged in updates; list removals
+explicitly. Submit the package as a draft for the course creator to review.
+
 ## Voice
 
 - **Direct.** Say the thing. Prefer the active voice and the concrete verb.
@@ -21,7 +34,11 @@ Our learners are fellows in Gaza, on a fellowship. English is usually their seco
 - **Short sentences.** One idea per sentence, about 20 words or fewer.
 - **Common words.** "Use", not "utilise". "Start", not "commence".
 - **Define jargon on first use,** in one plain sentence. Use `GlossaryTerm` inline, or `BigWordAlert` for the chapter's central term (`04-interactive-playbook.md` → `GlossaryTerm` versus `BigWordAlert`).
-- **Explain or replace idioms and business phrases.** "Ballpark figure" means nothing to a reader who has never heard it.
+- **Explain or replace idioms and business phrases.** "Ballpark figure" means nothing to a reader who has never heard it. Idioms that slipped into past courses, with plain rewrites:
+  - "grades on vibes": grades by feel, with no written criteria.
+  - "a result you cannot reproduce is a rumour": a result you cannot reproduce cannot be trusted.
+  - "a dashboard with extra steps": only a dashboard, made more complicated.
+  - "in a blink": in well under a second.
 - **No wordplay or sarcasm** that only works for native speakers.
 
 ### Light pages
