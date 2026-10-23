@@ -92,7 +92,9 @@ for (const file of files) {
     (proseBody.match(/<StateMachine\b/g) ?? []).length +
     (proseBody.match(/<MermaidDiagram\b/g) ?? []).length +
     (proseBody.match(/<TraceRequest\b/g) ?? []).length +
-    (proseBody.match(/^```diagram$/gm) ?? []).length;
+    (body.match(/^```diagram$/gm) ?? []).length +
+    // The importer turns a ```mermaid fence into a MermaidDiagram (remark-mermaid).
+    (body.match(/^```mermaid$/gm) ?? []).length;
   const canvases = (proseBody.match(/<InteractiveCanvas\b/g) ?? []).length;
   // Interactive-first (IP v0.4): every Learn chapter needs something the
   // learner manipulates or steps through and sees change.
@@ -103,8 +105,10 @@ for (const file of files) {
   const bullets = (proseBody.match(/^\s*[-*]\s+/gm) ?? []).length;
 
   const minProse = isGate ? 700 : 1200;
+  // A quiz chapter holds activities only (04-interactive-playbook.md), so it has no prose minimum.
+  const isQuizChapter = /-quiz\.md$/.test(file);
   const flags = [];
-  if (proseWords < minProse) flags.push(`prose ${proseWords}<${minProse}`);
+  if (!isQuizChapter && proseWords < minProse) flags.push(`prose ${proseWords}<${minProse}`);
   if (topLevel.length > 6) flags.push(`components ${topLevel.length}>6`);
   if (tags.length > 25) flags.push(`tags ${tags.length}>25`);
   if (interactions > interactionLimit) flags.push(`interactions ${interactions}>${interactionLimit}`);

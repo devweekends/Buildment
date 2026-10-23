@@ -202,8 +202,15 @@ Pick the renderer by the claim, not by the look.
 |---|---|---|---|
 | **Stepper** (`primitives/stepper.ts`) | Order: what happens first, next and last. It drives the sequence and state-machine renderers and any custom step-through | A model with numeric inputs | Back, Next, Play/Pause and Start over buttons and numbered step chips; arrow keys, Home and End when focused. Play starts only on a press, stops on the last step and pauses on any manual move |
 | **Sequence** (`renderers/sequence/`) | A request or message moving between actors: browser, API, worker, payment provider | A lifecycle or a decision | A separate narrow layout below the `sm` breakpoint. Keep arrow labels under about 18 characters |
-| **State machine** (`renderers/state-machine/`) | A lifecycle: the allowed transitions and the requests the machine refuses | A request path across services | The grid (at most 3 by 3) turns on its side, so a left-to-right lifecycle reads top to bottom. Keep edge labels under about 14 characters |
+| **State machine** (`renderers/state-machine/`) | A lifecycle: the allowed transitions and the requests the machine refuses | A request path across services | The grid (at most 3 columns by 2 rows) turns on its side, so a left-to-right lifecycle reads top to bottom. Keep edge labels under about 14 characters; see the state machine layout rules below |
 | **Factor** (`renderers/factor/`) | Flip a factor: change how much one criterion matters and see which option wins | A process over time | Controls sit above the bars; weight buttons are at least 44px tall |
+
+State machine layout rules on a phone. The narrow layout draws columns as rows down the page and rows as columns 150px apart, inside a 340px picture.
+
+- **Two rows at most.** A third row lands outside the picture, and the registry test fails.
+- **Short labels across a row.** A move between two states in the same column becomes a short sideways arrow on a phone, with about 22px between the pills. Keep its label to three characters or fewer, such as "yes", "no" or "why".
+- **No diagonal beside a parallel arrow.** In a square of four cells, the label of a diagonal arrow sits where the label of a vertical arrow sits. Use a short diagonal label, or change the layout. The registry test fails when two edge labels overlap.
+- **Check at 375px in the reader.** Labels that touch without overlapping can still read as one phrase ("yes" beside "more time"). Rename one of them.
 
 Rules for every renderer and custom canvas:
 
