@@ -34,7 +34,8 @@ Map every concept and decision to the smallest interaction that produces evidenc
 1. **Classify the chapter.** Orientation, concept, build, verify, quiz, gate, or closing.
 2. **Name the evidence.** What must the learner prove here? Use the evidence ladder.
 3. **Ask whether the build already proves it.** If yes, do not add an interaction.
-4. **Choose the lightest instrument.** Prose → inline glossary → callout → diagram → predict → quiz → code exercise → open question. For HLD, use Mermaid to establish components and boundaries. If the learner needs to manipulate a causal model with two to four inputs, specify an **interactive canvas** alongside that topology. Use `10-interactive-canvases.md`; do not build the canvas yourself.
+4. **Give every Learn chapter its interactive element (interactive-first, IP v0.4).** Decide what the learner will manipulate or step through and see change. If the claim is about a causal model with two to four inputs, specify an **interactive canvas**, preferably as data for an existing renderer or a kit renderer on the shared simulation core; otherwise a step-through or an existing interactive diagram (`StateMachine`, `TraceRequest`). For HLD, use Mermaid to establish components and boundaries, then the canvas for the behaviour. Use `10-interactive-canvases.md`; do not build the canvas yourself. A custom component needs a written reason.
+4a. **Then choose the lightest assessment instrument.** Inline glossary → callout → diagram → predict → quiz → code exercise → open question.
 5. **Place it at the decision point.** Before the explanation for Predict; after the concept for a quiz; at the end for a checklist. Put a canvas immediately before the decision it informs.
 6. **Check the density budget.** At most 6 top-level components, 25 total JSX tags, and 3 assessment interactions per chapter. One BigWordAlert only for a load-bearing term; one diagram; one Predict; one quiz at a checkpoint/decision; one OpenQuestion only at a module gate; one CodeExercise; one optional read; one real-world event. No component-only sections.
 7. **Check the platform.** Confirm the component or fence exists and the props match the schema. Do not invent syntax.
@@ -47,7 +48,8 @@ Map every concept and decision to the smallest interaction that produces evidenc
 - Do not use components as the lesson. Every interaction must sit inside an explanation.
 - Do not put a quiz after every section. Concentrate quizzes at checkpoints and decisions.
 - Do not use an OpenQuestion as a generic takeaway. Reserve it for a module gate or architecture defense.
-- Do not ask for a canvas when a static diagram or worked example is enough.
+- Do not leave a Learn chapter without an interactive element. When a canvas would be overkill, use a step-through or an existing interactive diagram, not nothing.
+- Do not ask for a custom canvas when an existing renderer or kit renderer can carry the claim.
 - Do not skip the diagram plan. Every module needs at least one diagram, and every concept-heavy chapter needs one where a relationship or flow is central.
 - Do not leave HLD canvas decisions implicit. A changing-condition outcome needs a registered model-backed canvas or a documented worked-scenario substitute when no honest model is feasible.
 - Do not put a canvas in a quiz or gate chapter.
@@ -70,7 +72,8 @@ Map every concept and decision to the smallest interaction that produces evidenc
 - Is the chapter within the component and interaction budget?
 - Is there a diagram that argues, not just decorates?
 - Is any section component-only?
-- If a canvas is specified, is there a teaching claim, a prediction before, and a transfer check after?
+- Does every Learn chapter have an interactive element, with a prediction before and a transfer check after?
+- If a canvas is specified, is there a teaching claim, and does it reuse a renderer where one fits?
 - Is the placement at the decision point?
 - Is the density within budget?
 - Does the syntax match the platform?

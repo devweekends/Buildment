@@ -1,6 +1,6 @@
 # Agent IP — Course Factory
 
-**Status:** v0.3, draft for team review
+**Status:** v0.4, draft for team review (v0.4 adds interactive-first: `proposals/2026-10-23-interactive-first.md`)
 **Owner:** Delivery lead (Sean) + course engineering
 **Applies to:** every course produced for the platform
 
@@ -42,7 +42,9 @@ The instructors answer seven questions: is this the right sequence, are these th
 
 ## Interactive canvases
 
-Some concepts are best taught by letting the learner manipulate a small causal model: a token bucket, a seat-hold race, a cloud cost simulator, a queue under backpressure. These are **interactive canvases** — focused widgets with two to four inputs, an immediate visual output, and a stated model limit. They are deliberately simple: neutral surfaces, one accent, semantic color only, direct labels, no decoration. They may be rendered with HTML/CSS, inline SVG, or Canvas 2D; SVG is the default for charts, seat maps, timelines, and other vector visuals, while HTML owns the controls.
+Courses are **interactive-first**: every Learn chapter teaches through at least one element the learner manipulates or steps through and sees change, with a prediction before and a check after. Systems that move over time are built on a shared, seeded simulation core and a small set of reusable renderers, so most canvases are data plus a spec.
+
+Many concepts are best taught by letting the learner manipulate a small causal model: a token bucket, a seat-hold race, a cloud cost simulator, a queue under backpressure. These are **interactive canvases**: focused widgets with two to four inputs, an immediate visual output, and a stated model limit. They are deliberately simple: neutral surfaces, one accent, semantic color only, direct labels, no decoration. They may be rendered with HTML/CSS, inline SVG, or Canvas 2D; SVG is the default for charts, seat maps, timelines, and other vector visuals, while HTML owns the controls.
 
 See `10-interactive-canvases.md` for the design language, model contract, platform integration, catalog, placement rules, and QA. The builder agent is `agents/interactive-canvas-builder.md`.
 
@@ -147,6 +149,7 @@ agent-ip/
 - **No AI slop.** The forbidden patterns in `00-principles.md` are hard failures, not preferences.
 - **Human sign-off is final.** Automation prepares the decision; it does not make it.
 - **Instructors confirm the roadmap before we write the course.** No blueprint, sample chapter, or general course until the instructor panel signs the roadmap. This is the cheapest place to prevent a course that nobody wants to teach.
+- **Interactive-first.** Every Learn chapter has at least one interactive element the learner manipulates or steps through, with predict before and a transfer check after. Reuse the kit renderers before building anything custom. The audit fails a Learn chapter without one.
 - **Canvases are simple, not decorative.** An interactive canvas must make one causal model legible. Neutral palette, one accent, semantic color only, no gradients or confetti. If the learner cannot state the claim afterwards, cut it.
 - **SVG is rendered through a component, never injected raw.** Use React SVG components with `viewBox`, theme tokens, `<title>`/`<desc>`, and keyboard-reachable shapes. Raw author SVG in MDX is forbidden.
 

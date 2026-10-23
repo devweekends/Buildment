@@ -4,6 +4,15 @@ An interactive canvas is a small, self-contained widget that makes a causal mode
 
 This document defines when to build one, what it must contain, how it is designed, how it is integrated, and how it is validated.
 
+## Interactive-first
+
+Since IP v0.4 (`proposals/2026-10-23-interactive-first.md`), interaction is the default way a concept is taught, not occasional enrichment. Learners understand a system faster when they can push it and watch it respond: raise the traffic and see the queue grow, cut the network and see two leaders, skew a clock and see the order of events flip.
+
+- **Every Learn (concept) chapter teaches through at least one interactive element** the learner manipulates or steps through and sees change: a registered canvas, or an interactive diagram that already exists (`StateMachine`, `TraceRequest`, a step-through). A set-the-scene chapter may open with one. Quiz and gate chapters have none.
+- **The teaching contract is mandatory for every one of them:** predict before playing, "what changed" in words after, and a transfer check (quiz, code exercise or build) later in the chapter or module. Using a slider never counts as completion.
+- **Reuse before custom.** Plan a course's interactive elements on the reusable renderers and the shared simulation core (below), so most canvases are a `data.ts` and a `spec.md`. A custom component needs a written reason in its spec.
+- **Interactive does not mean decorative.** Everything in "What a canvas is not" and "Anti-patterns" still applies, and "the chapter is stronger with it than without it" is still the acceptance test.
+
 ## What a canvas is
 
 - A focused simulator or visualiser for **one** concept.
@@ -30,7 +39,7 @@ Both work because they are **simple, legible, and causal**. They are not decorat
 
 ## When to use a canvas
 
-Use one when all of the following are true:
+Every Learn chapter needs an interactive element (see Interactive-first). These conditions decide whether that element is a model-backed canvas or a lighter step-through or interactive diagram. Use a canvas when all of the following are true:
 
 1. The concept has a **causal model**: inputs change an output in a way the learner can reason about.
 2. The relationship is hard to explain in prose alone, or a static diagram would hide the dynamics.
@@ -95,10 +104,10 @@ On mobile, stack controls above the visualisation. Use full-width sliders and 44
 
 ### Motion
 
-- Motion is allowed only when it explains a state change: a token draining, a queue filling, a request moving through a system.
-- Keep transitions short: 150–250ms.
-- Respect `prefers-reduced-motion`. Provide a non-animated path.
-- Do not auto-play a simulation that changes state without user control. If there is a play mode, provide pause and reset.
+- Motion is allowed when it is the model moving: a message travelling a link, a queue filling, a token draining, a clock drifting, a leader changing. Motion that is not the model (bouncing cards, confetti, parallax) is never allowed.
+- A time-based model has Play, Pause, Step and Reset. Nothing plays until the learner presses Play, and any manual change pauses it.
+- Keep transitions short: 150 to 250 ms. Animate transforms and opacity only.
+- Respect `prefers-reduced-motion`: elements jump to their next state with no animation, and the step readout says in words what happened.
 
 ### Charts
 
@@ -163,10 +172,12 @@ frontend/src/canvas/
   registry.ts                 # slug -> spec, the closed set
   InteractiveCanvas.tsx       # the MDX tag; picks the renderer by spec.kind
   primitives/                 # stepper, step controls, tones, flow pulse, frame
+  sim/                        # shared seeded simulation core (pure, no DOM)
   renderers/
     sequence/                 # lanes and numbered arrows (request flows)
     state-machine/            # states, transitions, refused requests
     factor/                   # flip a factor: weighted sum, model.ts
+    timeline/                 # lanes over time: events, intervals, messages
   weighted-matrix-two-offers/
     data.ts                   # the spec the renderer draws
     spec.md                   # the canvas spec (08-templates.md, 14A)
@@ -177,7 +188,7 @@ frontend/tests/unit/canvas/   # model, stepper and registry tests
 
 - No network calls. Data is bundled or passed as safe props.
 - No arbitrary JS in MDX. The learner-facing MDX references a registered canvas by slug.
-- No heavy charting dependency unless it is already in the bundle and the chart genuinely needs it. Prefer SVG or a small hand-rolled chart.
+- Charts use the shared library (shadcn/ui `Chart` on Recharts, `d3-scale` for axes; see "The reusable component library"). Do not add a second charting library, and do not hand-roll a chart the library already draws.
 - No global state. The canvas owns its state.
 - No secrets, private URLs, or hidden answer keys in the bundle.
 - A static fallback: a short summary and, where useful, an image, so the chapter still teaches if the canvas fails.
@@ -203,6 +214,38 @@ Rules for every renderer and custom canvas:
 - **Phone.** Check at 375px wide: no horizontal scroll, labels readable, touch targets at least 44px.
 
 Known exception to fix: `renderers/factor/FactorCanvas.tsx` does not use the shared `FOCUS_RING` or `TONES` yet. It uses `focus-visible:ring-ring` and raw `bg-blue-500`. Do not copy it; move it onto `FOCUS_RING` and `TONES` from `primitives/tones.ts`.
+
+### The shared simulation core and the kit renderers
+
+Systems that move over time and fail (traffic, queues, replicas, clocks, partitions) are taught on a shared, seeded simulation core, `frontend/src/canvas/sim/`. It is pure TypeScript with no DOM code: a seeded random source, a virtual clock, nodes, links with delay, partitions, per-node clocks, traffic generators, and recorders that produce a trace and series. The same inputs and seed always give the same run, so a learner, a mentor and a test see the same thing. Renderers draw a run; they never compute the model.
+
+Kit renderers built on the core (the first is `timeline`; the rest are specified in `work/system-design/03-simulation-kit.md` and are added as they are built):
+
+| Renderer | Use when the claim is about | Do not use for | On a phone |
+|---|---|---|---|
+| **Timeline** (`renderers/timeline/`) | Events on several nodes or clients over time: clock values, uncertainty intervals, messages, replication lag, which read saw which write | A single request path (use sequence) or a lifecycle (use state machine) | Lanes stack, time runs left to right in a scrollable-free viewBox; the scrubber is a full-width slider; every event is listed in the readout |
+
+### The reusable component library (reuse open source first)
+
+Every course builds on the same small library. Before building anything, check this table; before adding a library, check its licence (MIT, ISC or Apache 2.0), its size, and that it can follow the theme tokens. We wrap open-source pieces; we do not rewrite what they already do well.
+
+| Need | Use | Open source underneath | Status |
+|---|---|---|---|
+| Slider, switch, segmented control, reset, summary cards, "What changed" | `primitives/controls.tsx` | shadcn/ui `Slider`, `Switch`, `ToggleGroup` on Base UI (MIT) | Built |
+| Panel, "Try this", limits | `primitives/canvas-frame.tsx` | the app's `LearnPanelShell` | Built |
+| Step-through with Play, Pause, Back, Next, keyboard | `primitives/use-stepper.ts`, `step-controls.tsx`, `step-parts.tsx` | none (small, already shared) | Built |
+| Seeded randomness, event queue, clocks, traces | `sim/` | none; about 200 lines, pure and tested | Built |
+| Scales and tick marks for any axis | `d3-scale` | d3 (ISC) | Built, used by `timeline` |
+| Lanes over time: clocks, lag, messages, windows | `renderers/timeline/` (`TimelineView`, `TimelinePlayer`) | `d3-scale` | Built |
+| Request flows, lifecycles, weighted decisions | `renderers/sequence/`, `state-machine/`, `factor/` | none | Built |
+| Line, bar and area charts over time (queue length, p99, cost) | shadcn/ui `Chart` | Recharts (MIT) | Planned with the `flow` renderer |
+| Draggable node graphs: architecture sandbox and labs, cluster topologies | `renderers/sandbox/`, `renderers/cluster/` | React Flow, `@xyflow/react` (MIT) | Planned |
+| Static topology and request-path diagrams | `MermaidDiagram` | Mermaid (MIT) | Built |
+| Hand-drawn concept diagrams | Excalidraw-style SVG through `VisualDiagram` | Excalidraw (MIT) | Built |
+
+Rules: import from the wrapper, not from the library directly, so the theme, focus ring, touch targets and units stay consistent. A new renderer that several courses can use goes into this table in the same change that adds it. A canvas that is only one course's idea stays in its own slug folder.
+
+A canvas built on the core keeps its model in its own `model.ts` (the domain rules, using the core's primitives) with unit tests, and its `data.ts` only names presets, labels and copy. The same core is vendored into a course's challenge repository when learners run their own code on it.
 
 ## Rendering: SVG, HTML, or Canvas
 
@@ -400,16 +443,18 @@ These are candidate canvases for the event ticketing general course and its vari
 | Load balancer failover | healthy backends, request rate, per-backend capacity | How failures redistribute requests and cause overload or errors | HTML controls + SVG topology/readouts | HLD and availability chapters |
 | Queue backpressure | arrival rate, workers, service time | Why backlog and wait time grow when arrival exceeds capacity | HTML controls + SVG queue/timeline | HLD and async-work chapters |
 
-This table is a menu, not a checklist. A chapter gets a canvas only if the canvas is the best way to teach its claim.
+This table is a menu, not a checklist. A chapter gets a canvas only if the canvas is the best way to teach its claim; otherwise its required interactive element is a step-through or an existing interactive diagram.
+
+The system design course plans about 135 simulations on the shared kit; its full list, per chapter, is in `work/system-design/02-curriculum-roadmap.md` (the Play column).
 
 ## Placement and density
 
-- Place a canvas in a **concept** or **decision** chapter, immediately before the decision it informs.
+- Every **Learn** chapter has at least one interactive element. Place a canvas immediately before the decision or explanation it informs.
 - Do not place a canvas in a quiz or gate chapter. The learner should be proving understanding, not exploring.
-- At most **one canvas per chapter**. At most **two per module**.
+- Per chapter: at most **one primary canvas plus one small step-through or toggle**. There is no per-module cap.
 - A canvas counts as a high-effort interaction. Do not put it back to back with an `OpenQuestion` or a `CodeExercise`.
 - Pair it with a prediction before and a short check after.
-- A canvas is optional enrichment only if the chapter can teach the claim without it. If the claim depends on the canvas, the canvas is required.
+- The chapter's prose still teaches the claim, so the chapter works if the canvas fails to load (static fallback).
 
 ## QA checklist
 
