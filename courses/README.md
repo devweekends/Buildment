@@ -63,7 +63,7 @@ passes source validation, the strict structure audit and the editorial audit.
 
 `system-design` is published as a five-hour, two-topic lab, with six lessons.
 Its catalog title and description say that the full curriculum is still in
-progress. The marketplace package targets `freshmarket-multi-vendor-marketplace-v3`;
+progress. The marketplace package targets `multi-vendor-marketplace`;
 the release binds an existing record to the configured instructor, or creates
 it under that instructor when missing.
 
@@ -72,7 +72,7 @@ package slug. It creates and publishes the course if that slug is missing. If
 the course exists, it updates it through the reviewed ZIP release workflow only
 when the source hash or published release differs; an already-current published
 course is skipped. The marketplace therefore creates
-`freshmarket-multi-vendor-marketplace-v3` on a fresh database and updates that
+`multi-vendor-marketplace` on a fresh database and updates that
 same record on later runs.
 
 Run `pnpm --dir server courses:check` before merging. This validates each
