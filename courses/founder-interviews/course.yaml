@@ -1,0 +1,159 @@
+slug: founder-interviews
+title: "The Founder Interview: Ownership, Impact and Your Story"
+description: "Prepare for the interview a startup founder or a small team's hiring manager runs, where every line on your resume is followed by 'why?' until your real decisions show. Learn to tell one real story you owned, give honest numbers and say how you know them, survive five whys on every resume line, think through a case question aloud, explain your best technical work to a founder and to an engineer, and name your strengths and weaknesses with evidence. Practise with an AI interviewer on your own key, or with a written exercise that completes the same step. Based on research on interviews, with the main ideas credited to the researchers behind them."
+projectGoal: "Build a story bank of five stories you owned, each with an honest number or an honest 'I did not measure that', and a resume where every line survives two whys. Then run one full practice interview (with the AI interviewer, or the written version), read the feedback critically, and defend one story and one resume line to your mentor in a five-minute conversation."
+difficulty: Medium
+estimatedHours: 16
+category: soft-skills
+modules:
+  - dir: 01-stories-you-owned
+    title: "Stories you owned"
+    summary: "See how a founder interview works: a free conversation where every answer is followed by 'why?'. Learn to answer with one real time, not what you usually do, to separate your part from the team's, and to tell the decisions you made and what you would change."
+    lessons:
+      - file: 01.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce the founder interview through a fellow whose first interview went wrong because every answer was about the team and about what he usually does."
+      - file: 01.02-one-time-not-usually.md
+        title: "One time, not 'usually'"
+        goal: "Tell a real story about one time, instead of a description of yourself or of what you usually do."
+      - file: 01.03-your-part-and-the-team.md
+        title: "Your part and the team's"
+        goal: "Separate 'I' from 'we', and show the whole path of work you owned, from noticing the problem to after it shipped."
+      - file: 01.04-decisions-and-what-you-would-change.md
+        title: "Decisions, trade-offs and what you would change"
+        goal: "Tell a story around the decision you made: the options, what mattered then, what happened, how you know, and what you would change."
+      - file: 01.05-quiz.md
+        title: "Stories you owned"
+        goal: "Practice check on stories, ownership and decisions, including an AI answer to check."
+      - file: 01.06-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: write one story you owned, practise it with the AI interviewer or in writing, and start your story bank."
+  - dir: 02-impact-with-honest-numbers
+    title: "Impact with honest numbers"
+    summary: "Founders hear a number and ask 'from what?'. Learn what a number needs, where to find the numbers you never looked at, how much of a change was yours, and why 'I did not measure that' beats a number you cannot defend."
+    lessons:
+      - file: 02.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce honest impact through a fellow whose '50 percent faster' fell apart at the founder's second question."
+      - file: 02.02-a-number-needs-a-before.md
+        title: "A number needs a before"
+        goal: "State a result with what it was before, what it was after, over what time, and how you know."
+      - file: 02.03-find-your-numbers.md
+        title: "Find your numbers"
+        goal: "Find the evidence of your impact that you never looked at: database counts, logs and API calls, analytics, bills, support messages and time saved, for business and technical work."
+      - file: 02.04-how-much-was-yours.md
+        title: "How much was yours, and 'I did not measure that'"
+        goal: "Say how much of a change came from your work, and give an honest gap with a plan to measure instead of an invented number."
+      - file: 02.05-quiz.md
+        title: "Impact with honest numbers"
+        goal: "Practice check on baselines, sources, attribution and honest gaps, including an AI answer to check."
+      - file: 02.06-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: add an honest number, or an honest gap with a plan, to two stories in your bank."
+  - dir: 03-every-line-survives-five-whys
+    title: "Every resume line survives five whys"
+    summary: "A founder can point at any line on your resume and ask 'why?' five times. Learn how a why chain works and where it breaks, how to give the real reason instead of a tidy one, and how to check every line before the interview."
+    lessons:
+      - file: 03.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce the why chain through a fellow whose strongest resume line was the one he could not explain past the second why."
+      - file: 03.02-how-a-why-chain-works.md
+        title: "How a why chain works and where it breaks"
+        goal: "Follow a why chain on a resume line to a real decision or a checked fact, and spot a chain that stops at blame, at one cause or at a guess."
+      - file: 03.03-real-reasons-not-tidy-ones.md
+        title: "Real reasons, not tidy ones"
+        goal: "Give the reason you had at the time, including 'that was not my decision', instead of a tidy reason invented afterwards."
+      - file: 03.04-the-resume-line-audit.md
+        title: "The resume line audit"
+        goal: "Check every line of your resume: what you did, why, what happened, how you know and what you would change, and rewrite the lines that fail."
+      - file: 03.05-quiz.md
+        title: "Every line survives five whys"
+        goal: "Practice check on why chains, real reasons and resume lines, including an AI answer to check."
+      - file: 03.06-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: audit your resume line by line and defend one line through a chain of whys."
+  - dir: 04-case-questions-aloud
+    title: "Case questions aloud"
+    summary: "Founders ask 'How would you solve this problem we have now?'. Learn to clarify the question and say your assumptions, compare two or three real options, and decide, with the number you would watch to know if you were right."
+    lessons:
+      - file: 04.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce case questions through a fellow who answered a founder's problem with ten ideas and no decision."
+      - file: 04.02-clarify-and-assume.md
+        title: "Clarify and say your assumptions"
+        goal: "Ask one to three clarifying questions and say your assumptions aloud before you answer a case."
+      - file: 04.03-options-and-trade-offs.md
+        title: "Options and trade-offs"
+        goal: "Give two or three real options and compare them on cost, time, risk and what you give up."
+      - file: 04.04-decide-and-measure.md
+        title: "Decide and say what you would measure"
+        goal: "Choose one option, say why in one sentence, and name the number you would watch and the result that would change your mind."
+      - file: 04.05-quiz.md
+        title: "Case questions aloud"
+        goal: "Practice check on clarifying, options, trade-offs and measures."
+      - file: 04.06-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: work through a case question aloud, with the AI interviewer or in writing."
+  - dir: 05-your-best-technical-work
+    title: "The best technical thing you did"
+    summary: "Every founder interview has a moment for 'What is the best technical thing you have done?'. Learn to choose the story, give a short version a founder can follow, and go deeper when an engineer asks 'why not this?' and 'what happens if...?'."
+    lessons:
+      - file: 05.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce the technical story through a fellow who lost a founder in jargon and then could not answer the engineer's 'why not this?'."
+      - file: 05.02-choosing-the-story.md
+        title: "Choosing the story"
+        goal: "Choose the technical story where you made a real decision and can explain it five whys deep, not the one with the most impressive tools."
+      - file: 05.03-the-founder-version.md
+        title: "The founder version"
+        goal: "Explain your technical work in under a minute, in plain words: the problem, what you built, the key choice and the result."
+      - file: 05.04-the-engineer-version.md
+        title: "The engineer version"
+        goal: "Answer an engineer's follow-ups: why this and not that, what happens if it fails, how you tested it and what you would do differently."
+      - file: 05.05-quiz.md
+        title: "The best technical thing you did"
+        goal: "Practice check on choosing and explaining a technical story, including an AI answer to check."
+      - file: 05.06-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: write the founder version and the engineer version of your best technical work."
+  - dir: 06-strengths-weaknesses-and-how-you-come-across
+    title: "Strengths, weaknesses and how you come across"
+    summary: "Name strengths that you can prove, a real weakness with a plan, and handle what is out of your control: nerves, video calls, and interviewers who judge accents. Take time to think and check you understood."
+    lessons:
+      - file: 06.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce strengths and weaknesses through a fellow who answered 'my weakness is that I am a perfectionist' on a video call."
+      - file: 06.02-strengths-with-evidence.md
+        title: "Strengths with evidence"
+        goal: "Name a narrow strength you can check, with a recent example and what someone else said or saw."
+      - file: 06.03-a-real-weakness-with-a-plan.md
+        title: "A real weakness with a plan"
+        goal: "Name a real weakness that matters for the work, with an example and what you are doing about it, instead of a strength dressed as a weakness."
+      - file: 06.04-nerves-accent-and-time-to-think.md
+        title: "Nerves, accent and time to think"
+        goal: "Handle what you cannot control: nerves, video calls and accent bias, with what you can: a clear first answer, short sentences, a pause to think and a check that you understood."
+      - file: 06.05-quiz.md
+        title: "Strengths, weaknesses and how you come across"
+        goal: "Practice check on strengths, weaknesses and handling the interview."
+      - file: 06.06-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: write one strength with evidence and one real weakness with a plan."
+  - dir: 07-the-full-interview
+    title: "The full interview"
+    summary: "Put it together. Read interview feedback with a critical eye, find the gaps in your story bank and plan how to fill them, then run one full practice interview and defend your stories to a mentor."
+    lessons:
+      - file: 07.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce the full interview through a fellow reading the feedback from her first and her last practice interview side by side."
+      - file: 07.02-feedback-and-gaps.md
+        title: "Reading feedback and filling the gaps"
+        goal: "Read feedback critically, compare flags across practice interviews, and plan how to fill a gap in your story bank, including a small project built around a need of your own."
+      - file: 07.03-mixed-review.md
+        title: "Mixed review: what is missing?"
+        goal: "Mixed practice check: in fresh answers from every module, find the quality that is missing."
+      - file: 07.04-capstone-full-interview.md
+        title: "Capstone: your story bank and a full interview"
+        goal: "Build your story bank of five owned stories and your audited resume, run one full practice interview or its written version, and prepare to defend it to a mentor."
+      - file: 07.05-checklist.md
+        title: "Course checklist and your interview kit"
+        goal: "Final checks, your interview kit, and your plan for the next interview."
