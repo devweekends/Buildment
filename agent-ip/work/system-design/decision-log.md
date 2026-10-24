@@ -1,5 +1,11 @@
 # Decision log: system-design
 
+## 2026-10-23: The sponsor asks for the whole course before instructor sign-off
+
+**Decision:** The architect (human sponsor) asked to see and use the whole course, not only the two sample chapters ("why tf only 2 modules"). As with the AI engineering interview course, chapters are drafted before the G2B instructor sign-off on the sponsor's instruction. The roadmap stays marked `g2b_signoff: pending`; instructors confirm a drafted shape, and any change they ask for is made in the chapters. Nothing is published to learners until G2B and G7.
+
+**How:** in waves, module by module in roadmap order, each chapter in the v0.5 beat format with 8.4 and 10.6 as the template, writer and critic as separate agents, the course audit and source validator run on every wave, and a phone click-through before a wave is called done.
+
 ## 2026-10-23: Consistent prefix is reproduced in 11.4, not 8.4
 
 **Raised by:** G3 critique, defect 1 (`qa/g3-critique-08.04-10.06.md`).
