@@ -277,17 +277,17 @@ modules:
         goal: "Gate: a written system design and a recorded mock answer."
   - dir: 12-capstone
     title: "Capstone: build, evaluate and defend"
-    summary: "Build a small evaluated RAG plus agent service on one of three scenarios, write its evaluation report, and defend it in a recorded mock interview."
+    summary: "Build a small evaluated RAG plus agent service for one of eight projects, taking requests by web chat and email with a small web UI, write its evaluation report, and defend it in a recorded mock interview."
     lessons:
       - file: 12.01-set-the-scene.md
         title: "Set the scene"
-        goal: "Choose a scenario and read the brief, the must-haves and the rubric."
+        goal: "Choose a project and read the brief, the channels, the must-haves and the rubric."
       - file: 12.02-build-the-service.md
         title: "Build the service"
-        goal: "Combine retrieval, the agent, the approval step and the service into one tested repository."
+        goal: "Combine retrieval, the agent, the approval steps, the chat and email channels, the web UI and the service into one tested repository."
       - file: 12.03-evaluate-and-report.md
         title: "Evaluate and write the report"
-        goal: "Run the evaluation, find and fix one failure, and write a one-page evaluation report and design note."
+        goal: "Run the evaluation overall and per channel, find and fix one failure, and write a one-page evaluation report and design note."
       - file: 12.04-record-your-defence.md
         title: "Record your mock-interview defence"
         goal: "Record a five-minute walkthrough and answers to follow-up probes, and submit the repository."
