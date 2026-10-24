@@ -1,9 +1,9 @@
 slug: founder-interviews
 title: "The Founder Interview: Ownership, Impact and Your Story"
 description: "Prepare for the interview a startup founder or a small team's hiring manager runs, where every line on your resume is followed by 'why?' until your real decisions show. Learn to tell one real story you owned, give honest numbers and say how you know them, survive five whys on every resume line, think through a case question aloud, explain your best technical work to a founder and to an engineer, and name your strengths and weaknesses with evidence. Practise with an AI interviewer on your own key, or with a written exercise that completes the same step. Based on research on interviews, with the main ideas credited to the researchers behind them."
-projectGoal: "Build a story bank of five stories you owned, each with an honest number or an honest 'I did not measure that', and a resume where every line survives two whys. Then run one full practice interview (with the AI interviewer, or the written version), read the feedback critically, and defend one story and one resume line to your mentor in a five-minute conversation."
+projectGoal: "Build a story bank of five stories you owned, each with an honest number or an honest 'I did not measure that', and a resume where every line survives two whys. Then run one full practice interview in two parts (with the AI interviewer, or the written version), tag your own answers and read the feedback critically, and defend one of your own stories and one of your own resume lines to your mentor in a five-minute conversation."
 difficulty: Medium
-estimatedHours: 16
+estimatedHours: 20
 category: soft-skills
 modules:
   - dir: 01-stories-you-owned
@@ -140,20 +140,20 @@ modules:
         goal: "Gate: write one strength with evidence and one real weakness with a plan."
   - dir: 07-the-full-interview
     title: "The full interview"
-    summary: "Put it together. Read interview feedback with a critical eye, find the gaps in your story bank and plan how to fill them, then run one full practice interview and defend your stories to a mentor."
+    summary: "Put it together. Tag your own answers, read interview feedback with a critical eye, find the gaps in your story bank and plan how to fill them, then run two practice drills and defend your own stories to a mentor."
     lessons:
       - file: 07.01-set-the-scene.md
         title: "Set the scene"
-        goal: "Introduce the full interview through a fellow reading the feedback from her first and her last practice interview side by side."
+        goal: "Introduce the full interview through a fellow who tags her own answers from her first and her last practice interview and compares them with the feedback."
       - file: 07.02-feedback-and-gaps.md
         title: "Reading feedback and filling the gaps"
-        goal: "Read feedback critically, compare flags across practice interviews, and plan how to fill a gap in your story bank, including a small project built around a need of your own."
+        goal: "Tag your own answers with the five flags, read feedback critically, compare your tags across practice interviews, and plan how to fill a gap in your story bank, including a small project built around a need of your own."
       - file: 07.03-quiz.md
         title: "Mixed review: what is missing?"
         goal: "Mixed practice check: in fresh answers from every module, find the quality that is missing."
       - file: 07.04-capstone-full-interview.md
         title: "Capstone: your story bank and a full interview"
-        goal: "Build your story bank of five owned stories and your audited resume, run one full practice interview or its written version, and prepare to defend it to a mentor."
+        goal: "Complete your story bank of five owned stories and your audited resume, run two practice drills or their written version, tag your answers, and prepare to defend your own work to a mentor."
       - file: 07.05-checklist.md
         title: "Course checklist and your interview kit"
         goal: "Final checks, your interview kit, and your plan for the next interview."
