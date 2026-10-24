@@ -174,29 +174,47 @@ Hours: 3.2 (190 min)
 | 10.6 | Production (quiz) | Graded scenarios | Check | 15 |
 | 10.7 | Checklist and learning log | Written deployment and monitoring plan | Gate | 25 |
 
-### Module 11: Mock interviews: every round
+### Module 11: LLM inference, serving and GPU capacity
+Amendment of 2026-10-24 (sponsor request). Needs G2B instructor sign-off like the rest of the roadmap; drafted before sign-off, as for the other modules.
+Purpose: what happens when a model answers, why long chats fill a GPU through the KV cache, and how batching, paging, quantization, parallelism and admission control let one GPU serve many users; the estimate interviewers ask for: will this deployment fit?
+Hours: 6.6 (395 min)
+| # | Chapter | One-line outcome | Type | Minutes |
+|---|---|---|---|---|
+| 11.1 | Set the scene | See an 8B model that fits on one GPU run out of memory with 20 long chats | Read | 15 |
+| 11.2 | Prefill and decode | Explain time to first token, time per output token, throughput, and why decode is limited by memory reads (canvas) | Learn | 40 |
+| 11.3 | The KV cache from first principles | Derive KV cache size per token from a model config; GQA, context and FP8 (canvas) | Learn | 40 |
+| 11.4 | GPU memory budgeting and sizing | Budget weights, KV cache and reserve; plan in tokens; cost per million tokens (canvas) | Learn | 40 |
+| 11.5 | Continuous batching, PagedAttention and prefix caching | Explain how they let one GPU serve more users, and what each costs (canvas) | Learn | 40 |
+| 11.6 | Quantization, speculative decoding and FlashAttention | Choose a speed or memory technique for a goal (canvas) | Learn | 40 |
+| 11.7 | Beyond one GPU, and choosing how to serve | Tensor and pipeline parallelism; engines; self-host or hosted API (canvas) | Learn | 40 |
+| 11.8 | Admission control and capacity in tokens | Token budgets, queues and backpressure (canvas) | Learn | 40 |
+| 11.9 | Interview drill: will this deployment fit? | Estimate aloud with arithmetic, units and a fix (canvas) | Learn | 40 |
+| 11.10 | Inference and serving (quiz) | Graded scenarios | Check | 20 |
+| 11.11 | Checklist and learning log | Written sizing of a self-hosted deployment with two fixes | Gate | 40 |
+
+### Module 12: Mock interviews: every round
 Purpose: frameworks, question banks with model answers and follow-up probes, and timed practice.
 Hours: 3.8 (225 min)
 | # | Chapter | One-line outcome | Type | Minutes |
 |---|---|---|---|---|
-| 11.1 | Set the scene | Learn how to practise with the banks, alone or with a partner | Read | 10 |
-| 11.2 | Round one: the project deep dive | Answer deep-dive questions with numbers and honest limits | Learn | 40 |
-| 11.3 | Round two: hands-on coding | Clarify, think aloud, test and handle edge cases | Learn | 40 |
-| 11.4 | Round two: AI system design | Run a seven-step design answer in 40 minutes | Learn | 45 |
-| 11.5 | Round three: the managerial round | Answer questions on projects, deployment and evaluation in production | Learn | 40 |
-| 11.6 | Interview craft (quiz) | Graded scenarios on choosing the stronger answer | Check | 15 |
-| 11.7 | Checklist and learning log | Written system design and a recorded mock answer | Gate | 35 |
+| 12.1 | Set the scene | Learn how to practise with the banks, alone or with a partner | Read | 10 |
+| 12.2 | Round one: the project deep dive | Answer deep-dive questions with numbers and honest limits | Learn | 40 |
+| 12.3 | Round two: hands-on coding | Clarify, think aloud, test and handle edge cases | Learn | 40 |
+| 12.4 | Round two: AI system design | Run a seven-step design answer in 40 minutes | Learn | 45 |
+| 12.5 | Round three: the managerial round | Answer questions on projects, deployment and evaluation in production | Learn | 40 |
+| 12.6 | Interview craft (quiz) | Graded scenarios on choosing the stronger answer | Check | 15 |
+| 12.7 | Checklist and learning log | Written system design and a recorded mock answer | Gate | 35 |
 
-### Module 12: Capstone: build, evaluate and defend
+### Module 13: Capstone: build, evaluate and defend
 Purpose: build, measure and defend one small system end to end.
 Hours: 11.4 (685 min)
 | # | Chapter | One-line outcome | Type | Minutes |
 |---|---|---|---|---|
-| 12.1 | Set the scene | Choose one of eight projects; read the brief, must-haves and rubric | Read | 25 |
-| 12.2 | Build the service | Combine retrieval, agent, approval and service in one tested repository | Build | 360 |
-| 12.3 | Evaluate and write the report | Run the eval, fix one failure, write the report and design note | Build | 160 |
-| 12.4 | Record your mock-interview defence | Record the walkthrough and probe answers; submit the repository | Build | 110 |
-| 12.5 | Checklist and learning log | Final checks; compare with the first story from module 1 | Gate | 30 |
+| 13.1 | Set the scene | Choose one of eight projects; read the brief, must-haves and rubric | Read | 25 |
+| 13.2 | Build the service | Combine retrieval, agent, approval and service in one tested repository | Build | 360 |
+| 13.3 | Evaluate and write the report | Run the eval, fix one failure, write the report and design note | Build | 160 |
+| 13.4 | Record your mock-interview defence | Record the walkthrough and probe answers; submit the repository | Build | 110 |
+| 13.5 | Checklist and learning log | Final checks; compare with the first story from module 1 | Gate | 30 |
 
 Count: 12 modules, 79 chapters (12 Read, 36 Learn, 8 Build, 11 Check, 12 Gate). Interactive canvases: 4 (4.2, 5.2, 6.3, 7.2).
 
@@ -223,8 +241,9 @@ Four canvases, each one teaching one claim, built on the existing renderers and 
 | 8 | Checklist, learning log, and a threat model for the capstone agent with one defence per layer (150 words). |
 | 9 | Checklist (service tests pass), learning log, and a failure story: what happens when the provider is slow, and how the service behaves (120 words). |
 | 10 | Checklist, learning log, and a deployment and monitoring plan for the capstone (150 words). |
-| 11 | Checklist, learning log, a written AI system design (250 words) and a recorded mock answer link (optional written alternative). |
-| 12 | Checklist and final learning log. The repository, report and defence are submitted in 12.3 and 12.4. |
+| 11 | Checklist, learning log, and a written sizing of a self-hosted deployment: the arithmetic, a verdict, and two fixes with trade-offs (180 words). |
+| 12 | Checklist, learning log, a written AI system design (250 words) and a recorded mock answer link (optional written alternative). |
+| 13 | Checklist and final learning log. The repository, report and defence are submitted in 13.3 and 13.4. |
 
 ## Capstone
 - Projects (pick one, or be assigned one; all fictional composites): eight capstone variants in the course family `ai-engineering-capstones`, each with its own users, documents, risky action and hard problem: Karmel Help (support agent), Sanabel Desk (policy assistant), Nakhla Ops (runbook bot), Shifa Desk (clinic front desk), Marj Reports (field reports), Daris (bilingual course tutor), Aqd Check (contract review) and Rafiq (onboarding buddy). Plans in `capstone-variants.md`.
@@ -255,6 +274,7 @@ The course is shared; only the capstone varies. Eight capstone variants (2026-10
 | 7 | Mentor load: 11 gate answers plus the capstone, about 3 hours of review per fellow. | Fully review gates 1.5, 5.7, 11.7 and the capstone; spot-check the rest. | |
 | 8 | Prerequisite gap: some fellows will not have Python basics or a laptop. | Add a short Python readiness check in 1.4 and point to a pairing plan for fellows without a laptop. | |
 | 9 | Order with sibling courses: the managerial round overlaps Communication and Ownership. | Cross-reference rather than cut; this course keeps the AI-specific managerial questions. | |
+| 10 | Module 11 (inference and serving) was added on 2026-10-24 and drafted before sign-off. It adds about 6.6 hours and moves mock interviews to module 12 and the capstone to module 13. | Confirm the module with the rest of the roadmap. Keep it before the mock interviews so the drills can use it. | |
 
 ## Confirmation
 G2B status: **pending**.
