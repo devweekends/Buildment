@@ -63,7 +63,7 @@ estimatedMinutes: <minutes from the roadmap>
 ---
 ```
 
-`NN.01-set-the-scene.md` is Read; teaching chapters are Learn; `07.04-capstone-full-interview.md` is Build; `*-quiz.md` and `07.03-mixed-review.md` are Check; `*-checklist.md` is Gate.
+`NN.01-set-the-scene.md` is Read; teaching chapters are Learn; `07.04-capstone-full-interview.md` is Build; `*-quiz.md` and `07.03-quiz.md` are Check; `*-checklist.md` is Gate.
 
 **agent-ip prose minimums apply in full**, counted by `agent-ip/scripts/audit-course.mjs` over **paragraphs only**: headings, lists, numbered steps, tables, block quotes, components and fences do not count.
 
@@ -72,7 +72,7 @@ estimatedMinutes: <minutes from the roadmap>
 | Set the scene (Read) | 1,200 or more | one ```mermaid | one predict or one short openquestion |
 | Teaching (Learn) | 1,200 or more | one ```mermaid, plus the canvas | one predict before the canvas, one or two quiz MCQs after it (at most 3 assessments in total) |
 | Capstone (Build) | 1,200 or more | one ```mermaid | the capstone openquestion and the full AI interview |
-| Quiz (Check) | none: activities only | none | exactly **five** quiz MCQs (`07.03-mixed-review.md` also five) |
+| Quiz (Check) | none: activities only | none | exactly **five** quiz MCQs (`07.03-quiz.md` also five) |
 | Gate | 700 or more | none | the AI drill and one openquestion |
 
 Every chapter: at most 6 top-level components and 25 JSX tags in total. Aim for about 1,300 to 1,500 prose words in scene, teaching and capstone chapters and about 800 to 1,000 in gates, so edits do not drop a chapter under the line.
