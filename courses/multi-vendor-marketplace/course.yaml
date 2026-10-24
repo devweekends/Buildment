@@ -2936,6 +2936,279 @@ variants:
       - module-23-deploy
       - module-99-closing
   - slug: books
+    overrides:
+      - lessonKey: lesson-02-01-set-the-scene
+        file: variants/books/02-project-skeleton/02.01-set-the-scene.md
+      - lessonKey: lesson-02-02-why-structure-matters
+        replacements:
+          - from: "whyItMatters=\"FreshMarket's module folders"
+            to: "whyItMatters=\"Hamesh's module folders"
+          - from: "FreshMarket uses module folders on the server"
+            to: "Hamesh uses module folders on the server"
+      - lessonKey: lesson-02-03-what-youll-build
+        replacements:
+          - from: "`products/` is about listing groceries"
+            to: "`products/` is about listing books"
+          - from: "it's the water supply all the stalls share"
+            to: "it's the water supply all the bookshops share"
+          - from: "GreenBasket, FreshMarket, …"
+            to: "GreenBasket, Hamesh, …"
+      - lessonKey: lesson-02-04-layer-vs-module
+        replacements:
+          - from: "whyItMatters=\"FreshMarket uses modules"
+            to: "whyItMatters=\"Hamesh uses modules"
+          - from: "like \"a customer can't buy negative apples.\""
+            to: "like \"a bookshop can't sell the same copy twice.\""
+          - from: "listing and updating groceries"
+            to: "listing and updating books"
+      - lessonKey: lesson-02-08-create-the-repo
+        file: variants/books/02-project-skeleton/02.08-create-the-repo.md
+      - lessonKey: lesson-02-09-scaffold-server-folders
+        replacements:
+          - from: "FreshMarket's server boot order matters"
+            to: "Hamesh's server boot order matters"
+      - lessonKey: lesson-02-10-server-package-and-scripts
+        replacements:
+          - from: "is how you run FreshMarket locally every day"
+            to: "is how you run Hamesh locally every day"
+      - lessonKey: lesson-02-12-scaffold-client-folders
+        file: variants/books/02-project-skeleton/02.12-scaffold-client-folders.md
+      - lessonKey: lesson-02-13-client-shell-and-routing
+        replacements:
+          - from: "FreshMarket uses React Router so shoppers and vendors navigate smoothly"
+            to: "Hamesh uses React Router so students and shop owners navigate smoothly"
+          - from: "e.g. \"Local grocery marketplace\""
+            to: "e.g. \"Local book marketplace\""
+          - from: "if it fights \"local grocery.\""
+            to: "if it fights \"local bookshop.\""
+      - lessonKey: lesson-02-14-api-client-helper
+        replacements:
+          - from: "Every FreshMarket screen uses the same client helper"
+            to: "Every Hamesh screen uses the same client helper"
+      - lessonKey: lesson-02-17-practice
+        replacements:
+          - from: "\"name\":\"FreshMarket API\""
+            to: "\"name\":\"Hamesh API\""
+      - lessonKey: lesson-02-19-checklist
+        file: variants/books/02-project-skeleton/02.19-checklist.md
+      - lessonKey: lesson-04-01-set-the-scene
+        replacements:
+          - from: "FreshMarket forgets every vendor and product"
+            to: "Hamesh forgets every shop and listing"
+          - from: "Picture a market hall with the lights on but the refrigerators dead — shoppers would assume the produce is cold."
+            to: "Picture a bookshop with the lights on but the shelves empty — students would assume the copies are in stock."
+      - lessonKey: lesson-04-02-why-secrets-matter
+        replacements:
+          - from: "compromise every FreshMarket deployment"
+            to: "compromise every Hamesh deployment"
+          - from: "mongodb://127.0.0.1:27017/freshmarket-dev"
+            to: "mongodb://127.0.0.1:27017/hamesh-dev"
+          - from: "FreshMarket teaches config early"
+            to: "Hamesh teaches config early"
+      - lessonKey: lesson-04-03-what-youll-build
+        replacements:
+          - from: "FreshMarket fails fast at boot if"
+            to: "Hamesh fails fast at boot if"
+          - from: "FreshMarket teaches config early"
+            to: "Hamesh teaches config early"
+      - lessonKey: lesson-04-04-env-vs-hardcoded
+        replacements:
+          - from: "Where FreshMarket configuration lives"
+            to: "Where Hamesh configuration lives"
+          - from: "mongodb://127.0.0.1:27017/freshmarket-dev"
+            to: "mongodb://127.0.0.1:27017/hamesh-dev"
+      - lessonKey: lesson-04-05-local-mongodb
+        replacements:
+          - from: "mongodb://127.0.0.1:27017/freshmarket`"
+            to: "mongodb://127.0.0.1:27017/hamesh`"
+          - from: "`freshmarket-dev` or `greenbasket-dev`"
+            to: "`hamesh-dev` or `greenbasket-dev`"
+          - from: "- `freshmarket-dev`"
+            to: "- `hamesh-dev`"
+      - lessonKey: lesson-04-06-prime-your-thinking
+        file: variants/books/04-config-and-database/04.06-prime-your-thinking.md
+      - lessonKey: lesson-04-07-quiz
+        file: variants/books/04-config-and-database/04.07-quiz.md
+      - lessonKey: lesson-04-09-create-env-files
+        replacements:
+          - from: "FreshMarket ships `.env.example`"
+            to: "Hamesh ships `.env.example`"
+      - lessonKey: lesson-04-10-config-module
+        replacements:
+          - from: "FreshMarket's config module throws at boot"
+            to: "Hamesh's config module throws at boot"
+      - lessonKey: lesson-04-11-db-module
+        replacements:
+          - from: "so FreshMarket handles many shoppers"
+            to: "so Hamesh handles many students"
+      - lessonKey: lesson-04-12-wire-db-on-boot
+        replacements:
+          - from: "FreshMarket won't accept cart requests"
+            to: "Hamesh won't accept cart requests"
+      - lessonKey: lesson-04-13-health-check-db-status
+        replacements:
+          - from: "whyItMatters=\"FreshMarket's `/health` reports"
+            to: "whyItMatters=\"Hamesh's `/health` reports"
+      - lessonKey: lesson-04-14-client-env
+        replacements:
+          - from: "FreshMarket's client gets `VITE_API_URL` only"
+            to: "Hamesh's client gets `VITE_API_URL` only"
+          - from: "FreshMarket — System status"
+            to: "Hamesh — System status"
+      - lessonKey: lesson-04-16-recap-and-whats-next
+        replacements:
+          - from: "- Grocery domain fields — `unit`, `stockQty`, `isPerishable`, etc."
+            to: "- Catalogue domain fields — `isbn13`, `gradeRank`, `priceMinor`, etc."
+          - from: "Chapter 5 fills it with grocery data."
+            to: "Chapter 5 fills it with catalogue data."
+      - lessonKey: lesson-06-01-set-the-scene
+        replacements:
+          - from: "FreshMarket cannot know which cart or store belongs to whom"
+            to: "Hamesh cannot know which cart or Shop belongs to whom"
+          - from: "seeded with two vendors and grocery fields"
+            to: "seeded with shop owners and graded Listings"
+          - from: "Your grocery data exists — next you control who can act on it."
+            to: "Your catalogue data exists — next you control who can act on it."
+      - lessonKey: lesson-06-02-why-auth-matters
+        replacements:
+          - from: "Anyone can browse produce (public catalogue later). To run a stall or place orders tied to your name"
+            to: "Anyone can browse editions (public catalogue later). To run a bookshop or place orders tied to your name"
+          - from: "FreshMarket uses brief access tokens plus longer refresh tokens"
+            to: "Hamesh uses brief access tokens plus longer refresh tokens"
+      - lessonKey: lesson-06-03-what-youll-build
+        replacements:
+          - from: "FreshMarket's auth module is the security foundation every vendor and customer route builds on."
+            to: "Hamesh's auth module is the security foundation every shop and student route builds on."
+      - lessonKey: lesson-06-04-sessions-vs-jwt
+        file: variants/books/06-authentication-api/06.04-sessions-vs-jwt.md
+      - lessonKey: lesson-06-06-what-a-jwt-is
+        replacements:
+          - from: "FreshMarket access tokens prove identity for cart and vendor routes without server-side session lookup."
+            to: "Hamesh access tokens prove identity for cart and shop routes without server-side session lookup."
+          - from: "## Access token payload for FreshMarket"
+            to: "## Access token payload for Hamesh"
+          - from: "**A tamper-evident food delivery seal.** You can read the label (payload) through the bag;"
+            to: "**A tamper-evident courier seal on a book parcel.** You can read the label (payload) through the wrapping;"
+      - lessonKey: lesson-06-07-prime-your-thinking
+        file: variants/books/06-authentication-api/06.07-prime-your-thinking.md
+      - lessonKey: lesson-06-08-quiz
+        file: variants/books/06-authentication-api/06.08-quiz.md
+      - lessonKey: lesson-06-10-scaffold-auth-module
+        replacements:
+          - from: "FreshMarket keeps register/login/refresh together so auth logic does not scatter across the server."
+            to: "Hamesh keeps register/login/refresh together so auth logic does not scatter across the server."
+      - lessonKey: lesson-06-11-wire-auth-routes
+        replacements:
+          - from: "FreshMarket mounts auth at `/api/auth/register`, `/api/auth/login`"
+            to: "Hamesh mounts auth at `/api/auth/register`, `/api/auth/login`"
+      - lessonKey: lesson-06-12-register-handler
+        replacements:
+          - from: "FreshMarket vendors and customers share the same register flow; role selection branches their experience."
+            to: "Hamesh students and shop owners share the same register flow; role selection branches their experience."
+      - lessonKey: lesson-06-13-login-handler
+        replacements:
+          - from: "FreshMarket returns the same error for bad email and bad password"
+            to: "Hamesh returns the same error for bad email and bad password"
+      - lessonKey: lesson-06-14-access-token
+        replacements:
+          - from: "FreshMarket attaches access tokens in the Authorization header for cart, store, and product routes."
+            to: "Hamesh attaches access tokens in the Authorization header for cart, shop, and Listing routes."
+      - lessonKey: lesson-06-15-refresh-token
+        replacements:
+          - from: "Shoppers stay logged in on FreshMarket without re-entering password every fifteen minutes."
+            to: "Students stay logged in on Hamesh without re-entering password every fifteen minutes."
+      - lessonKey: lesson-06-16-otp-verification
+        replacements:
+          - from: "FreshMarket requires OTP after register — reduces fake vendor accounts and spam signups."
+            to: "Hamesh requires OTP after register — reduces fake shop accounts and spam signups."
+      - lessonKey: lesson-06-17-auth-middleware
+        replacements:
+          - from: "Every protected FreshMarket route uses the same middleware"
+            to: "Every protected Hamesh route uses the same middleware"
+      - lessonKey: lesson-06-20-checklist
+        file: variants/books/06-authentication-api/06.20-checklist.md
+      - lessonKey: lesson-07-02-why-token-storage-matters
+        replacements:
+          - from: "FreshMarket's client must store tokens safely and attach them to API calls without leaking them in URLs or logs."
+            to: "Hamesh's client must store tokens safely and attach them to API calls without leaking them in URLs or logs."
+          - from: "FreshMarket's verify step proves the full browser path"
+            to: "Hamesh's verify step proves the full browser path"
+      - lessonKey: lesson-07-03-what-youll-build
+        replacements:
+          - from: "FreshMarket shoppers and vendors enter through the same auth screens — role determines where they land next."
+            to: "Hamesh students and shop owners enter through the same auth screens — role determines where they land next."
+      - lessonKey: lesson-07-04-where-tokens-live
+        file: variants/books/07-login-and-registration/07.04-where-tokens-live.md
+      - lessonKey: lesson-07-05-the-401-retry-loop
+        replacements:
+          - from: "while grocery shopping — unacceptable UX"
+            to: "while browsing the catalogue — unacceptable UX"
+          - from: "In FreshMarket terms: a logged-in customer who clicks a vendor-only action gets 403."
+            to: "In Hamesh terms: a logged-in student who clicks a shop-only action gets 403."
+      - lessonKey: lesson-07-06-prime-your-thinking
+        replacements:
+          - from: "Token storage choice in FreshMarket is partly a bet on how well you sanitize user-generated content later."
+            to: "Token storage choice in Hamesh is partly a bet on how well you sanitize user-generated content later."
+      - lessonKey: lesson-07-07-quiz
+        file: variants/books/07-login-and-registration/07.07-quiz.md
+      - lessonKey: lesson-07-09-scaffold-auth-pages
+        replacements:
+          - from: "FreshMarket keeps auth pages separate from shop and vendor dashboard routes."
+            to: "Hamesh keeps auth pages separate from bookshop and vendor dashboard routes."
+      - lessonKey: lesson-07-10-auth-context-or-hook
+        replacements:
+          - from: "FreshMarket's header shows login vs avatar based on auth context"
+            to: "Hamesh's header shows login vs avatar based on auth context"
+      - lessonKey: lesson-07-11-register-page
+        replacements:
+          - from: "FreshMarket register page catches obvious errors before a round-trip"
+            to: "Hamesh register page catches obvious errors before a round-trip"
+      - lessonKey: lesson-07-12-verify-otp-page
+        replacements:
+          - from: "FreshMarket blocks vendor onboarding until OTP succeeds"
+            to: "Hamesh blocks shop onboarding until OTP succeeds"
+      - lessonKey: lesson-07-13-login-page
+        replacements:
+          - from: "Returning FreshMarket users land here"
+            to: "Returning Hamesh students land here"
+      - lessonKey: lesson-07-14-api-interceptor
+        replacements:
+          - from: "FreshMarket components call `api.get('/cart')`"
+            to: "Hamesh components call `api.get('/cart')`"
+      - lessonKey: lesson-07-15-protected-route-wrapper
+        replacements:
+          - from: "FreshMarket `/vendor/*` routes render nothing"
+            to: "Hamesh `/vendor/*` routes render nothing"
+      - lessonKey: lesson-07-16-verify-in-browser
+        replacements:
+          - from: "FreshMarket auth debugging starts in Network"
+            to: "Hamesh auth debugging starts in Network"
+      - lessonKey: lesson-07-18-checklist
+        file: variants/books/07-login-and-registration/07.18-checklist.md
+      - lessonKey: lesson-23-01-set-the-scene
+        replacements:
+          - from: "Nothing new to learn about grocery or JWT here."
+            to: "Nothing new to learn about books or JWT here."
+          - from: "After deploy, run the full demo with Stripe **test mode**: a vendor adds a product, a customer checks out, the webhook updates the order, and the worker consumes the notification job."
+            to: "After deploy, run the full demo with Stripe **test mode**: a shop lists a copy, a student checks out, the webhook updates the order, and the worker consumes the notification job."
+          - from: "walk in as customer, buy from two vendors, confirm vendor sees the order"
+            to: "walk in as a student, buy from two shops, confirm the shop sees the order"
+      - lessonKey: lesson-23-04-vps-vs-paas
+        replacements:
+          - from: "title=\"A deployed FreshMarket has three running parts\""
+            to: "title=\"A deployed Hamesh has three running parts\""
+          - from: "Both are valid homes for FreshMarket. Pick one and document it"
+            to: "Both are valid homes for Hamesh. Pick one and document it"
+      - lessonKey: lesson-23-05-prime-your-thinking
+        replacements:
+          - from: "whyItMatters=\"Deploy chapter moves FreshMarket from localhost to a URL you can share.\""
+            to: "whyItMatters=\"Deploy chapter moves Hamesh from localhost to a URL you can share.\""
+          - from: "| Topic | Why for FreshMarket |"
+            to: "| Topic | Why for Hamesh |"
+          - from: "FreshMarket's deploy checklist exists because missing one variable fails silently until traffic hits."
+            to: "Hamesh's deploy checklist exists because missing one variable fails silently until traffic hits."
+      - lessonKey: lesson-23-15-recap-and-whats-next
+        file: variants/books/23-deploy/23.15-recap-and-whats-next.md
     modules:
       - key: books-introduction
         dir: 01-product-introduction
@@ -3181,32 +3454,344 @@ variants:
             goal: >-
               Prove success, decline, duplicate delivery, amount mismatch and the one-copy race in test
               mode.
+      - key: books-why-mongodb
+        dir: 03-why-mongodb-for-editions
+        title: Why MongoDB for editions
+        lessons:
+          - key: books-why-mongodb-01
+            file: 03.01-set-the-scene.md
+            title: '3.1 One book, many copies'
+            goal: >-
+              Follow three shops holding one required textbook and name the record that answers each question a student asks.
+          - key: books-why-mongodb-02
+            file: 03.02-relational-vs-document.md
+            title: '3.2 Tables and documents for a shared catalogue'
+            goal: >-
+              Build the same Work, Edition, Listing and reading-list model twice, then state where each shape wins and what it costs.
+          - key: books-why-mongodb-03
+            file: 03.03-decision-and-erd.md
+            title: '3.3 The decision for Hamesh and the first ERD'
+            goal: >-
+              Commit a defended catalogue decision, then draft Work, Edition, Listing and reading-list relationships in docs/erd-draft.md.
+          - key: books-why-mongodb-04
+            file: 03.04-checklist.md
+            title: '3.4 Catalogue model decision gate'
+            goal: >-
+              Defend the shared catalogue decision against three challenges, with a committed draft and two tests that show where the store keeps the rule.
+      - key: books-authorization
+        dir: 08-authorization-and-isolation
+        title: Authorization and isolation
+        lessons:
+          - key: books-authorization-01
+            file: 08.01-set-the-scene.md
+            title: '8.1 Whose shop, whose copy?'
+            goal: >-
+              Separate a role check from an ownership check, and decide which records a shop, a student and an admin may touch in a shared catalogue.
+          - key: books-authorization-02
+            file: 08.02-object-checks.md
+            title: '8.2 Object checks on shops, copies and editions'
+            goal: >-
+              Build a role guard, an ownership helper and an edition lock, then prove a cross-shop price edit is refused before it writes.
+          - key: books-authorization-03
+            file: 08.03-matrix-and-tests.md
+            title: '8.3 The authorization matrix and cross-shop tests'
+            goal: >-
+              Write docs/AUTHORIZATION.md for every actor and record, then prove it with two shops, two students and an admin who alone may correct an edition.
+          - key: books-authorization-04
+            file: 08.04-checklist.md
+            title: '8.4 Isolation gate'
+            goal: >-
+              Prove that a second shop and a second student are refused without learning anything, and that only an admin may change a locked edition.
+      - key: books-list-a-copy
+        dir: 12-list-a-copy
+        title: List a copy
+        lessons:
+          - key: books-list-a-copy-01
+            file: 12.01-set-the-scene.md
+            title: '12.1 The counter with a pile of returns'
+            goal: >-
+              Walk the bookshop counter workflow the listing back office must support, and the four decisions it is not allowed to hide.
+          - key: books-list-a-copy-02
+            file: 12.02-isbn-first-listing-and-grading.md
+            title: '12.2 ISBN-first listing, grade and price guidance'
+            goal: >-
+              Build one route that takes a typed ISBN and a graded copy, derives the rank on the server, returns per-grade price guidance and maps 400 and 403 to the form.
+          - key: books-list-a-copy-03
+            file: 12.03-checklist.md
+            title: '12.3 Listing gate'
+            goal: >-
+              Prove the ISBN-first listing flow by putting three copies of one edition on sale in three grades with the price guidance visible before each price was set.
+      - key: books-condition-photos
+        dir: 13-condition-photos
+        title: Condition photos
+        lessons:
+          - key: books-condition-photos-01
+            file: 13.01-set-the-scene.md
+            title: '13.1 A buyer cannot hold the book'
+            goal: >-
+              Work out what a condition photo must prove, why a publisher cover image cannot prove it, and where the bytes belong.
+          - key: books-condition-photos-02
+            file: 13.02-photo-upload-and-required-evidence.md
+            title: '13.2 Upload the real copy, require evidence below Very Good'
+            goal: >-
+              Add photo subdocuments, a server-mediated upload route with ownership checks, a four-photo limit and a publish rule that refuses low grades without evidence.
+          - key: books-condition-photos-03
+            file: 13.03-checklist.md
+            title: '13.3 Condition photo gate'
+            goal: >-
+              Prove that photos of the actual copy reach storage, that a low grade cannot publish without one, and that a sold copy keeps the image its order points at.
+      - key: books-browse-editions
+        dir: 14-browse-editions-api
+        title: Browse editions API
+        lessons:
+          - key: books-browse-editions-01
+            file: 14.01-set-the-scene.md
+            title: '14.1 Students search for a book, not a shop'
+            goal: >-
+              See why browse starts at the edition, what an offer summary has to show, and how much a page of cards really costs to build.
+          - key: books-browse-editions-02
+            file: 14.02-offer-aggregation-and-n-plus-one.md
+            title: '14.2 Offer summaries, grades and the N+1 trap'
+            goal: >-
+              Build the edition list with a per-grade offer summary, filter copies by grade floor and price ceiling, and cut the browse query count from dozens to three.
+          - key: books-browse-editions-03
+            file: 14.03-checklist.md
+            title: '14.3 Browse editions gate'
+            goal: >-
+              Prove the edition-first browse with a measured query count, a hand-checked offer summary per grade, and a copy list that obeys a grade floor and a price ceiling.
+      - key: books-find-a-book
+        dir: 15-find-a-book
+        title: Find a book
+        lessons:
+          - key: books-find-a-book-01
+            file: 15.01-set-the-scene.md
+            title: '15.1 A student with a phone and a course code'
+            goal: >-
+              Set the scene for the student storefront: an edition-first page that a student can read on a 360px phone with expensive data.
+          - key: books-find-a-book-02
+            file: 15.02-edition-page-and-copy-list.md
+            title: '15.2 Edition page, grade badges and copies across shops'
+            goal: >-
+              Build the grade badge, edition card, edition page grouped by grade, and copy detail with photos, defects and pickup notes.
+          - key: books-find-a-book-03
+            file: 15.03-checklist.md
+            title: '15.3 Find-a-book gate'
+            goal: >-
+              Prove a readable grade badge, a 360 pixel edition page grouped by grade and shop, and a copy detail that shows the evidence for one physical object.
+      - key: books-cart-api
+        dir: 16-cart-api
+        title: Cart API
+        lessons:
+          - key: books-cart-api-01
+            file: 16.01-set-the-scene.md
+            title: '16.1 A cart of copies, not quantities'
+            goal: >-
+              Explain why every cart line names one physical copy, and what breaks when a cart tries to carry a quantity instead.
+          - key: books-cart-api-02
+            file: 16.02-copy-cart-rules.md
+            title: '16.2 Add, remove and reject sold, withdrawn or duplicate copies'
+            goal: >-
+              Build the cart routes, the reason codes for rejected copies, the same-edition warning and the revalidation the cart page depends on.
+          - key: books-cart-api-03
+            file: 16.03-checklist.md
+            title: '16.3 Cart API gate'
+            goal: >-
+              Prove one line per physical copy, refusal codes for sold, held, withdrawn and duplicate copies, and a cart that belongs to exactly one student.
+      - key: books-collection
+        dir: 21-track-orders-and-collection
+        title: Track orders and collection
+        lessons:
+          - key: books-collection-01
+            file: 21.01-set-the-scene.md
+            title: '21.1 Collecting a book from a shop'
+            goal: >-
+              Follow a paid order to the shop counter, and see why a short collection code checked on the server is the only thing that separates a payment from a handover.
+          - key: books-collection-02
+            file: 21.02-order-pages-and-collection-code.md
+            title: '21.2 Order pages, collection code and ready-for-collection'
+            goal: >-
+              Build the Payment Element checkout page, the student and shop order pages, the server checked collection code and the two post-payment transitions.
+          - key: books-collection-03
+            file: 21.03-checklist.md
+            title: '21.3 Collection gate'
+            goal: >-
+              Run the Week 3 demo from reading list to paid split orders to a collected copy, and prove the collection code is checked on the server.
+      - key: books-cache-search
+        dir: 22-cache-and-search
+        title: Cache and search
+        lessons:
+          - key: books-cache-search-01
+            file: 22.01-set-the-scene.md
+            title: '22.1 A sold copy in a stale offer summary'
+            goal: >-
+              See how a cached offer summary keeps a sold copy visible to a student, and why caching and search need different mechanisms.
+          - key: books-cache-search-02
+            file: 22.02-cache-and-search.md
+            title: '22.2 Cache offers, invalidate on change, search ISBN and text'
+            goal: >-
+              Build a per-edition offer cache that degrades without Redis, invalidate it on every write, and route one search box to ISBN lookup or a text query.
+          - key: books-cache-search-03
+            file: 22.03-checklist.md
+            title: '22.3 Cache and search gate'
+            goal: >-
+              Prove cache hits and misses, invalidation on every Listing write, index use in explain, and a working page with Redis stopped.
+      - key: books-async-jobs
+        dir: 23-async-jobs-and-queues
+        title: Async jobs and queues
+        lessons:
+          - key: books-async-jobs-01
+            file: 23.01-set-the-scene.md
+            title: '23.1 What should not happen inside a request'
+            goal: >-
+              Separate the work a request owes its caller from derived work that belongs on a worker, and see the cost of getting the boundary wrong.
+          - key: books-async-jobs-02
+            file: 23.02-worker-and-listing-event.md
+            title: '23.2 Worker, order jobs and the listing.published event'
+            goal: >-
+              Run a separate worker, enqueue order jobs after a paid checkout, and emit listing.published with a stable job id, retries and a dedup rule.
+          - key: books-async-jobs-03
+            file: 23.03-checklist.md
+            title: '23.3 Async jobs gate'
+            goal: >-
+              Prove the API answers before the worker runs, that job ids hold under a republish, and that a stopped worker loses no work.
+      - key: books-copy-holds
+        dir: 26-copy-holds
+        title: Copy holds
+        lessons:
+          - key: books-copy-holds-01
+            file: 26.01-set-the-scene.md
+            title: '26.1 Two students, one last copy'
+            goal: >-
+              Follow a fifteen minute hold that expires while a card is being authenticated, and see why single copies make every conflict total.
+          - key: books-copy-holds-02
+            file: 26.02-hold-confirm-and-release.md
+            title: '26.2 Hold on checkout, confirm on payment, release on expiry'
+            goal: >-
+              Claim a single copy at checkout with a substitute on conflict, confirm it on a verified payment, and expire it without racing a paid order.
+          - key: books-copy-holds-03
+            file: 26.03-checklist.md
+            title: '26.3 Two-tab race and hold gate'
+            goal: >-
+              Race two browser tabs for one copy and prove one paid order, one 409 with an acceptable substitute, and an expiry that cannot overwrite a sale.
+      - key: books-condition-pricing
+        dir: 27-condition-pricing
+        title: Condition pricing and markdowns
+        lessons:
+          - key: books-condition-pricing-01
+            file: 27.01-set-the-scene.md
+            title: '27.1 The server owns every price'
+            goal: >-
+              Name the four places a used-copy price can go wrong in Hamesh and keep the authoritative number on the server.
+          - key: books-condition-pricing-02
+            file: 27.02-pricing-rules-and-markdowns.md
+            title: '27.2 Grade pricing, markdown schedules and a price floor'
+            goal: >-
+              Build a shop pricing rule, an advisory suggestion route, a repeatable markdown job that stops at the floor, an append-only price audit and a re-match trigger.
+          - key: books-condition-pricing-03
+            file: 27.03-checklist.md
+            title: '27.3 Pricing gate and audit trail'
+            goal: >-
+              Prove the PaymentIntent matches the server total, the audit explains every markdown, the floor held, a drop re-matched a want list, and both throttled routes refuse a burst.
+      - key: books-closing
+        dir: 99-closing
+        title: Closing and capstone
+        lessons:
+          - key: books-closing-01
+            file: 99.01-ship-and-document.md
+            title: '99.1 Ship and document Hamesh'
+            goal: >-
+              Write the README, .env.example, architecture and ERD documentation, evidence index and five-minute demo script that make the deployed Hamesh reviewable.
+          - key: books-closing-02
+            file: 99.02-demo-and-viva.md
+            title: '99.2 Five-minute demo and capstone defense'
+            goal: >-
+              Record a five-minute two-window demo from the deployed app, then defend seven catalogue and alert decisions without notes.
+      - key: books-bookshop-api
+        dir: 09-bookshop-api
+        title: Bookshop API
+        lessons:
+          - key: books-bookshop-api-01
+            file: 09.01-set-the-scene.md
+            title: '9.1 A bookshop needs a page before it needs stock'
+            goal: >-
+              Name the five fields a bookshop page needs, decide who may read each one, and see why one owner gets one shop.
+          - key: books-bookshop-api-02
+            file: 09.02-shop-routes-and-ownership.md
+            title: '9.2 Shop fields, slugs and ownership'
+            goal: >-
+              Build the three shop routes with a validated weekly hours pattern, a collision safe slug, a public projection and an ownership check that refuses a cross-shop patch.
+          - key: books-bookshop-api-03
+            file: 09.03-checklist.md
+            title: '9.3 Bookshop API gate'
+            goal: >-
+              Prove the shop API with two shop owners and a student: one shop per owner, a refused cross-shop patch, a public payload with nothing private in it.
+      - key: books-open-bookshop
+        dir: 10-open-your-bookshop
+        title: Open your bookshop
+        lessons:
+          - key: books-open-bookshop-01
+            file: 10.01-set-the-scene.md
+            title: '10.1 The owner who has no shop yet'
+            goal: >-
+              See why a shop owner without a shop must be routed to onboarding before any dashboard request fires, and where that decision belongs in the client.
+          - key: books-open-bookshop-02
+            file: 10.02-onboarding-and-settings.md
+            title: '10.2 Onboarding, settings and the routing gate'
+            goal: >-
+              Build the shop context, the two route guards, the setup and settings pages and the 360 pixel layout that keeps a new owner out of pages she has no shop for.
+          - key: books-open-bookshop-03
+            file: 10.03-checklist.md
+            title: '10.3 Open-your-bookshop gate'
+            goal: >-
+              Prove the routing gate with a brand new shop owner at 360 pixels: redirect instead of empty pages, no duplicate shop, working hours on a keyboard and settings that survive a reload.
+      - key: books-cart-ui
+        dir: 17-your-cart
+        title: Your cart
+        lessons:
+          - key: books-cart-ui-01
+            file: 17.01-set-the-scene.md
+            title: '17.1 A cart of copies, grouped by shop'
+            goal: >-
+              Decide what a cart page shows when every line is one physical copy from a specific shop, and why grouping and subtotals belong to the shop rather than to the whole cart.
+          - key: books-cart-ui-02
+            file: 17.02-cart-page-and-copy-rows.md
+            title: '17.2 Copy rows, shop subtotals and removal'
+            goal: >-
+              Build the cart view builder, the grouped cart page, the copy row, the removal path with focus handling, the add-to-cart button and the header badge.
+          - key: books-cart-ui-03
+            file: 17.03-checklist.md
+            title: '17.3 Cart page gate'
+            goal: >-
+              Prove the cart page with three shops and one copy that sells: grouped rows with correct subtotals, removal by keyboard, a badge that matches the page and a cart that survives a reload.
     moduleOrder:
       - books-introduction
       - module-02-project-skeleton
-      - module-03-why-mongodb
+      - books-why-mongodb
       - module-04-config-and-database
       - books-data-model
       - module-06-authentication-api
       - module-07-login-and-registration
-      - module-08-authorization-and-isolation
-      - module-09-vendor-store-api
-      - module-10-open-your-shop
+      - books-authorization
+      - books-bookshop-api
+      - books-open-bookshop
       - books-editions-isbn
-      - module-12-vendor-dashboard
-      - module-13-product-photos
-      - module-14-browse-catalogue-api
-      - module-15-shop-the-marketplace
-      - module-16-cart-api
-      - module-17-your-cart
+      - books-list-a-copy
+      - books-condition-photos
+      - books-browse-editions
+      - books-find-a-book
+      - books-cart-api
+      - books-cart-ui
       - books-reading-list-matcher
       - books-checkout-orders
       - books-payment-processing
-      - module-21-cache-and-search
-      - module-22-async-jobs-and-queues
-      - module-23-deploy
+      - books-collection
+      - books-cache-search
+      - books-async-jobs
       - books-want-list-alerts
-      - module-99-closing
+      - module-23-deploy
+      - books-copy-holds
+      - books-condition-pricing
+      - books-closing
   - slug: services
     modules:
       - key: services-introduction
