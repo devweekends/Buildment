@@ -15,3 +15,5 @@
 | 2026-10-24 | G2A | curriculum-architect | drafting model | `02-curriculum-roadmap.md` v3 | ready for G2B |
 | 2026-10-24 | G2B | sponsor | human | `roadmap-confirmation.md` | approved by the sponsor; second instructor pending |
 | 2026-10-24 | G2B | sponsor | human | decision log: sponsor exception | G2B complete; G2C may start |
+| 2026-10-24 | G2C | curriculum-architect, prerequisites-timeline, project-designer | drafting model | `03-blueprint.md`, `04-project-brief.md`, `skill-graph.yaml`, `timeline.yaml`, `prerequisite-report.md` | drafted; checks pass |
+| 2026-10-24 | G2C | curriculum-architect | bulk model | `module-briefs/01` to `09` | drafted; not yet reviewed; paused for the weekend (`HANDOFF.md`) |
