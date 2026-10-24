@@ -46,6 +46,8 @@ Courses are **interactive-first**: every Learn chapter teaches through at least 
 
 Many concepts are best taught by letting the learner manipulate a small causal model: a token bucket, a seat-hold race, a cloud cost simulator, a queue under backpressure. These are **interactive canvases**: focused widgets with two to four inputs, an immediate visual output, and a stated model limit. They are deliberately simple: neutral surfaces, one accent, semantic color only, direct labels, no decoration. They may be rendered with HTML/CSS, inline SVG, or Canvas 2D; SVG is the default for charts, seat maps, timelines, and other vector visuals, while HTML owns the controls.
 
+Canvas implementations and the registry live in `packages/learning-ui/src/canvas/` and are shared by web and desktop. The canonical slug list remains `server/src/shared/canvas/slugs.ts`; run `pnpm --dir server sync-shared` to refresh its generated copies. The old frontend canvas folder has been removed; import canvases directly from `@buildment/learning-ui/canvas/...`. Context packs must use these shared paths, even when historical logs mention the old frontend paths.
+
 See `10-interactive-canvases.md` for the design language, model contract, platform integration, catalog, placement rules, and QA. The builder agent is `agents/interactive-canvas-builder.md`.
 
 ## Visual explanations
@@ -160,7 +162,7 @@ Paths are relative to the repository root. In role documents, `work/` means `age
 
 - `agent-ip/work/<course-slug>/chapters/` for draft chapters, preserving numbered module folders and lesson filenames.
 - `agent-ip/work/<course-slug>/` for draft manifests, briefs, research, blueprints, critiques, and approval records; put audit and validation reports in its `qa/` directory.
-- `courses/<course-slug>/` is the only canonical location for course source: `course.yaml`, numbered module/lesson Markdown files, and optional `COURSE-OUTLINE.md`. FreshMarket predates `course.yaml` and uses seed metadata until it is migrated.
+- `courses/<course-slug>/` is the only canonical location for course source: `course.yaml`, numbered module/lesson Markdown files, and optional `COURSE-OUTLINE.md`. FreshMarket has a manifest with stable lesson keys and an explicit target for its existing published database slug.
 
 After content review and QA, assemble the complete final package in `courses/<course-slug>/` on the course PR branch. Rerun source validation, the strict structure audit, and the course audit against that exact package. Keep drafts, QA, review notes, archives, and generated output in `agent-ip/work/<course-slug>/`. Set `repositoryPublish: true` in a reviewed `course.yaml` to opt in to automatic publication during the backend release after the change reaches `main`. The instructor is named in `courses/publishing.yaml`. A folder's presence alone does not authorize publication. The default `repositoryEditorialAudit: required` blocks publication on audit findings. An explicit user-requested exception may set `repositoryEditorialAudit: advisory`; record the findings and the exception in the course PR, and present incomplete course scope honestly in the catalog. Source and strict structural validation still block publication.
 

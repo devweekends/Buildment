@@ -114,6 +114,28 @@ The audit is executable. Run it at G3 and G5:
 node agent-ip/scripts/audit-course.mjs courses/<course-slug>
 ```
 
+For a multi-variant course, also scan newly authored variant lessons for repeated long prose:
+
+```bash
+node agent-ip/scripts/audit-variant-repetition.mjs courses/<course-slug>/variants
+```
+
+Repeated paragraphs of 45 or more words across chapters need editorial review even when each chapter passes the word-count audit. Rewrite the worked example, practice, failure test, and bridge around the chapter's actual decision; a passing prose count alone does not pass G5.
+
+Audit the **resolved** learner path, not only the shared source files. Apply the
+variant `moduleOrder`, `omitLessonKeys`, full overrides and exact replacements
+before judging a passage. Run:
+
+```bash
+cd server && pnpm exec tsx scripts/audit-marketplace-inheritance.ts
+```
+
+The audit reports inherited shared lessons, lessons adapted by replacements,
+effective findings after resolution, and variant-authored findings. Any effective
+finding in a released variant blocks the gate. A mention of the reference product
+in variant-authored prose is allowed only when the prose explicitly compares or
+credits the shared example; it must never present that product as the learner's own.
+
 It checks, per chapter:
 
 - prose words (≥ 1,200 concept/build, ≥ 700 checkpoint/gate);
@@ -292,6 +314,7 @@ The technical validator runs, not reads.
 - [ ] Every SVG is sanitized (if static), theme-aware, responsive, and has a text alternative.
 - [ ] Every SVG has no scripts, `foreignObject`, raw inline event attributes, external hrefs, or remote fonts.
 - [ ] Every link resolves and matches the claim.
+- [ ] The resolved variant path is audited after module order, omissions, overrides and replacements, not only the raw shared files.
 - [ ] There are no secrets, private URLs, or personal data in the source.
 - [ ] The answer key, rubric, hidden tests, and solution are not in client-visible content.
 - [ ] Rate limits, auth checks, and validation are present where the chapter claims they are.
@@ -413,7 +436,7 @@ Do not let a writer "fix" a structural problem by adding more prose. If the chap
 
 ## Sign-off artifact
 
-Final learner-facing source MUST be in `courses/<course-slug>/` for every course and variant, with `course.yaml` matching its slug and numbered module/lesson files. FreshMarket is a legacy exception pending a manifest. Run source validation, the structure audit with `--strict`, and the course audit against that final package. Keep drafts and all QA/sign-off evidence under `agent-ip/work/<course-slug>/`. CI must publish only an approved package from `courses/`, never a draft from the work area. Follow `README.md` → Work areas.
+Final learner-facing source MUST be in `courses/<course-slug>/` for every course and variant, with `course.yaml` matching its source folder and numbered module/lesson files. A repository target slug may identify an existing database course whose original slug differs; it must never create another course. Run source validation, the structure audit with `--strict`, and the course audit against that final package. Before making a variant selectable, verify the full assigned learner path, variant-specific build work, assessments, capstone, and reference consistency. Keep drafts and all QA/sign-off evidence under `agent-ip/work/<course-slug>/`. CI must publish only an approved package from `courses/`, never a draft from the work area. Follow `README.md` → Work areas.
 
 The publish package contains:
 

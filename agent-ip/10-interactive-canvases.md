@@ -168,7 +168,7 @@ If the real system is too complex to model honestly, do not fake it. Use a stati
 - Data for a registered renderer, with its spec, plus the renderer's model and tests:
 
 ```
-frontend/src/canvas/
+packages/learning-ui/src/canvas/
   registry.ts                 # slug -> spec, the closed set
   InteractiveCanvas.tsx       # the MDX tag; picks the renderer by spec.kind
   primitives/                 # stepper, step controls, tones, flow pulse, frame
@@ -224,7 +224,7 @@ Known exception to fix: `renderers/factor/FactorCanvas.tsx` does not use the sha
 
 ### The shared simulation core and the kit renderers
 
-Systems that move over time and fail (traffic, queues, replicas, clocks, partitions) are taught on a shared, seeded simulation core, `frontend/src/canvas/sim/`. It is pure TypeScript with no DOM code: a seeded random source, a virtual clock, nodes, links with delay, partitions, per-node clocks, traffic generators, and recorders that produce a trace and series. The same inputs and seed always give the same run, so a learner, a mentor and a test see the same thing. Renderers draw a run; they never compute the model.
+Systems that move over time and fail (traffic, queues, replicas, clocks, partitions) are taught on a shared, seeded simulation core, `packages/learning-ui/src/canvas/sim/`. It is pure TypeScript with no DOM code: a seeded random source, a virtual clock, nodes, links with delay, partitions, per-node clocks, traffic generators, and recorders that produce a trace and series. The same inputs and seed always give the same run, so a learner, a mentor and a test see the same thing. Renderers draw a run; they never compute the model.
 
 Kit renderers built on the core (the first is `timeline`; the rest are specified in `work/system-design/03-simulation-kit.md` and are added as they are built):
 
@@ -368,16 +368,16 @@ SVG is executable content in a browser context. Treat author-supplied SVG as unt
 
 The platform has a canvas slot. This is the contract, and where each part lives:
 
-1. `InteractiveCanvas` is in the MDX allowlist (`server/src/shared/mdx/component-allowlist.ts`) and the reader component map (`frontend/src/mdx/components.tsx`).
-2. The allowed slugs are listed once, in `server/src/shared/canvas/slugs.ts` (copied to the frontend by `pnpm sync-shared`). `frontend/src/canvas/registry.ts` maps each slug to its spec, and a test keeps the two lists equal.
+1. `InteractiveCanvas` is in the MDX allowlist (`server/src/shared/mdx/component-allowlist.ts`) and both reader component maps (`frontend/src/mdx/components.tsx` and `desktop/src/ui/learning/blocks/registry.tsx`).
+2. The allowed slugs are listed once, in `server/src/shared/canvas/slugs.ts` (copied to `frontend/src/shared/canvas/slugs.ts` and `packages/learning-ui/src/shared/canvas/slugs.ts` by `pnpm --dir server sync-shared`; never edit these generated copies). `packages/learning-ui/src/canvas/registry.ts` maps each slug to its spec, and a test keeps the two lists equal.
 3. The MDX tag is `<InteractiveCanvas slug="weighted-matrix-two-offers" />`, self-closing, with a plain string slug. The component looks up the slug and renders the registered canvas. An unknown slug renders a quiet note, not an error.
 4. Publishing a chapter (and `pnpm content:validate:source`) rejects a missing, expression-valued or unregistered slug, and a canvas tag with children. No arbitrary component name from MDX.
 5. The canvas is versioned by slug and spec. A breaking change gets a new slug; existing courses keep working.
-6. The reader renders the starting state on the server, so the canvas is readable before its script loads on a slow connection.
+6. The web reader renders the starting state on the server, so the canvas is readable before its script loads on a slow connection.
 7. The canvas never receives learner PII or secrets.
 8. Mentors can inspect every registered canvas at `/workspace/canvases`, in light and dark mode and at phone width, without importing a course.
 
-To add a canvas: add its slug to `slugs.ts` and run `pnpm sync-shared`, add a folder with `data.ts` and `spec.md` under `frontend/src/canvas/`, and add one line to the registry. The registry entry may use a reusable renderer or `kind: "custom"` with a reviewed component. Custom canvases still follow the same model, accessibility, teaching, and QA contracts.
+To add a canvas: add its slug to `slugs.ts` and run `pnpm --dir server sync-shared`, add a folder with `data.ts` and `spec.md` under `packages/learning-ui/src/canvas/`, and add one line to the registry. The registry entry may use a reusable renderer or `kind: "custom"` with a reviewed component. Custom canvases still follow the same model, accessibility, teaching, and QA contracts.
 
 This preserves the existing security model: MDX can only reach allowlisted components, and the canvas registry is a closed set.
 
@@ -574,3 +574,15 @@ A canvas is ready when:
 - the chapter is stronger with the canvas than without it.
 
 If the last condition is not true, remove the canvas.
+
+### Shared canvas development and verification
+
+Both web and desktop render the implementations in `packages/learning-ui/src/canvas/`. The old `frontend/src/canvas/` folder has been removed. Import canvases directly from `@buildment/learning-ui/canvas/...`; do not recreate the frontend folder or create a desktop-only copy. Keep canvas models, specs, renderers, and controls in the shared package; keep Next.js, Electron, credentials, and app API clients outside it.
+
+After adding or changing a canvas:
+
+1. Update the canonical slug list in `server/src/shared/canvas/slugs.ts` when needed, run `pnpm --dir server sync-shared`, and register the spec in `packages/learning-ui/src/canvas/registry.ts`.
+2. Run `pnpm --dir frontend install` and `pnpm --dir desktop install` to refresh both apps' local package snapshots. Include any resulting lockfile changes.
+3. Keep canvas tests in `frontend/tests/unit/canvas/`; new tests should import the implementation from `@buildment/learning-ui/canvas/...`. Run `pnpm --dir frontend exec vitest run tests/unit/canvas` and `node server/scripts/sync-shared.mjs --check`.
+4. Check both app typechecks and preview the interaction in web and desktop, including keyboard controls, narrow layouts, and light/dark themes. Use `desktop/tests/ui/blocks.spec.ts` for desktop block regression coverage.
+5. Release an updated desktop app before publishing lessons that require a new canvas slug. Canvas implementations are bundled with desktop; importing a lesson does not download new executable canvas code. Older desktop versions show the unavailable fallback for unknown slugs.

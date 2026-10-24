@@ -8,7 +8,7 @@ owner: interaction-designer + interactive-canvas-builder
 
 # Simulation kit
 
-The system design course has about 135 simulations. Building them one by one would never finish and would look like 135 different products. Instead we build **eight reusable renderers** once, on top of the existing canvas platform (`frontend/src/canvas/`), and most simulations become a `data.ts` and a `spec.md` for one of them. The same kit serves every later course (the AWS course, the ticketing and marketplace courses, data courses), so it is platform work, not course work.
+The system design course has about 135 simulations. Building them one by one would never finish and would look like 135 different products. Instead we build **eight reusable renderers** once, on top of the existing canvas platform (`packages/learning-ui/src/canvas/`), and most simulations become a `data.ts` and a `spec.md` for one of them. The same kit serves every later course (the AWS course, the ticketing and marketplace courses, data courses), so it is platform work, not course work.
 
 Everything here follows `10-interactive-canvases.md`: one claim per canvas, two to four primary inputs, a pure deterministic model with tests, predict before, "what changed" after, a transfer check, stated limits, theme tokens, dark mode, 375px phone layout, keyboard access, reduced motion.
 
@@ -18,7 +18,7 @@ Today's renderers (stepper, sequence, state machine, factor) show order and deci
 
 ## The shared simulation core: `sim`
 
-A small, pure TypeScript module, `frontend/src/canvas/sim/`, with no DOM code.
+A small, pure TypeScript module, `packages/learning-ui/src/canvas/sim/`, with no DOM code.
 
 - **Discrete-event and tick models.** A seeded random source (`mulberry32` or similar), a virtual clock in milliseconds, an event queue.
 - **Nodes, links and messages.** Nodes with roles and state; links with delay, jitter, drop rate; partitions as sets of cut links; node crash and restart.
