@@ -86,6 +86,8 @@ export type BlockState =
 
 /** Quiz-mode chapter: every question's last answer, for the wizard's initial state. */
 export type QuizChapterState = {
+  /** False until the learner presses Start; the reader shows no question before then. */
+  started: boolean;
   steps: Array<{ id: string; type: "QUIZ" | "OPEN_QUESTION" | "PREDICT" | "CODE" }>;
   blockIds: string[];
   initialAnswers: Record<string, string[]>;

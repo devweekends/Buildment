@@ -5,22 +5,25 @@ import { prisma } from "../../db/prisma.js";
 import { releaseContainsChapter } from "../courses/releases.js";
 import { NotFoundError } from "../../utils/errors.js";
 import { resolveCourseFamily } from "../../shared/lib/course-tracks.js";
+import { quizQuestionsUnlocked } from "../integrity/attempts.js";
 
 /** Initial state for a quiz-mode chapter's wizard: last answers, grades and the score once every question is attempted. */
 export async function loadQuizChapterState(chapterId: string, userId: string): Promise<QuizChapterState> {
   const chapter = await prisma.chapter.findUnique({ where: { id: chapterId }, select: { courseId: true, course: { select: { familySlug: true, variantFamily: true } } } });
   if (!chapter) throw new NotFoundError("Chapter not found");
-  const enrollment = await prisma.enrollment.findUnique({ where: { courseId_userId: { courseId: chapter.courseId, userId } }, select: { releaseId: true, variantSlug: true } });
+  const enrollment = await prisma.enrollment.findUnique({ where: { courseId_userId: { courseId: chapter.courseId, userId } }, select: { id: true, releaseId: true, variantSlug: true } });
   if (enrollment && !(await releaseContainsChapter(chapter.courseId, enrollment, chapter.course.familySlug, chapterId))) throw new NotFoundError("Chapter not found");
   const blocks = await prisma.block.findMany({
     where: { chapterId, archivedAt: null, type: { in: ["QUIZ", "OPEN_QUESTION", "PREDICT", "CODE"] } },
     orderBy: { order: "asc" },
     select: { id: true, type: true, config: true },
   });
+  // Readers outside an enrollment (mentors checking a course) have no proctored attempt to wait for.
+  const started = enrollment ? await quizQuestionsUnlocked(enrollment.id, chapterId) : true;
   const steps: QuizChapterState["steps"] = blocks.map(block => ({ id: block.id, type: block.type as QuizChapterState["steps"][number]["type"] }));
   const quizBlocks = blocks.filter(block => block.type === "QUIZ");
   const blockIds = quizBlocks.map((block) => block.id);
-  if (blockIds.length === 0) return { steps, blockIds, initialAnswers: {}, initialBlockGrades: {}, initialScoreSummary: null };
+  if (blockIds.length === 0) return { started, steps, blockIds, initialAnswers: {}, initialBlockGrades: {}, initialScoreSummary: null };
 
   const responses = await prisma.response.findMany({
     where: { blockId: { in: blockIds }, userId, status: { not: "DRAFT" } },
@@ -52,6 +55,7 @@ export async function loadQuizChapterState(chapterId: string, userId: string): P
 
   const allAttempted = blockIds.every((blockId) => latestByBlock.has(blockId));
   return {
+    started,
     steps,
     blockIds,
     initialAnswers: Object.fromEntries(blockIds.map((blockId) => [blockId, selectedFor(blockId)])),

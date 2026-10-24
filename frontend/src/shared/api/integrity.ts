@@ -81,6 +81,8 @@ export type IntegrityAttemptSession = {
   attemptId: string;
   attempt: number;
   startedAt: string;
+  /** The learner already pressed Start (or answered before), so the questions are sent. */
+  questionsShown: boolean;
   /** Flags already stored for this attempt, so the badge survives a reload. */
   flagCount: number;
   camera: {

@@ -837,6 +837,8 @@ model IntegrityAttempt {
   snapshotCount Int                   @default(0)
   startedAt     DateTime              @default(now())
   lastSeenAt    DateTime              @default(now())
+  /// When the learner pressed Start. Quiz questions are sent only after this.
+  questionsShownAt DateTime?
   events        IntegrityEvent[]
   snapshots     IntegritySnapshot[]
 
