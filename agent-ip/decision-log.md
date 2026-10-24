@@ -1,5 +1,15 @@
 # Agent IP decision log
 
+## 2026-10-24: Audit the resolved variant content of one shared course
+
+**Status:** Correction to the release framing and the inheritance audit. This is not a readiness claim.
+
+**Problem:** The readiness notes and the inheritance audit treated the shared source as "the FreshMarket course" and judged raw shared files. That misstates the product. The repository is one **Multi-vendor Marketplace** course. A learner's selected or assigned variant resolves that learner's curriculum from the shared modules, the variant order, omissions, overrides and replacements. The database slug `freshmarket-multi-vendor-marketplace-v3` is a legacy identifier, not the course identity.
+
+**Decision:** Audit the effective per-variant path. Apply `moduleOrder`, `omitLessonKeys`, full override files and exact replacements before judging a passage. Report inherited shared lessons, replacement-adapted lessons, effective findings and variant-authored references separately. A raw shared passage that a variant replaces or omits is not a defect for that learner. A passage that survives resolution and still names another product is. A variant-authored comparison to the shared example is allowed; presenting the reference product as the learner's own is not. Update `03-authoring-standards.md`, `06-quality-gates.md`, `platform-needs.md` and the readiness report to state this model.
+
+**Evidence:** `server/scripts/audit-marketplace-inheritance.ts` now applies the resolution steps. With no replacements yet, the effective findings are unchanged: 182 of 255 for services, 187 of 246 for handmade, 161 of 217 for home kitchens, 180 of 249 for digital goods and 194 of 265 for books. The same run lists 25, 11, 19, 6 and 12 variant-authored references for editorial review. All five tracks remain unavailable.
+
 ## 2026-10-24: Link the payment and lifecycle modules without releasing a variant
 
 **Status:** Work in progress. The five variant learner paths are still incomplete, so none of the new tracks is selectable. This entry records authored content and checks; it is not a G5 or G6 pass.

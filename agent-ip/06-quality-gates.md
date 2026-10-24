@@ -122,6 +122,20 @@ node agent-ip/scripts/audit-variant-repetition.mjs courses/<course-slug>/variant
 
 Repeated paragraphs of 45 or more words across chapters need editorial review even when each chapter passes the word-count audit. Rewrite the worked example, practice, failure test, and bridge around the chapter's actual decision; a passing prose count alone does not pass G5.
 
+Audit the **resolved** learner path, not only the shared source files. Apply the
+variant `moduleOrder`, `omitLessonKeys`, full overrides and exact replacements
+before judging a passage. Run:
+
+```bash
+cd server && pnpm exec tsx scripts/audit-marketplace-inheritance.ts
+```
+
+The audit reports inherited shared lessons, lessons adapted by replacements,
+effective findings after resolution, and variant-authored findings. Any effective
+finding in a released variant blocks the gate. A mention of the reference product
+in variant-authored prose is allowed only when the prose explicitly compares or
+credits the shared example; it must never present that product as the learner's own.
+
 It checks, per chapter:
 
 - prose words (≥ 1,200 concept/build, ≥ 700 checkpoint/gate);
@@ -300,6 +314,7 @@ The technical validator runs, not reads.
 - [ ] Every SVG is sanitized (if static), theme-aware, responsive, and has a text alternative.
 - [ ] Every SVG has no scripts, `foreignObject`, raw inline event attributes, external hrefs, or remote fonts.
 - [ ] Every link resolves and matches the claim.
+- [ ] The resolved variant path is audited after module order, omissions, overrides and replacements, not only the raw shared files.
 - [ ] There are no secrets, private URLs, or personal data in the source.
 - [ ] The answer key, rubric, hidden tests, and solution are not in client-visible content.
 - [ ] Rate limits, auth checks, and validation are present where the chapter claims they are.

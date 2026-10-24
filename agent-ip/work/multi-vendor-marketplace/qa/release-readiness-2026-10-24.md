@@ -9,7 +9,7 @@ status: five-variants-not-ready
 
 ## Course identity
 
-The published database course is `freshmarket-multi-vendor-marketplace-v3`. The repository source remains `courses/multi-vendor-marketplace/`. Its manifest targets that existing slug, so a repository release updates the same course ID and keeps existing learner history. The configured instructor is `devweekends@gmail.com`. The catalog title is **Multi-vendor Marketplace**; the available product track is **FreshMarket grocery**.
+The repository is one shared **Multi-vendor Marketplace** course, not six separate courses. A learner sees the generic catalog entry, chooses or receives a variant, and the immutable release resolves that variant's curriculum. FreshMarket is the default variant and currently the only selectable one. The published database row keeps the legacy slug `freshmarket-multi-vendor-marketplace-v3`; that slug identifies the existing course and learner history, not the course identity. The repository source remains `courses/multi-vendor-marketplace/`, and a release updates the same course ID. The configured instructor is `devweekends@gmail.com`.
 
 `repositoryPublish` is `false` and `availableVariantSlugs` is `[grocery]`. Those two settings stay unchanged until every new track has a complete learner path and passes the inheritance gate.
 
@@ -24,10 +24,23 @@ The published database course is `freshmarket-multi-vendor-marketplace-v3`. The 
 | digital-goods / Midad | AQIB and ASIF, owner-reported; date not supplied | 7 modules, 30 lessons | No |
 | books / Hamesh | AQIB and ASIF, owner-reported; date not supplied | 7 modules, 42 lessons | No |
 
-The five roadmaps have distinct domain models, build steps, and capstones. A product-name replacement in the grocery lessons cannot teach those flows. `availableVariantSlugs: [grocery]` prevents new learner choice and random assignment to the unfinished tracks. Historical selections and pinned releases remain unchanged.
+The five roadmaps have distinct domain models, build steps, and capstones. A product-name replacement alone cannot teach those flows. `availableVariantSlugs: [grocery]` prevents new learner choice and random assignment to the unfinished tracks. Historical selections and pinned releases remain unchanged.
+
+## Runtime resolution model
+
+The shared source is the base curriculum. A variant resolves its own path in this order:
+
+1. `moduleOrder` selects the modules in the variant path.
+2. `omitLessonKeys` removes shared lessons from the modules that remain.
+3. A full override `file` replaces the shared lesson.
+4. Exact `replacements` adapt a shared lesson's text.
+5. `%%product.name%%` resolves at read time to the learner's product name.
+
+The inheritance audit now applies the first four before it judges a passage. A raw shared sentence that a variant replaces or omits is not part of that learner's path. The audit still evaluates the resolved text, not the intent behind it.
 
 ## What this pass changed
 
+- The inheritance audit now evaluates the resolved variant path after module order, omissions, full overrides and exact replacements. It also reports variant-authored references separately, so a comparison to the shared example is not confused with a leaked product identity.
 - **SkillSlot M9 authorization** (9 lessons) is linked as `services-booking-authorization` and replaces inherited shared module 08 in the SkillSlot module order. Its quiz option lengths were rebalanced and all eight non-quiz lessons were expanded past the prose threshold. The course audit reports zero findings for the SkillSlot variant tree.
 - **Midad M19 payment** (5 lessons) is authored and linked as `digital-goods-payment-processing` between M18 checkout and M20 fulfilment. M18 no longer leads to a missing payment module. The module adds the verified-webhook path, server-priced PaymentIntent, and test-mode evidence.
 - **Hamesh M20 payment** (4 lessons) is authored and linked as `books-payment-processing` after M19 checkout. It covers one PaymentIntent across split bookshop orders, server-side pricing from snapshots, an idempotent verified webhook, double submit, and the one-copy race.
@@ -45,7 +58,7 @@ All commands were run on the live tree on 2026-10-24.
 | `pnpm --dir server content:validate:source --course multi-vendor-marketplace` | Pass: 672 of 672 chapters, 0 failed |
 | `pnpm --dir server content:audit --course multi-vendor-marketplace --strict` | Pass: 0 errors, 0 warnings across 26 module dirs |
 | `node agent-ip/scripts/audit-variant-repetition.mjs courses/multi-vendor-marketplace/variants` | Pass: 0 paragraphs of 45 or more words repeated |
-| `pnpm exec tsx scripts/audit-marketplace-inheritance.ts` | Fails the release condition: 182, 187, 161, 180 and 194 grocery-specific inherited lessons remain in services, handmade, home-kitchens, digital-goods and books respectively |
+| `pnpm exec tsx scripts/audit-marketplace-inheritance.ts` | Fails the release condition: after applying module order, omissions, overrides and replacements, 182, 187, 161, 180 and 194 effective lessons still contain FreshMarket details in services, handmade, home-kitchens, digital-goods and books. The audit also lists variant-authored references for editorial review |
 | `node agent-ip/scripts/audit-course.mjs` per variant tree | Pass for all five authored variant trees: 0 findings each |
 | Server and frontend typecheck | Pass |
 | Relevant server tests (`course-tracks`, `course-variant-assignment`, `course-variant-package`, `repository-course-publish`) | Pass: 24 tests |
@@ -57,17 +70,19 @@ The `audit-course.mjs` pass covers the authored variant folders only. It does no
 
 ## Inheritance evidence
 
-The inheritance audit counts shared lessons a variant still inherits after overrides and omissions, then flags those whose raw text names FreshMarket or grocery details.
+The inheritance audit counts shared lessons a variant inherits after module order and omissions, applies any exact replacements, then flags the resolved text that still names FreshMarket or grocery details. It also scans variant-authored files separately.
 
-| Variant | Inherited shared lessons | Flagged with FreshMarket details | Released |
-|---|---:|---:|---:|
-| services | 255 | 182 | No |
-| handmade | 246 | 187 | No |
-| home-kitchens | 217 | 161 | No |
-| digital-goods | 249 | 180 | No |
-| books | 265 | 194 | No |
+| Variant | Inherited shared lessons | Adapted by replacements | Effective FreshMarket findings | Variant-authored references | Released |
+|---|---:|---:|---:|---:|---:|
+| services | 255 | 0 | 182 | 25 | No |
+| handmade | 246 | 0 | 187 | 11 | No |
+| home-kitchens | 217 | 0 | 161 | 19 | No |
+| digital-goods | 249 | 0 | 180 | 6 | No |
+| books | 265 | 0 | 194 | 12 | No |
 
-A zero lexical finding would only start the review. Today every variant still fails the condition for release. The flagged files are concentrated in the shared project skeleton, MongoDB rationale, config, authentication, authorization, vendor store, product management, catalogue, cart, cache and deploy modules. Many are carry-over modules whose prose still names FreshMarket or grocery examples rather than the variant product.
+The effective findings are the release blocker. The variant-authored references are editorial review items: an explicit comparison or credit to the shared FreshMarket example is allowed, but a passage that presents FreshMarket as the learner's own product is a defect. Both lists need line-by-line review.
+
+A zero lexical finding would only start the review. Today every variant still fails the condition for release. The effective findings are concentrated in the shared project skeleton, MongoDB rationale, config, authentication, authorization, vendor store, product management, catalogue, cart, cache and deploy modules. Many are carry-over modules whose prose still names FreshMarket or grocery examples rather than the variant product.
 
 ## Remaining blocker by variant
 
