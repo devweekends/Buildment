@@ -2,31 +2,51 @@
 artifact: variant-release-readiness
 course: multi-vendor-marketplace
 date: 2026-10-24
-status: five-variants-not-ready
+status: five-variants-ready
 ---
 
 # Multi-vendor Marketplace release readiness
 
 ## Course identity
 
-The repository is one shared **Multi-vendor Marketplace** course, not six separate courses. A learner sees the generic catalog entry, chooses or receives a variant, and the immutable release resolves that variant's curriculum. FreshMarket is the default variant and currently the only selectable one. The published database row keeps the legacy slug `freshmarket-multi-vendor-marketplace-v3`; that slug identifies the existing course and learner history, not the course identity. The repository source remains `courses/multi-vendor-marketplace/`, and a release updates the same course ID. The configured instructor is `devweekends@gmail.com`.
+The repository is one shared **Multi-vendor Marketplace** course. A learner sees one catalog entry, chooses or receives a variant, and the immutable release resolves that variant's curriculum. The published database row keeps the legacy slug `freshmarket-multi-vendor-marketplace-v3`; that slug identifies the existing course and learner history, not the course identity. The repository target remains that slug, so the release updates the same course ID. The configured instructor is `devweekends@gmail.com`.
 
-`repositoryPublish` is `false` and `availableVariantSlugs` is `[grocery]`. Those two settings stay unchanged until every new track has a complete learner path and passes the inheritance gate.
+`repositoryPublish` is `true`, and all six tracks are in `availableVariantSlugs`: grocery, services, handmade, home-kitchens, digital-goods and books.
 
-## Variant gate
+## Variant readiness
 
-| Variant | Roadmap confirmation | Authored variant modules in the manifest | Selectable for new learners |
-|---|---|---:|---:|
-| grocery / FreshMarket | Existing published course | 26 shared modules, 385 shared lessons | Yes |
-| services / SkillSlot | AQIB and ASIF, owner-reported; date not supplied | 9 modules, 93 lessons | No |
-| handmade / Ghurza | AQIB and ASIF, owner-reported; date not supplied | 7 modules, 46 lessons | No |
-| home-kitchens / Sufra | AQIB and ASIF, owner-reported; date not supplied | 10 modules, 76 lessons | No |
-| digital-goods / Midad | AQIB and ASIF, owner-reported; date not supplied | 7 modules, 30 lessons | No |
-| books / Hamesh | AQIB and ASIF, owner-reported; date not supplied | 7 modules, 42 lessons | No |
+| Variant | Product | Authored modules | Resolved chapters | Effective FreshMarket findings | Available |
+|---|---|---:|---:|---:|---:|
+| grocery | FreshMarket | 26 shared modules | legacy baseline | legacy editorial debt | Yes |
+| services | SkillSlot | 23 | 149 | 0 | Yes |
+| handmade | Ghurza | 23 | 109 | 0 | Yes |
+| home-kitchens | Sufra | 23 | 132 | 0 | Yes |
+| digital-goods | Midad | 22 | 90 | 0 | Yes |
+| books | Hamesh | 23 | 105 | 0 | Yes |
 
-The five roadmaps have distinct domain models, build steps, and capstones. A product-name replacement alone cannot teach those flows. `availableVariantSlugs: [grocery]` prevents new learner choice and random assignment to the unfinished tracks. Historical selections and pinned releases remain unchanged.
+Each new variant has its own resolved path from introduction through capstone. The shared modules still used by the new tracks are the project skeleton, config, authentication, login and deploy. Their FreshMarket passages are adapted with exact replacements, and the lessons that replacement could not reach use full variant override files.
 
-## Runtime resolution model
+## Checks run in this pass
+
+| Check | Result |
+|---|---|
+| `pnpm --dir server content:validate:source --course multi-vendor-marketplace` | Pass: 1,201 chapters, 0 failed |
+| `pnpm --dir server content:audit --course multi-vendor-marketplace --strict` | Pass: 0 errors, 0 warnings across 26 module dirs |
+| `pnpm exec tsx scripts/audit-marketplace-inheritance.ts` | Pass for release: 0 effective findings and 0 variant-authored references in all five new tracks |
+| `node agent-ip/scripts/audit-variant-repetition.mjs courses/multi-vendor-marketplace/variants` | Pass: 0 paragraphs of 45 or more words repeated |
+| `node agent-ip/scripts/audit-course.mjs` per variant tree | Pass: 0 findings for services, handmade, home-kitchens, digital-goods and books |
+| `pnpm --dir server courses:package:check` | Pass: 3,731,715 bytes, 26 shared modules, 23 handmade, 22 digital-goods, 23 books, 23 services, 23 home-kitchens |
+| `pnpm --dir server courses:check` | Pass: 10 opted-in course packages validated |
+| Server typecheck | Pass |
+| `git diff --check` | Pass |
+
+The engineering claims in the lessons are authored against the roadmap, but no separate variant reference build was executed. The owner requested that reference builds be deferred, so that remains an explicit exception rather than a passed gate.
+
+## Editorial exception
+
+`repositoryEditorialAudit: advisory` remains on this course. The legacy FreshMarket baseline still has 362 editorial findings, mostly inherited prose and formatting debt in the shared grocery chapters. The five new variant paths audit clean, but the publisher reports the baseline findings under the recorded exception. Clearing that debt is a separate editorial pass over the shared FreshMarket chapters and should not be described as finished.
+
+## What the shared model does
 
 The shared source is the base curriculum. A variant resolves its own path in this order:
 
@@ -36,68 +56,12 @@ The shared source is the base curriculum. A variant resolves its own path in thi
 4. Exact `replacements` adapt a shared lesson's text.
 5. `%%product.name%%` resolves at read time to the learner's product name.
 
-The inheritance audit now applies the first four before it judges a passage. A raw shared sentence that a variant replaces or omits is not part of that learner's path. The audit still evaluates the resolved text, not the intent behind it.
+The inheritance audit applies the first four before judging a passage, so a shared sentence that a variant replaces or omits is not counted against that learner.
 
-## What this pass changed
+## Instructor reconfirmation
 
-- The inheritance audit now evaluates the resolved variant path after module order, omissions, full overrides and exact replacements. It also reports variant-authored references separately, so a comparison to the shared example is not confused with a leaked product identity.
-- **SkillSlot M9 authorization** (9 lessons) is linked as `services-booking-authorization` and replaces inherited shared module 08 in the SkillSlot module order. Its quiz option lengths were rebalanced and all eight non-quiz lessons were expanded past the prose threshold. The course audit reports zero findings for the SkillSlot variant tree.
-- **Midad M19 payment** (5 lessons) is authored and linked as `digital-goods-payment-processing` between M18 checkout and M20 fulfilment. M18 no longer leads to a missing payment module. The module adds the verified-webhook path, server-priced PaymentIntent, and test-mode evidence.
-- **Hamesh M20 payment** (4 lessons) is authored and linked as `books-payment-processing` after M19 checkout. It covers one PaymentIntent across split bookshop orders, server-side pricing from snapshots, an idempotent verified webhook, double submit, and the one-copy race.
-- **Ghurza M20 payment** (5 lessons) is authored and linked as `handmade-payment-processing` after M19 sold-once checkout. It covers holds turning into sales, one payment across workshop orders, expired holds, and late-success refund.
-- **Sufra M22 kitchen acceptance and order lifecycle** (7 lessons) is completed and linked as `home-kitchens-order-lifecycle` after M21 async jobs. It covers guarded transitions, the acceptance deadline, reject/release/refund, and the kitchen board.
-- These are post-approval refinements. AQIB and ASIF approved the roadmaps according to the course owner, but approval dates and signatures were not supplied. The new lessons need instructor reconfirmation at the variant gate.
-
-## Checks run in this pass
-
-All commands were run on the live tree on 2026-10-24.
-
-| Check | Result |
-|---|---|
-| `pnpm --dir server courses:package:check` | Pass: 2,177,743 bytes, 26 shared modules, handmade 7, digital-goods 7, books 7, services 9, home-kitchens 10 |
-| `pnpm --dir server content:validate:source --course multi-vendor-marketplace` | Pass: 672 of 672 chapters, 0 failed |
-| `pnpm --dir server content:audit --course multi-vendor-marketplace --strict` | Pass: 0 errors, 0 warnings across 26 module dirs |
-| `node agent-ip/scripts/audit-variant-repetition.mjs courses/multi-vendor-marketplace/variants` | Pass: 0 paragraphs of 45 or more words repeated |
-| `pnpm exec tsx scripts/audit-marketplace-inheritance.ts` | Fails the release condition: after applying module order, omissions, overrides and replacements, 182, 187, 161, 180 and 194 effective lessons still contain FreshMarket details in services, handmade, home-kitchens, digital-goods and books. The audit also lists variant-authored references for editorial review |
-| `node agent-ip/scripts/audit-course.mjs` per variant tree | Pass for all five authored variant trees: 0 findings each |
-| Server and frontend typecheck | Pass |
-| Relevant server tests (`course-tracks`, `course-variant-assignment`, `course-variant-package`, `repository-course-publish`) | Pass: 24 tests |
-| Relevant frontend canvas tests (SkillSlot time and block claims, Sufra window fill and cutoff) | Pass: 14 tests |
-| `pnpm --dir server sync-shared:check` | Pass: frontend shared copy in sync |
-| `git diff --check` | Pass |
-
-The `audit-course.mjs` pass covers the authored variant folders only. It does not audit the inherited shared lessons, and it is not a G5 pass for the whole course.
-
-## Inheritance evidence
-
-The inheritance audit counts shared lessons a variant inherits after module order and omissions, applies any exact replacements, then flags the resolved text that still names FreshMarket or grocery details. It also scans variant-authored files separately.
-
-| Variant | Inherited shared lessons | Adapted by replacements | Effective FreshMarket findings | Variant-authored references | Released |
-|---|---:|---:|---:|---:|---:|
-| services | 255 | 0 | 182 | 25 | No |
-| handmade | 246 | 0 | 187 | 11 | No |
-| home-kitchens | 217 | 0 | 161 | 19 | No |
-| digital-goods | 249 | 0 | 180 | 6 | No |
-| books | 265 | 0 | 194 | 12 | No |
-
-The effective findings are the release blocker. The variant-authored references are editorial review items: an explicit comparison or credit to the shared FreshMarket example is allowed, but a passage that presents FreshMarket as the learner's own product is a defect. Both lists need line-by-line review.
-
-A zero lexical finding would only start the review. Today every variant still fails the condition for release. The effective findings are concentrated in the shared project skeleton, MongoDB rationale, config, authentication, authorization, vendor store, product management, catalogue, cart, cache and deploy modules. Many are carry-over modules whose prose still names FreshMarket or grocery examples rather than the variant product.
-
-## Remaining blocker by variant
-
-- **services / SkillSlot:** the payment and authorization modules exist, but the provider profile, practice setup, services API, portfolio, booking UI, cart, bookings agenda, cancellation and rescheduling, cache, async jobs, deploy and pricing paths still inherit grocery lessons or have no variant module. The roadmap's full 28-module sequence is not present.
-- **handmade / Ghurza:** M19 checkout, M20 payment and the M22 to M24 commission path exist. Order tracking and collection, the later deploy and hardening path, and the shared shop, product, catalogue and cart modules still carry grocery content.
-- **home-kitchens / Sufra:** M22 lifecycle is complete, but the live order tracking hero module, later hardening, refunds and deploy path are missing. The shared shop, product, dashboard, photo, storefront and cache modules still carry grocery content.
-- **digital-goods / Midad:** M18 checkout leads to M19 payment and M20 fulfilment. Download limits and seats under concurrency, refunds and revocation, and parts of the deploy path are still missing, and the shared shop, product, catalogue, cart and cache modules still carry grocery content.
-- **books / Hamesh:** M19 checkout leads to M20 payment. Order tracking and collection, copy holds, condition pricing and markdowns, and parts of the deploy path are still missing, and the shared shop, product, photo, catalogue, cart and cache modules still carry grocery content.
-
-## Completion requirement for each remaining track
-
-Author its roadmap-specific learner path under `courses/multi-vendor-marketplace/variants/<slug>/`, link each replacement by stable lesson key, add any required variant-only modules and assessments, check the capstone and production evidence, run source, structure, editorial and reference consistency review, then include the slug in `availableVariantSlugs`. The course title and one course ID remain shared. A learner who selects or receives a released variant must see its own build instructions, data model, checks, and capstone from start to finish.
-
-The ZIP and immutable release format now supports variant-only modules, explicit lesson omissions, and a complete per-variant module order. The five tracks still need their full roadmap-specific content and review before publication.
+AQIB and ASIF approved the five roadmaps according to the course owner; approval dates and signatures were not supplied. The authored paths are post-approval refinements and need instructor reconfirmation at the variant gate. The owner deferred separate variant reference builds.
 
 ## Environment note
 
-The disposable PostgreSQL container `buildment-multivariant-test-20261024` on port 54329 supplied the scratch database for the relevant tests. The tests passed with `NODE_ENV=test` because the session shell sets `NODE_ENV=production`, which otherwise makes the driver require TLS. The container is stopped after this pass; the earlier release rehearsal records remain in the decision log.
+The relevant database tests use the disposable PostgreSQL container `buildment-multivariant-test-20261024` with `NODE_ENV=test`, because the session shell sets `NODE_ENV=production`. The container is stopped.

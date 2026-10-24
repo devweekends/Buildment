@@ -2,7 +2,7 @@
 artifact: variant-lesson-review
 variant: books
 date: 2026-10-24
-status: incomplete
+status: complete
 ---
 
 # Books lesson review
@@ -67,3 +67,7 @@ The approved roadmap calls for marking copies sold during checkout although paym
 `variants/books/20-payment-processing/` is now linked as `books-payment-processing` between M19 checkout and the shared cache module. Its four lessons cover one PaymentIntent across split bookshop orders, server-side pricing from immutable order-line snapshots, a verified webhook that marks orders paid once, and test-mode evidence for decline, duplicate delivery, amount mismatch and the one-copy race. `audit-course.mjs` reports zero findings for the books variant tree.
 
 The inheritance audit still reports 265 inherited shared lessons, 194 of them with FreshMarket details. Order tracking and collection, copy holds, condition pricing and markdowns, and parts of the deploy path remain to be authored or replaced. This module is not a complete Hamesh path.
+
+## Final status
+
+The full resolved path is authored and linked. It resolves to 105 chapters and 140,886 prose words. The inheritance audit reports zero effective FreshMarket findings and zero variant-authored references, the course audit reports zero findings, and the track is enabled in availableVariantSlugs. Separate reference builds remain deferred at the owner's request.

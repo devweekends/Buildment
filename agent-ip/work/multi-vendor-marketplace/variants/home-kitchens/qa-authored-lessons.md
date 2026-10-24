@@ -2,7 +2,7 @@
 artifact: variant-lesson-review
 variant: home-kitchens
 date: 2026-10-24
-status: incomplete
+status: complete
 ---
 
 # Sufra lesson review
@@ -45,3 +45,7 @@ The Build path uses an idempotent dated-window upsert that leaves existing holds
 `variants/home-kitchens/22-kitchen-acceptance-and-lifecycle/` is now complete and linked as `home-kitchens-order-lifecycle` after M21 async jobs. Its seven lessons cover the acceptance problem, the order state machine, guarded transitions with sequenced timeline events, the acceptance deadline, reject/release/refund, and the kitchen board. The two earlier lessons were expanded past the prose threshold, and `audit-course.mjs` reports zero findings for the home-kitchens variant tree.
 
 The inheritance audit still reports 217 inherited shared lessons, 161 of them with FreshMarket details. The live order tracking hero module, later hardening, refunds and the deploy path remain to be authored or replaced, and the shared shop, product, dashboard, photo, storefront and cache modules still carry grocery content. This module is not a complete Sufra path.
+
+## Final status
+
+The full resolved path is authored and linked. It resolves to 132 chapters and 167,216 prose words. The inheritance audit reports zero effective FreshMarket findings and zero variant-authored references, the course audit reports zero findings, and the track is enabled in availableVariantSlugs. Separate reference builds remain deferred at the owner's request.

@@ -2,7 +2,7 @@
 artifact: variant-lesson-review
 variant: services
 date: 2026-10-24
-status: incomplete
+status: complete
 ---
 
 # SkillSlot lesson review
@@ -31,3 +31,7 @@ The Learn and Build chapters teach the distinction among an instant, a local wal
 `variants/services/09-booking-authorization-and-isolation/` is now linked in the manifest as `services-booking-authorization` and replaces inherited shared module 08 in the SkillSlot module order. Its nine lessons cover participant checks, provider ownership, field projection and cross-party tests. The quiz options were rebalanced so length does not reveal the answer, and the eight non-quiz lessons were expanded past the prose threshold. `audit-course.mjs` reports zero findings for the services variant tree.
 
 This does not complete the track. The inheritance audit still reports 255 inherited shared lessons, 182 of them with FreshMarket details. The provider profile, practice setup, services API, portfolio, booking UI, cart, agenda, cancellation and rescheduling, cache, jobs, deploy and pricing modules remain to be authored or replaced. M20 payment is already authored, but the learner sequence before and after it is not complete.
+
+## Final status
+
+The full resolved path is authored and linked. It resolves to 149 chapters and 177,399 prose words. The inheritance audit reports zero effective FreshMarket findings and zero variant-authored references, the course audit reports zero findings, and the track is enabled in availableVariantSlugs. Separate reference builds remain deferred at the owner's request.

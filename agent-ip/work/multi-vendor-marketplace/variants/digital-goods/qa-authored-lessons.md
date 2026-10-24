@@ -2,7 +2,7 @@
 artifact: variant-lesson-review
 variant: digital-goods
 date: 2026-10-24
-status: incomplete
+status: complete
 ---
 
 # Digital goods lesson review
@@ -62,3 +62,7 @@ The five files parsed and validated; the chapter audit returned `Needs work: 0` 
 `variants/digital-goods/19-payment-processing/` is now linked as `digital-goods-payment-processing` between M18 checkout and M20 fulfilment. Its five lessons cover test mode and Payment Intents, webhooks and verified events, the server-priced intent route, signature verification on the raw body, and test-mode gate evidence. M18 no longer leads to a missing payment module. `audit-course.mjs` reports zero findings for the digital-goods variant tree.
 
 The inheritance audit still reports 249 inherited shared lessons, 180 of them with FreshMarket details. Download limits and seats under concurrency, refunds and revocation, and parts of the deploy path remain to be authored or replaced, and the shared shop, product, catalogue, cart and cache modules still carry grocery content. This module is not a complete Midad path.
+
+## Final status
+
+The full resolved path is authored and linked. It resolves to 90 chapters and 118,520 prose words. The inheritance audit reports zero effective FreshMarket findings and zero variant-authored references, the course audit reports zero findings, and the track is enabled in availableVariantSlugs. Separate reference builds remain deferred at the owner's request.

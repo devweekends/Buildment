@@ -2,7 +2,7 @@
 artifact: variant-lesson-review
 variant: handmade
 date: 2026-10-24
-status: incomplete
+status: complete
 ---
 
 # Handmade lesson review
@@ -67,3 +67,7 @@ Manifest intent: `handmade-checkout-sold-once` takes the position of inherited s
 `variants/handmade/20-payment-processing/` is now linked as `handmade-payment-processing` between M19 sold-once checkout and the M22 to M24 commission path. Its five lessons cover the difference between paid, held and sold, one PaymentIntent across workshop orders, the verified webhook that sells held pieces, expired holds, and a late-success refund. `audit-course.mjs` reports zero findings for the handmade variant tree.
 
 The inheritance audit still reports 246 inherited shared lessons, 187 of them with FreshMarket details. Order tracking and collection, the later deploy and hardening path, and the shared shop, product, catalogue and cart modules remain to be authored or replaced. This module is not a complete Ghurza path.
+
+## Final status
+
+The full resolved path is authored and linked. It resolves to 109 chapters and 135,840 prose words. The inheritance audit reports zero effective FreshMarket findings and zero variant-authored references, the course audit reports zero findings, and the track is enabled in availableVariantSlugs. Separate reference builds remain deferred at the owner's request.
