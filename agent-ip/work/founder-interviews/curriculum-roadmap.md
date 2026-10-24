@@ -2,16 +2,16 @@
 artifact: curriculum-roadmap
 course: founder-interviews
 version: 1
-status: draft
+status: confirmed by the sponsor (see roadmap-confirmation.md)
 owner: curriculum-architect
-instructors_reviewed: []
+instructors_reviewed: [Zeeshan (sponsor and architect)]
 drafted_before_roadmap: true
 research: research.md (G1)
 ---
 
 # Curriculum roadmap: The Founder Interview: Ownership, Impact and Your Story
 
-> Chapters were drafted before G2B instructor sign-off, on the sponsor's standing instruction (see `decision-log.md`), as with courses 3 to 13. If instructors change this roadmap, the chapters will be revised to match.
+> Chapters were drafted before G2B instructor sign-off, on the sponsor's standing instruction (see `decision-log.md`), as with courses 3 to 13. The sponsor signed the roadmap on 2026-10-24 (`roadmap-confirmation.md`); a second instructor may still confirm in review.
 
 ## In one paragraph
 A practical course for fellows applying to startups and small remote teams, where the interviewer is often the founder or the person they will work for. These interviews are usually free conversations, and every claim is followed by "why?" and "how do you know?" until the fellow's real decisions show. Fellows learn to tell one real story they owned instead of what they usually do, to separate their part from the team's, to state impact with a before, an after, a source and an honest share, and to find the numbers they never looked at. They learn to survive a chain of whys on every resume line with the reason they had at the time, to work a case question aloud, to explain their best technical work to a founder and then to an engineer who asks "why not this?", and to name strengths and weaknesses with evidence. Each module ends with practice against an AI interviewer that runs on the fellow's own key, digs with "why", and gives strengths and weaknesses, or with a written version of the same practice that completes the same gate. The capstone is a story bank of five owned stories, an audited resume, one full practice interview and a five-minute defence with a mentor.
@@ -151,21 +151,21 @@ Not applicable for version 1. Role packs (engineering, product, design, operatio
 ## Out of scope
 Salary negotiation, offers, visas and contracts; coding interviews and live coding (course 8); investor pitching; validity statistics; body-language tricks and power poses; lie detection; personality typing; consulting case frameworks by name; pronunciation and accent training; applicant tracking systems and keyword stuffing; five whys as a safety root-cause method; project ideas handed to the learner (the course asks fellows to build around a need of their own and does not choose the project for them).
 
-## Open decisions for instructors
+## Open decisions (resolved at G2B by the sponsor)
 | # | Decision | Recommendation | Instructor decision |
 |---|---|---|---|
-| 1 | Time budget | 1,175 minutes (about 20 hours) with every AI drill, about 18 hours on the written path, against the brief's 9 to 15. Either run the course over four weeks at 5 hours, or cut scope (for example merge module 6 into module 7, or drop one Learn chapter per module) | |
-| 2 | Five whys credit | "Attributed to Taiichi Ohno, an engineer who helped build a Japanese car maker's production system" (as drafted in 3.2), without the company name | |
-| 3 | Researcher names | At most two or three per chapter, in plain words, only as the dossier's credits table allows | |
-| 4 | Founder probe list | Confirm with instructors who have hired in startups (dossier finding 3 rests on first-party essays, not research) | |
-| 5 | Accent bias | One plain paragraph in 6.4 (as drafted), followed at once by what the fellow controls | |
-| 6 | Role packs as variants | Defer until after the first cohort | |
-| 7 | AI drill defaults | whyDepth 3 in most drills and 5 in module 3; maxTurns 10, and 20 in the capstone; the separate judge call is the platform's choice | |
-| 8 | Written fallback uses the same rubric flags as the AI feedback | Yes, so mentors compare like with like | |
-| 9 | Spoken practice | One optional spoken mock with a peer or mentor in the capstone, since text practice does not train speaking pace | |
-| 10 | Arabic answers | Instructors decide whether gate answers may be written in Arabic | |
-| 11 | Tapping study | Use without numbers in 5.3 (as drafted), or drop | |
-| 12 | Capstone own work | At least two of five stories and the resume audit must be the fellow's own; Hadeel only for the rest | |
-| 13 | Spoken evidence | A timed spoken run reported in gates 4 to 6 and the live defence; or require a recorded voice note at gate 5 despite data costs | |
-| 14 | Sources on the page | Resume rewrites may print a source in brackets ("my manager's figure"), or keep it for speaking only | |
-| 15 | Pass rule | One rule for every gate: no part Not yet, at most one Partly | |
+| 1 | Time budget | 1,175 minutes (about 20 hours) with every AI drill, about 18 hours on the written path, against the brief's 9 to 15. Either run the course over four weeks at 5 hours, or cut scope (for example merge module 6 into module 7, or drop one Learn chapter per module) | Keep all seven modules; about 20 hours over about four weeks (Zeeshan, 2026-10-24) |
+| 2 | Five whys credit | "Attributed to Taiichi Ohno, an engineer who helped build a Japanese car maker's production system" (as drafted in 3.2), without the company name | As recommended (Zeeshan, 2026-10-24) |
+| 3 | Researcher names | At most two or three per chapter, in plain words, only as the dossier's credits table allows | As recommended (Zeeshan, 2026-10-24) |
+| 4 | Founder probe list | Confirm with instructors who have hired in startups (dossier finding 3 rests on first-party essays, not research) | Confirmed as written (Zeeshan, 2026-10-24) |
+| 5 | Accent bias | One plain paragraph in 6.4 (as drafted), followed at once by what the fellow controls | As recommended (Zeeshan, 2026-10-24) |
+| 6 | Role packs as variants | Defer until after the first cohort | Deferred until after the first cohort (Zeeshan, 2026-10-24) |
+| 7 | AI drill defaults | whyDepth 3 in most drills and 5 in module 3; maxTurns 10, and 20 in the capstone; the separate judge call is the platform's choice | whyDepth 3, 5 in module 3, 4 in module 5; capstone: two drills of 12 at depth 2 (Zeeshan, 2026-10-24) |
+| 8 | Written fallback uses the same rubric flags as the AI feedback | Yes, so mentors compare like with like | Yes, through self-tagging on both paths (Zeeshan, 2026-10-24) |
+| 9 | Spoken practice | One optional spoken mock with a peer or mentor in the capstone, since text practice does not train speaking pace | As recommended (Zeeshan, 2026-10-24) |
+| 10 | Arabic answers | Instructors decide whether gate answers may be written in Arabic | Deferred: English for this version (Zeeshan, 2026-10-24) |
+| 11 | Tapping study | Use without numbers in 5.3 (as drafted), or drop | Use without numbers (Zeeshan, 2026-10-24) |
+| 12 | Capstone own work | At least two of five stories and the resume audit must be the fellow's own; Hadeel only for the rest | As recommended (Zeeshan, 2026-10-24) |
+| 13 | Spoken evidence | A timed spoken run reported in gates 4 to 6 and the live defence; or require a recorded voice note at gate 5 despite data costs | Timed spoken run and the live defence (Zeeshan, 2026-10-24) |
+| 14 | Sources on the page | Resume rewrites may print a source in brackets ("my manager's figure"), or keep it for speaking only | Print a short source in brackets (Zeeshan, 2026-10-24) |
+| 15 | Pass rule | One rule for every gate: no part Not yet, at most one Partly | As recommended (Zeeshan, 2026-10-24) |
