@@ -1,5 +1,5 @@
 slug: multi-vendor-marketplace
-repositoryPublish: false
+repositoryPublish: true
 repositoryTargetSlug: freshmarket-multi-vendor-marketplace-v3
 repositoryEditorialAudit: advisory
 legacySourceAudit: true
@@ -18,6 +18,11 @@ coverUrl: https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&
 family: multi-vendor-marketplace
 availableVariantSlugs:
   - grocery
+  - services
+  - handmade
+  - home-kitchens
+  - digital-goods
+  - books
 modules:
   - key: module-01-introduction
     dir: 01-introduction
@@ -4931,6 +4936,269 @@ variants:
       - books-condition-pricing
       - books-closing
   - slug: services
+    overrides:
+      - lessonKey: lesson-02-01-set-the-scene
+        file: variants/services/02-project-skeleton/02.01-set-the-scene.md
+      - lessonKey: lesson-02-02-why-structure-matters
+        replacements:
+          - from: "whyItMatters=\"FreshMarket's module folders"
+            to: "whyItMatters=\"SkillSlot's module folders"
+          - from: "FreshMarket uses module folders on the server so each capability"
+            to: "SkillSlot uses module folders on the server so each capability"
+      - lessonKey: lesson-02-03-what-youll-build
+        replacements:
+          - from: "`auth/` is about logging in and `products/` is about listing groceries, but `db.js` isn't about any single feature"
+            to: "`auth/` is about logging in and `products/` is about listing the services a provider sells, but `db.js` isn't about any single feature"
+          - from: "← root (name yours: GreenBasket, FreshMarket, …)"
+            to: "← root (name yours: GreenBasket, SkillSlot, …)"
+      - lessonKey: lesson-02-04-layer-vs-module
+        replacements:
+          - from: "whyItMatters=\"FreshMarket uses modules inside the server"
+            to: "whyItMatters=\"SkillSlot uses modules inside the server"
+          - from: "like \"a customer can't buy negative apples.\""
+            to: "like \"a client can't be sold a slot that ends before it starts.\""
+          - from: "If it's about listing and updating groceries, it's"
+            to: "If it's about listing and updating the services a provider sells, it's"
+      - lessonKey: lesson-02-08-create-the-repo
+        file: variants/services/02-project-skeleton/02.08-create-the-repo.md
+      - lessonKey: lesson-02-09-scaffold-server-folders
+        replacements:
+          - from: "whyItMatters=\"FreshMarket's server boot order matters"
+            to: "whyItMatters=\"SkillSlot's server boot order matters"
+      - lessonKey: lesson-02-10-server-package-and-scripts
+        replacements:
+          - from: "is how you run FreshMarket locally every day."
+            to: "is how you run SkillSlot locally every day."
+      - lessonKey: lesson-02-12-scaffold-client-folders
+        file: variants/services/02-project-skeleton/02.12-scaffold-client-folders.md
+      - lessonKey: lesson-02-13-client-shell-and-routing
+        replacements:
+          - from: "whyItMatters=\"FreshMarket uses React Router so shoppers and vendors navigate smoothly"
+            to: "whyItMatters=\"SkillSlot uses React Router so clients and providers navigate smoothly"
+          - from: "- Render a short subtitle — e.g. \"Local grocery marketplace\""
+            to: "- Render a short subtitle — e.g. \"Book paid time with independent providers\""
+          - from: "if it fights \"local grocery.\""
+            to: "if it fights \"a paid session.\""
+      - lessonKey: lesson-02-14-api-client-helper
+        replacements:
+          - from: "whyItMatters=\"Every FreshMarket screen uses the same client helper"
+            to: "whyItMatters=\"Every SkillSlot screen uses the same client helper"
+      - lessonKey: lesson-02-17-practice
+        replacements:
+          - from: "\"name\":\"FreshMarket API\""
+            to: "\"name\":\"SkillSlot API\""
+      - lessonKey: lesson-02-19-checklist
+        file: variants/services/02-project-skeleton/02.19-checklist.md
+      - lessonKey: lesson-04-01-set-the-scene
+        replacements:
+          - from: "whyItMatters=\"Until MongoDB connects, FreshMarket forgets every vendor and product when you stop the server.\""
+            to: "whyItMatters=\"Until MongoDB connects, SkillSlot forgets every provider and Service when you stop the server.\""
+          - from: "Picture a market hall with the lights on but the refrigerators dead — shoppers would assume the produce is cold."
+            to: "Picture a provider's calendar page with the lights on but no free slot behind it — clients would assume the open hour is bookable."
+      - lessonKey: lesson-04-02-why-secrets-matter
+        replacements:
+          - from: "compromise every FreshMarket deployment."
+            to: "compromise every SkillSlot deployment."
+          - from: "`mongodb://127.0.0.1:27017/freshmarket-dev`"
+            to: "`mongodb://127.0.0.1:27017/skillslot-dev`"
+          - from: "FreshMarket teaches config early because every later chapter"
+            to: "SkillSlot teaches config early because every later chapter"
+      - lessonKey: lesson-04-03-what-youll-build
+        replacements:
+          - from: "whyItMatters=\"FreshMarket fails fast at boot if"
+            to: "whyItMatters=\"SkillSlot fails fast at boot if"
+          - from: "FreshMarket teaches config early because every later chapter"
+            to: "SkillSlot teaches config early because every later chapter"
+      - lessonKey: lesson-04-04-env-vs-hardcoded
+        replacements:
+          - from: "title=\"Where FreshMarket configuration lives\""
+            to: "title=\"Where SkillSlot configuration lives\""
+          - from: "MONGODB_URI=mongodb://127.0.0.1:27017/freshmarket-dev"
+            to: "MONGODB_URI=mongodb://127.0.0.1:27017/skillslot-dev"
+      - lessonKey: lesson-04-05-local-mongodb
+        replacements:
+          - from: "whyItMatters=\"Local `mongodb://127.0.0.1:27017/freshmarket` differs from Atlas"
+            to: "whyItMatters=\"Local `mongodb://127.0.0.1:27017/skillslot` differs from Atlas"
+          - from: "like `freshmarket-dev` or `greenbasket-dev`, not the generic `test`"
+            to: "like `skillslot-dev` or `greenbasket-dev`, not the generic `test`"
+          - from: "- `freshmarket-dev`"
+            to: "- `skillslot-dev`"
+      - lessonKey: lesson-04-06-prime-your-thinking
+        file: variants/services/04-config-and-database/04.06-prime-your-thinking.md
+      - lessonKey: lesson-04-07-quiz
+        file: variants/services/04-config-and-database/04.07-quiz.md
+      - lessonKey: lesson-04-09-create-env-files
+        replacements:
+          - from: "whyItMatters=\"FreshMarket ships `.env.example` with placeholders"
+            to: "whyItMatters=\"SkillSlot ships `.env.example` with placeholders"
+      - lessonKey: lesson-04-10-config-module
+        replacements:
+          - from: "whyItMatters=\"FreshMarket's config module throws at boot if"
+            to: "whyItMatters=\"SkillSlot's config module throws at boot if"
+      - lessonKey: lesson-04-11-db-module
+        replacements:
+          - from: "so FreshMarket handles many shoppers without exhausting MongoDB connections."
+            to: "so SkillSlot handles many clients without exhausting MongoDB connections."
+      - lessonKey: lesson-04-12-wire-db-on-boot
+        replacements:
+          - from: "whyItMatters=\"FreshMarket won't accept cart requests until MongoDB is ready"
+            to: "whyItMatters=\"SkillSlot won't accept cart requests until MongoDB is ready"
+      - lessonKey: lesson-04-13-health-check-db-status
+        replacements:
+          - from: "whyItMatters=\"FreshMarket's `/health` reports"
+            to: "whyItMatters=\"SkillSlot's `/health` reports"
+      - lessonKey: lesson-04-14-client-env
+        replacements:
+          - from: "whyItMatters=\"FreshMarket's client gets `VITE_API_URL` only"
+            to: "whyItMatters=\"SkillSlot's client gets `VITE_API_URL` only"
+          - from: "FreshMarket — System status"
+            to: "SkillSlot — System status"
+      - lessonKey: lesson-04-16-recap-and-whats-next
+        replacements:
+          - from: "- Grocery domain fields — `unit`, `stockQty`, `isPerishable`, etc."
+            to: "- Service and calendar fields — `durationMinutes`, `priceMinor`, `bufferMinutes`, etc."
+          - from: "Your skeleton has a memory — Chapter 5 fills it with grocery data."
+            to: "Your skeleton has a memory — Chapter 5 fills it with providers, Services and Bookings."
+      - lessonKey: lesson-06-01-set-the-scene
+        replacements:
+          - from: "whyItMatters=\"FreshMarket cannot know which cart or store belongs to whom until auth identifies the caller.\""
+            to: "whyItMatters=\"SkillSlot cannot know which cart or Booking belongs to whom until auth identifies the caller.\""
+          - from: "Compass shows users, stores, products — seeded with two vendors and grocery fields. Your ownership chain is real: User → Store → Product, with CartItem and Order schemas ready for later chapters."
+            to: "Compass shows users, providers, services, weekly rules and bookings — seeded with five Gaza providers and clients in three time zones. Your ownership chain is real: User → Provider → Service → Booking, with CartItem and Order schemas ready for later chapters."
+          - from: "Your grocery data exists — next you control who can act on it."
+            to: "Your provider and booking data exists — next you control who can act on it."
+      - lessonKey: lesson-06-02-why-auth-matters
+        replacements:
+          - from: "Anyone can browse produce (public catalogue later). To run a stall or place orders tied to your name"
+            to: "Anyone can browse provider listings (public catalogue later). To publish services or take bookings tied to your name"
+          - from: "FreshMarket uses brief access tokens plus longer refresh tokens"
+            to: "SkillSlot uses brief access tokens plus longer refresh tokens"
+      - lessonKey: lesson-06-03-what-youll-build
+        replacements:
+          - from: "FreshMarket's auth module is the security foundation every vendor and customer route builds on."
+            to: "SkillSlot's auth module is the security foundation every provider and client route builds on."
+      - lessonKey: lesson-06-04-sessions-vs-jwt
+        file: variants/services/06-authentication-api/06.04-sessions-vs-jwt.md
+      - lessonKey: lesson-06-06-what-a-jwt-is
+        replacements:
+          - from: "FreshMarket access tokens prove identity for cart and vendor routes without server-side session lookup."
+            to: "SkillSlot access tokens prove identity for cart and provider routes without server-side session lookup."
+          - from: "## Access token payload for FreshMarket"
+            to: "## Access token payload for SkillSlot"
+      - lessonKey: lesson-06-07-prime-your-thinking
+        file: variants/services/06-authentication-api/06.07-prime-your-thinking.md
+      - lessonKey: lesson-06-08-quiz
+        file: variants/services/06-authentication-api/06.08-quiz.md
+      - lessonKey: lesson-06-10-scaffold-auth-module
+        replacements:
+          - from: "FreshMarket keeps register/login/refresh together so auth logic does not scatter across the server."
+            to: "SkillSlot keeps register/login/refresh together so auth logic does not scatter across the server."
+      - lessonKey: lesson-06-11-wire-auth-routes
+        replacements:
+          - from: "FreshMarket mounts auth at `/api/auth/register`, `/api/auth/login` — predictable URLs for the client."
+            to: "SkillSlot mounts auth at `/api/auth/register`, `/api/auth/login` — predictable URLs for the client."
+      - lessonKey: lesson-06-12-register-handler
+        replacements:
+          - from: "FreshMarket vendors and customers share the same register flow; role selection branches their experience."
+            to: "SkillSlot providers and clients share the same register flow; role selection branches their experience."
+      - lessonKey: lesson-06-13-login-handler
+        replacements:
+          - from: "FreshMarket returns the same error for bad email and bad password — prevents account enumeration."
+            to: "SkillSlot returns the same error for bad email and bad password — prevents account enumeration."
+      - lessonKey: lesson-06-14-access-token
+        replacements:
+          - from: "FreshMarket attaches access tokens in the Authorization header for cart, store, and product routes."
+            to: "SkillSlot attaches access tokens in the Authorization header for cart, service, and booking routes."
+      - lessonKey: lesson-06-15-refresh-token
+        replacements:
+          - from: "Shoppers stay logged in on FreshMarket without re-entering password every fifteen minutes."
+            to: "Clients stay logged in on SkillSlot without re-entering password every fifteen minutes."
+      - lessonKey: lesson-06-16-otp-verification
+        file: variants/services/06-authentication-api/06.16-otp-verification.md
+      - lessonKey: lesson-06-17-auth-middleware
+        replacements:
+          - from: "Every protected FreshMarket route uses the same middleware — no copy-pasted token parsing."
+            to: "Every protected SkillSlot route uses the same middleware — no copy-pasted token parsing."
+      - lessonKey: lesson-06-20-checklist
+        file: variants/services/06-authentication-api/06.20-checklist.md
+      - lessonKey: lesson-07-02-why-token-storage-matters
+        replacements:
+          - from: "FreshMarket's client must store tokens safely and attach them to API calls without leaking them in URLs or logs."
+            to: "SkillSlot's client must store tokens safely and attach them to API calls without leaking them in URLs or logs."
+          - from: "FreshMarket's verify step proves the full browser path"
+            to: "SkillSlot's verify step proves the full browser path"
+      - lessonKey: lesson-07-03-what-youll-build
+        replacements:
+          - from: "FreshMarket shoppers and vendors enter through the same auth screens — role determines where they land next."
+            to: "SkillSlot clients and providers enter through the same auth screens — role determines where they land next."
+      - lessonKey: lesson-07-04-where-tokens-live
+        file: variants/services/07-login-and-registration/07.04-where-tokens-live.md
+      - lessonKey: lesson-07-05-the-401-retry-loop
+        replacements:
+          - from: "users get kicked to login every 15 minutes while grocery shopping"
+            to: "users get kicked to login every 15 minutes while picking a slot"
+          - from: "In FreshMarket terms: a logged-in customer who clicks a vendor-only action gets 403."
+            to: "In SkillSlot terms: a logged-in client who clicks a provider-only action gets 403."
+      - lessonKey: lesson-07-06-prime-your-thinking
+        replacements:
+          - from: "Token storage choice in FreshMarket is partly a bet on how well you sanitize user-generated content later."
+            to: "Token storage choice in SkillSlot is partly a bet on how well you sanitize user-generated content later."
+      - lessonKey: lesson-07-07-quiz
+        file: variants/services/07-login-and-registration/07.07-quiz.md
+      - lessonKey: lesson-07-09-scaffold-auth-pages
+        replacements:
+          - from: "FreshMarket keeps auth pages separate from shop and vendor dashboard routes."
+            to: "SkillSlot keeps auth pages separate from browse and provider dashboard routes."
+      - lessonKey: lesson-07-10-auth-context-or-hook
+        replacements:
+          - from: "FreshMarket's header shows login vs avatar based on auth context"
+            to: "SkillSlot's header shows login vs avatar based on auth context"
+      - lessonKey: lesson-07-11-register-page
+        replacements:
+          - from: "FreshMarket register page catches obvious errors before a round-trip to `/api/auth/register`."
+            to: "SkillSlot register page catches obvious errors before a round-trip to `/api/auth/register`."
+      - lessonKey: lesson-07-12-verify-otp-page
+        replacements:
+          - from: "FreshMarket blocks vendor onboarding until OTP succeeds — this page is the gate."
+            to: "SkillSlot blocks provider onboarding until OTP succeeds — this page is the gate."
+      - lessonKey: lesson-07-13-login-page
+        replacements:
+          - from: "Returning FreshMarket users land here"
+            to: "Returning SkillSlot users land here"
+      - lessonKey: lesson-07-14-api-interceptor
+        replacements:
+          - from: "FreshMarket components call `api.get('/cart')` without manually adding tokens"
+            to: "SkillSlot components call `api.get('/cart')` without manually adding tokens"
+      - lessonKey: lesson-07-15-protected-route-wrapper
+        replacements:
+          - from: "plainEnglish=\"A wrapper component that redirects to login if no valid token — guards vendor dashboard and cart.\" whyItMatters=\"FreshMarket `/vendor/*` routes render nothing until auth context confirms a logged-in vendor.\""
+            to: "plainEnglish=\"A wrapper component that redirects to login if no valid token — guards provider dashboard and cart.\" whyItMatters=\"SkillSlot `/vendor/*` routes render nothing until auth context confirms a logged-in provider.\""
+      - lessonKey: lesson-07-16-verify-in-browser
+        replacements:
+          - from: "FreshMarket auth debugging starts in Network"
+            to: "SkillSlot auth debugging starts in Network"
+      - lessonKey: lesson-07-18-checklist
+        file: variants/services/07-login-and-registration/07.18-checklist.md
+      - lessonKey: lesson-23-01-set-the-scene
+        replacements:
+          - from: "Nothing new to learn about grocery or JWT here."
+            to: "Nothing new to learn about time zones or JWT here."
+      - lessonKey: lesson-23-04-vps-vs-paas
+        replacements:
+          - from: "<MermaidDiagram title=\"A deployed FreshMarket has three running parts\""
+            to: "<MermaidDiagram title=\"A deployed SkillSlot has three running parts\""
+          - from: "Both are valid homes for FreshMarket. Pick one and document it"
+            to: "Both are valid homes for SkillSlot. Pick one and document it"
+      - lessonKey: lesson-23-05-prime-your-thinking
+        replacements:
+          - from: "Deploy chapter moves FreshMarket from localhost to a URL you can share."
+            to: "Deploy chapter moves SkillSlot from localhost to a URL you can share."
+          - from: "| Topic | Why for FreshMarket |"
+            to: "| Topic | Why for SkillSlot |"
+          - from: "FreshMarket's deploy checklist exists because missing one variable fails silently until traffic hits."
+            to: "SkillSlot's deploy checklist exists because missing one variable fails silently until traffic hits."
+      - lessonKey: lesson-23-15-recap-and-whats-next
+        file: variants/services/23-deploy/23.15-recap-and-whats-next.md
     modules:
       - key: services-introduction
         dir: 01-introduction
@@ -5459,6 +5727,267 @@ variants:
             goal: >-
               Commit the action matrix and two-client, two-provider IDOR tests with exact field
               projections.
+      - key: services-provider-profile
+        dir: 10-provider-profile
+        title: Provider profile API
+        lessons:
+          - key: services-provider-profile-01
+            file: 10.01-set-the-scene.md
+            title: '10.1 A provider needs a public profile'
+            goal: >-
+              Explain why an account needs a separate public provider record, and name the fields, projections and one-per-account rule that record must hold.
+          - key: services-provider-profile-02
+            file: 10.02-profile-routes-and-zone.md
+            title: '10.2 Profile fields, time zone and ownership'
+            goal: >-
+              Build the create, owner-read, public-read and update routes for one provider profile per account with validated zone and two response projections.
+          - key: services-provider-profile-03
+            file: 10.03-checklist.md
+            title: '10.3 Provider profile gate'
+            goal: >-
+              Prove one profile per account, a validated working zone, separate public and owner views, and a refused cross-provider update.
+      - key: services-practice-setup
+        dir: 11-practice-setup
+        title: Practice setup
+        lessons:
+          - key: services-practice-setup-01
+            file: 11.01-set-the-scene.md
+            title: '11.1 The provider who has no practice page'
+            goal: >-
+              Separate the three states of a provider account and explain why an account with no profile is routed to setup instead of shown an empty dashboard.
+          - key: services-practice-setup-02
+            file: 11.02-onboarding-and-settings.md
+            title: '11.2 Onboarding, settings and the routing gate'
+            goal: >-
+              Build the provider route group, the profile guard, a setup form with a browser zone picker and a settings page that warns before a zone change.
+          - key: services-practice-setup-03
+            file: 11.03-checklist.md
+            title: '11.3 Practice setup gate'
+            goal: >-
+              Prove the empty-account redirect, the setup create, the return path, the zone decision and a 360 pixel layout in a running browser.
+      - key: services-api
+        dir: 12-services-api
+        title: Services API
+        lessons:
+          - key: services-api-01
+            file: 12.01-set-the-scene.md
+            title: '12.1 A service is a priced block of time'
+            goal: >-
+              Model a service as a duration in whole fifteen minute blocks, a buffer the provider keeps, a price in minor units and a cancellation policy that is copied at purchase.
+          - key: services-api-02
+            file: 12.02-service-crud-and-policy.md
+            title: '12.2 Service fields, duration, buffer and cancellation policy'
+            goal: >-
+              Build authenticated create, list, update and archive routes for services, with block validation, minor unit prices, ownership refusals and an archived state that cannot be booked.
+          - key: services-api-03
+            file: 12.03-checklist.md
+            title: '12.3 Services API gate'
+            goal: >-
+              Prove block validation, minor unit pricing, ownership refusals, archive without deletion and a purchase snapshot that survives every service edit.
+      - key: services-portfolio
+        dir: 14-portfolio
+        title: Portfolio
+        lessons:
+          - key: services-portfolio-01
+            file: 14.01-set-the-scene.md
+            title: '14.1 A client hires evidence, not a list'
+            goal: >-
+              Explain why a provider's images decide a booking, why the bytes live in object storage and only a URL and public identifier live in MongoDB, and what ownership, alt text and a 360px card cost.
+          - key: services-portfolio-02
+            file: 14.02-portfolio-photos-and-uploads.md
+            title: '14.2 Portfolio photos, avatar and ownership'
+            goal: >-
+              Extend the Provider record with an avatar and six portfolio images, upload through an ownership-checked route, write the reference before deleting the old asset, and prove the rules with failing tests.
+          - key: services-portfolio-03
+            file: 14.03-checklist.md
+            title: '14.3 Portfolio gate'
+            goal: >-
+              Prove that provider images live in object storage with only a reference in MongoDB, that ownership and alt text rules hold under a direct request, and that a replacement leaves no orphan.
+      - key: services-browse-catalogue
+        dir: 16-browse-catalogue-api
+        title: Browse catalogue API
+        lessons:
+          - key: services-browse-catalogue-01
+            file: 16.01-set-the-scene.md
+            title: '16.1 Clients search for a person and a time'
+            goal: >-
+              Explain what a browse page must prove to a client in a few seconds, which filters earn their place, how pagination stays stable, and why the public response may not carry a provider's private fields.
+          - key: services-browse-catalogue-02
+            file: 16.02-browse-and-next-slot.md
+            title: '16.2 Browse providers, next free slot and the N+1 trap'
+            goal: >-
+              Build a paginated public provider list that reads its page in a fixed number of queries, stores nextAvailableAt instead of computing it per card, and projects an allow list of fields safe for a stranger.
+          - key: services-browse-catalogue-03
+            file: 16.03-checklist.md
+            title: '16.3 Browse catalogue gate'
+            goal: >-
+              Prove a fixed query count for a page of cards, filters that keep their promise, stable pagination and a public body that carries no provider's private field.
+      - key: services-slot-picker
+        dir: 17-slot-picker
+        title: Slot picker
+        lessons:
+          - key: services-slot-picker-01
+            file: 17.01-set-the-scene.md
+            title: '17.1 Two clocks in one picker'
+            goal: >-
+              Explain why every slot must show the client's IANA zone and the provider's zone together, how a daylight saving change makes a local hour repeat or vanish, and why only the UTC start may travel to the cart.
+          - key: services-slot-picker-02
+            file: 17.02-slot-picker-and-two-zones.md
+            title: '17.2 Slots in the client zone and the provider zone'
+            goal: >-
+              Build a seven day slot picker that formats each UTC start in both zones, labels a clock change day, works by keyboard at 360 pixels, and emits a cart intent carrying the instant rather than the label.
+          - key: services-slot-picker-03
+            file: 17.03-checklist.md
+            title: '17.3 Slot picker gate'
+            goal: >-
+              Prove one instant rendered in two zones for two clients, a labelled clock change day, a keyboard-only selection, a 360 pixel layout and a cart intent that carries the UTC start.
+      - key: services-cart
+        dir: 18-cart
+        title: Slot cart
+        lessons:
+          - key: services-cart-01
+            file: 18.01-set-the-scene.md
+            title: '18.1 A cart of requested slots'
+            goal: >-
+              Explain why a cart line is a request for one start instant that reserves nothing, and how provider grouping, snapshots and client scoping shape the cart.
+          - key: services-cart-02
+            file: 18.02-slot-cart-and-totals.md
+            title: '18.2 Add slots, group by provider and price the cart'
+            goal: >-
+              Extend the cart line with the price and policy the client saw, add and remove lines behind a soft availability check, and return a cart grouped by provider with a server total.
+          - key: services-cart-03
+            file: 18.03-checklist.md
+            title: '18.3 Slot cart gate'
+            goal: >-
+              Prove a two-provider slot cart on a 360 pixel screen, that a refused add writes no claim, and that no client can reach another client's cart.
+      - key: services-bookings-agenda
+        dir: 21-bookings-agenda
+        title: Bookings agenda
+        lessons:
+          - key: services-bookings-agenda-01
+            file: 21.01-set-the-scene.md
+            title: '21.1 A booking is not an order'
+            goal: >-
+              Separate the money record from the time record, and decide what a client booking list, a provider agenda and a calendar file each read, show and hide.
+          - key: services-bookings-agenda-02
+            file: 21.02-agenda-and-calendar-file.md
+            title: '21.2 My bookings, provider agenda and the calendar file'
+            goal: >-
+              Read both agendas from Booking records, project them per viewer and per zone, and generate an iCalendar file whose instants are UTC and whose description names the provider zone.
+          - key: services-bookings-agenda-03
+            file: 21.03-checklist.md
+            title: '21.3 Bookings agenda gate'
+            goal: >-
+              Prove with a recorded demo that one paid cart reaches two agendas, that the calendar file opens with the right instant, and that private places stay private.
+      - key: services-cancellation-rescheduling
+        dir: 22-cancellation-and-rescheduling
+        title: Cancellation and rescheduling
+        lessons:
+          - key: services-cancellation-rescheduling-01
+            file: 22.01-set-the-scene.md
+            title: '22.1 A booking that has to move'
+            goal: >-
+              Decide refunds from the policy the client accepted, price a partial refund in minor units, and treat a reschedule as one atomic swap rather than a cancel and a new booking.
+          - key: services-cancellation-rescheduling-02
+            file: 22.02-cancel-reschedule-and-refund.md
+            title: '22.2 Cancel, reschedule and refund by policy'
+            goal: >-
+              Quote a refund from the booking snapshot, cancel with an idempotent refund, and move a session by claiming the new blocks and releasing the old ones in one transaction.
+          - key: services-cancellation-rescheduling-03
+            file: 22.03-checklist.md
+            title: '22.3 Cancellation and rescheduling gate'
+            goal: >-
+              Prove a policy-based partial refund in test mode, a swap that loses its slot without damage, and a cancellation racing a reschedule with exactly one winner.
+      - key: services-cache-search
+        dir: 23-cache-and-search
+        title: Cache and search
+        lessons:
+          - key: services-cache-search-01
+            file: 23.01-set-the-scene.md
+            title: '23.1 Availability is a display, not a promise'
+            goal: >-
+              Separate the fast read path that shows offers from the write path that owns time, so a stale cache can only cost a retry.
+          - key: services-cache-search-02
+            file: 23.02-availability-cache-and-search.md
+            title: '23.2 Cache display data and search providers'
+            goal: >-
+              Add a revision-keyed cache in front of the availability engine and a text search route, with a MongoDB path that survives a Redis outage.
+          - key: services-cache-search-03
+            file: 23.03-checklist.md
+            title: '23.3 Cache and search gate'
+            goal: >-
+              Prove the cache changes after a hold, the reads survive a Redis outage and the search route uses an index instead of a scan.
+      - key: services-async-jobs
+        dir: 24-async-jobs
+        title: Async jobs and queues
+        lessons:
+          - key: services-async-jobs-01
+            file: 24.01-set-the-scene.md
+            title: '24.1 What should not happen inside a request'
+            goal: >-
+              Move messages, reminders and sweeps out of the request path, and keep a durable record so a Redis outage delays work instead of losing it.
+          - key: services-async-jobs-02
+            file: 24.02-reminders-and-hold-expiry.md
+            title: '24.2 Reminders, hold expiry and cache invalidation'
+            goal: >-
+              Run confirmation messages, movable reminder jobs, a repeatable hold expiry sweep and derived value refreshes in a separate worker with retries and dedup.
+          - key: services-async-jobs-03
+            file: 24.03-checklist.md
+            title: '24.3 Async jobs gate'
+            goal: >-
+              Prove the worker runs apart from the API, moves reminders on a reschedule and releases a due hold exactly once under retries.
+      - key: services-concurrency-evidence
+        dir: 26-concurrency-evidence
+        title: Concurrency and clock evidence
+        lessons:
+          - key: services-concurrency-evidence-01
+            file: 26.01-set-the-scene.md
+            title: '26.1 Twenty clients, one slot'
+            goal: >-
+              Decide what counts as proof that one provider block is sold once, and plan the race, replay, clock and expiry evidence before running anything.
+          - key: services-concurrency-evidence-02
+            file: 26.02-parallel-and-clock-evidence.md
+            title: '26.2 Parallel booking and clock-change evidence'
+            goal: >-
+              Run twenty parallel checkouts at one offered start, prove the claim index, report a clock-change week across two zones, and settle the hold expiry race.
+          - key: services-concurrency-evidence-03
+            file: 26.03-checklist.md
+            title: '26.3 Concurrency and clock gate'
+            goal: >-
+              Present one-winner race evidence, the claim index proof, a clock-change week and an expiry race that a mentor can rerun from the committed commands.
+      - key: services-coupons
+        dir: 27-coupons
+        title: Coupons and pricing
+        lessons:
+          - key: services-coupons-01
+            file: 27.01-set-the-scene.md
+            title: '27.1 A coupon is a server-owned price change'
+            goal: >-
+              Treat a discount as a server-computed price change that is capped, recorded once and refunded from the amount actually paid.
+          - key: services-coupons-02
+            file: 27.02-provider-coupons-and-refunds.md
+            title: '27.2 Provider-funded coupons, caps and refunds'
+            goal: >-
+              Charge a server-computed total with a capped provider coupon, reserve the redemption once, and refund from the amount actually paid.
+          - key: services-coupons-03
+            file: 27.03-checklist.md
+            title: '27.3 Coupon gate'
+            goal: >-
+              Prove one discounted payment, one capped campaign under concurrency and one refund that equals the amount actually paid.
+      - key: services-closing
+        dir: 28-closing
+        title: Closing and capstone
+        lessons:
+          - key: services-closing-01
+            file: 28.01-set-the-scene.md
+            title: '28.1 Ship and document SkillSlot'
+            goal: >-
+              Turn the repository into something a stranger can run: README, environment example, final ERD, booking state diagram, evidence index, authorization matrix and demo script.
+          - key: services-closing-02
+            file: 28.02-checklist.md
+            title: '28.2 Five-minute demo and capstone defense'
+            goal: >-
+              Perform the five-minute SkillSlot demo from a written script and answer the eight defense questions with evidence from your own repository.
     moduleOrder:
       - services-introduction
       - module-02-project-skeleton
@@ -5469,23 +5998,25 @@ variants:
       - module-06-authentication-api
       - module-07-login-and-registration
       - services-booking-authorization
-      - module-09-vendor-store-api
-      - module-10-open-your-shop
-      - module-11-manage-products-api
+      - services-provider-profile
+      - services-practice-setup
+      - services-api
       - services-provider-dashboard-hours
-      - module-13-product-photos
+      - services-portfolio
       - services-availability-engine
-      - module-14-browse-catalogue-api
-      - module-15-shop-the-marketplace
-      - module-16-cart-api
-      - module-17-your-cart
+      - services-browse-catalogue
+      - services-slot-picker
+      - services-cart
       - services-holds-checkout
       - services-payment-confirmation
-      - module-21-cache-and-search
-      - module-22-async-jobs-and-queues
+      - services-bookings-agenda
+      - services-cancellation-rescheduling
+      - services-cache-search
+      - services-async-jobs
       - module-23-deploy
-      - module-25-promotions-and-pricing
-      - module-99-closing
+      - services-concurrency-evidence
+      - services-coupons
+      - services-closing
   - slug: home-kitchens
     overrides:
       - lessonKey: lesson-06-20-checklist
