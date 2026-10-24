@@ -1,5 +1,33 @@
 # Agent IP decision log
 
+## 2026-10-24: Audit the resolved variant content of one shared course
+
+**Status:** Correction to the release framing and the inheritance audit. This is not a readiness claim.
+
+**Problem:** The readiness notes and the inheritance audit treated the shared source as "the FreshMarket course" and judged raw shared files. That misstates the product. The repository is one **Multi-vendor Marketplace** course. A learner's selected or assigned variant resolves that learner's curriculum from the shared modules, the variant order, omissions, overrides and replacements. The database slug `freshmarket-multi-vendor-marketplace-v3` is a legacy identifier, not the course identity.
+
+**Decision:** Audit the effective per-variant path. Apply `moduleOrder`, `omitLessonKeys`, full override files and exact replacements before judging a passage. Report inherited shared lessons, replacement-adapted lessons, effective findings and variant-authored references separately. A raw shared passage that a variant replaces or omits is not a defect for that learner. A passage that survives resolution and still names another product is. A variant-authored comparison to the shared example is allowed; presenting the reference product as the learner's own is not. Update `03-authoring-standards.md`, `06-quality-gates.md`, `platform-needs.md` and the readiness report to state this model.
+
+**Evidence:** `server/scripts/audit-marketplace-inheritance.ts` now applies the resolution steps. With no replacements yet, the effective findings are unchanged: 182 of 255 for services, 187 of 246 for handmade, 161 of 217 for home kitchens, 180 of 249 for digital goods and 194 of 265 for books. The same run lists 25, 11, 19, 6 and 12 variant-authored references for editorial review. All five tracks remain unavailable.
+
+## 2026-10-24: Link the payment and lifecycle modules without releasing a variant
+
+**Status:** Work in progress. The five variant learner paths are still incomplete, so none of the new tracks is selectable. This entry records authored content and checks; it is not a G5 or G6 pass.
+
+**Decision:** Link only modules whose lesson sequence is complete and whose source passes the structure audit. This pass adds SkillSlot M9 booking authorization, Midad M19 payment, Hamesh M20 payment, Ghurza M20 payment, and Sufra M22 kitchen acceptance and lifecycle. SkillSlot M9 replaces inherited shared module 08 in the module order. The other modules sit at their roadmap positions. Keep `availableVariantSlugs: [grocery]` and `repositoryPublish: false`. Do not open a mergeable publishing pull request while the inheritance gate reports thousands of grocery-specific inherited lessons.
+
+**Evidence:** `courses:package:check` produces a 2,177,743-byte package with 26 shared modules and 7, 7, 7, 9 and 10 own modules for handmade, digital goods, books, services and home kitchens. Source validation passes 672 of 672 chapters. The strict structure audit reports 0 errors and 0 warnings. The repetition audit reports 0 repeated paragraphs. The per-variant `audit-course.mjs` runs report 0 findings. The inheritance audit still reports 182 of 255, 187 of 246, 161 of 217, 180 of 249 and 194 of 265 inherited shared lessons with FreshMarket details for services, handmade, home kitchens, digital goods and books.
+
+**Open gates:** The shared shop, product, catalogue, cart, cache and deploy modules still carry grocery content for every variant. Several later modules remain unwritten, including SkillSlot cancellation and rescheduling, Midad download limits and refunds, Hamesh collection and holds, Ghurza tracking and deploy, and Sufra live tracking and deploy. The new lessons are post-approval refinements, so AQIB and ASIF must reconfirm their sequences. Reference builds remain deferred at the owner's request.
+
+## 2026-10-24: Keep FreshMarket as one course and release variants when complete
+
+**Status:** The course owner reports that AQIB and ASIF approved the five variant roadmaps; dates and signed comments were not supplied. The owner requested one Multi-vendor Marketplace course with a product-specific curriculum for each learner's chosen or assigned track.
+
+**Decision:** Keep the existing course ID and learner releases. Adopt stable keys for the 385 FreshMarket lessons and target the existing published slug from the repository package. Name the catalog course Multi-vendor Marketplace. Make grocery selectable now; keep services, handmade, home kitchens, digital goods, and books unavailable until their full learner paths are authored and reviewed. Do not treat roadmap text or `%%product.name%%` replacement as completed variant content. Preserve historical variant selections and progress.
+
+**Open gates:** The five variant lesson paths and reference builds do not exist in this repository. The FreshMarket editorial audit reports 362 findings, and seven reference consistency topics remain open. The owner requested that reference builds be deferred for now, so this is a recorded exception to the normal variant gate, not a passing G5/G6 result. `repositoryEditorialAudit: advisory` records the owner's requested exception for this existing course update, but `repositoryPublish` remains false until the completed variant release is reviewed. Existing quiz explanations and punctuation use `legacySourceAudit` during stable-key adoption.
+
 ## 2026-10-24: Publish existing course inventory with visible editorial exceptions (v0.4.6)
 
 **Status:** The user explicitly requested that all existing courses appear on the platform after seeing that only one course was opted in.

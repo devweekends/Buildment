@@ -9,7 +9,7 @@ application database records publication separately.
 
 ## Current courses
 
-Nine manifest-backed courses have a `course.yaml` and publish from this tree.
+Ten manifest-backed courses have a `course.yaml`; nine of them publish from this tree.
 The **FreshMarket — Multi-Vendor Grocery Marketplace** course also lives in
 `multi-vendor-marketplace/` (385 lessons across 26 modules). It uses the legacy
 importer and is already published in the application database.
@@ -56,6 +56,10 @@ as an explicit publication exception: they pass source and strict structural
 validation, but their current editorial audit findings remain visible in the
 release log and still need content revisions. This exception does not change
 the normal quality bar for future courses.
+
+`build-with-ai` (course 13, Learn and Build with AI) is in review and is not
+opted in: its roadmap sign-off (G2B) and human review are still pending. It
+passes source validation, the strict structure audit and the editorial audit.
 
 `system-design` is published as a five-hour, two-topic lab, with six lessons.
 Its catalog title and description say that the full curriculum is still in
