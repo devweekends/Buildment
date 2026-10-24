@@ -51,6 +51,7 @@ Reports: `critique-a.md`, `critique-b.md`, `revision-1.md`, `critique-a-r2.md`, 
 - At 375px: chapter 2.3's slider canvas in the dark theme (moving the power bank slider changed "Short by 3 min" to "Covered, 57 min to spare"); chapter 3.4's state machine in the light theme (one overflowing label found and fixed); chapter 3.3's Arabic block quotes. No sideways scroll.
 - At desktop width, light theme: chapter 1.4 quiz 1 answered right ("Correct! Well done", +100%, every option explained) and quiz 2 answered wrong ("Wrong answer", every option explained). After a reload both results were still shown and the chapter showed 1 of 2 checkpoints, so progress is saved.
 - No console errors on the checked pages after sign-in.
+- After merging main and moving the course to `courses/faith-and-resilience/`: source validation 40 of 40, structure audit clean, course audit Needs work 0, `courses:check` passes (the course is not opted in, so it is listed as a source package only), 358 canvas tests pass, and a fresh import from `courses/` gives 7 modules, 40 chapters and 116 blocks.
 - Harness limits, not course problems: the browser pane was hidden, so screenshots needed a scroll-wheel nudge to repaint; preview servers were started from the shell because the preview tool's server limit was used by other sessions.
 
 ## Found on the way (for the platform and IP owners)
