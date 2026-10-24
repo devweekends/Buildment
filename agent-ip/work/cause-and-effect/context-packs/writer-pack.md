@@ -2,12 +2,12 @@
 artifact: context-pack
 course: cause-and-effect
 for: chapter-writer
-version: 1
+version: 2
 ---
 
 # Writer pack: Why Things Happen: Cause, Effect and Systems Thinking
 
-Read this whole file before writing. It replaces the chapter briefs for this course (G2C was skipped on the sponsor's instruction; see `../decision-log.md`). The plan is `content/import/cause-and-effect/course.yaml`: write exactly the files, titles and goals listed there for your modules. The roadmap is `../curriculum-roadmap.md` (minutes, outcomes, gate evidence). The research dossier is `../research.md`: **every factual claim about a method, its origin or its limits must match the dossier**, phrased the way it says; never state a claim it marks unverified. Look at `content/import/decision-making/02-trade-offs-and-competing-options/` (`02.01`, `02.03`, `02.05`, `02.06`) for the exact file format of a scene, a teaching chapter, a quiz chapter and a gate. Skim `agent-ip/03-authoring-standards.md` (voice, forbidden patterns) and `agent-ip/04-interactive-playbook.md` (budgets, option-length hygiene, quiz and predict rules).
+Read this whole file before writing. It replaces the chapter briefs for this course (G2C was skipped on the sponsor's instruction; see `../decision-log.md`). The plan is `courses/cause-and-effect/course.yaml`: write exactly the files, titles and goals listed there for your modules. Keep draft chapters in `agent-ip/work/cause-and-effect/chapters/`; the orchestrator promotes reviewed files into `courses/cause-and-effect/`. The roadmap is `../curriculum-roadmap.md` (minutes, outcomes, gate evidence). The research dossier is `../research.md`: **every factual claim about a method, its origin or its limits must match the dossier**, phrased the way it says; never state a claim it marks unverified. Look at `courses/decision-making/02-trade-offs-and-competing-options/` (`02.01`, `02.03`, `02.05`, `02.06`) for the exact file format of a scene, a teaching chapter, a quiz chapter and a gate. Skim `agent-ip/03-authoring-standards.md` (voice, forbidden patterns) and `agent-ip/04-interactive-playbook.md` (budgets, option-length hygiene, quiz and predict rules).
 
 ## 1. What this course is
 
@@ -39,7 +39,7 @@ A practical course on finding out why things really happen, for fellows who will
 
 ## 4. Chapter file format and budgets
 
-Path: `content/import/cause-and-effect/<module-dir>/<file>` exactly as in course.yaml. Frontmatter:
+Draft path: `agent-ip/work/cause-and-effect/chapters/<module-dir>/<file>` exactly as in course.yaml. Frontmatter:
 
 ```yaml
 ---
@@ -196,6 +196,6 @@ The chapter teaches the five parts with a worked example on a fourth case, inclu
 - Every file in your modules exists with the exact title and the roadmap minutes.
 - Zero U+2014 and U+2013 characters.
 - Every sum and case checked twice; every MCQ blind re-answered.
-- From `server/`: `node node_modules/tsx/dist/cli.mjs scripts/validate-course-source.ts --course cause-and-effect` and `node node_modules/tsx/dist/cli.mjs scripts/audit-course-structure.ts --course cause-and-effect` with no errors or warnings in your files.
-- From the repo root: `node "../buildment-agentip-fixes/agent-ip/scripts/audit-course.mjs" content/import/cause-and-effect` (the corrected agent-ip audit) with no flags on your chapters.
+- From the repo root: `node agent-ip/scripts/audit-course.mjs agent-ip/work/cause-and-effect/chapters/` with no flags on your chapters.
+- After review, the orchestrator promotes approved chapters, then runs `pnpm content:validate:source --course cause-and-effect` and `pnpm content:audit --course cause-and-effect` from `server/` against the final package.
 - Edit only your two module folders. No git commands that change anything. Do not install packages. pnpm is broken here; use the node commands above.

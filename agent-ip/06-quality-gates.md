@@ -111,7 +111,7 @@ Use this whenever a chapter includes an interactive canvas. The full contract is
 The audit is executable. Run it at G3 and G5:
 
 ```bash
-node agent-ip/scripts/audit-course.mjs content/import/<course-slug>
+node agent-ip/scripts/audit-course.mjs courses/<course-slug>
 ```
 
 It checks, per chapter:
@@ -413,7 +413,7 @@ Do not let a writer "fix" a structural problem by adding more prose. If the chap
 
 ## Sign-off artifact
 
-Final learner-facing source MUST be in `content/import/<course-slug>/` for every course and variant, with `course.yaml` matching its slug and numbered module/lesson files. Run source validation, the structure audit with `--strict`, and the course audit against that final package. Keep drafts and all QA/sign-off evidence under `agent-ip/work/<course-slug>/`. CI must not publish from `courses/` or the work area. Follow `README.md` → Work areas.
+Final learner-facing source MUST be in `courses/<course-slug>/` for every course and variant, with `course.yaml` matching its slug and numbered module/lesson files. FreshMarket is a legacy exception pending a manifest. Run source validation, the structure audit with `--strict`, and the course audit against that final package. Keep drafts and all QA/sign-off evidence under `agent-ip/work/<course-slug>/`. CI must publish only an approved package from `courses/`, never a draft from the work area. Follow `README.md` → Work areas.
 
 The publish package contains:
 

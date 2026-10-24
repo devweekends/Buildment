@@ -5,7 +5,7 @@
  * → Answer-key check).
  *
  * Usage:
- *   node agent-ip/scripts/blind-keys.mjs extract content/import/<slug> <out-dir> [--batches 2]
+ *   node agent-ip/scripts/blind-keys.mjs extract courses/<slug> <out-dir> [--batches 2]
  *   node agent-ip/scripts/blind-keys.mjs compare <out-dir>
  *
  * extract writes batch-1.md, batch-2.md, ... (questions and lettered options,

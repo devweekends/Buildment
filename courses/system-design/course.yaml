@@ -1,0 +1,37 @@
+slug: system-design
+repositoryPublish: true
+repositoryEditorialAudit: advisory
+title: "System Design Labs: Replication Lag and Clock Uncertainty"
+description: "A focused preview of two system design problems. Reproduce inconsistent reads from a lagging replica, then use a clock uncertainty model to explain commit wait. Each lab ends with a short design decision you can defend. This is a two-topic lab, not the full system design curriculum."
+projectGoal: "Produce two short design notes: one routing rule that protects a user's reads after a write, and one timeline showing when clock uncertainty requires commit wait. State the cost and limit of each choice."
+difficulty: Advanced
+estimatedHours: 5
+category: tech
+# These two focused labs are the available sample content from the planned full course.
+modules:
+  - dir: 08-replication
+    title: "Replication"
+    summary: "Copy data for safety and fast reads, and handle what replication lag and failover do to users."
+    lessons:
+      - file: 08.01-set-the-scene.md
+        title: "Set the scene: a read that went backwards"
+        goal: "Identify the leader, replicas, and the gap between a confirmed write and a later read."
+      - file: 08.04-replication-lag-and-its-anomalies.md
+        title: "Replication lag and its anomalies"
+        goal: "Reproduce read-your-writes and monotonic reads violations on lagging replicas, and fix each with a routing rule whose cost you can name."
+      - file: 08.05-checklist.md
+        title: "Replication lab checkpoint"
+        goal: "Choose a read routing rule, show which anomaly it prevents, and state its cost."
+  - dir: 10-time-clocks-and-ordering
+    title: "Time, clocks and ordering"
+    summary: "See why 'which happened first?' is hard, and learn every tool from logical clocks to TrueTime."
+    lessons:
+      - file: 10.01-set-the-scene.md
+        title: "Set the scene: two clocks disagree"
+        goal: "Explain why close wall-clock timestamps from two servers cannot prove which event happened first."
+      - file: 10.06-truetime-time-as-an-interval.md
+        title: "TrueTime: time as an interval"
+        goal: "Explain why a timestamp is a range, when two ranges overlap, and how commit wait makes the order safe at a cost of about two times the clock uncertainty."
+      - file: 10.07-checklist.md
+        title: "Clock uncertainty lab checkpoint"
+        goal: "Draw a transaction timeline with uncertainty intervals and justify when commit wait is needed."
