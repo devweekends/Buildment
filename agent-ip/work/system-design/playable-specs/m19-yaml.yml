@@ -1,0 +1,28 @@
+  - dir: 19-multi-region-and-disaster-recovery
+    title: "Multi-region and disaster recovery"
+    summary: "Survive the loss of a data centre or a region and know what it costs: zones and cells, RPO and RTO, backups and restore drills, active-passive and active-active, global traffic routing, and data residency."
+    lessons:
+      - file: 19.01-set-the-scene-a-region-goes-dark.md
+        title: "Set the scene: a region goes dark"
+        goal: "See a single-region app go fully down, and meet the questions about data, time and cost that this module answers."
+      - file: 19.02-regions-availability-zones-and-failure-domains.md
+        title: "Regions, availability zones and failure domains"
+        goal: "Spread across zones and compute the gain and the capacity cost, see why shared parts defeat zones, and cut a system into cells to shrink the blast radius."
+      - file: 19.03-rpo-rto-backups-and-point-in-time-recovery.md
+        title: "RPO, RTO, backups and point-in-time recovery"
+        goal: "Find how much data and time a plan loses, see why replicas copy a bad delete, rewind with point-in-time recovery, and prove a backup with a restore drill."
+      - file: 19.04-active-passive-and-active-active.md
+        title: "Active-passive and active-active"
+        goal: "Compare backup and restore, pilot light, warm standby and active-active by downtime, lost writes and cost, and explain failover, failback and write conflicts."
+      - file: 19.05-global-traffic-routing.md
+        title: "Global traffic routing"
+        goal: "Add health check time and DNS cache time to get a failover time, compare latency, location, failover and anycast routing, and size the surviving region."
+      - file: 19.06-data-residency-and-global-consistency.md
+        title: "Data residency and global consistency"
+        goal: "Choose regional data or a global database, pay the write delay of each, and keep every copy and backup inside a residency rule."
+      - file: 19.08-quiz.md
+        title: "Multi-region and disaster recovery"
+        goal: "Answer graded scenarios on meeting an RPO and RTO together, recovering from a bad write, DNS failover time, shared failure domains behind cells, and keeping data in its region."
+      - file: 19.09-checklist-and-learning-log.md
+        title: "Checklist and learning log"
+        goal: "Write a disaster recovery plan for a courier app: RPO and RTO, the steps that add up to the RTO, how a bad write is undone, who presses the button, and where every copy lives."
