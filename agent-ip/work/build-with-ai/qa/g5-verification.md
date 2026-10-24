@@ -13,7 +13,7 @@ date: 2026-10-24
 - Graded items: 93 (68 multiple-choice questions and 25 predicts). Open questions with a Met / Partly / Not yet rubric, a pass rule, a follow-up step and a mentor key in `modelAnswer`: six gates and the capstone. Three optional reflection prompts in set-the-scene chapters.
 - `content:validate:source --course build-with-ai`: 40 of 40 OK.
 - `content:audit --course build-with-ai`: 0 errors, 0 warnings across 6 module dirs (includes the option-length and the 70% position checks).
-- `node agent-ip/scripts/audit-course.mjs content/import/build-with-ai`: Needs work 0, 50,387 prose words. Every set-the-scene, Learn and capstone chapter has 1,200 or more paragraph words (the lowest is 1,242); every gate 700 or more (the lowest is 823).
+- `node agent-ip/scripts/audit-course.mjs courses/build-with-ai`: Needs work 0, 50,387 prose words. Every set-the-scene, Learn and capstone chapter has 1,200 or more paragraph words (the lowest is 1,242); every gate 700 or more (the lowest is 823).
 - No em or en dashes in the 40 chapters, the 44 canvas files or this work folder; LF line endings; no links in chapters.
 
 ## Research (G1)

@@ -9,7 +9,7 @@ version: 1
 
 Read this whole file before writing. It replaces the chapter briefs for this course (G2C was skipped on the sponsor's instruction; see `../decision-log.md`). Paths are relative to the repository root `<repo>` (the worktree named in your task).
 
-- **The plan** is `content/import/build-with-ai/course.yaml`: write exactly the files, titles and goals listed there for your modules.
+- **The plan** is `courses/build-with-ai/course.yaml`: write exactly the files, titles and goals listed there for your modules.
 - **The roadmap** is `../curriculum-roadmap.md` (minutes, outcomes, canvases, gate evidence).
 - **The research dossier** is `../research.md`. Every claim about learning science, about AI errors and about a named tool must match the dossier, phrased the way its "Phrase it this way" notes say. Never state a claim it lists as unverified or under "Do not say". Section 3A of this pack is the short version for tools.
 - **Format models** (course 10, same platform, same rules): a scene `content/import/cause-and-effect/04-root-causes/04.01-set-the-scene.md`; a Learn chapter with a canvas `04.05-causes-not-culprits.md`; a quiz `04.06-quiz.md`; a gate `04.07-checklist.md`; the capstone `content/import/cause-and-effect/08-learning-from-what-went-wrong/08.04-capstone-investigate-a-problem.md`. Copy their file format, not their content.
@@ -88,7 +88,7 @@ From `../research.md` (all checked 2026-10-24; source ids in brackets). Write th
 
 ## 4. Chapter file format and budgets
 
-Path: `content/import/build-with-ai/<module-dir>/<file>` exactly as in course.yaml. Frontmatter:
+Path: `courses/build-with-ai/<module-dir>/<file>` exactly as in course.yaml. Frontmatter:
 
 ```yaml
 ---
@@ -264,6 +264,6 @@ Ibrahim's provided case, written in full in the chapter: he wants a small queue 
 - Zero U+2014 and U+2013 characters in your chapters and canvas files.
 - Every sum and case checked twice; every MCQ blind re-answered; option lengths checked.
 - From `server/`: `node node_modules/tsx/dist/cli.mjs scripts/validate-course-source.ts --course build-with-ai` and `node node_modules/tsx/dist/cli.mjs scripts/audit-course-structure.ts --course build-with-ai` with no errors or warnings in your files (other writers' missing files may show; ignore those).
-- From the repo root: `node agent-ip/scripts/audit-course.mjs content/import/build-with-ai` with no flags on your chapters (it measures paragraph prose only).
+- From the repo root: `node agent-ip/scripts/audit-course.mjs courses/build-with-ai` with no flags on your chapters (it measures paragraph prose only).
 - Edit only your module folders and your canvas folders. No git commands that change anything. Do not install packages. pnpm is broken here; use the node commands above.
 - Report: files written, prose words per chapter from the audit, canvases created (slug, export name, renderer), and anything in the dossier you could not follow.

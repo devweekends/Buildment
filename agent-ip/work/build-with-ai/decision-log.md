@@ -21,6 +21,7 @@
 | 2026-10-24 | Keep the MCQ key-length spread (longest 34%, shortest 32%, middle 34%) | Make the key never the longest | Critic B (round 2, S4) saw the key as the longest in 34% as a tell; critic A's content-blind test scored 24% (chance 25%) and the bias script finds no flag. A key that is never the longest is itself a cue (round 1). | Orchestrator |
 | 2026-10-24 | No third critique round; round 3 fixes go to human review with critic A at 4.14 and critic B at 4.43 | Run a third round | `agents/orchestrator.md`: stop after two rounds and escalate. Both critics found 0 S1 and 0 S2 in round 2. | Orchestrator |
 | 2026-10-24 | Step-through canvases stay as they are; a learner-choice step is left to the platform owner | Build custom canvases with a choice step | The shared sequence and state-machine renderers have no choice step; agent-ip allows "manipulates or steps through"; a renderer change is outside a content PR. | Orchestrator |
+| 2026-10-24 | Move the course from `content/import/build-with-ai/` to `courses/build-with-ai/` after merging `main` (agent-ip v0.4.4 and v0.4.5), and do not set `repositoryPublish: true` | Keep the old path; opt in like the other nine courses | agent-ip now names `courses/<slug>/` as the only source location. Publication is explicit and belongs in an approved PR; this course has G2B and human review pending, so the reviewers add the flag after sign-off. Checks rerun on the new path; earlier logs keep their original paths. | Orchestrator |
 
 ## Risks
 
