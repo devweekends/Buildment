@@ -15,6 +15,8 @@ changes, author a full file under `variants/<slug>/`. Do not duplicate unchanged
 lessons for every variant. Omitted keys stay unchanged in updates; list removals
 explicitly. Submit the package as a draft for the course creator to review.
 
+Only add a new track to `availableVariantSlugs` after its complete learner path has been authored, technically checked, and reviewed against its roadmap. A roadmap or a product-name token does not make a track teach its own product. Keep unfinished tracks unavailable to new choices and random assignment; do not delete historical learner choices.
+
 ## Voice
 
 - **Direct.** Say the thing. Prefer the active voice and the concrete verb.

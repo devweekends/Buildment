@@ -114,6 +114,14 @@ The audit is executable. Run it at G3 and G5:
 node agent-ip/scripts/audit-course.mjs courses/<course-slug>
 ```
 
+For a multi-variant course, also scan newly authored variant lessons for repeated long prose:
+
+```bash
+node agent-ip/scripts/audit-variant-repetition.mjs courses/<course-slug>/variants
+```
+
+Repeated paragraphs of 45 or more words across chapters need editorial review even when each chapter passes the word-count audit. Rewrite the worked example, practice, failure test, and bridge around the chapter's actual decision; a passing prose count alone does not pass G5.
+
 It checks, per chapter:
 
 - prose words (≥ 1,200 concept/build, ≥ 700 checkpoint/gate);
@@ -413,7 +421,7 @@ Do not let a writer "fix" a structural problem by adding more prose. If the chap
 
 ## Sign-off artifact
 
-Final learner-facing source MUST be in `courses/<course-slug>/` for every course and variant, with `course.yaml` matching its slug and numbered module/lesson files. FreshMarket is a legacy exception pending a manifest. Run source validation, the structure audit with `--strict`, and the course audit against that final package. Keep drafts and all QA/sign-off evidence under `agent-ip/work/<course-slug>/`. CI must publish only an approved package from `courses/`, never a draft from the work area. Follow `README.md` → Work areas.
+Final learner-facing source MUST be in `courses/<course-slug>/` for every course and variant, with `course.yaml` matching its source folder and numbered module/lesson files. A repository target slug may identify an existing database course whose original slug differs; it must never create another course. Run source validation, the structure audit with `--strict`, and the course audit against that final package. Before making a variant selectable, verify the full assigned learner path, variant-specific build work, assessments, capstone, and reference consistency. Keep drafts and all QA/sign-off evidence under `agent-ip/work/<course-slug>/`. CI must publish only an approved package from `courses/`, never a draft from the work area. Follow `README.md` → Work areas.
 
 The publish package contains:
 
