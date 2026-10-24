@@ -2,10 +2,10 @@ slug: ai-engineering-interview
 repositoryPublish: true
 repositoryEditorialAudit: advisory
 title: "Cracking the AI Engineering and Agentic AI Interview"
-description: "Get ready for AI engineer, LLM engineer and agentic AI interviews at remote-first companies. Learn RAG, agents, evaluation, async Python services and production operations from the foundations up to senior depth, practise every round of the interview loop with model answers and follow-up probes, then build, evaluate and defend your own small RAG plus agent service."
+description: "Get ready for AI engineer, LLM engineer and agentic AI interviews at remote-first companies. Learn RAG, agents, evaluation, async Python services, LLM serving on GPUs and production operations from the foundations up to senior depth, practise every round of the interview loop with model answers and follow-up probes, then build, evaluate and defend your own small RAG plus agent service."
 projectGoal: "Build a small RAG plus agent service that runs on your laptop with no paid API key, measure it with recall@k, precision@k, MRR and faithfulness on a golden set, run that evaluation as a regression test, and defend your design in a recorded mock interview."
 difficulty: Advanced
-estimatedHours: 52
+estimatedHours: 59
 category: tech
 family: ai-engineering-capstones
 modules:
@@ -250,47 +250,84 @@ modules:
       - file: 10.07-checklist.md
         title: "Checklist and learning log"
         goal: "Gate: a written deployment and monitoring plan for your capstone."
-  - dir: 11-mock-interviews
-    title: "Mock interviews: every round"
-    summary: "Practise each round with a framework for answering, question banks with model answers and follow-up probes, and timed mock sessions."
+  - dir: 11-inference-and-serving
+    title: "LLM inference, serving and GPU capacity"
+    summary: "Learn what happens when a model answers, why long chats fill a GPU through the KV cache, and how batching, paging, quantization, parallelism and admission control let one GPU serve many users. Practise the estimate interviewers ask for: will this deployment fit?"
     lessons:
       - file: 11.01-set-the-scene.md
         title: "Set the scene"
-        goal: "Explain how to practise with the question banks and how to run a mock with a friend or alone."
-      - file: 11.02-round-one-project-deep-dive.md
-        title: "Round one: the project deep dive"
-        goal: "Answer deep-dive questions about your own project with numbers, trade-offs and honest limits."
-      - file: 11.03-round-two-hands-on-coding.md
-        title: "Round two: hands-on coding"
-        goal: "Think aloud, clarify, test and handle edge cases in a practical AI coding task."
-      - file: 11.04-round-two-ai-system-design.md
-        title: "Round two: AI system design"
-        goal: "Run a seven-step system design answer for an AI system within 40 minutes."
-      - file: 11.05-round-three-managerial.md
-        title: "Round three: the managerial round"
-        goal: "Answer questions about past projects, deployment, evaluation in production and what you would do differently."
-      - file: 11.06-quiz.md
-        title: "Interview craft"
-        goal: "Graded scenarios on choosing the stronger interview answer."
-      - file: 11.07-checklist.md
+        goal: "Show how an 8B model that fits on one GPU can still run out of memory when 20 users keep long chats open."
+      - file: 11.02-prefill-and-decode.md
+        title: "What happens when a model answers: prefill and decode"
+        goal: "Explain prefill and decode, time to first token, time per output token and throughput, and why decode is limited by memory reads."
+      - file: 11.03-kv-cache.md
+        title: "The KV cache from first principles"
+        goal: "Derive the size of the KV cache per token from a model's configuration, and explain how GQA, context length and FP8 change it."
+      - file: 11.04-gpu-memory-budget.md
+        title: "GPU memory budgeting and sizing"
+        goal: "Budget GPU memory for weights, the KV cache and a reserve, plan capacity in tokens held at once, and estimate cost per million tokens."
+      - file: 11.05-batching-and-paging.md
+        title: "Continuous batching, PagedAttention and prefix caching"
+        goal: "Explain how continuous batching, paged KV memory and prefix caching let one GPU serve more users, and what each costs."
+      - file: 11.06-smaller-and-faster.md
+        title: "Quantization, speculative decoding and FlashAttention"
+        goal: "Choose between weight and KV quantization and speculative decoding for a goal, and say what FlashAttention does and does not change."
+      - file: 11.07-beyond-one-gpu.md
+        title: "Beyond one GPU, and choosing how to serve"
+        goal: "Explain tensor and pipeline parallelism, what serving engines provide, and when to self-host instead of calling a hosted API."
+      - file: 11.08-admission-control.md
+        title: "Admission control and capacity in tokens"
+        goal: "Protect a GPU server with token budgets, queues and backpressure, and plan capacity in tokens rather than users."
+      - file: 11.09-will-it-fit.md
+        title: "Interview drill: will this deployment fit?"
+        goal: "Estimate aloud whether a deployment fits, with the arithmetic, the units and a fix with its trade-off."
+      - file: 11.10-quiz.md
+        title: "Inference and serving"
+        goal: "Graded scenarios on prefill and decode, the KV cache, memory budgets, batching and admission control."
+      - file: 11.11-checklist.md
         title: "Checklist and learning log"
-        goal: "Gate: a written system design and a recorded mock answer."
-  - dir: 12-capstone
-    title: "Capstone: build, evaluate and defend"
-    summary: "Build a small evaluated RAG plus agent service for one of eight projects, taking requests by web chat and email with a small web UI, write its evaluation report, and defend it in a recorded mock interview."
+        goal: "Gate: a written sizing of a self-hosted deployment with two fixes and their trade-offs."
+  - dir: 12-mock-interviews
+    title: "Mock interviews: every round"
+    summary: "Practise each round with a framework for answering, question banks with model answers and follow-up probes, and timed mock sessions."
     lessons:
       - file: 12.01-set-the-scene.md
         title: "Set the scene"
+        goal: "Explain how to practise with the question banks and how to run a mock with a friend or alone."
+      - file: 12.02-round-one-project-deep-dive.md
+        title: "Round one: the project deep dive"
+        goal: "Answer deep-dive questions about your own project with numbers, trade-offs and honest limits."
+      - file: 12.03-round-two-hands-on-coding.md
+        title: "Round two: hands-on coding"
+        goal: "Think aloud, clarify, test and handle edge cases in a practical AI coding task."
+      - file: 12.04-round-two-ai-system-design.md
+        title: "Round two: AI system design"
+        goal: "Run a seven-step system design answer for an AI system within 40 minutes."
+      - file: 12.05-round-three-managerial.md
+        title: "Round three: the managerial round"
+        goal: "Answer questions about past projects, deployment, evaluation in production and what you would do differently."
+      - file: 12.06-quiz.md
+        title: "Interview craft"
+        goal: "Graded scenarios on choosing the stronger interview answer."
+      - file: 12.07-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: a written system design and a recorded mock answer."
+  - dir: 13-capstone
+    title: "Capstone: build, evaluate and defend"
+    summary: "Build a small evaluated RAG plus agent service for one of eight projects, taking requests by web chat and email with a small web UI, write its evaluation report, and defend it in a recorded mock interview."
+    lessons:
+      - file: 13.01-set-the-scene.md
+        title: "Set the scene"
         goal: "Choose a project and read the brief, the channels, the must-haves and the rubric."
-      - file: 12.02-build-the-service.md
+      - file: 13.02-build-the-service.md
         title: "Build the service"
         goal: "Combine retrieval, the agent, the approval steps, the chat and email channels, the web UI and the service into one tested repository."
-      - file: 12.03-evaluate-and-report.md
+      - file: 13.03-evaluate-and-report.md
         title: "Evaluate and write the report"
         goal: "Run the evaluation overall and per channel, find and fix one failure, and write a one-page evaluation report and design note."
-      - file: 12.04-record-your-defence.md
+      - file: 13.04-record-your-defence.md
         title: "Record your mock-interview defence"
         goal: "Record a five-minute walkthrough and answers to follow-up probes, and submit the repository."
-      - file: 12.05-checklist.md
+      - file: 13.05-checklist.md
         title: "Checklist and learning log"
         goal: "Gate: final checks, and a comparison with your first project story from module 1."
