@@ -1,0 +1,114 @@
+version: 2
+
+models:
+  - name: dim_market
+    description: "One row per version of a market (type 2). valid_from is included, valid_to is excluded, NULL means current."
+    columns:
+      - name: market_key
+        description: Surrogate key, one per version (the snapshot id).
+        data_tests: [unique, not_null]
+      - name: market_code
+        data_tests: [not_null]
+      - name: opens
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["daily", "Sat to Thu"]
+
+  - name: dim_item
+    description: One row per item.
+    columns:
+      - name: item_key
+        data_tests: [unique, not_null]
+      - name: item_code
+        data_tests: [unique, not_null]
+      - name: category
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["grains", "pulses", "pantry", "vegetables", "dairy_eggs", "bakery"]
+
+  - name: dim_date
+    description: One row per calendar day.
+    columns:
+      - name: date_key
+        data_tests: [unique, not_null]
+
+  - name: fct_price_report
+    description: "Grain: one accepted price report (one report_id). Incremental with a lookback window."
+    config:
+      contract:
+        enforced: true  # the build fails if a column name or type drifts
+    columns:
+      - name: report_id
+        data_type: varchar
+        constraints:
+          - type: not_null
+        data_tests: [unique, not_null]
+      - name: reported_date
+        data_type: date
+      - name: date_key
+        data_type: integer
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key
+      - name: market_key
+        data_type: varchar
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_market')
+                field: market_key
+      - name: item_key
+        data_type: varchar
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_item')
+                field: item_key
+      - name: volunteer_id
+        data_type: varchar
+      - name: volunteer_key
+        data_type: varchar
+      - name: price
+        data_type: decimal(8,2)
+      - name: unit
+        data_type: varchar
+      - name: reported_at
+        data_type: timestamp
+      - name: uploaded_at
+        data_type: timestamp
+
+  - name: mart_weekly_basket
+    description: "Grain: one market and one ISO week. Basket cost is the 12 items, averaged over the days when all 12 were priced."
+    columns:
+      - name: market_code
+        data_tests: [not_null]
+
+unit_tests:
+  - name: weekly_basket_with_change_from_previous_week
+    description: Two items make a basket. Week 10 costs 30, week 11 costs 33, so the change is 3 (10 percent).
+    model: mart_weekly_basket
+    overrides:
+      vars:
+        basket_items: 2
+    given:
+      - input: ref('fct_price_report')
+        rows:
+          - {reported_date: "2026-03-02", market_key: m1, item_key: i1, price: 10.00}
+          - {reported_date: "2026-03-02", market_key: m1, item_key: i2, price: 20.00}
+          - {reported_date: "2026-03-09", market_key: m1, item_key: i1, price: 11.00}
+          - {reported_date: "2026-03-09", market_key: m1, item_key: i1, price: 13.00}
+          - {reported_date: "2026-03-09", market_key: m1, item_key: i2, price: 21.00}
+          - {reported_date: "2026-03-10", market_key: m1, item_key: i1, price: 11.00}
+      - input: ref('dim_market')
+        rows:
+          - {market_key: m1, market_code: M01}
+    expect:
+      rows:
+        - {market_code: M01, iso_year: 2026, iso_week: 10, week_start: "2026-03-02", full_days: 1, avg_basket_cost: 30.00, previous_week_cost: null, change: null, change_pct: null}
+        - {market_code: M01, iso_year: 2026, iso_week: 11, week_start: "2026-03-09", full_days: 1, avg_basket_cost: 33.00, previous_week_cost: 30.00, change: 3.00, change_pct: 10.0}

@@ -1,0 +1,39 @@
+# Runs on every push and pull request: install, make 10 days of sample data, run the pipeline, test, build.
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    env:
+      # A made-up key just for tests. Never put a real key in this file.
+      MIZAN_KEY: ci-test-key-not-a-secret
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install the pinned packages
+        run: pip install -r requirements.txt
+
+      - name: Check the setup
+        run: python scripts/check_setup.py
+
+      - name: Make 10 days of sample data
+        run: python make_source.py --days 10 --start 2026-03-01 --seed 7 --out data
+
+      - name: Run the pipeline for those 10 days
+        run: python -m pipeline.runner backfill --start 2026-03-01 --end 2026-03-10
+
+      - name: Fast tests
+        run: pytest -q -m "not slow"
+
+      - name: Build and test the dbt project
+        run: dbt build --profiles-dir .
+        working-directory: transform

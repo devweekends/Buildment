@@ -1,0 +1,14 @@
+version: 2
+
+# A snapshot remembers every version of a market it has seen (a type 2 dimension).
+# When updated_at gets newer, dbt closes the old row (dbt_valid_to) and adds a new one.
+# Warning: a snapshot only knows what it was shown. It cannot be rebuilt from scratch, so it lives in its own schema.
+snapshots:
+  - name: snap_markets
+    relation: ref('stg_markets')
+    config:
+      schema: snapshots
+      unique_key: market_code
+      strategy: timestamp
+      updated_at: updated_at
+      hard_deletes: ignore

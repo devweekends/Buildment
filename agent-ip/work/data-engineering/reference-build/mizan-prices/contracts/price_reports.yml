@@ -1,0 +1,30 @@
+# Data contract for the price reports that the phone form uploads.
+# It is written in the spirit of the Open Data Contract Standard, but much shorter.
+name: price_reports
+version: 1.0.0
+owner: Hala, data engineer at Mizan
+consumers: Omar, programme officer (weekly report)
+description: One row per price report sent by a volunteer. A report can arrive more than once.
+
+# Every required field must exist in every batch. A batch without one of them is rejected.
+# Fields that are not listed here are allowed and kept (adding a field is not a breaking change).
+fields:
+  - {name: report_id, type: string, required: true}
+  - {name: market_code, type: string, required: true}
+  - {name: item_code, type: string, required: true}
+  - {name: price, type: double, required: true}
+  - {name: reported_at, type: timestamp, required: true}
+  - {name: uploaded_at, type: timestamp, required: true}
+  - {name: volunteer_id, type: string, required: true}
+  - {name: volunteer_name, type: string, required: true}
+  - {name: volunteer_phone, type: string, required: true}
+  - {name: unit, type: string, required: false, since: "2026-03-15"}
+
+# A row that breaks a rule goes to quarantine with the reason. The first rule that fails is the reason.
+rules:
+  - name: price_is_positive
+    fails_when: "price IS NULL OR price <= 0"
+    reason: price must be above 0
+  - name: item_code_is_present
+    fails_when: "item_code IS NULL OR item_code = ''"
+    reason: item_code is missing

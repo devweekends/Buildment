@@ -1,0 +1,29 @@
+name: mizan
+version: "1.0.0"
+profile: mizan
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+snapshot-paths: ["snapshots"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+# How many days back the fact table re-reads, so reports that arrive late are merged.
+vars:
+  lookback_days: 3
+
+models:
+  mizan:
+    staging:
+      +materialized: table
+    marts:
+      +materialized: table
+
+seeds:
+  mizan:
+    items:
+      +column_types:
+        item_code: varchar
+        item_name: varchar
+        category: varchar
+        unit: varchar

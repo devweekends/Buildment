@@ -1,0 +1,11 @@
+# Run dbt from the transform folder:  dbt build --profiles-dir .
+# The paths below are relative to the folder you run dbt from.
+mizan:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ../warehouse.duckdb
+      threads: 1
+      settings:
+        TimeZone: UTC

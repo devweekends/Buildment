@@ -1,0 +1,12 @@
+data/
+lake/
+state/
+logs/
+site/
+*.duckdb
+transform/target/
+transform/logs/
+.venv/
+__pycache__/
+.pytest_cache/
+transform/.user.yml

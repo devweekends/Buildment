@@ -1,0 +1,13 @@
+item_code,item_name,category,unit
+I01,flour,grains,kg
+I02,rice,grains,kg
+I03,lentils,pulses,kg
+I04,sugar,pantry,kg
+I05,cooking oil,pantry,litre
+I06,tomatoes,vegetables,kg
+I07,potatoes,vegetables,kg
+I08,onions,vegetables,kg
+I09,eggs,dairy_eggs,tray of 30
+I10,milk powder,dairy_eggs,pack
+I11,tea,pantry,pack
+I12,bread,bakery,pack

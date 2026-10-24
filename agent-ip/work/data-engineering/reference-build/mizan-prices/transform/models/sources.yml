@@ -1,0 +1,20 @@
+version: 2
+
+# The shared (pseudonymised) Parquet files written by the pipeline.
+# external_location tells dbt-duckdb to read the files directly, so nothing is copied.
+# hive_partitioning turns upload_date=... folders into a column; union_by_name copes with the unit column that appears later.
+sources:
+  - name: lake
+    tables:
+      - name: price_reports
+        description: One row per send of a report (a report can be sent more than once).
+        meta:
+          external_location: "read_parquet('../lake/shared/reports/*/*.parquet', hive_partitioning = true, union_by_name = true)"
+      - name: markets
+        description: Market rows extracted from the registry, one file per extraction.
+        meta:
+          external_location: "read_parquet('../lake/shared/registry/markets/*/*.parquet', hive_partitioning = true, union_by_name = true)"
+      - name: volunteers
+        description: Volunteer rows from the registry, with a code instead of name and phone.
+        meta:
+          external_location: "read_parquet('../lake/shared/registry/volunteers/*/*.parquet', hive_partitioning = true, union_by_name = true)"
