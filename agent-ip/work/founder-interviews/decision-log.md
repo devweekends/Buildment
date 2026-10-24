@@ -16,6 +16,7 @@
 | 2026-10-24 | No links and no MustRead, InterestingRead or RealWorldEvent blocks; researchers named in prose only where the dossier's credits table allows; no company, founder or investor names, including fictional founders | Sourced reads per module | Brief constraint and the same rule as courses 8 to 13; the dossier is the source of record. | Orchestrator |
 | 2026-10-24 | Rebase the course branch onto `feat/ai-interviewer-byok` (PR #62) so the validator and importer know the ```aiinterview fence; the course PR depends on PR #62 merging first | Keep the fences out until PR #62 merges | Task instruction: rebase once the branch is pushed. The course PR shows PR #62's commits until it merges. | Orchestrator |
 | 2026-10-24 | Writers draft directly in `courses/founder-interviews/` instead of `agent-ip/work/founder-interviews/chapters/` | Draft in the work area and promote after QA | The validators and importer read `courses/`, and writers must run them on their own files. The course is not opted in to publishing (`repositoryPublish` is not set); QA reports live in `qa/`. Same as courses 10 to 13. | Orchestrator |
+| 2026-10-24 | Keep OpenRouter as the only key learners bring; chapters tell learners one OpenRouter key reaches several model families | Also accept direct Gemini and OpenAI keys | Sponsor decision on 2026-10-24: "Keep OpenRouter only. One key reaches Gemini and GPT models too, so learners only need one key." | Zeeshan (sponsor) |
 
 ## Risks
 
