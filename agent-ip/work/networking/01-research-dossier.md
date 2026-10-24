@@ -67,7 +67,7 @@ One line each. Definitions are for the glossary; the source ID shows where the f
 | Resolver | Code that asks name servers on behalf of a program [S24]. |
 | Authoritative server | A name server that holds the zone data for a name [S24]. |
 | DNS TTL | Seconds a record may stay cached. Zero means do not cache [S24]. Not the same thing as IP TTL. |
-| AS (autonomous system) | A network under one routing policy, identified by a number; BGP connects them. **UNVERIFIED**: no source fetched; read RFC 1930 before learner text. |
+| AS (autonomous system) | "A connected group of one or more IP prefixes run by one or more network operators" with a single, clearly defined routing policy [S68]. BGP connects them. |
 
 ## 3. Hard constraints
 
@@ -240,6 +240,15 @@ Same host and image as 5.5, extra packages `conntrack` and `busybox`. Topology: 
 
 Still untested: Docker Desktop on macOS; WSL 2 without Docker Desktop; IPv6 forwarding through a router namespace and router advertisements (SLAAC); WireGuard; a novice's timing of any challenge.
 
+### 5.7 Third environment test, 2026-10-24 (after the round 2 critiques)
+
+| Check | Result |
+|---|---|
+| Masks that disagree: A `192.168.1.10/24`, B `192.168.1.20/28`, one veth (`rp_filter` is 2 in the new namespace) | A to B: silent loss (2 sent, 0 received); the capture on B shows A's ARP request. B to A: `ping: connect: Network is unreachable` at once. |
+| A pings `192.168.1.99`, an on-link address nobody owns | Silent loss with `-c2 -W1`; ARP requests go unanswered. The "Destination Host Unreachable" line was not seen with these flags, so the course does not promise it. |
+| Capstone path: home `192.168.1.23` to home router (outside `198.51.100.2/30`) to provider router to server `203.0.113.80` | Works; the server sees `198.51.100.2`. Port forwarding `198.51.100.2:8080` to the home web server works from the server, across the provider router. |
+| Fault: the home router's default route removed | The home device gets `Destination Net Unreachable` from `192.168.1.1`; `curl` fails at once. |
+
 **Consequence for the course:** commands about the learner's real internet path (`traceroute`/`tracert`, `curl ifconfig.me`, the host's own addresses) run on the host, not in the lab container. The lab container is for networks the learner builds. Chapters 1.1, 4.1 and 6.4 say which side each command runs on.
 
 Not tested: Docker Desktop on macOS, native Linux, WSL 2 without Docker, and the narrower `--cap-add` alternative. The roadmap keeps `--privileged` as the default and asks for a macOS run before the blueprint is locked.
@@ -359,8 +368,10 @@ All "Date checked" values are 2026-10-24 unless noted. Confidence: H, M, L.
 | S65 | BSD `route` has `get` (mirror of Apple man page; does not name macOS) | https://keith.github.io/xcode-man-pages/route.8.html | secondary | 2026-10-24 | L |
 | S66 | Google IPv6 statistics page describes the graph only; no current value in fetched text | https://www.google.com/intl/en/ipv6/statistics.html | first-party | 2026-10-24 | L (no figure) |
 | S67 | Ubuntu 24.04 iptables backend is nf_tables: vendor guide via search snippet only | https://www.ssdnodes.com/learn/lang/de/iptables-vs-nftables-on-ubuntu | secondary | 2026-10-24 | L (UNVERIFIED) |
+| S68 | AS definition: connected group of IP prefixes, one or more operators, single clearly defined routing policy (RFC 1930, March 1996) | https://www.rfc-editor.org/rfc/rfc1930.txt | standard | 2026-10-24 | H |
+| S69 | `2001:db8::/32` reserved for IPv6 documentation examples (RFC 3849, July 2004) | https://www.rfc-editor.org/rfc/rfc3849.txt | standard | 2026-10-24 | H |
 
-Claims kept as UNVERIFIED (not in any row above with H confidence): "5-tuple" as a named term; AS definition (RFC 1930); Class D 224/4 (RFC 1112); RIPE NCC 2012 last /8; current CGNAT share on mobile networks; Ubuntu 24.04 default iptables backend; `--cap-add` sufficiency for `ip netns` in Docker; Docker Desktop VM kernel nftables support; universe enabled in `ubuntu:24.04`; macOS `ifconfig` and `netstat -rn` behaviour; DHCP pool exhaustion incident; download size estimates (labelled ESTIMATE).
+Claims kept as UNVERIFIED (not in any row above with H confidence): "5-tuple" as a named term; Class D 224/4 (RFC 1112); RIPE NCC 2012 last /8; current CGNAT share on mobile networks; Ubuntu 24.04 default iptables backend; `--cap-add` sufficiency for `ip netns` in Docker; Docker Desktop VM kernel nftables support; universe enabled in `ubuntu:24.04`; macOS `ifconfig` and `netstat -rn` behaviour; DHCP pool exhaustion incident; download size estimates (labelled ESTIMATE).
 
 ## 10. Open questions
 
