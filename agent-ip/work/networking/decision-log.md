@@ -58,3 +58,9 @@
 
 **Open:** `02-course-architecture.md` asks for at least two instructors at G2B, and for the delivery lead to record the result. One signature is recorded. The blueprint (G2C) waits for the second instructor, unless the sponsor records an explicit exception here.
 
+## 2026-10-24: Sponsor exception: one signature completes G2B
+
+**Decision:** the sponsor's approval alone completes G2B for this roadmap. The rule in `02-course-architecture.md` asks for at least two instructors; the sponsor waived it ("yes i am the master here", 2026-10-24, answering whether his approval should count as the full G2B sign-off). G2C (blueprint, skill graph, timeline, project brief) may start from roadmap v3.
+
+**Owner:** Zeeshan (architect, human sponsor). The delivery lead has not yet recorded the result; that stays open and does not block G2C under this exception.
+

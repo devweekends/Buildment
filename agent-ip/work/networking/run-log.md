@@ -14,3 +14,4 @@
 | 2026-10-24 | G2A | orchestrator | drafting model | dossier 5.7, third environment test; RFC 1930 and 3849 sourced | passed |
 | 2026-10-24 | G2A | curriculum-architect | drafting model | `02-curriculum-roadmap.md` v3 | ready for G2B |
 | 2026-10-24 | G2B | sponsor | human | `roadmap-confirmation.md` | approved by the sponsor; second instructor pending |
+| 2026-10-24 | G2B | sponsor | human | decision log: sponsor exception | G2B complete; G2C may start |

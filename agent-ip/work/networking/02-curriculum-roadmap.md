@@ -5,7 +5,7 @@ version: 3
 status: draft
 owner: curriculum-architect
 instructors_reviewed: [Zeeshan (architect, human sponsor)]
-g2b_signoff: partial (1 of 2 instructors; see roadmap-confirmation.md)
+g2b_signoff: complete (sponsor approval with a sponsor exception; see roadmap-confirmation.md)
 depends_on: 00-course-brief.md, 01-research-dossier.md, qa/g2a-critique-pedagogy.md, qa/g2a-critique-technical.md
 ---
 
@@ -411,9 +411,9 @@ None. This is a short foundations course. Follow-on depth: cloud networking (VPC
 
 ## Confirmation
 
-G2B status: **sponsor approved; second instructor pending** (`roadmap-confirmation.md`).
+G2B status: **complete** (sponsor approval; the second signature was waived by the sponsor, `roadmap-confirmation.md`).
 
 | Instructor | Role | Decision (approve/revise/reject) | Comments | Date |
 |---|---|---|---|---|
 | Zeeshan | Architect (human sponsor) | Approve | Accepts the recommendations on all 12 open decisions | 2026-10-24 |
-| | Second instructor | Pending | | |
+| | Second instructor | Waived by the sponsor | | 2026-10-24 |

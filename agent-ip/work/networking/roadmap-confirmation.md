@@ -13,7 +13,7 @@ facilitator: orchestrator
 | Name | Role | Decision | Comments |
 |---|---|---|---|
 | Zeeshan | Architect (human sponsor) | Approve | "I approve the networking roadmap v3 and accept the recommendations on the 12 open decisions." (2026-10-24) |
-| | Second instructor | Pending | |
+| | Second instructor | Waived by the sponsor (decision log, 2026-10-24) | |
 
 ## Decisions on open questions
 
@@ -40,11 +40,11 @@ None requested.
 
 ## Outcome
 
-- [ ] At least two instructors approved (one of two: the sponsor approved; a second instructor is still needed under `02-course-architecture.md`)
+- [x] At least two instructors approved: waived by a sponsor exception; the sponsor's approval completes G2B (decision log, 2026-10-24)
 - [x] Every open decision resolved or explicitly deferred
 - [x] Requested changes applied and re-confirmed (none requested)
 - [ ] Delivery lead recorded the result
 
 **Sign-off:** Zeeshan (architect, human sponsor), 2026-10-24.
 
-**Consequence:** G2B is complete once a second instructor approves and the delivery lead records the result. Until then, no blueprint, sample chapter or general course is written, unless the sponsor records an explicit exception in the decision log.
+**Consequence:** G2B is complete under the sponsor exception. G2C may start from roadmap v3. The delivery lead's record is still open.
