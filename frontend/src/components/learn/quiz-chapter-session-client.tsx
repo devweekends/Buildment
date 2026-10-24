@@ -48,6 +48,7 @@ export function QuizChapterSessionClient({
   nextLocked,
   canMarkComplete,
   chapterComplete,
+  locked = false,
 }: {
   children: React.ReactNode;
   chapterId: string;
@@ -63,10 +64,12 @@ export function QuizChapterSessionClient({
   nextLocked: boolean;
   canMarkComplete: boolean;
   chapterComplete: boolean;
+  /** No question is sent until the learner presses Start; the page then reloads its data. */
+  locked?: boolean;
 }) {
   const router = useRouter();
   const steps = React.Children.toArray(children).filter(Boolean);
-  const total = steps.length;
+  const total = locked ? stepIds.length : steps.length;
   const [index, setIndex] = useState(() =>
     isPerfectScore(initialScoreSummary)
       ? Math.max(0, total - 1)
@@ -127,6 +130,11 @@ export function QuizChapterSessionClient({
       setIndex(Math.max(0, total - 1));
     }
   }
+
+  // Start was pressed and the server agreed: fetch the page again, now with the questions.
+  useEffect(() => {
+    if (locked && integrity.questionsShown) router.refresh();
+  }, [locked, integrity.questionsShown, router]);
 
   useEffect(() => {
     if (isPerfectScore(initialScoreSummary) && individualActivityCount === 0) {
@@ -304,6 +312,30 @@ export function QuizChapterSessionClient({
   );
 
   if (total === 0) return null;
+
+  if (locked) {
+    const opening = integrity.session !== null && integrity.dialog === null;
+    return (
+      <section ref={sectionRef} id="quiz-chapter-session" className="not-prose mb-10 scroll-mt-24" aria-label="Quiz session">
+        <header className="mb-8 border-b border-border pb-6">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Quiz: {chapterTitle}</h1>
+          <p className="mt-3 text-sm font-medium text-muted-foreground">
+            {total} {total === 1 ? "question" : "questions"}
+          </p>
+          <QuizIntegrityPanel integrity={integrity} />
+        </header>
+        <div className="rounded-xl border border-border bg-card px-5 py-6 text-card-foreground">
+          <h2 className="text-lg font-semibold text-foreground">The questions appear when you start</h2>
+          <p className="mt-2 max-w-prose text-sm leading-6 text-muted-foreground">
+            This quiz is proctored, so your mentor sees the whole attempt. Read the notes first, then press Start. Find a quiet moment: once you start, try to finish in one go.
+          </p>
+          <Button className="mt-5" onClick={integrity.openIntro} disabled={integrity.session === null || opening}>
+            {integrity.session === null ? "Getting your quiz ready…" : opening ? "Opening your questions…" : "Start quiz"}
+          </Button>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <QuizSessionContext.Provider value={sessionValue}>

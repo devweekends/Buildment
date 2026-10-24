@@ -113,6 +113,8 @@ export function useQuizIntegrity({
   const [cameraIssue, setCameraIssue] = useState<string | null>(null);
   /** "intro" is the start-of-attempt notice and camera choice; "info" reopens it from the badge. */
   const [dialog, setDialog] = useState<"intro" | "info" | null>(null);
+  /** The server sends this chapter's questions only after Start; until then the reader shows none. */
+  const [questionsShown, setQuestionsShown] = useState(false);
 
   const queueRef = useRef<IntegrityQueue | null>(null);
   const attemptIdRef = useRef<string | null>(null);
@@ -262,11 +264,12 @@ export function useQuizIntegrity({
         record("TAB_HIDDEN", { closed: true }, { at: new Date(stale.at), attemptId: stale.attemptId, quiet: true });
         writePending(hiddenKey, null);
       }
-      let started = false;
+      setQuestionsShown(next.questionsShown);
+      let started = next.questionsShown;
       try {
-        started = storage()?.getItem(introKey(next.attemptId)) === "1";
+        started ||= storage()?.getItem(introKey(next.attemptId)) === "1";
       } catch {
-        started = false;
+        // Storage is optional; the server already said whether Start was pressed.
       }
       cameraStatusRef.current = next.camera.status;
       setCameraStatus(next.camera.status);
@@ -434,6 +437,21 @@ export function useQuizIntegrity({
     stopStream();
   }, [stopStream]);
 
+  /** Tells the server Start was pressed, retrying a few times on a weak connection. */
+  const unlockQuestions = useCallback(async (attemptId: string) => {
+    for (let tries = 0; tries < 4; tries += 1) {
+      try {
+        await apiFetch(`/api/v1/integrity/attempts/${encodeURIComponent(attemptId)}/begin`, { method: "POST" });
+        setQuestionsShown(true);
+        return;
+      } catch {
+        await new Promise((resolve) => window.setTimeout(resolve, 1500 * (tries + 1)));
+      }
+    }
+    showNotice("We could not start your quiz. Check your connection and press Start again.");
+    setDialog("intro");
+  }, [apiFetch, showNotice]);
+
   /** Closes the intro. `withCamera` is the learner's consent choice; saying no never blocks the quiz. */
   const begin = useCallback((withCamera: boolean) => {
     const attemptId = attemptIdRef.current;
@@ -446,10 +464,11 @@ export function useQuizIntegrity({
     }
     setDialog(null);
     if (fullscreenSupported() && !document.fullscreenElement) requestQuizFullscreen();
+    if (attemptId) void unlockQuestions(attemptId);
     if (!session?.camera.enabled) return;
     if (withCamera) void startCamera();
     else declineCamera("declined");
-  }, [declineCamera, session?.camera.enabled, startCamera]);
+  }, [declineCamera, session?.camera.enabled, startCamera, unlockQuestions]);
 
   // --- Browser signals ----------------------------------------------------------------------
 
@@ -708,6 +727,9 @@ export function useQuizIntegrity({
         start: startCamera,
       },
       dialog,
+      /** False while a quiz chapter waits for Start. A finished quiz is never locked. */
+      questionsShown: questionsShown || !enabled,
+      openIntro: () => setDialog("intro"),
       openInfo: () => setDialog("info"),
       closeInfo: () => setDialog((current) => (current === "info" ? null : current)),
       begin,
@@ -716,7 +738,7 @@ export function useQuizIntegrity({
       nextAttempt,
       finish,
     }),
-    [attachVideo, begin, cameraIssue, cameraStarting, cameraStatus, checkPace, declineCamera, dismissFullscreenPrompt, enabled, finish, fullscreenPrompt, dialog, nextAttempt, notice, pendingFlags, returnToFullscreen, serverFlags, session, startCamera, withoutFlags],
+    [attachVideo, begin, cameraIssue, cameraStarting, cameraStatus, checkPace, declineCamera, dismissFullscreenPrompt, enabled, finish, fullscreenPrompt, dialog, nextAttempt, notice, pendingFlags, questionsShown, returnToFullscreen, serverFlags, session, startCamera, withoutFlags],
   );
 }
 

@@ -15,6 +15,8 @@ export async function QuizChapterWizard({ chapterId, chapterTitle, nextHref, nex
   if (state.steps.length === 0) return null;
 
   const draftStoragePrefix = `buildment:quiz-draft:${user.id}:${chapterId}`;
+  // Until the learner presses Start, no question is rendered or sent, so proctoring covers the whole attempt.
+  const locked = !state.started && !chapterComplete;
 
   return (
     <QuizChapterSessionClient
@@ -31,8 +33,9 @@ export async function QuizChapterWizard({ chapterId, chapterTitle, nextHref, nex
       nextLocked={nextLocked}
       canMarkComplete={canMarkComplete}
       chapterComplete={chapterComplete}
+      locked={locked}
     >
-      {state.steps.map(step => step.type === "OPEN_QUESTION"
+      {locked ? null : state.steps.map(step => step.type === "OPEN_QUESTION"
         ? <OpenQuestionComponent key={step.id} id={step.id} />
         : step.type === "PREDICT" ? <PredictComponent key={step.id} id={step.id} />
         : step.type === "CODE" ? <CodeExerciseComponent key={step.id} id={step.id} />
