@@ -2,10 +2,12 @@
 artifact: curriculum-roadmap
 course: multi-vendor-marketplace-home-kitchens
 version: 1
-status: draft
+status: approved-user-reported
 owner: variant-producer
 derived_from: multi-vendor-marketplace (FreshMarket)
-instructors_reviewed: []
+instructors_reviewed: [AQIB, ASIF]
+approval_reported_on: 2026-10-24
+approval_date: not supplied
 ---
 
 # Curriculum roadmap: Sufra, a marketplace for home kitchens
@@ -61,7 +63,9 @@ Source: Adapted (FreshMarket 01). Purpose: the product, the two people (cook and
 | 1.4 | Scope: what is in and what is out | List what Sufra will not build (GPS rider maps, rider app, cook payouts) and why | Read | 0.5 |
 | 1.5 | Prerequisites and the date diagnostic | Pass the diagnostic or finish the time zone repair read | Check | 1 |
 | 1.6 | Course outline | Name the four weekly demos | Read | 0.5 |
-| 1.7 | Working rhythm on weak power and internet | Set up commit habits and offline docs so a power cut does not cost a day | Read | 0.5 |
+| 1.7 | Working rhythm and checklist | Set up commit habits and offline docs, then show the dated lunch calculation and first evidence plan | Gate | 0.5 |
+
+Implementation note (2026-10-24): chapter 1.7 now closes the introduction with a working-rhythm gate and learning-log questions. Its half-hour allocation and core outcome remain unchanged. AQIB and ASIF have not yet reconfirmed this post-approval assessment refinement.
 
 ### Module 2: Project skeleton
 Source: Carry (FreshMarket 02). Purpose: `server/` and `client/` run and talk; module-based folders. Hours: 6
@@ -99,7 +103,10 @@ Source: Adapted (FreshMarket 05). Purpose: turn the domain into schemas. This is
 | 5.5 | DeliveryWindow and CapacityClaim models | Build windows with `capacityUnits`, `remainingUnits`, `cutoffAt` and a unique index on kitchen plus start time | Build | 1.5 |
 | 5.6 | Cart and Order models | Build a cart that holds one window and an order that embeds item snapshots and a status timeline | Build | 1.5 |
 | 5.7 | Seed: three kitchens, seven days | Seed kitchens, dishes, 7 days of windows and two diners; inspect every document | Build | 1.5 |
-| 5.8 | Final ERD and gate | Commit `docs/erd.md` and explain the chain without notes | Gate | 1 |
+| 5.8 | Data model decisions | Choose the owner of capacity, dated-window uniqueness and purchase snapshots | Check | 0.25 |
+| 5.9 | Final ERD and gate | Commit `docs/erd.md`, verify seed rerun and explain the chain without notes | Gate | 0.75 |
+
+Implementation note (2026-10-24): a dedicated data-model check now precedes the gate. Module hours remain 9. This post-approval assessment refinement awaits AQIB and ASIF reconfirmation. The core model embeds bounded CapacityClaim records in each dated DeliveryWindow so its counter and claim identity can change in one document; the ERD still names the claim as its own domain entity.
 
 ### Module 6: Authentication API
 Source: Carry (FreshMarket 06). Roles renamed to `diner` and `cook`. Hours: 9
@@ -180,14 +187,17 @@ Source: **New**. Purpose: the hardest constraint, taught on its own before any m
 
 | # | Chapter | One-line outcome | Type | Hours |
 |---|---|---|---|---|
-| 14.1 | Set the scene: the 11:31 order | Explain why an order placed one minute after cutoff must fail even if the kitchen has space | Read | 0.5 |
+| 14.1 | Set the scene: the 11:31 order | Explain why an order placed after a slow dish's 11:10 cutoff must fail even if the kitchen has space | Read | 0.5 |
 | 14.2 | Windows, cutoffs, prep lead and the server clock | Define window, capacity, cutoff and lead time; explain why only the server clock decides (canvas: window fill and cutoff) | Learn | 1.5 |
 | 14.3 | Time zones and daylight saving | Store times in UTC, compute them in the kitchen's zone with a time zone library, and test a daylight saving change day | Learn | 1.5 |
 | 14.4 | Generate windows from the schedule | Create the next 7 days of windows with an idempotent upsert on kitchen plus start time | Build | 2 |
 | 14.5 | Per-dish cutoff | Compute a dish's cutoff as window start minus prepMinutes minus a travel buffer, never later than the window cutoff | Build | 1.5 |
 | 14.6 | Schedule exceptions | Close a day, or add special windows (for example iftar windows in Ramadan), without editing the weekly template | Build | 1.5 |
 | 14.7 | Verify with a fake clock | Pass boundary tests at cutoff minus one second, at cutoff, and plus one second | Verify | 1.5 |
-| 14.8 | Gate | Explain the cutoff rule for a slow dish and a fast dish in the same window | Gate | 1 |
+| 14.8 | Window and cutoff decisions | Apply dated-window, cutoff, retry and closure rules to four scenarios | Check | 0.25 |
+| 14.9 | Gate | Explain the cutoff rule for a slow dish and a fast dish in the same window | Gate | 0.75 |
+
+Implementation note (2026-10-24): the dedicated check chapter was added before the gate so a nine-lesson module has a reviewed assessment. Module hours remain 11. This post-approval refinement still needs AQIB and ASIF to confirm it; their original approval was reported for the earlier eight-chapter sequence.
 
 ### Module 15: Browse by window API
 Source: Adapted (FreshMarket 14). Purpose: answer "who can feed me at 13:00?" rather than "show me all products". Hours: 8
@@ -244,7 +254,10 @@ Source: Adapted (FreshMarket 18), heavy changes. Purpose: claim cooking capacity
 | 19.5 | Split and snapshot | Create one order per kitchen with nameAtPurchase, priceAtPurchase, prepMinutesAtPurchase and the window times | Build | 2 |
 | 19.6 | Cutoff re-check at claim time | Re-check the cutoff on the server clock inside the claim, not only when adding to cart | Build | 1 |
 | 19.7 | Verify: 20 parallel checkouts | Run a script against a 10-unit window and log which requests won | Verify | 1.5 |
-| 19.8 | Gate | Remaining units never go below zero | Gate | 1 |
+| 19.8 | Checkout decisions | Choose safe outcomes for capacity races, multi-kitchen failure, hold expiry, and payment retries | Check | 0.25 |
+| 19.9 | Gate | Remaining units never go below zero; no partial cart reaches payment | Gate | 0.75 |
+
+Implementation note (2026-10-24): the dedicated decision check was added before the gate. Module hours remain 11. This post-approval refinement still needs AQIB and ASIF to confirm it; their original approval was reported for the earlier eight-chapter sequence. The approved core implementation choice in the open-decision table remains compensating release with deterministic claim IDs; MongoDB transactions remain a comparison.
 
 ### Module 20: Payment processing
 Source: Carry with additions (FreshMarket 19). Hours: 9
@@ -254,6 +267,8 @@ Source: Carry with additions (FreshMarket 19). Hours: 9
 | 20.1 to 20.14 | As FreshMarket 19.01 to 19.14 | PaymentIntent from server totals; webhook with signature check; checkout gated on a paid intent; idempotency | Build | 7 |
 | 20.15 | Confirm claims in the webhook | Move claims from `held` to `confirmed` when payment succeeds, idempotently | Build | 1 |
 | 20.16 | Partial refunds | Refund one kitchen's share of a PaymentIntent with an idempotency key | Build | 1 |
+
+Implementation note (2026-10-24): the learner-facing Sufra M20 is authored as nine complete domain-specific chapters at `courses/multi-vendor-marketplace/variants/home-kitchens/20-payment-processing/`. They cover the approved PaymentIntent, signed webhook, payment decision check, claim confirmation and kitchen-share refund outcomes with explicit late-success recovery, replay tests and a gate. This consolidates the inherited FreshMarket payment sequence and is a post-approval chapter-map refinement awaiting AQIB and ASIF reconfirmation. It does not change the one-intent-per-attempt or refund policy.
 
 ### Module 21: Async jobs and queues
 Source: Adapted (FreshMarket 22), moved earlier because the lifecycle in Module 22 needs delayed jobs. Hours: 8
@@ -267,6 +282,8 @@ Source: Adapted (FreshMarket 22), moved earlier because the lifecycle in Module 
 | 21.5 | Expire unpaid holds | Release held units with a delayed job that only acts if the claim is still `held` | Build | 1.5 |
 | 21.6 | Order-placed notification | Notify the cook through a job with a deterministic `jobId` so retries do not double-notify | Build | 1 |
 | 21.7 | Gate | Checkout returns before the worker logs | Gate | 1 |
+
+Implementation note (2026-10-24): the learner-facing Sufra M21 is authored as eight chapters at `courses/multi-vendor-marketplace/variants/home-kitchens/21-async-jobs-and-queues/`. A three-question queue decision check was added before the scheduler and worker examples; the approved outcomes remain a separate worker, idempotent dated generation, delayed hold expiry and placed-order notification. The chapter-map refinement awaits AQIB and ASIF reconfirmation.
 
 ### Module 22: Kitchen acceptance and order lifecycle
 Source: **New** (FreshMarket 20 has only a status badge with refresh). Hours: 9
@@ -432,5 +449,5 @@ This roadmap is one variant of the FreshMarket general course.
 
 | Instructor | Role | Decision (approve/revise/reject) | Comments | Date |
 |---|---|---|---|---|
-| | | | | |
-| | | | | |
+| AQIB | Instructor | Approve (reported by course owner) | No changes supplied | Date not supplied |
+| ASIF | Instructor | Approve (reported by course owner) | No changes supplied | Date not supplied |

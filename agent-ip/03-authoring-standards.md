@@ -15,6 +15,38 @@ changes, author a full file under `variants/<slug>/`. Do not duplicate unchanged
 lessons for every variant. Omitted keys stay unchanged in updates; list removals
 explicitly. Submit the package as a draft for the course creator to review.
 
+Only add a new track to `availableVariantSlugs` after its complete learner path has been authored, technically checked, and reviewed against its roadmap. A roadmap or a product-name token does not make a track teach its own product. Keep unfinished tracks unavailable to new choices and random assignment; do not delete historical learner choices.
+
+### One shared course, resolved per variant
+
+The marketplace is one course, not six separate courses. The shared source is the
+base curriculum, and a learner's selected or assigned variant resolves which
+content that learner reads. Resolution happens in this order:
+
+1. `moduleOrder` selects the modules in the variant's path. A shared module absent
+   from the order is not taught in that variant.
+2. `omitLessonKeys` removes shared lessons from the modules that remain.
+3. A full override `file` replaces the shared lesson for that variant.
+4. `replacements` apply exact text changes to the shared lesson. Each `from`
+   string must match once.
+5. `%%product.name%%` resolves at read time to the learner's product name, with
+   FreshMarket as the fallback.
+
+Write the shared lesson for the common spine. Use `%%product.name%%` where the
+sentence is true for every product. Use `replacements` for an exact sentence that
+changes per product. Author a full variant file when the task, data model, build
+step, assessment or capstone changes. Do not copy an unchanged shared lesson into
+every variant.
+
+Review and audit the resolved text, not the raw shared file. A passage that a
+variant replaces or omits is not part of that learner's path. A passage that
+survives resolution and still names another product or its domain is a defect.
+The inheritance audit in `server/scripts/audit-marketplace-inheritance.ts` applies
+the order, omissions, overrides and replacements before it reports findings. Run
+it before making any variant selectable. A reference product named in
+variant-authored prose is allowed only when the prose explicitly compares or
+credits the shared example; it must never present that product as the learner's own.
+
 ## Voice
 
 - **Direct.** Say the thing. Prefer the active voice and the concrete verb.

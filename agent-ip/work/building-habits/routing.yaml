@@ -1,0 +1,19 @@
+---
+artifact: routing
+course: building-habits
+version: 1
+---
+
+# Model routing for this run. Only one model provider is available in this
+# environment, so drafting, critique and the blind key check come from the same
+# model family. Independence is reduced; this is recorded as risk R1 in the
+# decision log, and a human key check and human review are required before G5.
+orchestrator: drafting model (main session)
+research: drafting model, separate agent with web search
+curriculum_architect: drafting model (main session)
+interaction_designer: drafting model (main session)
+interactive_canvas_builder: drafting model (main session and chapter writers, data plus spec on existing renderers)
+chapter_writers: drafting model, parallel agents partitioned by module
+critics: smaller review model, two separate agents with no writer rationale
+blind_key_check: smaller review model, separate agent, keyless batches only
+technical_validator: scripts and tests (validate:source, content:audit, audit-course.mjs, canvas tests, import, click-through)
