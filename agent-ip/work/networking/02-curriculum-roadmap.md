@@ -4,8 +4,8 @@ course: networking
 version: 3
 status: draft
 owner: curriculum-architect
-instructors_reviewed: []
-g2b_signoff: pending
+instructors_reviewed: [Zeeshan (architect, human sponsor)]
+g2b_signoff: partial (1 of 2 instructors; see roadmap-confirmation.md)
 depends_on: 00-course-brief.md, 01-research-dossier.md, qa/g2a-critique-pedagogy.md, qa/g2a-critique-technical.md
 ---
 
@@ -396,24 +396,24 @@ None. This is a short foundations course. Follow-on depth: cloud networking (VPC
 
 | # | Decision | Recommendation | Instructor decision |
 |---|---|---|---|
-| 1 | Build environment | The pinned image with `--privileged` as the single default (tested on Windows); Linux and WSL 2 with `sudo` also supported; run the test script on a Mac and on WSL 2 without Docker Desktop before the blueprint is locked | |
-| 2 | The network lab is a platform change (spec type, validator, board, engine, command-output generator) | Approve it as a new lab family, built in the three slices above; slice 1 must ship before module 3's chapters are written | |
-| 3 | Two new canvases, `[addr]` and `[packet]`, and three small `[timeline]` models | Approve them; `[addr]` first, since modules 2 and 3 depend on it. Fallback: the drills become ordinary quiz questions | |
-| 4 | Phone-only learners and a terminal replay | Add a small `[replay]` renderer: each challenge's recorded commands and output, pausing for the learner to predict the next output, so phone readers still predict and see real results | |
-| 5 | Overlap with the system design course, module 3 | Make this course the prerequisite; system design module 3 keeps handshake cost, TLS, DNS for routing traffic, HTTP versions and real-time, and links here for the basics | |
-| 6 | Overlap with the Linux course on namespaces | This course uses network namespaces as a tool with short recipes; the Linux course explains namespaces and cgroups and reuses challenges 2 and 4 for container networking | |
-| 7 | Course order among the infra courses | Networking first, then Linux, then Kubernetes, then AWS, as the sponsor ranked them | |
-| 8 | Completion for learners without a laptop | Two levels. "Foundations": every Learn chapter, lab, drill, quiz and replay, and each Code exercise either solved or, on a phone, replaced by reading the reference solution and answering three questions about it. Foundations gives graded evidence for O2, O3, O4, O5 and O6 (from labs, quizzes and code); O1 only from phone settings; not O7. The full course also needs challenges 0 to 6. Learners can upgrade when they reach a laptop | |
-| 9 | Gate format and mentor time | Accept written, voice or labelled-diagram answers; learners carry on while a gate waits; state a review time per gate (suggested: within three days) | |
-| 10 | IPv6 placement and depth | After the capstone, about two hours, no build in the core path; the build is stretch S5 | |
-| 11 | Fictional public addresses | Only the documentation ranges in labs, prose and quizzes, with a visible note in 1.1 and 2.4 that they stand in for real public addresses | |
-| 12 | Time estimates | Pilot one chapter of each type with five learners before the blueprint and reset the core and slow-path hours from the median | |
+| 1 | Build environment | The pinned image with `--privileged` as the single default (tested on Windows); Linux and WSL 2 with `sudo` also supported; run the test script on a Mac and on WSL 2 without Docker Desktop before the blueprint is locked | Accepted (sponsor, 2026-10-24) |
+| 2 | The network lab is a platform change (spec type, validator, board, engine, command-output generator) | Approve it as a new lab family, built in the three slices above; slice 1 must ship before module 3's chapters are written | Accepted (sponsor, 2026-10-24) |
+| 3 | Two new canvases, `[addr]` and `[packet]`, and three small `[timeline]` models | Approve them; `[addr]` first, since modules 2 and 3 depend on it. Fallback: the drills become ordinary quiz questions | Accepted (sponsor, 2026-10-24) |
+| 4 | Phone-only learners and a terminal replay | Add a small `[replay]` renderer: each challenge's recorded commands and output, pausing for the learner to predict the next output, so phone readers still predict and see real results | Accepted (sponsor, 2026-10-24) |
+| 5 | Overlap with the system design course, module 3 | Make this course the prerequisite; system design module 3 keeps handshake cost, TLS, DNS for routing traffic, HTTP versions and real-time, and links here for the basics | Accepted (sponsor, 2026-10-24) |
+| 6 | Overlap with the Linux course on namespaces | This course uses network namespaces as a tool with short recipes; the Linux course explains namespaces and cgroups and reuses challenges 2 and 4 for container networking | Accepted (sponsor, 2026-10-24) |
+| 7 | Course order among the infra courses | Networking first, then Linux, then Kubernetes, then AWS, as the sponsor ranked them | Accepted (sponsor, 2026-10-24) |
+| 8 | Completion for learners without a laptop | Two levels. "Foundations": every Learn chapter, lab, drill, quiz and replay, and each Code exercise either solved or, on a phone, replaced by reading the reference solution and answering three questions about it. Foundations gives graded evidence for O2, O3, O4, O5 and O6 (from labs, quizzes and code); O1 only from phone settings; not O7. The full course also needs challenges 0 to 6. Learners can upgrade when they reach a laptop | Accepted (sponsor, 2026-10-24) |
+| 9 | Gate format and mentor time | Accept written, voice or labelled-diagram answers; learners carry on while a gate waits; state a review time per gate (suggested: within three days) | Accepted (sponsor, 2026-10-24) |
+| 10 | IPv6 placement and depth | After the capstone, about two hours, no build in the core path; the build is stretch S5 | Accepted (sponsor, 2026-10-24) |
+| 11 | Fictional public addresses | Only the documentation ranges in labs, prose and quizzes, with a visible note in 1.1 and 2.4 that they stand in for real public addresses | Accepted (sponsor, 2026-10-24) |
+| 12 | Time estimates | Pilot one chapter of each type with five learners before the blueprint and reset the core and slow-path hours from the median | Accepted (sponsor, 2026-10-24) |
 
 ## Confirmation
 
-G2B status: **pending**.
+G2B status: **sponsor approved; second instructor pending** (`roadmap-confirmation.md`).
 
 | Instructor | Role | Decision (approve/revise/reject) | Comments | Date |
 |---|---|---|---|---|
-| | | | | |
-| | | | | |
+| Zeeshan | Architect (human sponsor) | Approve | Accepts the recommendations on all 12 open decisions | 2026-10-24 |
+| | Second instructor | Pending | | |

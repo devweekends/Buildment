@@ -13,3 +13,4 @@
 | 2026-10-24 | G2A | critic (pedagogy), critic (technical) | bulk model | `qa/g2a-critique-pedagogy-r2.md`, `qa/g2a-critique-technical-r2.md` | round 2: 0 S1, 3 S2 between them; revise narrowly |
 | 2026-10-24 | G2A | orchestrator | drafting model | dossier 5.7, third environment test; RFC 1930 and 3849 sourced | passed |
 | 2026-10-24 | G2A | curriculum-architect | drafting model | `02-curriculum-roadmap.md` v3 | ready for G2B |
+| 2026-10-24 | G2B | sponsor | human | `roadmap-confirmation.md` | approved by the sponsor; second instructor pending |
