@@ -1,5 +1,21 @@
 # Agent IP decision log
 
+## 2026-10-23: Repository course publication and instructor binding (v0.4.5)
+
+**Status:** Requested by the user; course-level human review remains required.
+
+**Decision:** The instructor configured in `courses/publishing.yaml` owns repository-managed courses. Existing owners retain course-creator access. A reviewed `courses/<slug>/course.yaml` opts in with `repositoryPublish: true`. CI validates opted-in packages; the backend release phase runs migrations and publishes them through the ZIP import and immutable release services using its existing `DATABASE_URL`. Packages without the flag are not auto-published. FreshMarket needs a manifest before it can opt in.
+
+**Platform impact:** Add the publishing command to the backend release phase and include the root course source in the deployed backend. Bind existing course records to the configured instructor when the release runs. No extra production database secret is needed. The legacy direct-row seeder remains for development only.
+
+## 2026-10-23: One course source tree (v0.4.4)
+
+**Status:** Requested by the user; review and publication gates still apply.
+
+**Decision:** `courses/<slug>/` is the canonical repository location for course source packages. Draft chapters and review evidence stay in `agent-ip/work/<slug>/`. The existing course packages move from `content/import/` without changing their publication status. The importer reads `courses/` directly and transforms lessons in memory; generated MDX is not committed in a second tree. A repository folder does not itself publish a course to learners.
+
+**Platform impact:** Update source paths in scripts, tests and documentation; remove the committed `content/transformed/` output. Existing dashboard ZIP import and database publication remain separate workflows. Repository CI publication still requires implementation.
+
 ## 2026-10-23: Canonical final course location (v0.4.3)
 
 **Status:** Requested by the user.

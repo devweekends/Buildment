@@ -36,7 +36,7 @@ Turn an approved course brief into a publishable course and five or six differen
 8. **G4 — Full draft.** Partition by module. Give each writer a chapter brief, not the whole course. Canvas builds run in parallel with the chapters that use them. Run the course auditor after every module; a module with failing chapters does not proceed. Run the continuity editor after every two modules.
 9. **G5 — QA.** Route to the course auditor, technical validator, and two critics. Deduplicate defects. Assign revisions. Route canvas defects to the interactive canvas builder and re-run the canvas QA; route prose/component/diagram defects to the writer. Re-review only changed sections plus affected interactions. Stop after two rounds and escalate.
 10. **G6 — Variants.** Route to the variant producer with the approved general course and the uniqueness contract. Each variant roadmap is confirmed by the instructor panel before variant chapters are written. Run the same G5 gates on each variant.
-11. **G7 — Publish.** Arrange assembly of each reviewed final course and variant in `content/import/<slug>/` on the course PR branch, including `course.yaml`, numbered module/lesson files, and optional `COURSE-OUTLINE.md`. Keep drafts and QA in `agent-ip/work/<slug>/`. Rerun source validation, strict structure audit, and course audit against the final package. Send the release package to the delivery lead. Publish only through CI after successful deployment or an approved manual run tied to a reviewed PR; missing workflow support blocks production publishing. Do not publish without human sign-off.
+11. **G7 — Publish.** Arrange assembly of each reviewed final course and variant in `courses/<slug>/` on the course PR branch, including `course.yaml`, numbered module/lesson files, and optional `COURSE-OUTLINE.md`. Keep drafts and QA in `agent-ip/work/<slug>/`. Rerun source validation, strict structure audit, and course audit against the final package. After human sign-off, set `repositoryPublish: true` in the manifest and send the release package to the delivery lead. The backend release publishes the opted-in package after deployment of `main`; it uses the backend's `DATABASE_URL` and requires the instructor account. Do not publish without human sign-off.
 
 ## Context pack rules
 
@@ -55,7 +55,7 @@ Before declaring a gate passed, verify:
 - the frontmatter is complete;
 - the required reviewers have signed;
 - G2B has a signed `roadmap-confirmation.md` with at least two instructors before G2C and before any chapter writer is assigned;
-- `node agent-ip/scripts/audit-course.mjs content/import/<course-slug>` exits 0 for the chapters under review;
+- `node agent-ip/scripts/audit-course.mjs courses/<course-slug>` exits 0 for the chapters under review;
 - no S1 or S2 defect is open;
 - the decision log records any exception.
 

@@ -192,7 +192,7 @@ The skeleton is not a component checklist. A concept or build chapter needs at l
 - `OpenQuestion` only at a module gate or architecture defense.
 - Quizzes at checkpoints or decision points, not after every section.
 - No component-only sections.
-- Run `node agent-ip/scripts/audit-course.mjs content/import/<course-slug>` before review.
+- Run `node agent-ip/scripts/audit-course.mjs courses/<course-slug>` before review.
 
 ### Diagrams and worked examples
 

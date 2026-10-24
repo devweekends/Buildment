@@ -103,7 +103,7 @@ Human review is mandatory here. If the sample is wrong, every chapter will be wr
 
 No writer is assigned until G2B has a recorded instructor sign-off and G2C has accepted the blueprint.
 
-Outputs: draft chapters in `agent-ip/work/<course-slug>/chapters/`, preserving numbered module folders and lesson filenames. After review and QA, assemble final courses and variants in `content/import/<slug>/` with their `course.yaml`; retain drafts and QA in `agent-ip/work/<slug>/`. Follow `README.md` → Work areas.
+Outputs: draft chapters in `agent-ip/work/<course-slug>/chapters/`, preserving numbered module folders and lesson filenames. After review and QA, assemble final courses and variants in `courses/<slug>/` with their `course.yaml`; retain drafts and QA in `agent-ip/work/<slug>/`. Follow `README.md` → Work areas.
 
 Exit criteria: every chapter has a brief, a build step, a verification step, and a bridge; every module has a gate; the continuity editor has no unresolved contradictions.
 
