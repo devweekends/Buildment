@@ -1,4 +1,6 @@
 ---
+
+Canvas code is shared by web and desktop in `packages/learning-ui/src/canvas/`. Follow `agent-ip/10-interactive-canvases.md` → Shared canvas development and verification for slug synchronization, package refresh, and checks in both apps. Do not implement canvases in the old frontend re-export files or edit generated slug copies. New canvas tests remain in `frontend/tests/unit/canvas/` and should import from `@buildment/learning-ui/canvas/...`.
 artifact: context-pack
 course: ai-engineering-interview
 for: interactive-canvas-builder, chapter-writer
@@ -28,15 +30,15 @@ The sponsor asked for more interactive elements in the course (2026-10-23). This
 | `trace-sampling` | 10.3 | slider | Head sampling drops most errors with everything else; tail sampling keeps every error for the same storage. |
 | `serverless-vs-cluster-cost` | 10.4 | slider | Serverless is cheaper at low traffic and a fixed cluster at high traffic; the crossover depends on duration and memory. |
 
-The slugs are already registered in `server/src/shared/canvas/slugs.ts` and `frontend/src/shared/canvas/slugs.ts`. Do not edit those, `frontend/src/canvas/registry.ts` or `frontend/tests/unit/canvas/registry.test.ts`: the orchestrator registers every canvas at the end. Until then the registry test reports a slug mismatch, which is expected.
+The slugs are already registered in `server/src/shared/canvas/slugs.ts` (canonical), with generated copies in `frontend/src/shared/canvas/slugs.ts` and `packages/learning-ui/src/shared/canvas/slugs.ts`. Do not edit those, `packages/learning-ui/src/canvas/registry.ts` or `frontend/tests/unit/canvas/registry.test.ts`: the orchestrator registers every canvas at the end. Until then the registry test reports a slug mismatch, which is expected.
 
 ## Building a canvas
 
-Each canvas is a folder `frontend/src/canvas/<slug>/` with `data.ts` and `spec.md`. Name the export in camelCase (`llmTokenCost`) and state it in your report.
+Each canvas is a folder `packages/learning-ui/src/canvas/<slug>/` with `data.ts` and `spec.md`. Name the export in camelCase (`llmTokenCost`) and state it in your report.
 
-- **Sequence, factor:** follow `frontend/src/canvas/rag-hybrid-rerank/data.ts` and `weighted-matrix-two-offers/data.ts`. Four lanes at most; arrow labels at most 18 characters; lane names at most 8 characters and subtitles at most 10, so they fit a 375px phone. Factor: two or three options, three to five criteria.
-- **Slider:** the new reusable renderer in `frontend/src/canvas/renderers/slider/` (read `types.ts` and `SliderCanvas.tsx`). `data.ts` exports a `SliderSpec` with one to four inputs (label at most 28 characters, a unit, min, max, step, default), a pure `compute(values)` returning one to three stats (formatted strings), up to four bars (non-negative, finite) and a one-sentence summary, and a pure `describeChange(before, after)` that says in words what moved and why. Keep the arithmetic in exported pure functions in the same `data.ts` (or a `model.ts` next to it) and test them in `frontend/tests/unit/canvas/<slug>.test.ts`: defaults, minimums, maximums, one edge case, and two `describeChange` sentences. Every corner of every input must give finite numbers (the registry test will also check this). Money and prices are the scenario's own example numbers, labelled as examples in `intro` and `limits`. No hex colours; tones only through `bar.tone` ("good", "warn", "bad") when the colour means something.
-- **spec.md** for every canvas: slug, course and chapter, teaching claim, renderer, the model or formula with worked values at the default, the copy blocks, and QA notes (follow `frontend/src/canvas/retrieval-metrics-at-k/spec.md`).
+- **Sequence, factor:** follow `packages/learning-ui/src/canvas/rag-hybrid-rerank/data.ts` and `weighted-matrix-two-offers/data.ts`. Four lanes at most; arrow labels at most 18 characters; lane names at most 8 characters and subtitles at most 10, so they fit a 375px phone. Factor: two or three options, three to five criteria.
+- **Slider:** the new reusable renderer in `packages/learning-ui/src/canvas/renderers/slider/` (read `types.ts` and `SliderCanvas.tsx`). `data.ts` exports a `SliderSpec` with one to four inputs (label at most 28 characters, a unit, min, max, step, default), a pure `compute(values)` returning one to three stats (formatted strings), up to four bars (non-negative, finite) and a one-sentence summary, and a pure `describeChange(before, after)` that says in words what moved and why. Keep the arithmetic in exported pure functions in the same `data.ts` (or a `model.ts` next to it) and test them in `frontend/tests/unit/canvas/<slug>.test.ts`: defaults, minimums, maximums, one edge case, and two `describeChange` sentences. Every corner of every input must give finite numbers (the registry test will also check this). Money and prices are the scenario's own example numbers, labelled as examples in `intro` and `limits`. No hex colours; tones only through `bar.tone` ("good", "warn", "bad") when the colour means something.
+- **spec.md** for every canvas: slug, course and chapter, teaching claim, renderer, the model or formula with worked values at the default, the copy blocks, and QA notes (follow `packages/learning-ui/src/canvas/retrieval-metrics-at-k/spec.md`).
 - Run `npx vitest run tests/unit/canvas/<your test files>` and `npx tsc --noEmit` from `frontend/`.
 
 ## Placing a canvas in its chapter
