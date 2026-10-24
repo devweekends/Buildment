@@ -2,10 +2,12 @@
 artifact: curriculum-roadmap
 course: multi-vendor-marketplace-services
 version: 1
-status: draft
+status: approved-user-reported
 owner: variant-producer
 derived_from: multi-vendor-marketplace (FreshMarket)
-instructors_reviewed: []
+instructors_reviewed: [AQIB, ASIF]
+approval_reported_on: 2026-10-24
+approval_date: not supplied
 ---
 
 # Curriculum roadmap: SkillSlot (services variant of FreshMarket)
@@ -248,7 +250,10 @@ Hours: 10
 | 13.6 | Weekly hours editor | Weekday grid in the provider's zone | Build | 2 |
 | 13.7 | Time-off editor | A one-tap "block the rest of today" for a power or internet cut | Build | 1 |
 | 13.8 | Listing readiness | A provider is listed only with at least one active service and one rule | Build | 0.5 |
-| 13.9 | Verify and checklist | Set hours, add time off, see the provider listed | Gate | 1 |
+| 13.9 | Provider schedule quiz | Check ownership, local hours, TimeOff and publication boundaries | Check | 0.25 |
+| 13.10 | Verify and checklist | Set hours, add time off, see the provider listed | Gate | 0.75 |
+
+Post-approval refinement (2026-10-24): strict course structure requires a mid-module scenario quiz for this nine-lesson dashboard sequence. The dedicated 13.9 quiz uses 15 minutes from the original 13.9 gate, now 13.10, so the approved 10-hour total and outcomes remain unchanged. Instructor review of this refinement remains an open G5/G6 item.
 
 ### M14: Photos and portfolio (carried over from FreshMarket 13)
 Purpose: images live in object storage, not in MongoDB.
@@ -570,5 +575,5 @@ Hours: 6
 
 | Instructor | Role | Decision (approve/revise/reject) | Comments | Date |
 |---|---|---|---|---|
-| | | | | |
-| | | | | |
+| AQIB | Instructor | Approve (reported by course owner) | No changes supplied | Date not supplied |
+| ASIF | Instructor | Approve (reported by course owner) | No changes supplied | Date not supplied |

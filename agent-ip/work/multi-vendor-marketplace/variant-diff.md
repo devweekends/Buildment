@@ -2,14 +2,16 @@
 artifact: variant-set
 course: multi-vendor-marketplace
 version: 1
-status: draft
+status: approved-user-reported
 owner: variant-producer
-instructors_reviewed: []
+instructors_reviewed: [AQIB, ASIF]
+approval_reported_on: 2026-10-24
+approval_date: not supplied
 ---
 
 # Variant set: multi-vendor marketplace
 
-FreshMarket (`courses/multi-vendor-marketplace/`) is the general course. These five variants keep its spine and outcomes and change the product. Each variant has its own roadmap and diff in `variants/<slug>/`. Nothing here is a chapter: **no variant chapter is written until instructors confirm that variant's roadmap.**
+FreshMarket (`courses/multi-vendor-marketplace/`) is the general course. These five variants keep its spine and outcomes and change the product. Each variant has its own roadmap and diff in `variants/<slug>/`. Nothing here is a chapter. The course owner reports that AQIB and ASIF approved the five roadmaps; approval dates and signed review notes were not supplied. Variant lessons and reference builds remain to be completed and reviewed before the tracks become available.
 
 The personalization layer (brand style, project name, wordmark, accent) is separate and does not count toward uniqueness: see [`personalization-layer.md`](personalization-layer.md). Platform work for both is in [`platform-needs.md`](platform-needs.md).
 
@@ -82,8 +84,8 @@ Each variant roadmap needs at least two instructors before its chapters are writ
 
 | Variant | Instructor | Decision (approve/revise/reject) | Comments | Date |
 |---|---|---|---|---|
-| services | | | | |
-| handmade | | | | |
-| home-kitchens | | | | |
-| digital-goods | | | | |
-| books | | | | |
+| services | AQIB and ASIF | Approve (reported by course owner) | No changes supplied | Date not supplied |
+| handmade | AQIB and ASIF | Approve (reported by course owner) | No changes supplied | Date not supplied |
+| home-kitchens | AQIB and ASIF | Approve (reported by course owner) | No changes supplied | Date not supplied |
+| digital-goods | AQIB and ASIF | Approve (reported by course owner) | No changes supplied | Date not supplied |
+| books | AQIB and ASIF | Approve (reported by course owner) | No changes supplied | Date not supplied |

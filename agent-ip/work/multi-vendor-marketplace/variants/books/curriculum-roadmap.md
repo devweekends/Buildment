@@ -2,10 +2,12 @@
 artifact: curriculum-roadmap
 course: multi-vendor-marketplace-books
 version: 1
-status: draft
+status: approved-user-reported
 owner: variant-producer
 derived_from: multi-vendor-marketplace (FreshMarket)
-instructors_reviewed: []
+instructors_reviewed: [AQIB, ASIF]
+approval_reported_on: 2026-10-24
+approval_date: not supplied
 ---
 
 # Curriculum roadmap: Hamesh (books variant of FreshMarket)
@@ -524,5 +526,5 @@ This roadmap is one variant of FreshMarket. The sibling rows are as briefed; eac
 
 | Instructor | Role | Decision (approve/revise/reject) | Comments | Date |
 |---|---|---|---|---|
-| | | | | |
-| | | | | |
+| AQIB | Instructor | Approve (reported by course owner) | No changes supplied | Date not supplied |
+| ASIF | Instructor | Approve (reported by course owner) | No changes supplied | Date not supplied |
