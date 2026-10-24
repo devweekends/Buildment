@@ -120,6 +120,7 @@ export const CANVAS_SLUGS = [
   "which-habit-first",
   "dina-study-block",
   "prayer-time-anchors",
+  "join-fan-out",
 ] as const;
 
 export type CanvasSlug = (typeof CANVAS_SLUGS)[number];
