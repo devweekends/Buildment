@@ -6,6 +6,7 @@ import { canvasRegistry, getCanvasSpec } from "@buildment/learning-ui/canvas/reg
 import { sequenceGeometry } from "@buildment/learning-ui/canvas/renderers/sequence/geometry";
 import { machineGeometry } from "@buildment/learning-ui/canvas/renderers/state-machine/geometry";
 import { defaultValues } from "@buildment/learning-ui/canvas/renderers/slider/model";
+import { tableStepsProblems } from "@buildment/learning-ui/canvas/renderers/table-steps/model";
 
 const specs = Object.entries(canvasRegistry);
 
@@ -151,6 +152,12 @@ describe("canvas data is internally consistent", () => {
             expect(score, `${c.id} ${o.id}`).toBeLessThanOrEqual(spec.scoreScale.max);
           }
         }
+      });
+    }
+    if (spec.kind === "table-steps") {
+      it(`${slug}: every view points at a real table and row, and each table fits a phone`, () => {
+        expect(tableStepsProblems(spec)).toEqual([]);
+        for (const step of spec.steps) expect(step.title.length, step.title).toBeLessThanOrEqual(60);
       });
     }
   }

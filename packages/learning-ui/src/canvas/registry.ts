@@ -4,6 +4,7 @@ import type { FactorSpec } from "./renderers/factor/types";
 import type { SequenceSpec } from "./renderers/sequence/types";
 import type { SliderSpec } from "./renderers/slider/types";
 import type { StateMachineSpec } from "./renderers/state-machine/types";
+import type { TableStepsSpec } from "./renderers/table-steps/types";
 import { freshmarketMarkPacked } from "./freshmarket-mark-packed/data";
 import { freshmarketOrderStatus } from "./freshmarket-order-status/data";
 import { freshmarketCartSplit } from "./freshmarket-cart-split/data";
@@ -119,6 +120,7 @@ import { slipOrGiveUp } from "./slip-or-give-up/data";
 import { whichHabitFirst } from "./which-habit-first/data";
 import { dinaStudyBlock } from "./dina-study-block/data";
 import { prayerTimeAnchors } from "./prayer-time-anchors/data";
+import { joinFanOut } from "./join-fan-out/data";
 
 // The closed set of canvases a chapter can embed, keyed by the slugs in
 // server/src/shared/canvas/slugs.ts. Each entry is data for one of the four
@@ -133,7 +135,7 @@ export type CustomCanvasSpec = {
   component: ComponentType<{ title: string; purpose: string; limits: string }>;
 };
 
-export type CanvasSpec = SequenceSpec | StateMachineSpec | FactorSpec | SliderSpec | CustomCanvasSpec;
+export type CanvasSpec = SequenceSpec | StateMachineSpec | FactorSpec | SliderSpec | TableStepsSpec | CustomCanvasSpec;
 
 export const canvasRegistry: Record<CanvasSlug, CanvasSpec> = {
   "weighted-matrix-two-offers": weightedMatrixTwoOffers,
@@ -251,6 +253,7 @@ export const canvasRegistry: Record<CanvasSlug, CanvasSpec> = {
   "which-habit-first": whichHabitFirst,
   "dina-study-block": dinaStudyBlock,
   "prayer-time-anchors": prayerTimeAnchors,
+  "join-fan-out": joinFanOut,
 };
 
 /** The spec for a slug from MDX, or null for anything not registered. */
