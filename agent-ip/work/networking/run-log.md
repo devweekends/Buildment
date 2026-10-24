@@ -6,3 +6,7 @@
 | 2026-10-24 | G1 | research | bulk model | `01-research-dossier.md` v1 | drafted: 67 sources, unverified claims marked |
 | 2026-10-24 | G1 | orchestrator | drafting model | dossier section 5.5, environment test on Docker Desktop for Windows | passed; four open questions closed |
 | 2026-10-24 | G1 | curriculum-architect | drafting model | `01-research-dossier.md` v1 | accepted for the roadmap; human acceptance at G2B with the roadmap |
+| 2026-10-24 | G2A | curriculum-architect | drafting model | `02-curriculum-roadmap.md` v1 | drafted |
+| 2026-10-24 | G2A | critic (pedagogy), critic (technical) | bulk model | `qa/g2a-critique-pedagogy.md`, `qa/g2a-critique-technical.md` | round 1: 1 S1, 22 S2; revise |
+| 2026-10-24 | G2A | orchestrator | drafting model | dossier 5.6, second environment test | passed; NAT port behaviour corrected |
+| 2026-10-24 | G2A | curriculum-architect | drafting model | `02-curriculum-roadmap.md` v2, `qa/g2a-response-round1.md` | revised |

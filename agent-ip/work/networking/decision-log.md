@@ -35,3 +35,13 @@
 **Decision:** `tracert`/`traceroute` to the real internet, `curl ifconfig.me` and the learner's own address settings run on the host computer. The lab container is only for networks the learner builds.
 
 **Why:** in the environment test, `traceroute` inside the Docker Desktop container showed `172.17.0.1` and then the destination, with no routers in between, while the host's `tracert` showed every hop (dossier 5.5).
+
+## 2026-10-24: Roadmap v2 after round 1 critiques
+
+**Decision:** roadmap v2 answers every S1 and S2 defect from both round 1 critiques (`qa/g2a-response-round1.md`). The main changes: a "Problem first" line for every Learn chapter; a first network built in the first sitting (1.5); a first look at NAT in 2.4; ARP moved before subnet splitting; faded scaffolding for challenges and slow-path times (core about 42 hours, slow path about 52); NAT taught as Linux really behaves (address always rewritten, port only on a clash; NAT is not a firewall), both checked by a second environment test; the network lab described as a real platform change delivered in three slices; IPv6 moved after the capstone, with its build in the stretch path.
+
+**Deferred, with reasons:**
+- Data weight per chapter: set in the blueprint, when chapter assets are known.
+- Bind-mount timing on Windows: measured when challenge 0 is built.
+- Sources still to add before any learner text uses them: RFC 1930 (autonomous systems) for 4.5, RFC 3849 (`2001:db8::/32`) for 9.2, and the macOS commands on a real Mac.
+- Splitting module 4: not done. Moving ARP into module 3 removes the overload the critic named.
