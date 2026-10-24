@@ -3764,6 +3764,267 @@ variants:
       - module-25-promotions-and-pricing
       - module-99-closing
   - slug: home-kitchens
+    overrides:
+      - lessonKey: lesson-06-20-checklist
+        file: variants/home-kitchens/06-authentication-api/06.20-checklist.md
+      - lessonKey: lesson-07-18-checklist
+        file: variants/home-kitchens/07-login-and-registration/07.18-checklist.md
+      - lessonKey: lesson-02-01-set-the-scene
+        file: variants/home-kitchens/02-project-skeleton/02.01-set-the-scene.md
+      - lessonKey: lesson-02-02-why-structure-matters
+        replacements:
+          - from: "FreshMarket's module folders"
+            to: "Sufra's module folders"
+          - from: "FreshMarket uses module folders on the server"
+            to: "Sufra uses module folders on the server"
+      - lessonKey: lesson-02-03-what-youll-build
+        replacements:
+          - from: "`products/` is about listing groceries"
+            to: "`products/` is about listing the dishes each kitchen cooks"
+          - from: "the water supply all the stalls share"
+            to: "the water supply all the kitchens share"
+          - from: "GreenBasket, FreshMarket, …"
+            to: "GreenBasket, Sufra, …"
+      - lessonKey: lesson-02-04-layer-vs-module
+        replacements:
+          - from: "FreshMarket uses modules inside the server"
+            to: "Sufra uses modules inside the server"
+          - from: "like \"a customer can't buy negative apples.\""
+            to: "like \"a diner can't claim negative load units.\""
+          - from: "listing and updating groceries"
+            to: "listing and updating dishes"
+      - lessonKey: lesson-02-08-create-the-repo
+        file: variants/home-kitchens/02-project-skeleton/02.08-create-the-repo.md
+      - lessonKey: lesson-02-09-scaffold-server-folders
+        replacements:
+          - from: "FreshMarket's server boot order matters"
+            to: "Sufra's server boot order matters"
+      - lessonKey: lesson-02-10-server-package-and-scripts
+        replacements:
+          - from: "is how you run FreshMarket locally every day"
+            to: "is how you run Sufra locally every day"
+      - lessonKey: lesson-02-12-scaffold-client-folders
+        file: variants/home-kitchens/02-project-skeleton/02.12-scaffold-client-folders.md
+      - lessonKey: lesson-02-13-client-shell-and-routing
+        replacements:
+          - from: "FreshMarket uses React Router so shoppers and vendors navigate smoothly"
+            to: "Sufra uses React Router so diners and cooks navigate smoothly"
+          - from: "e.g. \"Local grocery marketplace\""
+            to: "e.g. \"Home-kitchen marketplace\""
+          - from: "if it fights \"local grocery.\""
+            to: "if it fights \"home cooking.\""
+      - lessonKey: lesson-02-14-api-client-helper
+        replacements:
+          - from: "Every FreshMarket screen uses the same client helper"
+            to: "Every Sufra screen uses the same client helper"
+      - lessonKey: lesson-02-17-practice
+        replacements:
+          - from: "\"name\":\"FreshMarket API\""
+            to: "\"name\":\"Sufra API\""
+      - lessonKey: lesson-02-19-checklist
+        file: variants/home-kitchens/02-project-skeleton/02.19-checklist.md
+      - lessonKey: lesson-04-01-set-the-scene
+        replacements:
+          - from: "FreshMarket forgets every vendor and product"
+            to: "Sufra forgets every kitchen and dish"
+          - from: "Picture a market hall with the lights on but the refrigerators dead"
+            to: "Picture a home kitchen with the lights on but the ovens dead"
+          - from: "shoppers would assume the produce is cold."
+            to: "diners would assume their meal is being cooked."
+      - lessonKey: lesson-04-02-why-secrets-matter
+        replacements:
+          - from: "can compromise every FreshMarket deployment"
+            to: "can compromise every Sufra deployment"
+          - from: "mongodb://127.0.0.1:27017/freshmarket-dev"
+            to: "mongodb://127.0.0.1:27017/sufra-dev"
+          - from: "FreshMarket teaches config early"
+            to: "Sufra teaches config early"
+      - lessonKey: lesson-04-03-what-youll-build
+        replacements:
+          - from: "FreshMarket fails fast at boot if"
+            to: "Sufra fails fast at boot if"
+          - from: "FreshMarket teaches config early"
+            to: "Sufra teaches config early"
+      - lessonKey: lesson-04-04-env-vs-hardcoded
+        replacements:
+          - from: "Where FreshMarket configuration lives"
+            to: "Where Sufra configuration lives"
+          - from: "mongodb://127.0.0.1:27017/freshmarket-dev"
+            to: "mongodb://127.0.0.1:27017/sufra-dev"
+      - lessonKey: lesson-04-05-local-mongodb
+        replacements:
+          - from: "mongodb://127.0.0.1:27017/freshmarket`"
+            to: "mongodb://127.0.0.1:27017/sufra`"
+          - from: "`freshmarket-dev` or `greenbasket-dev`"
+            to: "`sufra-dev` or `greenbasket-dev`"
+          - from: "- `freshmarket-dev`"
+            to: "- `sufra-dev`"
+      - lessonKey: lesson-04-06-prime-your-thinking
+        file: variants/home-kitchens/04-config-and-database/04.06-prime-your-thinking.md
+      - lessonKey: lesson-04-07-quiz
+        file: variants/home-kitchens/04-config-and-database/04.07-quiz.md
+      - lessonKey: lesson-04-09-create-env-files
+        replacements:
+          - from: "FreshMarket ships `.env.example` with placeholders"
+            to: "Sufra ships `.env.example` with placeholders"
+      - lessonKey: lesson-04-10-config-module
+        replacements:
+          - from: "FreshMarket's config module throws at boot"
+            to: "Sufra's config module throws at boot"
+      - lessonKey: lesson-04-11-db-module
+        replacements:
+          - from: "so FreshMarket handles many shoppers"
+            to: "so Sufra handles many diners"
+      - lessonKey: lesson-04-12-wire-db-on-boot
+        replacements:
+          - from: "FreshMarket won't accept cart requests"
+            to: "Sufra won't accept cart requests"
+      - lessonKey: lesson-04-13-health-check-db-status
+        replacements:
+          - from: "FreshMarket's `/health` reports"
+            to: "Sufra's `/health` reports"
+      - lessonKey: lesson-04-14-client-env
+        replacements:
+          - from: "FreshMarket's client gets `VITE_API_URL` only"
+            to: "Sufra's client gets `VITE_API_URL` only"
+          - from: "```\nFreshMarket"
+            to: "```\nSufra"
+      - lessonKey: lesson-04-16-recap-and-whats-next
+        replacements:
+          - from: "User, Profile, Store, Product, CartItem, Order"
+            to: "User, Profile, Kitchen, Dish, DeliveryWindow, Order"
+          - from: "- Grocery domain fields"
+            to: "- Home-kitchen domain fields"
+          - from: "`unit`, `stockQty`, `isPerishable`, etc."
+            to: "`prepMinutes`, `loadUnits`, `capacityUnits`, etc."
+          - from: "vendors, stores, products, customers"
+            to: "cooks, kitchens, dishes, diners"
+          - from: "Chapter 5 fills it with grocery data."
+            to: "Chapter 5 fills it with kitchens, dishes and delivery windows."
+      - lessonKey: lesson-06-01-set-the-scene
+        replacements:
+          - from: "FreshMarket cannot know which cart or store belongs to whom"
+            to: "Sufra cannot know which cart or kitchen belongs to whom"
+          - from: "Compass shows users, stores, products"
+            to: "Compass shows users, kitchens, dishes"
+          - from: "seeded with two vendors and grocery fields"
+            to: "seeded with two kitchens and dish fields"
+          - from: "User → Store → Product, with CartItem and Order schemas"
+            to: "User → Kitchen → Dish, with CartItem and Order schemas"
+          - from: "Your grocery data exists"
+            to: "Your kitchen data exists"
+      - lessonKey: lesson-06-02-why-auth-matters
+        replacements:
+          - from: "Anyone can browse produce (public catalogue later)"
+            to: "Anyone can browse dishes (public catalogue later)"
+          - from: "To run a stall or place orders tied to your name"
+            to: "To run a kitchen or place orders tied to your name"
+          - from: "FreshMarket uses brief access tokens plus longer refresh tokens"
+            to: "Sufra uses brief access tokens plus longer refresh tokens"
+      - lessonKey: lesson-06-03-what-youll-build
+        replacements:
+          - from: "FreshMarket's auth module is the security foundation"
+            to: "Sufra's auth module is the security foundation"
+      - lessonKey: lesson-06-04-sessions-vs-jwt
+        file: variants/home-kitchens/06-authentication-api/06.04-sessions-vs-jwt.md
+      - lessonKey: lesson-06-06-what-a-jwt-is
+        replacements:
+          - from: "FreshMarket access tokens prove identity for cart and vendor routes"
+            to: "Sufra access tokens prove identity for cart and kitchen routes"
+          - from: "## Access token payload for FreshMarket"
+            to: "## Access token payload for Sufra"
+      - lessonKey: lesson-06-07-prime-your-thinking
+        file: variants/home-kitchens/06-authentication-api/06.07-prime-your-thinking.md
+      - lessonKey: lesson-06-08-quiz
+        file: variants/home-kitchens/06-authentication-api/06.08-quiz.md
+      - lessonKey: lesson-06-10-scaffold-auth-module
+        replacements:
+          - from: "FreshMarket keeps register/login/refresh together"
+            to: "Sufra keeps register/login/refresh together"
+      - lessonKey: lesson-06-11-wire-auth-routes
+        replacements:
+          - from: "FreshMarket mounts auth at"
+            to: "Sufra mounts auth at"
+      - lessonKey: lesson-06-12-register-handler
+        replacements:
+          - from: "FreshMarket vendors and customers share the same register flow"
+            to: "Sufra cooks and diners share the same register flow"
+      - lessonKey: lesson-06-13-login-handler
+        replacements:
+          - from: "FreshMarket returns the same error for bad email"
+            to: "Sufra returns the same error for bad email"
+      - lessonKey: lesson-06-14-access-token
+        replacements:
+          - from: "FreshMarket attaches access tokens in the Authorization header for cart, store, and product routes"
+            to: "Sufra attaches access tokens in the Authorization header for cart, kitchen, and dish routes"
+      - lessonKey: lesson-06-15-refresh-token
+        replacements:
+          - from: "Shoppers stay logged in on FreshMarket without re-entering password"
+            to: "Diners stay logged in on Sufra without re-entering password"
+      - lessonKey: lesson-06-16-otp-verification
+        replacements:
+          - from: "FreshMarket requires OTP after register"
+            to: "Sufra requires OTP after register"
+      - lessonKey: lesson-06-17-auth-middleware
+        replacements:
+          - from: "Every protected FreshMarket route uses the same middleware"
+            to: "Every protected Sufra route uses the same middleware"
+      - lessonKey: lesson-07-02-why-token-storage-matters
+        replacements:
+          - from: "FreshMarket's client must store tokens safely"
+            to: "Sufra's client must store tokens safely"
+          - from: "FreshMarket's verify step proves the full browser path"
+            to: "Sufra's verify step proves the full browser path"
+      - lessonKey: lesson-07-03-what-youll-build
+        replacements:
+          - from: "FreshMarket shoppers and vendors enter through the same auth screens"
+            to: "Sufra diners and cooks enter through the same auth screens"
+      - lessonKey: lesson-07-04-where-tokens-live
+        file: variants/home-kitchens/07-login-and-registration/07.04-where-tokens-live.md
+      - lessonKey: lesson-07-05-the-401-retry-loop
+        replacements:
+          - from: "every 15 minutes while grocery shopping"
+            to: "every 15 minutes while a diner is ordering lunch"
+          - from: "In FreshMarket terms: a logged-in customer who clicks a vendor-only action gets 403."
+            to: "In Sufra terms: a logged-in diner who clicks a cook-only action gets 403."
+      - lessonKey: lesson-07-06-prime-your-thinking
+        replacements:
+          - from: "Token storage choice in FreshMarket is partly a bet"
+            to: "Token storage choice in Sufra is partly a bet"
+      - lessonKey: lesson-07-07-quiz
+        file: variants/home-kitchens/07-login-and-registration/07.07-quiz.md
+      - lessonKey: lesson-07-09-scaffold-auth-pages
+        replacements:
+          - from: "FreshMarket keeps auth pages separate from shop and vendor dashboard routes"
+            to: "Sufra keeps auth pages separate from browse and kitchen dashboard routes"
+      - lessonKey: lesson-07-10-auth-context-or-hook
+        replacements:
+          - from: "FreshMarket's header shows login vs avatar"
+            to: "Sufra's header shows login vs avatar"
+      - lessonKey: lesson-07-11-register-page
+        replacements:
+          - from: "FreshMarket register page catches obvious errors"
+            to: "Sufra register page catches obvious errors"
+      - lessonKey: lesson-07-12-verify-otp-page
+        replacements:
+          - from: "FreshMarket blocks vendor onboarding until OTP succeeds"
+            to: "Sufra blocks cook onboarding until OTP succeeds"
+      - lessonKey: lesson-07-13-login-page
+        replacements:
+          - from: "Returning FreshMarket users land here"
+            to: "Returning Sufra users land here"
+      - lessonKey: lesson-07-14-api-interceptor
+        replacements:
+          - from: "FreshMarket components call `api.get('/cart')`"
+            to: "Sufra components call `api.get('/cart')`"
+      - lessonKey: lesson-07-15-protected-route-wrapper
+        replacements:
+          - from: "FreshMarket `/vendor/*` routes render nothing"
+            to: "Sufra `/vendor/*` routes render nothing"
+      - lessonKey: lesson-07-16-verify-in-browser
+        replacements:
+          - from: "FreshMarket auth debugging starts in Network"
+            to: "Sufra auth debugging starts in Network"
     modules:
       - key: home-kitchens-introduction
         dir: 01-introduction
@@ -4222,29 +4483,298 @@ variants:
             goal: >-
               Demonstrate an accepted order and an ignored order, including the release, refund and
               timeline evidence.
+      - key: home-kitchens-why-mongodb
+        dir: 03-why-mongodb-for-a-kitchen
+        title: Why MongoDB for a kitchen
+        lessons:
+          - key: home-kitchens-why-mongodb-01
+            file: 03.01-set-the-scene.md
+            title: '3.1 Rules, windows and claims are three kinds of time data'
+            goal: >-
+              Separate a repeating kitchen rule, a dated delivery window and a capacity claim so each one answers a different question about time.
+          - key: home-kitchens-why-mongodb-02
+            file: 03.02-relational-vs-document.md
+            title: '3.2 Relational and document shapes for a kitchen schedule'
+            goal: >-
+              Compare a table-and-constraint model with a document model for dated windows, per-dish cutoffs and claims, and name where each one wins.
+          - key: home-kitchens-why-mongodb-03
+            file: 03.03-decision-and-erd.md
+            title: '3.3 The decision for Sufra and the first ERD'
+            goal: >-
+              Commit a defended database decision, then draft the Kitchen, Dish, DeliveryWindow, claim and order relationships in docs/erd-draft.md.
+          - key: home-kitchens-why-mongodb-04
+            file: 03.04-checklist.md
+            title: '3.4 Data model decision gate'
+            goal: >-
+              Defend the store choice and the first ERD against three challenges, with a committed draft and a test that proves one database rule.
+      - key: home-kitchens-authorization
+        dir: 08-authorization-and-isolation
+        title: Authorization and isolation
+        lessons:
+          - key: home-kitchens-authorization-01
+            file: 08.01-set-the-scene.md
+            title: '8.1 Whose kitchen, whose order?'
+            goal: >-
+              Separate a role check from an ownership check, and decide which fields each participant in an order may see.
+          - key: home-kitchens-authorization-02
+            file: 08.02-object-checks.md
+            title: '8.2 Object checks on kitchens, dishes and orders'
+            goal: >-
+              Build a role guard and an ownership helper that follow kitchen, dish and order records to their owner before any read or write.
+          - key: home-kitchens-authorization-03
+            file: 08.03-matrix-and-tests.md
+            title: '8.3 The authorization matrix and cross-kitchen tests'
+            goal: >-
+              Write the actor, resource and action matrix for Sufra, then prove it with two cooks, two diners and tests that fail without leaking data.
+          - key: home-kitchens-authorization-04
+            file: 08.04-checklist.md
+            title: '8.4 Isolation gate'
+            goal: >-
+              Prove that a second cook and a second diner are refused without learning anything, and that each participant sees only their own fields.
+      - key: home-kitchens-open-kitchen
+        dir: 10-open-your-kitchen
+        title: Open your kitchen
+        lessons:
+          - key: home-kitchens-open-kitchen-01
+            file: 10.01-set-the-scene.md
+            title: '10.1 The cook who has no kitchen page'
+            goal: >-
+              Resolve a cook's onboarding state from the server so a missing, unfinished or paused kitchen each leads somewhere useful.
+          - key: home-kitchens-open-kitchen-02
+            file: 10.02-kitchen-form-and-schedule.md
+            title: '10.2 Kitchen form and the phone-width schedule grid'
+            goal: >-
+              Build the profile form, a weekday by window capacity editor that survives a 360 pixel screen, and the hygiene declaration step.
+          - key: home-kitchens-open-kitchen-03
+            file: 10.03-hygiene-and-checklist.md
+            title: '10.3 Onboarding gate on a phone'
+            goal: >-
+              Demonstrate the onboarding path from a missing kitchen to a saved profile, weekly capacity and dated declaration at 360 pixels.
+      - key: home-kitchens-dishes-api
+        dir: 11-manage-dishes-api
+        title: Manage dishes API
+        lessons:
+          - key: home-kitchens-dishes-api-01
+            file: 11.01-set-the-scene.md
+            title: '11.1 A dish is a promise of time'
+            goal: >-
+              Read preparation minutes and load units as two different promises, using maqluba and falafel in the same lunch window.
+          - key: home-kitchens-dishes-api-02
+            file: 11.02-dish-crud-and-validation.md
+            title: '11.2 Dish fields, validation and ownership'
+            goal: >-
+              Validate preparation, load, order limit, allergen and weekday fields on a dish while the write path refuses any cook but the owner.
+          - key: home-kitchens-dishes-api-03
+            file: 11.03-fit-price-and-changes.md
+            title: '11.3 A dish that cannot fit, and a price that can change'
+            goal: >-
+              Refuse a dish whose load exceeds the largest window, and edit prices without rewriting what a diner already paid.
+          - key: home-kitchens-dishes-api-04
+            file: 11.04-checklist.md
+            title: '11.4 Dish API gate'
+            goal: >-
+              Prove dish writes are validated, owner scoped, refused when they cannot fit any window, and invisible to past order prices.
+      - key: home-kitchens-dashboard
+        dir: 12-kitchen-dashboard
+        title: Kitchen dashboard
+        lessons:
+          - key: home-kitchens-dashboard-01
+            file: 12.01-set-the-scene.md
+            title: '12.1 The kitchen dashboard'
+            goal: >-
+              Compose one cook screen from dishes by status, today's windows with remaining units and cutoffs, and orders with server derived actions.
+          - key: home-kitchens-dashboard-02
+            file: 12.02-checklist.md
+            title: '12.2 Kitchen dashboard gate'
+            goal: >-
+              Prove the dashboard and every route behind it serve one cook's kitchen only, including counts, identifiers and actions.
+      - key: home-kitchens-find-a-meal
+        dir: 16-find-a-meal
+        title: Find a meal
+        lessons:
+          - key: home-kitchens-find-a-meal-01
+            file: 16.01-set-the-scene.md
+            title: '16.1 Lunch on a phone, in a window'
+            goal: >-
+              Explain how the diner browse screen turns server facts about windows, kitchens and dish cutoffs into a decision a hungry person can make on a phone in twenty seconds.
+          - key: home-kitchens-find-a-meal-02
+            file: 16.02-window-picker-and-kitchen-cards.md
+            title: '16.2 Window picker, kitchen cards and dish lists'
+            goal: >-
+              Build the diner browse screen at 360 pixels from the browse response, with dated window targets, server-supplied deadlines and per-dish cutoff guards.
+          - key: home-kitchens-find-a-meal-03
+            file: 16.03-empty-states-and-checklist.md
+            title: '16.3 Find-a-meal gate'
+            goal: >-
+              Demonstrate the diner browse screen at 360 pixels with a slow dish expiring, a full window suggesting the next one, and every deadline traceable to server data.
+      - key: home-kitchens-cart-ui
+        dir: 18-your-cart
+        title: Your cart
+        lessons:
+          - key: home-kitchens-cart-ui-01
+            file: 18.01-set-the-scene.md
+            title: '18.1 One cart, one window, several kitchens'
+            goal: >-
+              Explain why the cart page groups lines by kitchen while keeping one delivery window, and why a window change is a review the diner must see.
+          - key: home-kitchens-cart-ui-02
+            file: 18.02-cart-page-and-revalidation.md
+            title: '18.2 Cart rows, load totals and window changes'
+            goal: >-
+              Build grouped cart rows, per-kitchen load and money totals, and a change-window flow that previews conflicts, requires approval and survives a stale revision.
+          - key: home-kitchens-cart-ui-03
+            file: 18.03-checklist.md
+            title: '18.3 Cart UI gate'
+            goal: >-
+              Demonstrate a grouped cart at 360 pixels, a deliberate line removal, a window change that drops one line after approval, and a clear error when the window moved under the diner.
+      - key: home-kitchens-live-tracking
+        dir: 23-live-order-tracking
+        title: Live order tracking
+        lessons:
+          - key: home-kitchens-live-tracking-01
+            file: 23.01-set-the-scene.md
+            title: '23.1 Lunch on a weak connection'
+            goal: >-
+              Show what a diner misses when the phone drops signal while the meal cooks, and why a refresh button cannot close the gap.
+          - key: home-kitchens-live-tracking-02
+            file: 23.02-transport-decision.md
+            title: '23.2 Polling, long polling, SSE and WebSockets'
+            goal: >-
+              Compare four ways to move an order update to a phone, then record why Sufra pushes with SSE and sends commands as normal requests.
+          - key: home-kitchens-live-tracking-03
+            file: 23.03-sse-stream-and-snapshot.md
+            title: '23.3 One stream per user, snapshot then deltas'
+            goal: >-
+              Serve one authorized text/event-stream per diner with a retry hint and heartbeat, send a snapshot on connect, then deltas fanned out through Redis after each committed transition.
+          - key: home-kitchens-live-tracking-04
+            file: 23.04-fallback-and-tracking-ui.md
+            title: '23.4 Polling fallback and the tracking screen'
+            goal: >-
+              Add a cursor-based timeline query with an ETag, back off and pause it while the tab is hidden, and build a tracking screen that stays honest and usable on a 360 pixel phone.
+          - key: home-kitchens-live-tracking-05
+            file: 23.05-checklist.md
+            title: '23.5 Offline test and tracking gate'
+            goal: >-
+              Prove the tracking feature with a recorded sixty second offline test that catches up in order with no duplicates, and explain why a lost pub/sub message cannot lose an order status.
+      - key: home-kitchens-cache-search
+        dir: 24-cache-and-search
+        title: Cache and search
+        lessons:
+          - key: home-kitchens-cache-search-01
+            file: 24.01-set-the-scene.md
+            title: '24.1 What may be cached, and what never is'
+            goal: >-
+              Separate the menu data Sufra may cache from the capacity and cutoff state it must read fresh, and explain why the clock and concurrent claims make a cached availability answer unsafe.
+          - key: home-kitchens-cache-search-02
+            file: 24.02-cache-and-search.md
+            title: '24.2 Cache menus, bust on save, search dishes'
+            goal: >-
+              Implement a menu cache with write-through invalidation, a fragment test that keeps capacity out, a MongoDB text index on dish names in both scripts, and a measurement harness.
+          - key: home-kitchens-cache-search-03
+            file: 24.03-checklist.md
+            title: '24.3 Cache and search gate'
+            goal: >-
+              Demonstrate menu invalidation on save, a fragment free of capacity, recorded before and after measurements, a working fallback with Redis stopped, and dish search in both scripts.
+      - key: home-kitchens-deploy
+        dir: 25-deploy
+        title: Deploy
+        lessons:
+          - key: home-kitchens-deploy-01
+            file: 25.01-set-the-scene.md
+            title: '25.1 Deploy the API, worker and client'
+            goal: >-
+              Describe the production shape Sufra needs: three supervised processes, two managed services, HTTPS everywhere and a stream that a proxy must not hold.
+          - key: home-kitchens-deploy-02
+            file: 25.02-deploy-and-streams.md
+            title: '25.2 HTTPS, secrets, and streams in production'
+            goal: >-
+              Deploy the API, worker and client on HTTPS with secrets in env, then prove the order stream passes the proxy unbuffered and survives an API restart.
+          - key: home-kitchens-deploy-03
+            file: 25.03-checklist.md
+            title: '25.3 Deploy gate and restart survival'
+            goal: >-
+              Show a live HTTPS Sufra where secrets stay in env, the stream passes the proxy unbuffered, and an API restart heals a diner's tracking screen on its own.
+      - key: home-kitchens-capacity-load
+        dir: 26-capacity-under-load
+        title: Capacity under load
+        lessons:
+          - key: home-kitchens-capacity-load-01
+            file: 26.01-set-the-scene.md
+            title: '26.1 The Friday lunch rush'
+            goal: >-
+              See a busy Friday window from the cook's phone and the diner's phone, and name the two failure families a rush exposes: double promises and stuck units.
+          - key: home-kitchens-capacity-load-02
+            file: 26.02-two-clocks-and-holds.md
+            title: '26.2 Payment time, cutoff time and hold expiry'
+            goal: >-
+              Separate the kitchen cutoff from the payment clock, decide the late-payment case, and bound every hold so a held unit cannot outlive the window's usefulness.
+          - key: home-kitchens-capacity-load-03
+            file: 26.03-reconciliation-and-evidence.md
+            title: '26.3 Reconcile claims and prove the race'
+            goal: >-
+              Build a reconciliation job that explains every window counter from its claims, then run parallel checkouts and a cutoff race on the deployed app.
+          - key: home-kitchens-capacity-load-04
+            file: 26.04-checklist.md
+            title: '26.4 Capacity evidence gate'
+            goal: >-
+              Show a deployed window that fills exactly to capacity, a cutoff that refuses at the boundary, and a reconciliation report that explains every counter.
+      - key: home-kitchens-closing
+        dir: 99-closing
+        title: Closing and capstone
+        lessons:
+          - key: home-kitchens-closing-01
+            file: 99.01-ship-and-document.md
+            title: '99.1 Ship and document Sufra'
+            goal: >-
+              Write the README, .env.example, architecture and lifecycle diagrams, evidence index and five-minute demo script that make the deployed Sufra reviewable.
+          - key: home-kitchens-closing-02
+            file: 99.02-demo-and-viva.md
+            title: '99.2 Five-minute demo and capstone defense'
+            goal: >-
+              Record a five-minute two-device demo that survives a dropped connection, then defend seven architecture decisions without notes.
+      - key: home-kitchens-dish-photos
+        dir: 13-dish-photos
+        title: Dish photos
+        lessons:
+          - key: home-kitchens-dish-photos-01
+            file: 13.01-set-the-scene.md
+            title: '13.1 A diner cannot smell the maqluba'
+            goal: >-
+              Read why a dish photo is a claim about real food, and why the bytes live in Cloudinary while the dish document keeps only a URL and a public id.
+          - key: home-kitchens-dish-photos-02
+            file: 13.02-upload-and-small-images.md
+            title: '13.2 Upload dish photos and serve small ones'
+            goal: >-
+              Build the multipart photo route, the Dish photo fields, the conditional destroy and the delivery widths that keep a browse card small on a weak connection.
+          - key: home-kitchens-dish-photos-03
+            file: 13.03-checklist.md
+            title: '13.3 Dish photo gate'
+            goal: >-
+              Prove photo writes are typed, size limited, capped at four, owner scoped, and that a replaced photo leaves an older order snapshot readable.
     moduleOrder:
       - home-kitchens-introduction
       - module-02-project-skeleton
-      - module-03-why-mongodb
+      - home-kitchens-why-mongodb
       - module-04-config-and-database
       - home-kitchens-data-model-and-seed
       - module-06-authentication-api
       - module-07-login-and-registration
-      - module-08-authorization-and-isolation
+      - home-kitchens-authorization
       - home-kitchens-kitchen-api
-      - module-10-open-your-shop
-      - module-11-manage-products-api
-      - module-12-vendor-dashboard
-      - module-13-product-photos
+      - home-kitchens-open-kitchen
+      - home-kitchens-dishes-api
+      - home-kitchens-dashboard
+      - home-kitchens-dish-photos
       - home-kitchens-delivery-windows
       - home-kitchens-browse-by-window
-      - module-15-shop-the-marketplace
+      - home-kitchens-find-a-meal
       - home-kitchens-cart-api
-      - module-17-your-cart
+      - home-kitchens-cart-ui
       - home-kitchens-checkout-capacity-orders
       - home-kitchens-payment-processing
       - home-kitchens-async-jobs
       - home-kitchens-order-lifecycle
-      - module-21-cache-and-search
-      - module-23-deploy
-      - module-99-closing
+      - home-kitchens-live-tracking
+      - home-kitchens-cache-search
+      - home-kitchens-deploy
+      - home-kitchens-capacity-load
+      - home-kitchens-closing
