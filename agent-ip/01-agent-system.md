@@ -103,7 +103,7 @@ Human review is mandatory here. If the sample is wrong, every chapter will be wr
 
 No writer is assigned until G2B has a recorded instructor sign-off and G2C has accepted the blueprint.
 
-Outputs: all chapters in `work/<course-slug>/chapters/`.
+Outputs: draft chapters in `agent-ip/work/<course-slug>/chapters/`, preserving numbered module folders and lesson filenames. After review and QA, assemble final courses and variants in `courses/<slug>/` with their `course.yaml`; retain drafts and QA in `agent-ip/work/<slug>/`. Follow `README.md` → Work areas.
 
 Exit criteria: every chapter has a brief, a build step, a verification step, and a bridge; every module has a gate; the continuity editor has no unresolved contradictions.
 
@@ -183,7 +183,7 @@ Blind critique matters. A critic who reads the writer's explanation starts gradi
 
 ## Model policy
 
-The system is multi-provider and model-agnostic. The orchestrator reads a routing table from the work area; the table records which model family is used for each role. The policy:
+The system is multi-provider and model-agnostic. The orchestrator reads a routing table from the work area; the table records which model role is used for each agent role and whether those model roles share a family. The policy:
 
 - **Drafting and critique use different model families** for high-stakes chapters, gates, and assessments. A model that drafts a chapter may not be the only reviewer of that chapter.
 - **At least two critique passes** are required for G3 and G5: one pedagogical critic and one slop/red-team critic.
@@ -192,7 +192,8 @@ The system is multi-provider and model-agnostic. The orchestrator reads a routin
 - **Structured outputs.** Blueprints, maps, scorecards, and defect reports are JSON or YAML so the orchestrator can check completeness.
 - **Low temperature for facts, moderate for prose.** Technical and assessment content uses deterministic settings. Prose may vary, but must pass the slop critic.
 - **No self-approval.** An agent's artifact cannot be marked `approved` by the same agent that produced it.
-- **Log the model and prompt version** for every artifact in the run log. Reproducibility matters when a chapter is revised six months later.
+- **Log the model role and prompt version** for every artifact in the run log. Reproducibility matters when a chapter is revised six months later.
+- **Name models by role in committed files.** The routing table, run log, decision log and every other file committed under `work/` say "drafting model" or "review model", never a model or vendor name, and record whether the roles share a model family. The independence rules need the family relationship, not the product name.
 
 If only one provider is available, the orchestrator must still run separate passes with different prompts and a human review before G5. It should record the reduced independence as a risk.
 

@@ -22,7 +22,7 @@ Turn the chapter brief into prose that teaches a decision, shows a specific exam
 
 ## Outputs
 
-`work/<course-slug>/chapters/<chapter-id>.md` with:
+`agent-ip/work/<course-slug>/chapters/<module-dir>/<lesson-file>.md` with:
 
 - YAML frontmatter matching the platform's source format;
 - the chapter body in the ten-part skeleton;
@@ -31,6 +31,8 @@ Turn the chapter brief into prose that teaches a decision, shows a specific exam
 - a verify step including one failure mode;
 - a reflect prompt and a bridge;
 - source notes for any claim that needs a citation.
+
+Drafts and revisions stay in the work area. After review and QA, the orchestrator arranges promotion to `courses/<course-slug>/`. Keep source notes and review evidence in the work area; do not write drafts into the CI publishing source. Follow `README.md` → Work areas.
 
 ## Chapter skeleton
 

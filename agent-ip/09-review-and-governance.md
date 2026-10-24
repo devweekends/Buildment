@@ -106,6 +106,7 @@ Do not leave two competing rules in the folder. If a rule is replaced, remove th
 Course and IP changes reach `main` through pull requests on `devweekends/Buildment`.
 
 - **Check the pipeline.** The architect keeps the order and status of the fellowship courses in `buildment-course-pipeline.md`, a planning file in the architect's local workspace, outside this repository. Ask the architect (Zeeshan) for the current copy and read it before starting a course; tell him when a course changes status.
+- **One branch, one coordinator.** A course has one branch and one orchestrator at a time. Continue an existing branch instead of opening a parallel one (`agents/orchestrator.md` → Rules).
 - **Small logical commits.** One change per commit, with a message that says what changed and why. No catch-all commit.
 - **No attribution, no dashes.** No AI or tool attribution, and no em or en dashes, in commits or PR text (`03-authoring-standards.md` → Forbidden patterns).
 - **Verify first.** Run `06-quality-gates.md` → Before a pull request and list the results in the PR.
@@ -201,6 +202,8 @@ A course is not finished at launch.
 The agents follow this IP; the IP improves from the review of their output. When the architect or an IP owner corrects the same kind of mistake twice, it becomes a rule here, with an example, in the same change that fixes the course. The architect has final say on the IP; IP owners maintain it day to day.
 
 ## The governance promise
+
+Final course and variant packages live exclusively in `courses/<slug>/`; drafts, reviews, and QA live in `agent-ip/work/<slug>/`. Enforce `README.md` → Work areas at publish review. CI must consume the approved final package from the reviewed revision, never a draft directory or an unreviewed package.
 
 The system is working when:
 

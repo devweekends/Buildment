@@ -4,8 +4,8 @@
  * and the interactive-first rule (every Learn chapter has an interactive element).
  *
  * Usage:
- *   node agent-ip/scripts/audit-course.mjs courses/ticketline
- *   node agent-ip/scripts/audit-course.mjs courses/ticketline --json
+ *   node agent-ip/scripts/audit-course.mjs <course-folder>
+ *   node agent-ip/scripts/audit-course.mjs <course-folder> --json
  *
  * Exit code 1 when any chapter fails a threshold.
  */
@@ -15,7 +15,11 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const args = process.argv.slice(2);
-const target = args.find((arg) => !arg.startsWith("--")) ?? "courses/ticketline";
+const target = args.find((arg) => !arg.startsWith("--"));
+if (!target) {
+  console.error("Usage: node agent-ip/scripts/audit-course.mjs <course-folder> [--json]");
+  process.exit(2);
+}
 const asJson = args.includes("--json");
 
 const CHILD_COMPONENTS = new Set([
@@ -63,7 +67,7 @@ function paragraphs(body) {
 }
 
 // Canvas specs live in this script's repository: frontend/src/canvas/<slug>/data.ts.
-const CANVAS_DIR = path.resolve(fileURLToPath(new URL(".", import.meta.url)), "../../frontend/src/canvas");
+const CANVAS_DIR = path.resolve(fileURLToPath(new URL(".", import.meta.url)), "../../packages/learning-ui/src/canvas");
 
 /** A scene only plays; anything else (a custom canvas, a renderer with controls) can be changed by the learner. */
 function isPlayable(slug) {
@@ -136,7 +140,9 @@ for (const file of files) {
     (proseBody.match(/<StateMachine\b/g) ?? []).length +
     (proseBody.match(/<MermaidDiagram\b/g) ?? []).length +
     (proseBody.match(/<TraceRequest\b/g) ?? []).length +
-    (proseBody.match(/^```diagram$/gm) ?? []).length;
+    (body.match(/^```diagram$/gm) ?? []).length +
+    // The importer turns a ```mermaid fence into a MermaidDiagram (remark-mermaid).
+    (body.match(/^```mermaid$/gm) ?? []).length;
   const canvases = (proseBody.match(/<InteractiveCanvas\b/g) ?? []).length;
   // Interactive-first (IP v0.4): every Learn chapter needs something the
   // learner manipulates or steps through and sees change.

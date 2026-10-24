@@ -114,6 +114,28 @@ The audit is executable. Run it at G3 and G5:
 node agent-ip/scripts/audit-course.mjs courses/<course-slug>
 ```
 
+For a multi-variant course, also scan newly authored variant lessons for repeated long prose:
+
+```bash
+node agent-ip/scripts/audit-variant-repetition.mjs courses/<course-slug>/variants
+```
+
+Repeated paragraphs of 45 or more words across chapters need editorial review even when each chapter passes the word-count audit. Rewrite the worked example, practice, failure test, and bridge around the chapter's actual decision; a passing prose count alone does not pass G5.
+
+Audit the **resolved** learner path, not only the shared source files. Apply the
+variant `moduleOrder`, `omitLessonKeys`, full overrides and exact replacements
+before judging a passage. Run:
+
+```bash
+cd server && pnpm exec tsx scripts/audit-marketplace-inheritance.ts
+```
+
+The audit reports inherited shared lessons, lessons adapted by replacements,
+effective findings after resolution, and variant-authored findings. Any effective
+finding in a released variant blocks the gate. A mention of the reference product
+in variant-authored prose is allowed only when the prose explicitly compares or
+credits the shared example; it must never present that product as the learner's own.
+
 It checks, per chapter:
 
 - for Learn chapters (`format: beats`): four to eight beats, each opening with a visual, at most 70 visible words per beat, 300 to 700 visible words, and at least 900 words including `GoDeeper` folds;
@@ -272,6 +294,8 @@ The technical validator runs, not reads.
 - [ ] The project builds from a clean checkout.
 - [ ] The documented Node/runtime version works.
 - [ ] Every command in the chapter succeeds in the documented environment.
+- [ ] Every expected output a chapter shows, such as a test summary or a count, was copied from a real run at the course's pinned versions.
+- [ ] The course's pinned minimum for each package is at least the newest version any snippet needs. A snippet that needs version 1.2 cannot ship under a `>=1.0` pin.
 - [ ] Every code snippet compiles or is clearly labelled as partial.
 - [ ] Every code exercise's tests pass against the reference solution and fail against the starter.
 - [ ] Every API example has the correct method, path, auth, and response shape.
@@ -290,6 +314,7 @@ The technical validator runs, not reads.
 - [ ] Every SVG is sanitized (if static), theme-aware, responsive, and has a text alternative.
 - [ ] Every SVG has no scripts, `foreignObject`, raw inline event attributes, external hrefs, or remote fonts.
 - [ ] Every link resolves and matches the claim.
+- [ ] The resolved variant path is audited after module order, omissions, overrides and replacements, not only the raw shared files.
 - [ ] There are no secrets, private URLs, or personal data in the source.
 - [ ] The answer key, rubric, hidden tests, and solution are not in client-visible content.
 - [ ] Rate limits, auth checks, and validation are present where the chapter claims they are.
@@ -318,6 +343,7 @@ Run these for every course a pull request touches, and list what you ran and wha
 - [ ] `pnpm --dir server content:import --course <slug>` succeeds against a local database.
 - [ ] A student click-through as a test learner (for example `mentee1@buildment.dev`) at 375px wide and at desktop width, in the light and dark themes. Every changed chapter loads without console errors.
 - [ ] Grading works: answer one quiz right and one wrong, then check the score, the explanations and the saved progress.
+- [ ] The PR says who re-answered the answer keys blind. If no person did, it asks a reviewer for a human key check (`05-assessment-and-motivation.md` → Answer-key check).
 
 ## Assessment validation
 
@@ -329,7 +355,7 @@ Run these for every course a pull request touches, and list what you ran and wha
 - [ ] The correct answer is unambiguous to an expert.
 - [ ] Every answer key was re-answered blind and matches the reference build.
 - [ ] Every option has an explanation, shown one option per line.
-- [ ] The audit gives no option-length warning (the correct option 10% or more longer than the longest wrong one), and correct positions are spread across the set.
+- [ ] The audit gives no option-length warning (the correct option 10% or more longer than the longest wrong one) and no position warning (one position holds 70% or more of the course's correct answers), and correct positions are spread across the set.
 - [ ] No graded question depends on opinion; those are open questions.
 - [ ] Quiz chapters hold activities only, and their titles have no "Quiz:" prefix.
 - [ ] Open questions that accept a link-only answer set `minWords: 0`.
@@ -409,6 +435,8 @@ Every defect gets a location, a reason, and a suggested fix. "This feels weak" i
 Do not let a writer "fix" a structural problem by adding more prose. If the chapter teaches the wrong thing, the brief is wrong. Fix the brief first.
 
 ## Sign-off artifact
+
+Final learner-facing source MUST be in `courses/<course-slug>/` for every course and variant, with `course.yaml` matching its source folder and numbered module/lesson files. A repository target slug may identify an existing database course whose original slug differs; it must never create another course. Run source validation, the structure audit with `--strict`, and the course audit against that final package. Before making a variant selectable, verify the full assigned learner path, variant-specific build work, assessments, capstone, and reference consistency. Keep drafts and all QA/sign-off evidence under `agent-ip/work/<course-slug>/`. CI must publish only an approved package from `courses/`, never a draft from the work area. Follow `README.md` → Work areas.
 
 The publish package contains:
 

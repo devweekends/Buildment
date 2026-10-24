@@ -17,6 +17,8 @@ Prevent the failure mode where a course looks structured but teaches very little
 
 ## Outputs
 
+Audit drafts in `agent-ip/work/<course-slug>/chapters/` during authoring and the assembled final package in `courses/<course-slug>/` before release. Keep all reports in `agent-ip/work/<course-slug>/qa/`; final-path examples below refer to release validation.
+
 - `work/<course-slug>/qa/course-audit.md` using `08-templates.md` → Course audit report.
 - A defect list with location, observation, why it matters, and required fix.
 - A recommendation: approve, revise, or rewrite from brief.

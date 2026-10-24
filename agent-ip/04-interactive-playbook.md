@@ -79,7 +79,7 @@ Apply this rule to every option-based check: `QUIZ` MCQ, `PREDICT`, and any know
 - **Do not make the correct option the longest.** If the correct answer needs more words to be precise, shorten it or write the distractors at a comparable level of specificity.
 - **Balance all options.** Keep the spread small: the correct option should not be more than about 10% longer than the longest distractor. If one option is a full sentence, every option is a full sentence. If one is a short label, every option is a short label.
 - **Do not pad distractors with filler** just to match a long correct answer. Rewrite the question and all options at the same level of detail.
-- **Vary the position.** Do not put the correct answer first, last, or in the same slot in every question.
+- **Vary the position.** Do not put the correct answer first, last, or in the same slot in every question. `QUIZ` and `PREDICT` show options in the order written, without shuffling. `content:audit` warns once per course when one position holds 70% or more of the correct answers, counted separately for predictions and multiple-choice questions, once the course has 6 or more of them.
 - **Audit the set, not only the question.** If the correct option is the longest in half or more of a quiz or prediction set, rewrite the set even when each individual question is close. Repeating "longest = correct" teaches the learner a shortcut, not the concept.
 - **Never treat length as a grading rule.** Do not write an instruction that says to choose the longest option, and do not generate or accept an answer key that way.
 

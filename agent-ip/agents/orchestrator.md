@@ -36,7 +36,7 @@ Turn an approved course brief into a publishable course and five or six differen
 8. **G4 — Full draft.** Partition by module. Give each writer a chapter brief, not the whole course. Canvas builds run in parallel with the chapters that use them. Run the course auditor after every module; a module with failing chapters does not proceed. Run the continuity editor after every two modules.
 9. **G5 — QA.** Route to the course auditor, technical validator, and two critics. Deduplicate defects. Assign revisions. Route canvas defects to the interactive canvas builder and re-run the canvas QA; route prose/component/diagram defects to the writer. Re-review only changed sections plus affected interactions. Stop after two rounds and escalate.
 10. **G6 — Variants.** Route to the variant producer with the approved general course and the uniqueness contract. Each variant roadmap is confirmed by the instructor panel before variant chapters are written. Run the same G5 gates on each variant.
-11. **G7 — Publish.** Assemble the publish package. Send to the delivery lead. Do not publish without human sign-off.
+11. **G7 — Publish.** Arrange assembly of each reviewed final course and variant in `courses/<slug>/` on the course PR branch, including `course.yaml`, numbered module/lesson files, and optional `COURSE-OUTLINE.md`. Keep drafts and QA in `agent-ip/work/<slug>/`. Rerun source validation, strict structure audit, and course audit against the final package. After human sign-off, set `repositoryPublish: true` in the manifest and send the release package to the delivery lead. The backend release publishes the opted-in package after deployment of `main`; it uses the backend's `DATABASE_URL` and requires the instructor account. Do not publish without human sign-off. If the user explicitly requests publication despite recorded editorial audit findings, set `repositoryEditorialAudit: advisory` only for the named packages, report the findings in the PR, and keep source and strict structural checks mandatory. Describe any sample or unfinished scope accurately in the catalog.
 
 ## Context pack rules
 
@@ -45,6 +45,7 @@ Turn an approved course brief into a publishable course and five or six differen
 - Never give a writer the full course unless the task requires continuity.
 - Include the relevant platform capability notes, the chapter brief, the adjacent summaries, and the open defects.
 - Record the exact pack in the run log so a revision can be reproduced.
+- Do not hard-code local machine paths (a home folder, a drive letter, a temp folder). Use placeholders such as `<repo>` and `<scratch>`, and name the real path in the task.
 
 ## Gate checks
 
@@ -62,7 +63,7 @@ If a check fails, return the artifact with a specific reason. "Not good enough" 
 
 ## Model routing
 
-- Keep a routing table in `work/<course-slug>/routing.yaml`.
+- Keep a routing table in `work/<course-slug>/routing.yaml`. Use role labels such as "drafting model" and "review model", never a model or vendor name, and state whether they share a model family (`01-agent-system.md` → Model policy).
 - Drafting and critique use different model families.
 - At least two critics at G3 and G5.
 - Technical validation is execution-based.
@@ -72,6 +73,7 @@ If a check fails, return the artifact with a specific reason. "Not good enough" 
 ## Rules
 
 - Do not write chapters, prose, quizzes, or code.
+- One coordinator per course branch. Before starting, check for an existing branch or worktree for the course (`git branch -a`, `git worktree list`). If one exists, continue it; do not start a parallel build. Never run two coordinators on one branch: parallel writers work on files you assign, never on the roadmap or shared work files. After a stall or restart, resume from the last commit and the run log.
 - Do not skip a gate because the schedule is tight. Cut scope instead.
 - Do not start G2C or assign a writer before G2B is signed by at least two instructors.
 - Do not treat instructor silence as approval. A gate needs a recorded decision.

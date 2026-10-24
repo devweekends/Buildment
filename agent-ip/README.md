@@ -1,6 +1,6 @@
 # Agent IP — Course Factory
 
-**Status:** v0.5, draft for team review (v0.4 adds interactive-first: `proposals/2026-10-23-interactive-first.md`; v0.5 adds visual-first Learn chapters in beats: `proposals/2026-10-23-visual-first-chapters.md`)
+**Status:** v0.5.3 (on top of v0.4.6, which records explicit publication exceptions), draft for team review (v0.4 adds interactive-first: `proposals/2026-10-23-interactive-first.md`; v0.5 adds visual-first Learn chapters in beats: `proposals/2026-10-23-visual-first-chapters.md`)
 **Owner:** Delivery lead (Sean) + course engineering
 **Applies to:** every course produced for the platform
 
@@ -45,6 +45,8 @@ The instructors answer seven questions: is this the right sequence, are these th
 Courses are **interactive-first**: every Learn chapter teaches through at least one element the learner manipulates or steps through and sees change, with a prediction before and a check after. Systems that move over time are built on a shared, seeded simulation core and a small set of reusable renderers, so most canvases are data plus a spec.
 
 Many concepts are best taught by letting the learner manipulate a small causal model: a token bucket, a seat-hold race, a cloud cost simulator, a queue under backpressure. These are **interactive canvases**: focused widgets with two to four inputs, an immediate visual output, and a stated model limit. They are deliberately simple: neutral surfaces, one accent, semantic color only, direct labels, no decoration. They may be rendered with HTML/CSS, inline SVG, or Canvas 2D; SVG is the default for charts, seat maps, timelines, and other vector visuals, while HTML owns the controls.
+
+Canvas implementations and the registry live in `packages/learning-ui/src/canvas/` and are shared by web and desktop. The canonical slug list remains `server/src/shared/canvas/slugs.ts`; run `pnpm --dir server sync-shared` to refresh its generated copies. The old frontend canvas folder has been removed; import canvases directly from `@buildment/learning-ui/canvas/...`. Context packs must use these shared paths, even when historical logs mention the old frontend paths.
 
 See `10-interactive-canvases.md` for the design language, model contract, platform integration, catalog, placement rules, and QA. The builder agent is `agents/interactive-canvas-builder.md`.
 
@@ -116,7 +118,8 @@ agent-ip/
 ├── decision-log.md                 ← IP changes and review state
 ├── proposals/                     ← written proposals awaiting governance review
 ├── scripts/
-│   └── audit-course.mjs            ← prose depth, component density, diagram coverage
+│   ├── audit-course.mjs            ← prose depth, component density, diagram coverage
+│   └── blind-keys.mjs              ← keyless batches and comparison for the blind answer-key check
 └── agents/
     ├── orchestrator.md
     ├── research.md
@@ -155,11 +158,17 @@ agent-ip/
 
 ## Work areas
 
-Do not write generated course content into this folder. Use:
+Paths are relative to the repository root. In role documents, `work/` means `agent-ip/work/`. This layout applies to every course and variant:
 
-- `agent-ip/work/<course-slug>/` for in-progress briefs, research, blueprints, critiques, and QA.
-- `courses/<course-slug>/` for approved course source ready to import.
-- `content/import/<course-slug>/` only when the platform importer is wired for that course.
+- `agent-ip/work/<course-slug>/chapters/` for draft chapters, preserving numbered module folders and lesson filenames.
+- `agent-ip/work/<course-slug>/` for draft manifests, briefs, research, blueprints, critiques, and approval records; put audit and validation reports in its `qa/` directory.
+- `courses/<course-slug>/` is the only canonical location for course source: `course.yaml`, numbered module/lesson Markdown files, and optional `COURSE-OUTLINE.md`. FreshMarket has a manifest with stable lesson keys and an explicit target for its existing published database slug.
+
+After content review and QA, assemble the complete final package in `courses/<course-slug>/` on the course PR branch. Rerun source validation, the strict structure audit, and the course audit against that exact package. Keep drafts, QA, review notes, archives, and generated output in `agent-ip/work/<course-slug>/`. Set `repositoryPublish: true` in a reviewed `course.yaml` to opt in to automatic publication during the backend release after the change reaches `main`. The instructor is named in `courses/publishing.yaml`. A folder's presence alone does not authorize publication. The default `repositoryEditorialAudit: required` blocks publication on audit findings. An explicit user-requested exception may set `repositoryEditorialAudit: advisory`; record the findings and the exception in the course PR, and present incomplete course scope honestly in the catalog. Source and strict structural validation still block publication.
+
+The migrated `courses/` tree includes legacy packages whose review is still pending. A package's presence does not imply approval or learner publication. Preserve superseded drafts in `agent-ip/work/<course-slug>/archive/`; never blindly overwrite newer content. Historical logs keep their original paths; new assignments and context packs must use this layout.
+
+For draft reviews, run the course audit against `agent-ip/work/<course-slug>/chapters/`; for final validation, use `courses/<course-slug>/`. Save reports in `agent-ip/work/<course-slug>/qa/`. The backend release publishes only opted-in packages and requires the configured instructor account.
 
 ## Change control
 
