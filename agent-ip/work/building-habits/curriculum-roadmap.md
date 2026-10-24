@@ -36,13 +36,13 @@ A practical, research-grounded course on building good habits and weakening unwa
 ## Shape
 | Part | Focus | Modules | Hours | Evidence at the end |
 |---|---|---|---|---|
-| 1 | How habits form and how to start one | 1 to 2 | 4.2 | A habit described as cue, routine and reward; the course habit designed and started |
+| 1 | How habits form and how to start one | 1 to 2 | 4.3 | A habit described as cue, routine and reward; the course habit designed and started |
 | 2 | Surroundings and unwanted habits | 3 to 4 | 4.3 | A redesigned place with a backup version; a plan to weaken a habit |
-| 3 | Keeping going | 5 to 6 | 4.3 | A tracker review with a restart plan; a weekly rhythm plan |
-| 4 | The 30-day plan | 7 | 2.9 | The reviewed 30-day plan; toolkit and next 30 days |
+| 3 | Keeping going | 5 to 6 | 4.4 | A tracker review with a restart plan; a weekly rhythm plan |
+| 4 | The 30-day plan | 7 | 3.2 | The reviewed 30-day plan; toolkit and next 30 days |
 
 ## Module and chapter sequence
-Minutes are each chapter's `estimatedMinutes`. Total: 945 minutes over 40 chapters, about 16 hours.
+Minutes are each chapter's `estimatedMinutes`. Total: 970 minutes over 40 chapters, about 16 hours.
 
 ### Module 1: How habits work (120 min)
 | # | Chapter | One-line outcome | Type | Min |
@@ -53,13 +53,13 @@ Minutes are each chapter's `estimatedMinutes`. Total: 945 minutes over 40 chapte
 | 1.4 | How long a habit takes | What research says; the 21-day myth; one miss is not a reset | Learn | 25 |
 | 1.5 | Checklist and learning log | Describe one existing habit | Gate | 25 |
 
-### Module 2: Starting a habit that sticks (130 min)
+### Module 2: Starting a habit that sticks (135 min)
 | # | Chapter | One-line outcome | Type | Min |
 |---|---|---|---|---|
 | 2.1 | Set the scene | A big plan that faded in a week | Read | 20 |
 | 2.2 | Motivation goes up and down, so start small | Shrink a habit to fit the hardest day | Learn | 25 |
 | 2.3 | If-then plans | Name the exact moment and the first step | Learn | 25 |
-| 2.4 | Anchor it to something you already do | Choose a strong anchor | Learn | 25 |
+| 2.4 | Anchor it to something you already do | Choose a strong anchor and a second anchor | Learn | 30 |
 | 2.5 | Starting a habit | Five graded cases with an AI check | Check | 10 |
 | 2.6 | Checklist and learning log | Design and start the course habit | Gate | 25 |
 
@@ -83,12 +83,12 @@ Minutes are each chapter's `estimatedMinutes`. Total: 945 minutes over 40 chapte
 | 4.5 | Breaking a habit | Five graded cases with an AI check | Check | 10 |
 | 4.6 | Checklist and learning log | A plan to weaken one habit | Gate | 25 |
 
-### Module 5: Tracking, missed days and restarting (130 min)
+### Module 5: Tracking, missed days and restarting (135 min)
 | # | Chapter | One-line outcome | Type | Min |
 |---|---|---|---|---|
 | 5.1 | Set the scene | A long streak broken by a week of power cuts | Read | 20 |
 | 5.2 | Tracking that helps | Track the action, with a note on missed days | Learn | 25 |
-| 5.3 | Missing a day without losing the habit | One miss versus giving up; counts that do not punish | Learn | 25 |
+| 5.3 | Missing a day without losing the habit | One miss versus giving up; counts that do not punish | Learn | 30 |
 | 5.4 | Slow results, slips and starting again | A restart plan; keep going through slow results | Learn | 25 |
 | 5.5 | Tracking and restarting | Five graded cases with an AI check | Check | 10 |
 | 5.6 | Checklist and learning log | Tracker review and restart plan | Gate | 25 |
@@ -103,13 +103,13 @@ Minutes are each chapter's `estimatedMinutes`. Total: 945 minutes over 40 chapte
 | 6.5 | Habits for your life | Five graded cases | Check | 10 |
 | 6.6 | Checklist and learning log | A weekly rhythm plan | Gate | 25 |
 
-### Module 7: Your 30-day habit plan (175 min)
+### Module 7: Your 30-day habit plan (190 min)
 | # | Chapter | One-line outcome | Type | Min |
 |---|---|---|---|---|
 | 7.1 | Set the scene | A month of tracking, looked at honestly | Read | 20 |
-| 7.2 | Reading your 30 days | Patterns, causes of misses, one change at a time | Learn | 25 |
+| 7.2 | Reading your 30 days | Patterns, causes of misses, one change at a time | Learn | 30 |
 | 7.3 | Mixed review: which tool first? | Fresh cases from every module | Check | 15 |
-| 7.4 | Capstone: your 30-day habit plan | Design, run and review, or a provided case | Build | 90 |
+| 7.4 | Capstone: your 30-day habit plan | Design, review the real days, or a provided month | Build | 100 |
 | 7.5 | Course checklist and your habit toolkit | Final checks, toolkit, next 30 days | Gate | 25 |
 
 ## The course habit
