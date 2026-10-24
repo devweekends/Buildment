@@ -57,9 +57,9 @@ Prevent the failure mode where a course looks structured but teaches very little
 
 - Did I run the audit script?
 - Did I read every flagged chapter?
-- Does each concept/build chapter have at least 1,200 prose words and at least one diagram?
-- Does each checkpoint/gate have at least 700 prose words?
-- Is any chapter over 6 top-level components, 25 total tags, or 3 interactions?
+- Does each Learn chapter have four to eight beats, each opening with a visual, at most 70 visible words per beat, 300 to 700 visible words, and at least 900 words including folds? Do the folds hold the mechanism, trade-offs and failure modes?
+- Does each Build chapter have at least 1,200 prose words and each checkpoint/gate at least 700?
+- Is any chapter over its component budget (Learn: 40 tags; others: 6 top-level components, 25 tags) or over 3 interactions?
 - Does every build chapter have paths, acceptance criteria, a failure test, and a debugging path?
 - Is every diagram necessary and accessible?
 - Is the template repeated across chapters?

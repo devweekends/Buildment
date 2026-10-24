@@ -1,6 +1,6 @@
 # Agent IP — Course Factory
 
-**Status:** v0.4, draft for team review (v0.4 adds interactive-first: `proposals/2026-10-23-interactive-first.md`)
+**Status:** v0.5, draft for team review (v0.4 adds interactive-first: `proposals/2026-10-23-interactive-first.md`; v0.5 adds visual-first Learn chapters in beats: `proposals/2026-10-23-visual-first-chapters.md`)
 **Owner:** Delivery lead (Sean) + course engineering
 **Applies to:** every course produced for the platform
 
@@ -62,7 +62,7 @@ The audit is executable, not a vibe check:
 node agent-ip/scripts/audit-course.mjs courses/<course-slug>
 ```
 
-It measures prose depth, top-level and total component counts, assessment interactions, diagram coverage, and list-heavy chapters. It exits non-zero when a chapter misses the threshold. Run it at G3 and G5; the course auditor files defects from the result.
+It measures beats, visible words and folded depth for Learn chapters, prose depth for other chapters, top-level and total component counts, assessment interactions, diagram coverage, and list-heavy chapters. It exits non-zero when a chapter misses the threshold. Run it at G3 and G5; the course auditor files defects from the result.
 
 ## How to use this folder
 
@@ -136,8 +136,8 @@ agent-ip/
 
 ## Non-negotiables
 
-- **Prose carries the teaching.** Bullets summarise; they do not replace explanation. A concept/build chapter needs at least 1,200 prose words, excluding code, lists, tables, and components; a checkpoint/gate needs at least 700.
-- **Components are checkpoints, not the lesson.** No component-only sections. Every component sits inside an explanation, not instead of one. A chapter may have at most 6 top-level components, 25 total JSX tags, and 3 assessment interactions.
+- **The picture leads; words explain it; depth is folded.** A Learn chapter is four to eight beats: a big visual the learner watches and touches, then at most 70 words, then an optional `GoDeeper` fold with the mechanism, trade-offs, failure modes, sources and code. 300 to 700 visible words, at least 900 including folds (`03-authoring-standards.md` → Visual-first Learn chapters).
+- **Build, Check and Gate chapters keep prose depth.** A Build chapter needs at least 1,200 prose words; a checkpoint/gate at least 700. No component-only sections. These chapters may have at most 6 top-level components, 25 total JSX tags, and 3 assessment interactions.
 - **A diagram must argue.** At least one diagram per module, and one in every concept-heavy chapter. Use Excalidraw-style SVG for conceptual/ER/flow diagrams and live Mermaid/State/Trace for dynamic ones. A diagram that restates the paragraph is decoration.
 - **Specific beats generic.** Every example names a real product, a real constraint, or a real failure mode.
 - **One hard thing at a time.** Complexity is sequenced, not dumped.

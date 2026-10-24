@@ -13,6 +13,27 @@ Since IP v0.4 (`proposals/2026-10-23-interactive-first.md`), interaction is the 
 - **Reuse before custom.** Plan a course's interactive elements on the reusable renderers and the shared simulation core (below), so most canvases are a `data.ts` and a `spec.md`. A custom component needs a written reason in its spec.
 - **Interactive does not mean decorative.** Everything in "What a canvas is not" and "Anti-patterns" still applies, and "the chapter is stronger with it than without it" is still the acceptance test.
 
+## Beat visuals
+
+Since IP v0.5 a Learn chapter is a sequence of beats, and each beat opens with a visual (`03-authoring-standards.md` → Visual-first Learn chapters). A beat visual is judged first as a picture and only then as a widget. The approved reference is the TrueTime prototype reviewed on 2026-10-23 (`work/system-design/decision-log.md`).
+
+A good beat visual:
+
+- **Leads.** It is the first thing in the beat and fills the content width. No title row, no purpose paragraph and no summary cards above it: the beat heading and the words under it do that job.
+- **Is big and readable.** Draw on a narrow viewBox (about 420 units wide) with labels of at least 13 units, so text is at least about 11px on a 375px phone and larger on a desktop. If a label does not fit, the picture is too busy: split it into two beats.
+- **Moves on its own when the idea moves.** Messages travel, clocks tick, bands grow, queues fill. It plays while it is on screen, loops, and stops off screen. Pressing on it freezes the motion so nothing slides away from the learner's finger. Under `prefers-reduced-motion` it shows a final frame that tells the whole story.
+- **Is changed by touching the picture.** Drag the band, the marker, the replica, the dial. At most two controls sit outside the picture (for example a toggle and Replay), each a 44px target with a visible label.
+- **Keeps numbers next to what they describe.** A timestamp sits on its tag on the strip, a wait sits by its ring. No rows of number cards.
+- **Ends on a verdict.** A short coloured line in the picture (in words, not only colour) says what just happened: "Order unknown", "Bob sees the photo", "Order is safe".
+- **States its limits in a small fold** under the picture, not as a paragraph above or beside it.
+- **Looks like a system, not a wireframe.** Actors are icon cards (`SvgNode`: an icon for the kind of thing (user, phone, server, database, router, cache, queue, cdn, clock, worker, or `note` for something that is not a machine: a feature list, a plan, a limit), a name, and a status pill that changes colour as the story runs), the links between actors that talk are drawn and light up while a message travels, messages carry a short trail and a label chip, the picture sits on a soft dotted canvas (`DotGrid`), and the verdict is a banner with an icon (`VerdictBanner`). Plain grey boxes with floating text were rejected by the architect on 2026-10-23.
+- **Two visual registers.** The card style above (`SvgNode` cards, `DotGrid`, `VerdictBanner`, theme tones; reference: `sysdesign-m1-launch-day`) is the default and the only choice for a beat that teaches a core concept: a mechanism, a formula, a trade-off. An **illustrated** register (drawn objects instead of cards: little people in a queue with expressions, a server rack that glows and smokes, envelopes in flight; reference: `sysdesign-m1-launch-day-illustrated`) may be used for story beats: a set-the-scene chapter, a war story, a recap. Both registers use theme-safe colours (no hex), keep labels clear of every shape, and pass the same QA. The architect chose this split on 2026-10-23 after comparing five versions of one canvas.
+- **Text never touches art.** A label sits in clear space or on its own solid pill; no line, packet, card edge or icon crosses it, and it never runs past the card it sits in. The text QA script proves it (QA checklist, Visual).
+
+Use `BeatFrame` (`primitives/beat-frame.tsx`) for every beat canvas, and the `scene` renderer for any story of actors exchanging messages over time.
+
+A scene plays; it does not let the learner change anything. Each Learn chapter needs at least one **playable** beat: the learner drags the load, taps a block, sorts a card, adds a copy, and the picture answers at once. The picture is the control. A row of sliders above a table of numbers is not playable in this sense; it is a form, and the architect rejected that style on 2026-10-23. Build the playable on a reusable, data-driven primitive when the interaction could serve another course (a sorter, a block map, a traffic playground), with the course data in the slug's `data.ts`.
+
 ## What a canvas is
 
 - A focused simulator or visualiser for **one** concept.
@@ -92,20 +113,18 @@ The reference aesthetic is **calm, neutral, and legible**. Simple does not mean 
 
 ### Layout
 
-A canvas has five regions, in this order:
+A beat canvas (`BeatFrame`) has three regions, in this order:
 
-1. **Title and one-sentence purpose.** What the widget shows and why it matters.
-2. **Summary readout.** Two to four key numbers, each with a label and unit. This is the "so what" the learner sees first.
-3. **Visualisation.** The chart, bucket, timeline, matrix, or map. One idea.
-4. **Controls.** Sliders, steppers, toggles, or segmented controls. Each control has a label, value, and unit.
-5. **Explanation and experiment.** What changed, what to try next, and what the model ignores.
+1. **The picture.** One idea, full width, with its numbers and its verdict inside it.
+2. **At most two controls and one hint line.** "Drag B's band left and right." Each control has a visible label; touch targets are 44px.
+3. **A small fold: what this picture leaves out.** The model's limits.
 
-On mobile, stack controls above the visualisation. Use full-width sliders and 44px touch targets. Do not require horizontal scrolling.
+The older five-region layout (title, summary cards, visualisation, controls, explanation) is retired for beat canvases because it put a form in front of the picture. Labs (the architecture sandbox) keep a panel of controls, because choosing blocks and sizes is the task. Never require horizontal scrolling.
 
 ### Motion
 
 - Motion is allowed when it is the model moving: a message travelling a link, a queue filling, a token draining, a clock drifting, a leader changing. Motion that is not the model (bouncing cards, confetti, parallax) is never allowed.
-- A time-based model has Play, Pause, Step and Reset. Nothing plays until the learner presses Play, and any manual change pauses it.
+- A beat visual plays while it is on screen, loops, and stops when scrolled away; it freezes while the learner presses on it, and it offers Replay. A longer simulation (a lab, a step-through) has Play, Pause, Step and Reset, and any manual change pauses it.
 - Keep transitions short: 150 to 250 ms. Animate transforms and opacity only.
 - Respect `prefers-reduced-motion`: elements jump to their next state with no animation, and the step readout says in words what happened.
 
@@ -122,12 +141,10 @@ On mobile, stack controls above the visualisation. Use full-width sliders and 44
 
 Every canvas includes:
 
-- **Title.** A concrete name, not "Interactive Demo".
-- **Purpose.** One sentence: "See how the hold expiry changes the overselling risk."
-- **Summary cards.** Two to four numbers that answer the learner's first question.
+- **Title and purpose** in the registry spec. They give the canvas its accessible name and its card on the preview page; a beat canvas does not print them above the picture, because the beat heading does that.
 - **Visualisation.** The model's state.
 - **Controls.** Two to four primary inputs, with defaults that produce an interesting result.
-- **Live readout.** The output changes as the input changes.
+- **Live readout inside the picture.** The output changes as the input changes, next to the thing it describes.
 - **What changed.** A short sentence that explains the delta, not just the number.
 - **Try this.** Two or three experiments with expected observations.
 - **Limits of the model.** What is simplified, ignored, or assumed.
@@ -232,11 +249,19 @@ Every course builds on the same small library. Before building anything, check t
 | Need | Use | Open source underneath | Status |
 |---|---|---|---|
 | Slider, switch, segmented control, reset, summary cards, "What changed" | `primitives/controls.tsx` | shadcn/ui `Slider`, `Switch`, `ToggleGroup` on Base UI (MIT) | Built |
-| Panel, "Try this", limits | `primitives/canvas-frame.tsx` | the app's `LearnPanelShell` | Built |
+| Panel, "Try this", limits (labs and older canvases) | `primitives/canvas-frame.tsx` | the app's `LearnPanelShell` | Built |
+| Beat frame: picture first, hint, limits fold | `primitives/beat-frame.tsx` | none | Built |
+| Animated story: actors, travelling messages, waits, a strip of timestamps or positions, a verdict | `renderers/scene/` (`ScenePlayer`) | none; plain SVG and `requestAnimationFrame` | Built |
+| Fold for depth inside a beat | `GoDeeper` MDX block | native `<details>` | Built |
+| Actor card: icon, name, status pill | `primitives/svg-node.tsx` (`SvgNode`) | lucide icons (ISC) | Built |
+| Dotted canvas and verdict banner | `primitives/svg-parts.tsx` (`DotGrid`, `VerdictBanner`) | lucide icons (ISC) | Built |
+| Sort cards into 2 to 4 buckets: tap or drag, a wrong try shakes and says why, a verdict and "Sort again" | `primitives/sorter.tsx` (`makeSorterCanvas`), model `models/sorter.ts`; a slug's `data.ts` holds only buckets and cards | none | Built, first used by `sysdesign-m1-requirement-sorter` |
+| Architecture map to explore: tap a block to light its request path and read what it does, how it fails and its cloud name; "Break it" shows what fails with it | `primitives/block-map.tsx` (`makeBlockMapCanvas`), model `models/block-map.ts`; compact `SvgNode`-style cards; a slug's `data.ts` holds only blocks and paths | lucide icons (ISC) | Built, first used by `sysdesign-m1-block-map` |
 | Step-through with Play, Pause, Back, Next, keyboard | `primitives/use-stepper.ts`, `step-controls.tsx`, `step-parts.tsx` | none (small, already shared) | Built |
 | Seeded randomness, event queue, clocks, traces | `sim/` | none; about 200 lines, pure and tested | Built |
 | Scales and tick marks for any axis | `d3-scale` | d3 (ISC) | Built, used by `timeline` |
 | Lanes over time: clocks, lag, messages, windows | `renderers/timeline/` (`TimelineView`, `TimelinePlayer`) | `d3-scale` | Built |
+| A history: operations as bars on per-client lanes over a time axis, with real-time order, the values a read may return, a dot for the instant each operation takes effect, red rings for a conflict, and a linearizable, sequential and causal checker | `primitives/history-view.tsx` (`HistoryView`); models `models/history.ts` (rules and the three checkers) and `models/history-layout.ts` (geometry and label fitting); the caller passes operations as `{ id, client, kind, key, value, start, end }` and chooses what a tap does | none; plain SVG | Built, first used by `sysdesign-m11-build-history`, `-overlap-or-not`, `-is-it-linearizable` and `-one-history-three-verdicts` |
 | Request flows, lifecycles, weighted decisions | `renderers/sequence/`, `state-machine/`, `factor/` | none | Built |
 | Line, bar and area charts over time (queue length, p99, cost) | shadcn/ui `Chart` | Recharts (MIT) | Planned with the `flow` renderer |
 | Draggable node graphs: architecture sandbox and labs, cluster topologies | `renderers/sandbox/`, `renderers/cluster/` | React Flow, `@xyflow/react` (MIT) | Planned |
@@ -449,12 +474,12 @@ The system design course plans about 135 simulations on the shared kit; its full
 
 ## Placement and density
 
-- Every **Learn** chapter has at least one interactive element. Place a canvas immediately before the decision or explanation it informs.
+- Every beat of a **Learn** chapter opens with a visual: a canvas when something changes or can be changed, otherwise a diagram.
 - Do not place a canvas in a quiz or gate chapter. The learner should be proving understanding, not exploring.
-- Per chapter: at most **one primary canvas plus one small step-through or toggle**. There is no per-module cap.
+- Learn chapters: one visual per beat, four to eight beats. Other chapters: at most one canvas. There is no per-module cap.
 - A canvas counts as a high-effort interaction. Do not put it back to back with an `OpenQuestion` or a `CodeExercise`.
 - Pair it with a prediction before and a short check after.
-- The chapter's prose still teaches the claim, so the chapter works if the canvas fails to load (static fallback).
+- The beat text plus its fold still teach the claim, so the chapter works if the canvas fails to load (static fallback).
 
 ## QA checklist
 
@@ -482,12 +507,16 @@ The system design course plans about 135 simulations on the shared kit; its full
 ### Visual
 
 - [ ] Neutral palette, one accent, semantic color only for meaning.
-- [ ] No gradients, neon, or decorative animation.
+- [ ] No neon or decorative animation. Gradients only in the illustrated register, and only soft ones.
 - [ ] At most four series in a chart.
 - [ ] Axes, units, and direct labels are present.
-- [ ] Summary cards show the numbers the learner needs first.
-- [ ] The canvas is readable at a mobile width.
-- [ ] The layout follows title → summary → visualisation → controls → explanation.
+- [ ] The picture is first in the beat and fills the width; no cards or control panels above it.
+- [ ] Labels are at least about 11px on a 375px phone, and nothing overlaps (a geometry test or a screenshot proves it).
+- [ ] `node agent-ip/scripts/canvas-text-qa.mjs --slug <slug>` (web app running) reports the canvas clean: it drives the picture at 375px in light and dark mode through one loop of animation, each slider end and middle, and every button, and runs `scripts/canvas-text-qa.js` on it. Labels that only overlap while in flight are listed as "in motion" and do not fail. Paste the output into the QA report.
+- [ ] Numbers sit next to what they describe; the verdict is in words inside the picture.
+- [ ] It moves on its own when the idea moves, stops off screen, freezes while pressed, and has a reduced-motion final frame.
+- [ ] The learner changes it by touching the picture; at most two controls outside it.
+- [ ] Screenshots at 375px and at desktop width are attached to the QA report.
 
 ### Accessibility
 

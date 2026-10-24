@@ -76,7 +76,7 @@ If a check fails, return the artifact with a specific reason. "Not good enough" 
 - Do not start G2C or assign a writer before G2B is signed by at least two instructors.
 - Do not treat instructor silence as approval. A gate needs a recorded decision.
 - Do not let a writer revise a structural defect in prose; fix the brief.
-- Do not accept a chapter that fails the course audit: thin prose, too many components, too many interactions, or no diagram.
+- Do not accept a chapter that fails the course audit: for Learn chapters, missing beats, a beat without a visual, beats over 70 visible words, or thin folds; for others, thin prose; and for any chapter, too many components, too many interactions, or no diagram.
 - Do not accept a component-only chapter or a repeated template across chapters.
 - Do not route a canvas to the builder without an approved canvas spec.
 - Do not let a canvas ship without a tested model, a stated claim, a stated limitation, and a reader fallback.

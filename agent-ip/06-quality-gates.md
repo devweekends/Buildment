@@ -116,9 +116,9 @@ node agent-ip/scripts/audit-course.mjs courses/<course-slug>
 
 It checks, per chapter:
 
-- prose words (≥ 1,200 concept/build, ≥ 700 checkpoint/gate);
-- top-level components (≤ 6);
-- total JSX tags (≤ 25);
+- for Learn chapters (`format: beats`): four to eight beats, each opening with a visual, at most 70 visible words per beat, 300 to 700 visible words, and at least 900 words including `GoDeeper` folds;
+- for other chapters: prose words (at least 1,200 build, at least 700 checkpoint/gate) and top-level components (at most 6);
+- total JSX tags (at most 40 for Learn, 25 for others);
 - assessment interactions (≤ 3);
 - diagram coverage (≥ 1 per concept/build chapter; ≥ 1 per module);
 - list-heavy chapters.

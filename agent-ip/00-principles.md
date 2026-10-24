@@ -68,15 +68,15 @@ A quiz, diagram, code exercise, or open question consumes attention and time. It
 
 Our courses are interactive-first: every concept chapter teaches through something the learner manipulates or steps through and sees change, because people understand a system faster by pushing it than by reading about it. Reusable renderers and a shared simulation core keep this affordable. An interactive canvas is still the most expensive interaction we build. It earns its place only when a small causal model is the best way to teach the claim: inputs the learner can manipulate, an output that changes immediately, and a limit the model can state honestly. It must be simple: neutral surfaces, one accent, semantic color only, direct labels, no gradients or decorative motion. It may be rendered with HTML/CSS, inline SVG, or Canvas 2D; SVG is the default for vector visuals, while HTML owns the controls. Raw author SVG is never injected into MDX. If the learner cannot state the claim after using it, the canvas is decoration and it should be cut. See `10-interactive-canvases.md`.
 
-### Prose is the lesson; components are checkpoints
+### The picture leads; words explain it; depth is folded
 
-A course is not a sequence of quizzes, callouts, and cards. The explanation is the lesson. Components are checkpoints that help the learner notice, practise, or verify something the prose has already taught.
+A course is not a sequence of quizzes, callouts, and cards, and it is not a wall of text either. Attention drops fast in long prose and holds when a picture moves first. Since IP v0.5, a Learn chapter is a sequence of **beats**: one big visual the learner can watch and touch, then at most 70 words that explain what they saw, then an optional `GoDeeper` fold with the full mechanism, trade-offs, failure modes, sources and code. Depth is folded, not dropped. See `03-authoring-standards.md` → Visual-first Learn chapters.
 
 The rule:
 
-- A concept or build chapter needs at least **1,200 prose words**, excluding code, lists, tables, and components. A checkpoint or gate needs at least **700**.
-- A chapter may have at most **6 top-level components**, **25 total JSX tags**, and **3 assessment interactions**.
-- No component-only section. A component must be introduced and explained in prose.
+- A Learn chapter (`format: beats`) has four to eight beats, 300 to 700 visible words, and at least 900 words including folds. One visual per beat; at most 40 JSX tags and 3 assessment interactions.
+- A Build chapter needs at least **1,200 prose words**, excluding code, lists, tables, and components. A checkpoint or gate needs at least **700**. These chapters may have at most **6 top-level components**, **25 total JSX tags**, and **3 assessment interactions**.
+- No component-only section and no text-only section. In a beat, the visual comes first and the words explain it; elsewhere, a component must be introduced and explained in prose.
 - `LearningObjectives` appears once per module, not in every chapter.
 - `BigWordAlert` is reserved for a genuinely new, load-bearing term; not every chapter.
 - `ChapterRecap` appears at a module gate, not after every chapter.

@@ -181,11 +181,12 @@ Every chapter follows the same skeleton. The depth changes; the skeleton does no
 
 Chapters that are pure quizzes or gates compress steps 1–8. They must not introduce new conceptual content.
 
-### Prose depth and component budget
+### Depth and component budget
 
-The skeleton is not a component checklist. A concept or build chapter needs at least **1,200 prose words**, excluding code, lists, tables, and components; a checkpoint or gate needs at least **700**. Components are checkpoints inside the explanation, not the explanation itself.
+The skeleton is not a component checklist. A Learn chapter is a sequence of four to eight beats (a visual first, then at most 70 visible words, then an optional `GoDeeper` fold), with 300 to 700 visible words and at least 900 words including folds (`03-authoring-standards.md` → Visual-first Learn chapters). A Build chapter needs at least **1,200 prose words**, excluding code, lists, tables, and components; a checkpoint or gate needs at least **700**.
 
-- At most 6 top-level components, 25 total JSX tags, and 3 assessment interactions per chapter.
+- Learn chapters: one visual per beat, at most 40 JSX tags and 3 assessment interactions.
+- Build, Check and Gate chapters: at most 6 top-level components, 25 total JSX tags, and 3 assessment interactions.
 - `LearningObjectives` at the module introduction, not every chapter.
 - `ChapterRecap` at the module gate, not every chapter.
 - `BigWordAlert` only for a genuinely new, load-bearing term.
