@@ -9,8 +9,10 @@ application database records publication separately.
 
 ## Current courses
 
-The **FreshMarket — Multi-Vendor Grocery Marketplace** course lives in
-`multi-vendor-marketplace/` (385 lessons across 26 modules).
+Nine manifest-backed courses have a `course.yaml` and publish from this tree.
+The **FreshMarket — Multi-Vendor Grocery Marketplace** course also lives in
+`multi-vendor-marketplace/` (385 lessons across 26 modules). It uses the legacy
+importer and is already published in the application database.
 
 For local development, load it into a development database:
 
@@ -48,13 +50,23 @@ unchanged content skips the update preview and does not create another release.
 Courses without this field remain available as source packages but are not
 automatically published.
 
-`cause-and-effect` is the first opted-in course. The other manifest-backed courses
-still need to pass their course audits before publication; `system-design` is a
-sample package that also needs its missing chapters and structure completed.
+All nine manifest-backed course folders are opted in. `cause-and-effect` passes
+the editorial audit. The other eight use `repositoryEditorialAudit: advisory`
+as an explicit publication exception: they pass source and strict structural
+validation, but their current editorial audit findings remain visible in the
+release log and still need content revisions. This exception does not change
+the normal quality bar for future courses.
+
+`system-design` is published as a five-hour, two-topic lab, with six lessons.
+Its catalog title and description say that the full curriculum is still in
+progress. FreshMarket remains a legacy live course with no `course.yaml`;
+the release binds its existing `freshmarket-multi-vendor-marketplace-v3`
+record to the configured instructor.
 
 Run `pnpm --dir server courses:check` before merging. This validates each
 opted-in package without database access. FreshMarket needs a `course.yaml`
-before it can opt in; it is still included in the instructor ownership binding.
+before repository-managed content updates can opt in; its existing published
+database record is included in the instructor ownership binding.
 
 ## More than one course
 

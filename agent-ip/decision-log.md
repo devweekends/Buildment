@@ -1,5 +1,13 @@
 # Agent IP decision log
 
+## 2026-10-24: Publish existing course inventory with visible editorial exceptions (v0.4.6)
+
+**Status:** The user explicitly requested that all existing courses appear on the platform after seeing that only one course was opted in.
+
+**Decision:** Opt in all nine manifest-backed packages. Keep the course audit required by default; mark the eight packages with known editorial findings as `repositoryEditorialAudit: advisory` so the release reports those findings while technical source and strict structure checks remain mandatory. Present `system-design` as a five-hour, two-topic lab because only its sample lessons exist. The existing FreshMarket course stays live and its legacy database slug is bound to the configured instructor. A future content revision should clear the audit findings and remove each exception.
+
+**Platform impact:** The backend release publishes the nine opted-in packages and preserves the existing FreshMarket listing. No new database secret or migration is needed. The course PR must show the remaining audit debt so a merge is an informed publication decision.
+
 ## 2026-10-23: Repository course publication and instructor binding (v0.4.5)
 
 **Status:** Requested by the user; course-level human review remains required.
