@@ -73,9 +73,9 @@ Run one or more lenses per pass. At G3 and G5, at least two lenses must be run b
 
 ### Explanatory depth and visual explanation
 
-- Does the prose teach the concept, or do the components carry it?
-- Is the chapter above the prose minimum, and does the prose contain the mechanism, worked example, trade-off, failure mode, and debugging path?
-- Is every component introduced and explained in prose?
+- Learn chapters: does each beat's picture carry the idea, with the words only explaining what the picture shows? Is any beat a wall of text, or any picture a form? Do the `GoDeeper` folds contain the mechanism, worked example, trade-off, failure mode, and debugging path?
+- Build, Check and Gate chapters: is the chapter above the prose minimum, and does the prose contain the mechanism, worked example, trade-off, failure mode, and debugging path?
+- Is every component introduced and explained (in a beat, by the words under the picture)?
 - Is any section component-only?
 - Is there a diagram, and does it argue rather than restate the prose?
 - Is the diagram accurate, labeled, accessible, and readable on mobile?

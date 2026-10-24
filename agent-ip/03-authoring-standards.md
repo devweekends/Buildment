@@ -111,13 +111,40 @@ Example of the standard:
 
 The second version teaches a decision. The first version fills space.
 
+## Visual-first Learn chapters (beats)
+
+Since IP v0.5 (`proposals/2026-10-23-visual-first-chapters.md`), a Learn (concept) chapter is built from **beats**, not from long prose. Attention drops fast in a wall of text; it holds when a picture moves first and a few words explain it. Mark every such chapter with `format: beats` in its frontmatter.
+
+A beat is:
+
+1. **A short heading**, eight words or fewer, that states what the picture shows ("If the bands overlap, nobody knows the order").
+2. **One visual**, first: an `InteractiveCanvas` when something changes or can be changed, or a `MermaidDiagram`, `StateMachine` or `TraceRequest` when the relationship is fixed.
+3. **At most 70 words of visible text**, in two to four short sentences, that say what the learner just saw and why it matters. No new idea that the picture does not show.
+4. **An optional `GoDeeper` fold** with the full explanation: the mechanism in detail, trade-offs, failure modes, sources, numbers, code and edge cases.
+
+The chapter as a whole:
+
+- **Four to eight beats.** One or two sentences may come before the first beat to set the situation.
+- **Visible text: 300 to 700 words** (outside `GoDeeper`, code, quizzes and component text).
+- **Depth: at least 900 words** of visible text and `GoDeeper` text together. Depth is folded, not dropped: a learner preparing for an interview must find the mechanism, trade-offs, failure modes and sources in the folds.
+- **The teaching contract:** a `predict` right before the beat that shows the key surprise, and a quick check (one or two `quiz` questions) after the last beat.
+- **Budget:** one visual per beat (up to eight visual tags), at most 40 JSX tags in total, at most 3 assessment interactions. No `BigWordAlert` in a beats chapter; define terms in the beat text or with `GlossaryTerm`.
+- **Code** goes in a `GoDeeper` fold unless the chapter's outcome is the code itself.
+- **At least one playable beat.** A scene that only plays is a demonstration, not a play. Every Learn chapter needs at least one beat whose visual the learner drags or taps and sees respond (a custom canvas, or a scene inside controls), usually the one the roadmap's "Play / practice" column names. Watch-only scenes are fine for the other beats.
+
+What makes a beat visual good is in `10-interactive-canvases.md` → Beat visuals. A beat whose text explains something the picture does not show is a defect: either the picture is wrong or the text belongs in the fold.
+
+Read (set-the-scene) chapters are one or two beats. Build, Check and Gate chapters keep the prose rules below.
+
+**Never ask before you teach.** Every question in a chapter (predict, quiz, open question) must be answerable from what earlier chapters taught, or from everyday intuition and what the picture shows, in plain words. A set-the-scene (Read) chapter shows the problem and its cost; it may ask "what do you notice?" or "what would you try first?" in everyday words, with no term or mechanism the module has not taught yet. A prediction about the mechanism (round trips, stampedes, quorums) belongs in the Learn chapter that teaches it, right before the beat that shows the answer. A "sketch your design" question belongs after the building blocks are taught. The architect asked for this on 2026-10-24.
+
 ## Prose depth and component budget
 
-A chapter is not done because it has the right components. It is done when the prose teaches the idea and the components prove that the learner engaged with it.
+These rules apply to Build, Check and Gate chapters, and to Learn chapters written before v0.5 (no `format: beats`). A chapter is not done because it has the right components. It is done when the prose teaches the idea and the components prove that the learner engaged with it.
 
 ### Minimum prose
 
-- **Concept or build chapter:** at least **1,200 prose words**, excluding code fences, tables, bullet lists, JSX components, and frontmatter.
+- **Build chapter (and a pre-v0.5 concept chapter):** at least **1,200 prose words**, excluding code fences, tables, bullet lists, JSX components, and frontmatter.
 - **Checkpoint or gate:** at least **700 prose words**.
 - **Module introduction:** 900–1,500 prose words.
 - If a chapter is below the minimum, it is usually missing one of: the problem, the mechanism, a worked example, the trade-off, a failure mode, or the debugging path. Add the missing thinking; do not pad with adjectives.
@@ -406,7 +433,9 @@ These are planning targets, not hard limits. Use them to detect bloat.
 
 | Artifact | Target |
 |---|---|
-| Chapter body | 1,200–2,500 words |
+| Chapter body (Build, pre-v0.5 concept) | 1,200 to 2,500 words |
+| Learn chapter in beats | 300 to 700 visible words; 900 or more with folds |
+| One beat | 70 visible words or fewer |
 | Concept section | 400–900 words |
 | Worked example | 200–500 words |
 | Build instructions | 300–700 words, plus code |

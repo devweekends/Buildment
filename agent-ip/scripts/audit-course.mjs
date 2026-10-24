@@ -12,6 +12,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const args = process.argv.slice(2);
 const target = args.find((arg) => !arg.startsWith("--"));
@@ -65,6 +66,49 @@ function paragraphs(body) {
     });
 }
 
+// Canvas specs live in this script's repository: frontend/src/canvas/<slug>/data.ts.
+const CANVAS_DIR = path.resolve(fileURLToPath(new URL(".", import.meta.url)), "../../packages/learning-ui/src/canvas");
+
+/** A scene only plays; anything else (a custom canvas, a renderer with controls) can be changed by the learner. */
+function isPlayable(slug) {
+  const data = path.join(CANVAS_DIR, slug, "data.ts");
+  if (!fs.existsSync(data)) return null;
+  return !/kind:\s*"scene"/.test(fs.readFileSync(data, "utf8"));
+}
+
+const VISUAL_TAG = /^<(InteractiveCanvas|MermaidDiagram|StateMachine|TraceRequest|EntityDiagram|ArchitectureDiagram|VisualDiagram)\b/;
+const words = (text) => text.split(/\s+/).filter(Boolean).length;
+
+/**
+ * Splits a beats chapter into its beats (## sections). Text inside <GoDeeper>
+ * folds counts as depth, not as visible text; fences (code, predict, quiz)
+ * count as neither. A section left with no text and no visual once fences
+ * are removed (for example the closing quick check) is not a beat.
+ */
+function auditBeats(body) {
+  const folds = [];
+  const visible = body.replace(/<GoDeeper\b[^>]*>([\s\S]*?)<\/GoDeeper>/g, (_, inner) => {
+    folds.push(inner);
+    return "";
+  });
+  const foldWords = folds.reduce((sum, inner) => sum + words(paragraphs(inner).join(" ")), 0);
+  const sections = stripCode(visible).split(/^## /m);
+  const intro = sections.shift() ?? "";
+  const beats = [];
+  let visibleWords = words(paragraphs(intro).join(" "));
+  for (const section of sections) {
+    const [headingLine, ...rest] = section.split("\n");
+    const content = rest.join("\n");
+    const blocks = content.split(/\n\n+/).map((b) => b.trim()).filter(Boolean);
+    const sectionWords = words(paragraphs(content).join(" "));
+    visibleWords += sectionWords;
+    if (blocks.length === 0) continue;
+    const heading = headingLine.trim();
+    beats.push({ heading, headingWords: words(heading), visualFirst: VISUAL_TAG.test(blocks[0]), words: sectionWords });
+  }
+  return { beats, visibleWords, foldWords };
+}
+
 const files = walk(target)
   .filter((file) => file.endsWith(".md") && !file.endsWith("README.md"))
   .sort();
@@ -108,18 +152,43 @@ for (const file of files) {
   const isLearn = /^learn$/i.test(stepType);
   const bullets = (proseBody.match(/^\s*[-*]\s+/gm) ?? []).length;
 
-  const minProse = isGate ? 700 : 1200;
-  // A quiz chapter holds activities only (04-interactive-playbook.md), so it has no prose minimum.
-  const isQuizChapter = /-quiz\.md$/.test(file);
   const flags = [];
-  if (!isQuizChapter && proseWords < minProse) flags.push(`prose ${proseWords}<${minProse}`);
-  if (topLevel.length > 6) flags.push(`components ${topLevel.length}>6`);
-  if (tags.length > 25) flags.push(`tags ${tags.length}>25`);
+  const beatsFormat = /^beats$/i.test(frontmatterValue(raw, "format"));
+  let beatInfo = null;
+  if (beatsFormat) {
+    // Visual-first (IP v0.5): see agent-ip/03-authoring-standards.md.
+    beatInfo = auditBeats(body);
+    const isRead = /^read$/i.test(stepType);
+    const [minBeats, maxBeats] = isRead ? [1, 2] : [4, 8];
+    if (beatInfo.beats.length < minBeats || beatInfo.beats.length > maxBeats) flags.push(`beats ${beatInfo.beats.length} not ${minBeats}-${maxBeats}`);
+    for (const beat of beatInfo.beats) {
+      if (!beat.visualFirst) flags.push(`beat "${beat.heading}" does not open with a visual`);
+      if (beat.words > 70) flags.push(`beat "${beat.heading}" ${beat.words}>70 words`);
+      if (beat.headingWords > 8) flags.push(`beat heading "${beat.heading}" >8 words`);
+    }
+    if (!isRead && (beatInfo.visibleWords < 300 || beatInfo.visibleWords > 700)) flags.push(`visible ${beatInfo.visibleWords} not 300-700`);
+    if (!isRead && beatInfo.visibleWords + beatInfo.foldWords < 900) flags.push(`depth ${beatInfo.visibleWords + beatInfo.foldWords}<900`);
+    if (tags.length > 40) flags.push(`tags ${tags.length}>40`);
+    if (/<BigWordAlert\b/.test(proseBody)) flags.push("BigWordAlert in a beats chapter");
+    // Every Learn chapter needs at least one beat the learner plays with (IP v0.5.1).
+    if (!isRead && fs.existsSync(CANVAS_DIR)) {
+      const slugs = [...proseBody.matchAll(/<InteractiveCanvas\s+slug="([^"]+)"/g)].map((m) => m[1]);
+      const known = slugs.map(isPlayable).filter((p) => p !== null);
+      if (known.length > 0 && !known.includes(true)) flags.push("no playable beat (only scenes)");
+    }
+  } else {
+    // A quiz chapter holds quiz fences only (04-interactive-playbook.md), so it has no prose minimum.
+    const isQuiz = /-quiz\.md$/.test(file);
+    const minProse = isGate ? 700 : 1200;
+    if (!isQuiz && proseWords < minProse) flags.push(`prose ${proseWords}<${minProse}`);
+    if (topLevel.length > 6) flags.push(`components ${topLevel.length}>6`);
+    if (tags.length > 25) flags.push(`tags ${tags.length}>25`);
+    if (canvases > 1) flags.push(`canvases ${canvases}>1`);
+    if (isLearn && interactives < 1) flags.push("no interactive");
+    if (!isGate && diagrams < 1) flags.push("no diagram");
+  }
   if (interactions > interactionLimit) flags.push(`interactions ${interactions}>${interactionLimit}`);
-  if (canvases > 1) flags.push(`canvases ${canvases}>1`);
   if (canvases > 0 && isGate) flags.push("canvas in gate");
-  if (isLearn && interactives < 1) flags.push("no interactive");
-  if (!isGate && diagrams < 1) flags.push("no diagram");
   if (bullets > Math.max(12, paras.length) && bullets > paras.length * 1.5) {
     flags.push("list-heavy");
   }
@@ -134,6 +203,9 @@ for (const file of files) {
     interactions,
     diagrams,
     interactives,
+    beats: beatInfo ? beatInfo.beats.length : null,
+    visibleWords: beatInfo ? beatInfo.visibleWords : null,
+    foldWords: beatInfo ? beatInfo.foldWords : null,
     bullets,
     flags,
   });

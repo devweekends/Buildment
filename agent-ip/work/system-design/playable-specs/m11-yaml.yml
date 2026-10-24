@@ -1,0 +1,37 @@
+  - dir: 11-consistency-models
+    title: "Consistency models"
+    summary: "Know exactly what each consistency promise guarantees, check it against recorded histories, and choose one for each feature of an app."
+    lessons:
+      - file: 11.01-set-the-scene-the-balance-that-went-back-in-time.md
+        title: "Set the scene: the balance that went back in time"
+        goal: "See a bank app show a newer balance and then an older one, and meet the question this module answers."
+      - file: 11.02-a-consistency-model-is-a-contract-on-histories.md
+        title: "A consistency model is a contract on histories"
+        goal: "Read a history of reads and writes drawn as bars, tell ordered pairs from overlapping ones, and say what a model allows."
+      - file: 11.03-linearizability.md
+        title: "Linearizability"
+        goal: "Decide whether a history is linearizable, and explain why compare-and-set, locks and unique usernames need it."
+      - file: 11.04-sequential-and-causal-consistency.md
+        title: "Sequential and causal consistency"
+        goal: "Judge one history under three models, reproduce a reply shown before its question, and fix it."
+      - file: 11.05-session-guarantees-in-code.md
+        title: "Session guarantees in code"
+        goal: "Give each of the four session guarantees a number in a session token and see which anomaly each one stops."
+      - file: 11.06-eventual-consistency-and-convergence.md
+        title: "Eventual consistency and convergence"
+        goal: "Explain what eventual consistency promises, what sets the time to agree, and why agreeing is not the same as being right."
+      - file: 11.07-cap-and-pacelc-read-correctly.md
+        title: "CAP and PACELC, read correctly"
+        goal: "Explain the choice during a partition and the latency against consistency choice when there is none."
+      - file: 11.08-code-a-linearizability-checker.md
+        title: "Code: a linearizability checker"
+        goal: "Write findLinearization to check small single-register histories by search and return a legal order or null."
+      - file: 11.09-challenge-10-consistency-in-practice.md
+        title: "Challenge 10: consistency in practice"
+        goal: "Count three anomalies on lagging replicas, remove them with a session-token client, and measure what that costs the leader."
+      - file: 11.10-quiz.md
+        title: "Consistency models"
+        goal: "Answer graded scenarios on histories, unique names, session tokens, the choice in a network cut and the price of waiting."
+      - file: 11.11-checklist-and-learning-log.md
+        title: "Checklist and learning log"
+        goal: "Write a consistency choice for the likes, posts, balance and username of a social app, and link your challenge 10 results."

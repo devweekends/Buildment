@@ -1,0 +1,37 @@
+  - dir: 15-queues-logs-and-stream-processing
+    title: "Queues, logs and stream processing"
+    summary: "Move slow work off the request path with queues and logs, keep order and survive failures, and count events in windows when they arrive late."
+    lessons:
+      - file: 15.01-set-the-scene-slow-and-doubled-emails.md
+        title: "Set the scene: slow and doubled emails"
+        goal: "See a signup wait 3 seconds for an email and then send it twice after a retry."
+      - file: 15.02-why-queues.md
+        title: "Why queues"
+        goal: "Use a queue to decouple, buffer and smooth spikes, size the workers with Little's law, and make a full queue push back."
+      - file: 15.03-queue-versus-log.md
+        title: "Queue versus log"
+        goal: "Compare an SQS-style queue with a Kafka-style log, explain offsets, consumer groups and partitions, and choose between them."
+      - file: 15.04-delivery-ordering-and-partition-keys.md
+        title: "Delivery, ordering and partition keys"
+        goal: "Explain how the moment of the ack decides between loss and repeats, why a retry reorders events, and how a partition key keeps order per key."
+      - file: 15.05-retries-dead-letter-queues-and-poison-messages.md
+        title: "Retries, dead letter queues and poison messages"
+        goal: "Stop one bad message from blocking a partition with retry limits, backoff, jitter and a dead letter queue."
+      - file: 15.06-stream-processing-windows-watermarks-and-late-events.md
+        title: "Stream processing: windows, watermarks, late events"
+        goal: "Choose tumbling, sliding or session windows, explain event time and watermarks, and decide how to treat late events."
+      - file: 15.07-publish-and-subscribe-and-fan-out.md
+        title: "Publish and subscribe, and fan-out"
+        goal: "Fan one event out to many subscribers with a queue each, and join the outbox, the topic and idempotent consumers into one design."
+      - file: 15.08-code-a-windowed-aggregator.md
+        title: "Code: a windowed aggregator"
+        goal: "Implement tumbling windows with a watermark, allowed lateness and a drop rule, and pass the out-of-order tests."
+      - file: 15.09-challenge-14-a-queue-worker.md
+        title: "Challenge 14: a queue worker"
+        goal: "Run a consumer group on Valkey streams, crash workers on purpose, add backoff, jitter and a dead letter queue, and chart the backlog."
+      - file: 15.10-quiz.md
+        title: "Queues and streams"
+        goal: "Answer graded scenarios on queues and logs, partitions, backoff and jitter, ordering with retries, and late events."
+      - file: 15.11-checklist.md
+        title: "Checklist and learning log"
+        goal: "Write the async design for order emails and receipts, and link your challenge 14 results."

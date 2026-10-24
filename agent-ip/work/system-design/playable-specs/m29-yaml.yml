@@ -1,0 +1,19 @@
+  - dir: 29-capstone-design-it-build-it-break-it-defend-it
+    title: "Capstone: design it, build it, break it, defend it"
+    summary: "Pick one of three fictional systems, design it against cost, p99 latency and availability targets, build its core in your repository on a seeded simulated network with tests in CI, break it once on purpose with a prediction and a chart, and defend it in a five-minute recording and three probes."
+    lessons:
+      - file: 29.01-choose-your-system-and-read-the-rubric.md
+        title: "Choose your system and read the rubric"
+        goal: "Pick one of three systems, each built on a case study, and read the five deliverables, the design document template, the rubric and the defence format."
+      - file: 29.03-build-the-core.md
+        title: "Build the core"
+        goal: "Build the core of your system on the toolkit's simulated boxes, with tests that check the targets and the promises, and meet them on three seeds."
+      - file: 29.04-break-it-on-purpose.md
+        title: "Break it on purpose"
+        goal: "Predict, then kill, slow or cut something during the busiest moment, chart the result second by second, and explain the gap."
+      - file: 29.05-record-your-defence.md
+        title: "Record your defence"
+        goal: "Check every claim against a fresh measurement, write a five-part script, prepare three probe answers and record the defence."
+      - file: 29.06-checklist-and-learning-log.md
+        title: "Checklist and learning log"
+        goal: "Confirm the capstone is complete and compare your Daftar sketch from module 1 with how you would design it now."
