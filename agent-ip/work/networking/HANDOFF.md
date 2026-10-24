@@ -31,6 +31,7 @@ Paused for the weekend at the user's request. Continue on Monday from this note.
   - 2.4 plans two canvases and needs a real public address while decision 11 allows only documentation ranges. 4.9's question count breaks the three-to-five rule.
   - `sudo` is taught in 1.3 but is not in the image (root inside the container needs no `sudo`; keep it for the Linux and WSL 2 path only). The five setup failures in 1.2 are still unnamed.
   - The netlab command generator should also cover `ip route get`, `conntrack -L` and `ss`. The `[timeline]` models in 5.5 and 6.5 need a fallback. The injected fault in 6.9 level 1 needs specifying.
+  - Check question limits: 7.7 and 8.6 need more than five questions as written. Module 9 maps to no outcome (O1 to O7); add it to O2 or a new outcome at the next roadmap revision. Capstone fault "wrong mask on a static device": the brief added a static `homeweb` device for it. The 7.4 hook ("servers kept running") goes beyond what [S48] says. The IPv6 view's filter does not say whether it tracks connections.
   - Source gaps to fill or reword: DNS over TCP (5.5), `/31` behaviour and switch MAC learning (3.x), the Docker `172.17.0.0/16` default (observed in dossier 5.5, not documented), the firewall and `docker -p` claims (6.3), and SLAAC, temporary addresses and dual stack (9.3).
 
 ## Next steps for Monday
