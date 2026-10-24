@@ -145,6 +145,39 @@ export function QuizSession({
     }
   }
   if (!steps.length) return <p>No quiz questions are available yet.</p>;
+  // No question is fetched until the learner presses Start, so proctoring covers the whole attempt.
+  if (!state.started && !complete && !integrity.questionsShown) {
+    const opening = integrity.session !== null && integrity.dialog === null;
+    return (
+      <section ref={root} aria-label="Quiz session" className="mt-7">
+        <p className="text-sm font-medium">
+          {steps.length} {steps.length === 1 ? 'question' : 'questions'}
+        </p>
+        <IntegrityNotice integrity={integrity} />
+        <div className="my-5 rounded-xl border border-border p-5">
+          <h2 className="text-lg font-semibold">
+            The questions appear when you start
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            This quiz is proctored, so your mentor sees the whole attempt. Read
+            the notes first, then press Start. Find a quiet moment: once you
+            start, try to finish in one go.
+          </p>
+          <button
+            disabled={integrity.session === null || opening}
+            onClick={integrity.openIntro}
+            className="mt-4 rounded-lg bg-primary px-5 py-2.5 text-sm text-primary-foreground disabled:opacity-50"
+          >
+            {integrity.session === null
+              ? 'Getting your quiz ready…'
+              : opening
+                ? 'Opening your questions…'
+                : 'Start quiz'}
+          </button>
+        </div>
+      </section>
+    );
+  }
   return (
     <section ref={root} aria-label="Quiz session" className="mt-7">
       <div className="mb-5 flex items-center justify-between text-sm">
