@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { BadRequestError } from "../utils/errors.js";
 import { created, ok } from "../utils/responses.js";
 import {
+  beginIntegrityAttempt,
   openIntegrityAttempt,
   recordIntegrityEvents,
   saveIntegritySnapshot,
@@ -17,6 +18,11 @@ import type { IntegrityCameraBody, IntegrityEventsBody } from "../validations/in
 // POST /api/v1/chapters/:chapterId/integrity
 export async function openAttempt(req: Request, res: Response) {
   ok(res, await openIntegrityAttempt(req.user, req.params.chapterId as string));
+}
+
+// POST /api/v1/integrity/attempts/:attemptId/begin
+export async function begin(req: Request, res: Response) {
+  ok(res, await beginIntegrityAttempt(req.user, req.params.attemptId as string));
 }
 
 // POST /api/v1/integrity/attempts/:attemptId/events

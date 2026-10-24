@@ -39,6 +39,19 @@ async function currentAttemptNumber(enrollmentId: string, chapterId: string): Pr
   return (submitted._max.attempt ?? 0) + 1;
 }
 
+/**
+ * Whether a quiz chapter's questions may be sent to this learner: once they pressed
+ * Start on any attempt, or once they already answered something there (progress
+ * from before Start existed, or a finished quiz they come back to review).
+ */
+export async function quizQuestionsUnlocked(enrollmentId: string, chapterId: string): Promise<boolean> {
+  const [started, answered] = await Promise.all([
+    prisma.integrityAttempt.count({ where: { enrollmentId, chapterId, questionsShownAt: { not: null } } }),
+    prisma.response.count({ where: { enrollmentId, status: { not: "DRAFT" }, block: { chapterId } } }),
+  ]);
+  return started > 0 || answered > 0;
+}
+
 /** Opens (or resumes, after a reload or power cut) the proctored attempt for a quiz chapter. */
 export async function openIntegrityAttempt(user: SessionUser | undefined, chapterId: string): Promise<IntegrityAttemptSession> {
   const chapter = await prisma.chapter.findUnique({
@@ -62,6 +75,7 @@ export async function openIntegrityAttempt(user: SessionUser | undefined, chapte
     attemptId: attempt.id,
     attempt: attempt.attempt,
     startedAt: attempt.startedAt.toISOString(),
+    questionsShown: await quizQuestionsUnlocked(enrollment.id, chapterId),
     flagCount: await countFlags(attempt.id),
     camera: {
       enabled: cameraEnabled,
@@ -87,6 +101,13 @@ async function requireOwnAttempt(user: SessionUser | undefined, attemptId: strin
   });
   if (!attempt || attempt.enrollment.userId !== user.id) throw new NotFoundError("Quiz attempt not found");
   return attempt;
+}
+
+/** The learner pressed Start: from now on this chapter's questions are sent. Calling it again changes nothing. */
+export async function beginIntegrityAttempt(user: SessionUser | undefined, attemptId: string): Promise<{ questionsShown: true }> {
+  const attempt = await requireOwnAttempt(user, attemptId);
+  await prisma.integrityAttempt.updateMany({ where: { id: attempt.id, questionsShownAt: null }, data: { questionsShownAt: new Date() } });
+  return { questionsShown: true };
 }
 
 function clampTime(value: string, earliest: Date, now: Date): Date {

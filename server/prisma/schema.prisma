@@ -179,38 +179,38 @@ enum InstructorAccessRequestStatus {
 }
 
 model User {
-  id            String       @id @default(cuid())
-  email         String       @unique
-  emailVerified DateTime?
-  name          String?
-  image         String?
-  role          Role         @default(MENTEE)
-  passwordHash  String?
-  zipImportEnabled Boolean @default(false)
-  weeklyGoalKind WeeklyGoalKind?
-  weeklyGoalTarget Int?
-  weeklyGoalNote String? @db.VarChar(240)
-  weeklyGoalReminderEnabled Boolean @default(false)
-  weeklyGoalReminderSentOn DateTime? @db.Date
-  celebratedStreakMilestones Int[] @default([])
-  createdAt     DateTime     @default(now())
-  accounts      Account[]
-  sessions      Session[]
-  profile       UserProfile?
-  learnerProfile LearnerProfile?
-  coursesOwned  Course[]     @relation("CourseMentor")
-  courseMemberships CourseInstructor[]
-  courseInstructorInvitesSent CourseInstructorInvite[] @relation("CourseInstructorInviteSender")
-  enrollments   Enrollment[]
-  responses     Response[]
-  reviewsGiven          Review[]       @relation("Reviewer")
-  invitesSent           Invite[]       @relation("InviteSender")
-  helpThreadsAsked      HelpThread[]   @relation("HelpThreadsAsked")
-  helpMessagesAuthored  HelpMessage[]  @relation("HelpMessagesAuthored")
-  headingNotes          HeadingNote[]
+  id                                 String                      @id @default(cuid())
+  email                              String                      @unique
+  emailVerified                      DateTime?
+  name                               String?
+  image                              String?
+  role                               Role                        @default(MENTEE)
+  passwordHash                       String?
+  zipImportEnabled                   Boolean                     @default(false)
+  weeklyGoalKind                     WeeklyGoalKind?
+  weeklyGoalTarget                   Int?
+  weeklyGoalNote                     String?                     @db.VarChar(240)
+  weeklyGoalReminderEnabled          Boolean                     @default(false)
+  weeklyGoalReminderSentOn           DateTime?                   @db.Date
+  celebratedStreakMilestones         Int[]                       @default([])
+  createdAt                          DateTime                    @default(now())
+  accounts                           Account[]
+  sessions                           Session[]
+  profile                            UserProfile?
+  learnerProfile                     LearnerProfile?
+  coursesOwned                       Course[]                    @relation("CourseMentor")
+  courseMemberships                  CourseInstructor[]
+  courseInstructorInvitesSent        CourseInstructorInvite[]    @relation("CourseInstructorInviteSender")
+  enrollments                        Enrollment[]
+  responses                          Response[]
+  reviewsGiven                       Review[]                    @relation("Reviewer")
+  invitesSent                        Invite[]                    @relation("InviteSender")
+  helpThreadsAsked                   HelpThread[]                @relation("HelpThreadsAsked")
+  helpMessagesAuthored               HelpMessage[]               @relation("HelpMessagesAuthored")
+  headingNotes                       HeadingNote[]
   organizationCourseRequestsReviewed OrganizationCourseRequest[] @relation("OrgCourseRequestReviewer")
-  instructorAccessRequest       InstructorAccessRequest?
-  instructorAccessReviews       InstructorAccessRequest[] @relation("InstructorAccessReviewer")
+  instructorAccessRequest            InstructorAccessRequest?
+  instructorAccessReviews            InstructorAccessRequest[]   @relation("InstructorAccessReviewer")
 }
 
 model InstructorAccessRequest {
@@ -246,46 +246,46 @@ model LearnerProfile {
 }
 
 model Course {
-  id             String       @id @default(cuid())
-  slug           String       @unique
-  title          String
-  description    String?
-  coverUrl       String?
-  projectGoal    String? // "Build a multi-vendor marketplace"
-  difficulty     String?
-  estimatedHours Int?
-  category       CourseCategory @default(TECH)
-  status         CourseStatus @default(DRAFT)
-  pricingType    CoursePricingType @default(FREE)
-  priceCents     Int          @default(0)
-  currency       String       @default("USD")
-  sequential     Boolean      @default(true)
-  familySlug     String? // course family in src/shared/lib/course-tracks.ts; null = no variants
-  variantFamily  Json? // creator-defined variant catalog; null uses a built-in family
-  availableVariantSlugs String[] @default([]) // empty means every family variant is available
-  variantAssignment VariantAssignment @default(SELF_SELECT)
-  activeReleaseId String? // latest approved content release; set atomically with publication
-  repositorySourceHash String? // last repository package published by the backend release
-  repositoryReleaseId String? // release active when that package was published
-  releases       CourseRelease[]
+  id                         String                      @id @default(cuid())
+  slug                       String                      @unique
+  title                      String
+  description                String?
+  coverUrl                   String?
+  projectGoal                String? // "Build a multi-vendor marketplace"
+  difficulty                 String?
+  estimatedHours             Int?
+  category                   CourseCategory              @default(TECH)
+  status                     CourseStatus                @default(DRAFT)
+  pricingType                CoursePricingType           @default(FREE)
+  priceCents                 Int                         @default(0)
+  currency                   String                      @default("USD")
+  sequential                 Boolean                     @default(true)
+  familySlug                 String? // course family in src/shared/lib/course-tracks.ts; null = no variants
+  variantFamily              Json? // creator-defined variant catalog; null uses a built-in family
+  availableVariantSlugs      String[]                    @default([]) // empty means every family variant is available
+  variantAssignment          VariantAssignment           @default(SELF_SELECT)
+  activeReleaseId            String? // latest approved content release; set atomically with publication
+  repositorySourceHash       String? // last repository package published by the backend release
+  repositoryReleaseId        String? // release active when that package was published
+  releases                   CourseRelease[]
   /// Quiz camera photos are opt-in per course and never required; quiz integrity signals are always on.
-  integritySnapshots Boolean  @default(false)
-  mentorId       String
-  mentor         User         @relation("CourseMentor", fields: [mentorId], references: [id])
-  instructors    CourseInstructor[]
-  instructorInvites CourseInstructorInvite[]
-  modules        Module[]
-  importPreviews CourseImportPreview[]
-  chapters       Chapter[]
-  chapterDrafts  CourseChapterDraft[]
-  enrollments    Enrollment[]
-  organizationCourses OrganizationCourse[]
+  integritySnapshots         Boolean                     @default(false)
+  mentorId                   String
+  mentor                     User                        @relation("CourseMentor", fields: [mentorId], references: [id])
+  instructors                CourseInstructor[]
+  instructorInvites          CourseInstructorInvite[]
+  modules                    Module[]
+  importPreviews             CourseImportPreview[]
+  chapters                   Chapter[]
+  chapterDrafts              CourseChapterDraft[]
+  enrollments                Enrollment[]
+  organizationCourses        OrganizationCourse[]
   organizationCourseRequests OrganizationCourseRequest[]
-  invites        Invite[]
-  helpThreads    HelpThread[]
-  publishedAt    DateTime?
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  invites                    Invite[]
+  helpThreads                HelpThread[]
+  publishedAt                DateTime?
+  createdAt                  DateTime                    @default(now())
+  updatedAt                  DateTime                    @updatedAt
 
   @@index([mentorId, status])
 }
@@ -322,14 +322,14 @@ model CourseInstructorInvite {
 }
 
 model Module {
-  id       String    @id @default(cuid())
-  courseId String
-  course   Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  id         String    @id @default(cuid())
+  courseId   String
+  course     Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
   contentKey String? // stable author key, independent of title, path and order
-  title    String
-  order    Int
+  title      String
+  order      Int
   archivedAt DateTime?
-  chapters Chapter[]
+  chapters   Chapter[]
 
   @@unique([courseId, order])
   @@unique([courseId, contentKey])
@@ -341,22 +341,22 @@ enum ChapterReaderMode {
 }
 
 model Chapter {
-  id                String            @id @default(cuid())
+  id                String              @id @default(cuid())
   courseId          String
-  course            Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course            Course              @relation(fields: [courseId], references: [id], onDelete: Cascade)
   moduleId          String?
-  module            Module?           @relation(fields: [moduleId], references: [id], onDelete: SetNull)
-  contentKey        String?           // stable author key, independent of title, path and module
+  module            Module?             @relation(fields: [moduleId], references: [id], onDelete: SetNull)
+  contentKey        String? // stable author key, independent of title, path and module
   slug              String
   title             String
   summary           String?
   order             Int
   estimatedMinutes  Int?
-  readerMode        ChapterReaderMode @default(DEFAULT)
-  source            String            @db.Text // raw MDX (draft)
-  compiled          String?           @db.Text // compiled MDX at publish
+  readerMode        ChapterReaderMode   @default(DEFAULT)
+  source            String              @db.Text // raw MDX (draft)
+  compiled          String?             @db.Text // compiled MDX at publish
   publishedAt       DateTime?
-  isMilestone       Boolean           @default(false)
+  isMilestone       Boolean             @default(false)
   archivedAt        DateTime?
   blocks            Block[]
   progress          ChapterProgress[]
@@ -364,7 +364,7 @@ model Chapter {
   studySessions     StudySession[]
   headingNotes      HeadingNote[]
   integrityAttempts IntegrityAttempt[]
-  releaseDraft CourseChapterDraft?
+  releaseDraft      CourseChapterDraft?
 
   @@unique([courseId, slug])
   @@unique([courseId, contentKey])
@@ -372,34 +372,34 @@ model Chapter {
 }
 
 model CourseChapterDraft {
-  chapterId String @id
-  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-  courseId String
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  baseReleaseId String
-  title String
-  summary String?
+  chapterId        String            @id
+  chapter          Chapter           @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  courseId         String
+  course           Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  baseReleaseId    String
+  title            String
+  summary          String?
   estimatedMinutes Int?
-  readerMode ChapterReaderMode
-  isMilestone Boolean
-  source String @db.Text
-  updatedAt DateTime @updatedAt
+  readerMode       ChapterReaderMode
+  isMilestone      Boolean
+  source           String            @db.Text
+  updatedAt        DateTime          @updatedAt
 
   @@index([courseId])
 }
 
 // Server-owned preview: clients approve an immutable, expiring update, never send a plan to apply.
 model CourseImportPreview {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   courseId    String
-  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course      Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
   userId      String
   fingerprint String
   plan        Json
   diff        Json
   expiresAt   DateTime
   appliedAt   DateTime?
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
 
   @@index([courseId, userId])
   @@index([expiresAt])
@@ -408,13 +408,13 @@ model CourseImportPreview {
 // Immutable, materialized curriculum. Each variant lists the chapter rows it uses;
 // shared chapters may be referenced by several variants and releases.
 model CourseRelease {
-  id          String   @id @default(cuid())
+  id          String       @id @default(cuid())
   courseId    String
-  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course      Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
   number      Int
   content     Json
   sourceHash  String?
-  createdAt   DateTime @default(now())
+  createdAt   DateTime     @default(now())
   enrollments Enrollment[]
 
   @@unique([courseId, number])
@@ -422,22 +422,22 @@ model CourseRelease {
 }
 
 model Block {
-  id         String     @id // ULID authored into the MDX
+  id         String      @id // ULID authored into the MDX
   chapterId  String
-  chapter    Chapter    @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapter    Chapter     @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   type       BlockType
   order      Int
-  version    Int        @default(1)
-  required   Boolean    @default(true)
-  blocking   Boolean    @default(false)
-  points     Int        @default(1)
+  version    Int         @default(1)
+  required   Boolean     @default(true)
+  blocking   Boolean     @default(false)
+  points     Int         @default(1)
   config     Json // answers, rubric, tests — SERVER ONLY, never sent to the client
   sourceHash String? // hash of the block's MDX subtree; change detection bumps version (docs/02-content-authoring.mdx)
   tags       String[] // for weak-area reporting
   archivedAt DateTime?
   // Null for blocks that existed before this column. Progress uses it so a
   // block added after a learner finished a chapter cannot reopen it.
-  createdAt  DateTime?  @default(now())
+  createdAt  DateTime?   @default(now())
   responses  Response[]
   stats      BlockStats?
 
@@ -445,44 +445,44 @@ model Block {
 }
 
 model Enrollment {
-  id                String            @id @default(cuid())
-  courseId          String
-  course            Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  userId            String?
-  user              User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  learnerProfileId  String?
-  learnerProfile    LearnerProfile?   @relation(fields: [learnerProfileId], references: [id], onDelete: Cascade)
-  organizationId    String?
-  organization      Organization?     @relation(fields: [organizationId], references: [id], onDelete: SetNull)
-  lifecycle         EnrollmentLifecycle @default(ACTIVE)
-  source            EnrollmentSource  @default(DIRECT)
-  externalMentorId  String?
-  externalAssignmentId String?
-  status            EnrollStatus      @default(ASSIGNED)
-  assignedById      String?
-  percentComplete   Int               @default(0)
-  chaptersCompleted Int               @default(0)
-  totalScore        Int               @default(0)
-  maxScore          Int               @default(0)
-  pendingReviews    Int               @default(0) // denormalized for reports — maintained at Response write/review time
-  lastActiveAt      DateTime?
-  lastNudgeSentAt   DateTime?
-  startedAt         DateTime?
-  completedAt       DateTime?
-  variantSlug       String? // learner's variant in the course family; null = not picked yet
-  variantChosenAt   DateTime?
-  variantLockedAt   DateTime? // first chapter start fixes the learner's variant
-  variantAssignedAt DateTime? // assignment at enrollment, never inferred from the current course setting
-  releaseId         String?
-  release           CourseRelease? @relation(fields: [releaseId], references: [id], onDelete: SetNull)
+  id                     String              @id @default(cuid())
+  courseId               String
+  course                 Course              @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  userId                 String?
+  user                   User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  learnerProfileId       String?
+  learnerProfile         LearnerProfile?     @relation(fields: [learnerProfileId], references: [id], onDelete: Cascade)
+  organizationId         String?
+  organization           Organization?       @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  lifecycle              EnrollmentLifecycle @default(ACTIVE)
+  source                 EnrollmentSource    @default(DIRECT)
+  externalMentorId       String?
+  externalAssignmentId   String?
+  status                 EnrollStatus        @default(ASSIGNED)
+  assignedById           String?
+  percentComplete        Int                 @default(0)
+  chaptersCompleted      Int                 @default(0)
+  totalScore             Int                 @default(0)
+  maxScore               Int                 @default(0)
+  pendingReviews         Int                 @default(0) // denormalized for reports — maintained at Response write/review time
+  lastActiveAt           DateTime?
+  lastNudgeSentAt        DateTime?
+  startedAt              DateTime?
+  completedAt            DateTime?
+  variantSlug            String? // learner's variant in the course family; null = not picked yet
+  variantChosenAt        DateTime?
+  variantLockedAt        DateTime? // first chapter start fixes the learner's variant
+  variantAssignedAt      DateTime? // assignment at enrollment, never inferred from the current course setting
+  releaseId              String?
+  release                CourseRelease?      @relation(fields: [releaseId], references: [id], onDelete: SetNull)
   specialisationSlug     String? // follow-up track picked once the course is complete
   specialisationChosenAt DateTime?
-  createdAt         DateTime          @default(now())
-  chapterProgress   ChapterProgress[]
-  dailyActivity     DailyActivity[]
-  studySessions     StudySession[]
-  integrityAttempts IntegrityAttempt[]
-  payment           Payment?
+  createdAt              DateTime            @default(now())
+  chapterProgress        ChapterProgress[]
+  dailyActivity          DailyActivity[]
+  studySessions          StudySession[]
+  integrityAttempts      IntegrityAttempt[]
+  payment                Payment?
 
   @@unique([courseId, userId])
   @@unique([courseId, learnerProfileId])
@@ -493,15 +493,15 @@ model Enrollment {
 }
 
 model Organization {
-  id              String                      @id @default(cuid())
-  slug            String                      @unique
-  name            String
-  createdAt       DateTime                    @default(now())
-  updatedAt       DateTime                    @updatedAt
-  apiCredentials  OrganizationApiCredential[]
+  id                String                      @id @default(cuid())
+  slug              String                      @unique
+  name              String
+  createdAt         DateTime                    @default(now())
+  updatedAt         DateTime                    @updatedAt
+  apiCredentials    OrganizationApiCredential[]
   courseAllocations OrganizationCourse[]
-  courseRequests  OrganizationCourseRequest[]
-  enrollments     Enrollment[]
+  courseRequests    OrganizationCourseRequest[]
+  enrollments       Enrollment[]
 }
 
 model OrganizationApiCredential {
@@ -653,19 +653,19 @@ model Review {
 
 // Mentee help requests — separate from the open-question review queue (demo Day 3).
 model HelpThread {
-  id         String           @id @default(cuid())
-  courseId   String
-  course     Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  chapterId  String?
-  chapter    Chapter?         @relation(fields: [chapterId], references: [id], onDelete: SetNull)
-  menteeId   String
-  mentee     User             @relation("HelpThreadsAsked", fields: [menteeId], references: [id], onDelete: Cascade)
-  status     HelpThreadStatus @default(OPEN)
+  id               String           @id @default(cuid())
+  courseId         String
+  course           Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  chapterId        String?
+  chapter          Chapter?         @relation(fields: [chapterId], references: [id], onDelete: SetNull)
+  menteeId         String
+  mentee           User             @relation("HelpThreadsAsked", fields: [menteeId], references: [id], onDelete: Cascade)
+  status           HelpThreadStatus @default(OPEN)
   menteeLastReadAt DateTime?
-  createdAt  DateTime         @default(now())
-  updatedAt  DateTime         @updatedAt
-  resolvedAt DateTime?
-  messages   HelpMessage[]
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  resolvedAt       DateTime?
+  messages         HelpMessage[]
 
   @@index([courseId, status, updatedAt])
   @@index([menteeId, updatedAt])
@@ -762,20 +762,22 @@ enum IntegrityCameraStatus {
 /// One proctored try at a quiz chapter. `attempt` is 1 + the learner's highest submitted
 /// attempt in the chapter when the sitting opened, so reloads resume the same row.
 model IntegrityAttempt {
-  id            String                @id @default(cuid())
-  enrollmentId  String
-  enrollment    Enrollment            @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
-  chapterId     String
-  chapter       Chapter               @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-  attempt       Int
-  cameraStatus  IntegrityCameraStatus @default(NOT_REQUESTED)
-  eventCount    Int                   @default(0)
-  droppedEvents Int                   @default(0)
-  snapshotCount Int                   @default(0)
-  startedAt     DateTime              @default(now())
-  lastSeenAt    DateTime              @default(now())
-  events        IntegrityEvent[]
-  snapshots     IntegritySnapshot[]
+  id               String                @id @default(cuid())
+  enrollmentId     String
+  enrollment       Enrollment            @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  chapterId        String
+  chapter          Chapter               @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  attempt          Int
+  cameraStatus     IntegrityCameraStatus @default(NOT_REQUESTED)
+  eventCount       Int                   @default(0)
+  droppedEvents    Int                   @default(0)
+  snapshotCount    Int                   @default(0)
+  startedAt        DateTime              @default(now())
+  lastSeenAt       DateTime              @default(now())
+  /// When the learner pressed Start. Quiz questions are sent only after this.
+  questionsShownAt DateTime?
+  events           IntegrityEvent[]
+  snapshots        IntegritySnapshot[]
 
   @@unique([enrollmentId, chapterId, attempt])
   @@index([chapterId])

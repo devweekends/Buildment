@@ -12,6 +12,7 @@ const router = Router();
 
 router.use(authenticate);
 
+router.post("/attempts/:attemptId/begin", validateParams(attemptParams), integrity.begin);
 router.post(
   "/attempts/:attemptId/events",
   validate({ params: attemptParams, body: integrityEventsBody }),
