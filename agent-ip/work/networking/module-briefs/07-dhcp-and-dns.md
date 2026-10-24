@@ -118,7 +118,7 @@ The roadmap's "Problem first" column is filled only for Learn chapters. For 7.1,
 ### 7.7 DHCP and DNS (Check, 15 min) `07.07-dhcp-and-dns-quiz.md`
 - Hook: none (quiz only). Claim: none; no new content.
 - Questions (four, one instrument): (1) order the steps from joining Wi-Fi to the first byte (lease, ARP for the router, DNS, gateway decision, SYN); (2) three outputs, one question: `ip addr` with no address, `ip route get` returning "Network is unreachable", `dig` timing out while `ping 203.0.113.45` works; name the layer for each; (3) module 6: two devices use source port 41000, what does the server see (address rewritten, port may change only on a clash) [dossier 5.6]; (4) module 6: connection to a closed port on a router's outside address, refused or timeout (refused) [dossier 5.6].
-- Diagram, interactive: none. Near miss tested: option position and length balanced; the lease question must not be answerable by the longest option.
+- Diagram, interactive: none. Near miss: a question answerable from option length or position. Balance both, so the ordering question cannot be solved by picking the longest option.
 
 ### 7.8 A "no internet" runbook (Gate, 25 min) `07.08-gate-no-internet-runbook.md`
 - Hook (derived): your family will ask you why the Wi-Fi is down. Write down what you will do, one command per layer.
