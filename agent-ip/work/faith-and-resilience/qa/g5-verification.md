@@ -12,7 +12,7 @@ date: 2026-10-24
 - Graded items: 94 (68 multiple-choice questions, 26 predictions). Open questions: 8 (every gate and the capstone). Diagrams: 27 Mermaid diagrams, one in every non-gate, non-quiz chapter. Canvases: 19, one in every Learn chapter, all on existing renderers (see `canvas-qa.md`). Arabic: 45 lines, each copied from the dossier.
 - `content:validate:source --course faith-and-resilience`: 40 of 40 OK.
 - `content:audit --course faith-and-resilience`: 0 errors, 0 warnings.
-- `agent-ip/scripts/audit-course.mjs content/import/faith-and-resilience`: Needs work 0 (saved in `course-audit.txt`); 50,671 prose words; every scene, Learn and capstone chapter at least 1,200, every gate at least 700, every quiz chapter five questions, every Learn chapter interactive.
+- `agent-ip/scripts/audit-course.mjs courses/faith-and-resilience`: Needs work 0 (saved in `course-audit.txt`); 50,671 prose words; every scene, Learn and capstone chapter at least 1,200, every gate at least 700, every quiz chapter five questions, every Learn chapter interactive.
 - No em or en dashes; no links, company or product names, or AI attribution.
 
 ## Sources (G1 and every chapter)

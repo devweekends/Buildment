@@ -7,7 +7,7 @@ version: 1
 
 # Writer pack: Steady Hearts: Islamic Belief for Uncertain Times
 
-Read this whole file before writing. It replaces the chapter briefs for this course (G2C was skipped on the sponsor's instruction; see `../decision-log.md`). The plan is `content/import/faith-and-resilience/course.yaml`: write exactly the files, titles and goals listed there for your modules. The roadmap is `../curriculum-roadmap.md` (minutes, outcomes, gate evidence, canvases). The research dossier is `../research.md`: **every verse, hadith, story and scholarly statement must come from the dossier, with the reference and wording it gives**; never use anything it marks weak, unverified or "do not use". Look at `content/import/cause-and-effect/04-root-causes/` (`04.01`, `04.05`, `04.06`, `04.07`) for the exact file format of a scene, a teaching chapter with a canvas, a quiz chapter and a gate, and at `content/import/cause-and-effect/08-learning-from-what-went-wrong/08.04-capstone-investigate-a-problem.md` for a capstone. Skim `agent-ip/03-authoring-standards.md` (voice, plain English, hardship with care, forbidden patterns) and `agent-ip/04-interactive-playbook.md` (budgets, option-length hygiene, quiz and predict rules).
+Read this whole file before writing. It replaces the chapter briefs for this course (G2C was skipped on the sponsor's instruction; see `../decision-log.md`). The plan is `courses/faith-and-resilience/course.yaml`: write exactly the files, titles and goals listed there for your modules. The roadmap is `../curriculum-roadmap.md` (minutes, outcomes, gate evidence, canvases). The research dossier is `../research.md`: **every verse, hadith, story and scholarly statement must come from the dossier, with the reference and wording it gives**; never use anything it marks weak, unverified or "do not use". Look at `courses/cause-and-effect/04-root-causes/` (`04.01`, `04.05`, `04.06`, `04.07`) for the exact file format of a scene, a teaching chapter with a canvas, a quiz chapter and a gate, and at `courses/cause-and-effect/08-learning-from-what-went-wrong/08.04-capstone-investigate-a-problem.md` for a capstone. Skim `agent-ip/03-authoring-standards.md` (voice, plain English, hardship with care, forbidden patterns) and `agent-ip/04-interactive-playbook.md` (budgets, option-length hygiene, quiz and predict rules).
 
 ## 1. What this course is
 
@@ -47,7 +47,7 @@ A practical course on Islamic belief for people living with uncertainty. It teac
 
 ## 4. Chapter file format and budgets
 
-Path: `content/import/faith-and-resilience/<module-dir>/<file>` exactly as in course.yaml. Frontmatter:
+Path: `courses/faith-and-resilience/<module-dir>/<file>` exactly as in course.yaml. Frontmatter:
 
 ```yaml
 ---
@@ -194,5 +194,5 @@ The chapter teaches the six parts with a worked example on a fourth case (a fell
 - Every reference in your chapters is in the dossier with the same number and grading; every Arabic text is copied from the dossier.
 - Every sum and case checked twice; every MCQ blind re-answered.
 - From `server/`: `node node_modules/tsx/dist/cli.mjs scripts/validate-course-source.ts --course faith-and-resilience` and `node node_modules/tsx/dist/cli.mjs scripts/audit-course-structure.ts --course faith-and-resilience` with no errors or warnings in your files (other writers' missing files will show; ignore those).
-- From the repo root: `node agent-ip/scripts/audit-course.mjs content/import/faith-and-resilience` with no flags on your chapters (an unregistered canvas slug is fine until the orchestrator registers it).
+- From the repo root: `node agent-ip/scripts/audit-course.mjs courses/faith-and-resilience` with no flags on your chapters (an unregistered canvas slug is fine until the orchestrator registers it).
 - Edit only your module folders and your canvas folders (and your slider test files). No git commands that change anything. Do not install packages. pnpm is broken here; use the node commands above.
