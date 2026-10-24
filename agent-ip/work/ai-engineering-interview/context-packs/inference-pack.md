@@ -69,7 +69,7 @@ Renderers: `slider`, `sequence`, `factor` in `frontend/src/canvas/renderers/`. F
 - Limits: no real timings; one GPU; activations ignored.
 
 ### `kv-cache-per-token` (slider, 11.3)
-- Inputs: layers 8 to 80 step 8 (default 32); KV heads 1 to 64 step 1 (default 8); head size 64 to 256 step 64 (default 128); bytes per value 1 to 2 step 1 (default 2, "1 = FP8, 2 = 16-bit").
+- Inputs: layers 8 to 80 step 8 (default 32); KV heads 1 to 64 step 1 (default 8); bytes per value 1 to 2 step 1 (default 2, "1 = FP8, 2 = 16-bit"); tokens in the chat 1,024 to 131,072 step 1,024 (default 32,768). Head size is fixed at 128 (changed after critic round 1, D08).
 - Stats: KV per token (KiB); one 32,768-token chat (GB); compared with 32 KV heads at the same settings (times smaller or larger).
 - Bars (shared scale): this model per chat; same with full multi-head attention (KV heads = 32); same with one KV head.
 - describeChange names the input and the factor (doubling KV heads doubles the cache).
@@ -79,7 +79,7 @@ Renderers: `slider`, `sequence`, `factor` in `frontend/src/canvas/renderers/`. F
 - Fixed model: the running example (16.06 GB weights at 16-bit, 131,072 bytes per token at 16-bit).
 - Inputs: users 1 to 64 (default 20); tokens per user 1,024 to 131,072 step 1,024 (default 32,768); KV bytes per value 1 to 2 (default 2); GPU memory 24 to 192 GB step 8 (default 80).
 - Rule: memory for KV = GPU x 0.9 - 16.06; needed = users x tokens x per-token bytes; fits when needed <= available.
-- Stats: KV needed versus available (GB); verdict "Fits" or "Out of memory by X GB"; most users that fit at this context.
+- Stats: KV needed versus available (GB); verdict "Fits" or "Out of memory by X GB"; cache space in tokens (426,784 at the defaults) with the chats of this length that fit in its detail (changed after critic round 1, D09).
 - Bars: weights, KV needed, KV available (tone "bad" on needed when it does not fit).
 - Defaults: needed 85.9 GB, available 55.94 GB, out of memory by 29.96 GB, 13 users fit.
 - Limits: one GPU, the example's 10% reserve, no paging waste or fragmentation, weights stay 16-bit.
