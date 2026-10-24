@@ -1,6 +1,6 @@
 # Agent IP — Course Factory
 
-**Status:** v0.4.5, draft for team review (v0.4.5 adds repository publication and instructor binding)
+**Status:** v0.4.6, draft for team review (v0.4.6 records explicit publication exceptions)
 **Owner:** Delivery lead (Sean) + course engineering
 **Applies to:** every course produced for the platform
 
@@ -162,7 +162,7 @@ Paths are relative to the repository root. In role documents, `work/` means `age
 - `agent-ip/work/<course-slug>/` for draft manifests, briefs, research, blueprints, critiques, and approval records; put audit and validation reports in its `qa/` directory.
 - `courses/<course-slug>/` is the only canonical location for course source: `course.yaml`, numbered module/lesson Markdown files, and optional `COURSE-OUTLINE.md`. FreshMarket predates `course.yaml` and uses seed metadata until it is migrated.
 
-After content review and QA, assemble the complete final package in `courses/<course-slug>/` on the course PR branch. Rerun source validation, the strict structure audit, and the course audit against that exact package. Keep drafts, QA, review notes, archives, and generated output in `agent-ip/work/<course-slug>/`. Set `repositoryPublish: true` in a reviewed `course.yaml` to opt in to automatic publication during the backend release after the change reaches `main`. The instructor is named in `courses/publishing.yaml`. A folder's presence alone does not authorize publication.
+After content review and QA, assemble the complete final package in `courses/<course-slug>/` on the course PR branch. Rerun source validation, the strict structure audit, and the course audit against that exact package. Keep drafts, QA, review notes, archives, and generated output in `agent-ip/work/<course-slug>/`. Set `repositoryPublish: true` in a reviewed `course.yaml` to opt in to automatic publication during the backend release after the change reaches `main`. The instructor is named in `courses/publishing.yaml`. A folder's presence alone does not authorize publication. The default `repositoryEditorialAudit: required` blocks publication on audit findings. An explicit user-requested exception may set `repositoryEditorialAudit: advisory`; record the findings and the exception in the course PR, and present incomplete course scope honestly in the catalog. Source and strict structural validation still block publication.
 
 The migrated `courses/` tree includes legacy packages whose review is still pending. A package's presence does not imply approval or learner publication. Preserve superseded drafts in `agent-ip/work/<course-slug>/archive/`; never blindly overwrite newer content. Historical logs keep their original paths; new assignments and context packs must use this layout.
 

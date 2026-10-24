@@ -1,4 +1,6 @@
 slug: logic-building
+repositoryPublish: true
+repositoryEditorialAudit: advisory
 title: "Think Clearly: Logic for the AI Era"
 description: "A gentle, playful start in clear thinking, with no coding and no hard maths. Break problems into steps, reason with rules, spot hidden assumptions and weak arguments, make good guesses with rough numbers, and check what an AI tells you before you trust it. Every module starts with a puzzle from everyday life: markets, family budgets, study and freelancing."
 projectGoal: "Think through one real choice, or a provided scenario, in five parts: the steps, two hidden assumptions, a rough number, a check of an AI answer and a decision with its reason. Then walk a mentor through it in five minutes."

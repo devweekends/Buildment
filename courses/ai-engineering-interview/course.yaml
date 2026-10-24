@@ -1,4 +1,6 @@
 slug: ai-engineering-interview
+repositoryPublish: true
+repositoryEditorialAudit: advisory
 title: "Cracking the AI Engineering and Agentic AI Interview"
 description: "Get ready for AI engineer, LLM engineer and agentic AI interviews at remote-first companies. Learn RAG, agents, evaluation, async Python services and production operations from the foundations up to senior depth, practise every round of the interview loop with model answers and follow-up probes, then build, evaluate and defend your own small RAG plus agent service."
 projectGoal: "Build a small RAG plus agent service that runs on your laptop with no paid API key, measure it with recall@k, precision@k, MRR and faithfulness on a golden set, run that evaluation as a regression test, and defend your design in a recorded mock interview."
