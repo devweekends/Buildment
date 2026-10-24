@@ -387,8 +387,8 @@ CheckResult(name='volume', ok=True, value=111, threshold=48.3, message='111 rows
 CheckResult(name='schema', ok=True, value=0, threshold=0, message='partition 2026-03-28 matches contract v1.0.0')
 $ python -m pipeline.retention --keep-days 14 --as-of 2026-03-28 --dry-run
 would delete lake/restricted/reports/upload_date=2026-03-01
-... (13 lines, 03-01 to 03-13)
-would delete 13 partition(s); kept everything newer than 14 days before 2026-03-28
+... (13 restricted lines, 03-01 to 03-13, then quarantine 03-08, 03-10, 03-12 and 03-13)
+would delete 17 partition(s); kept everything newer than 14 days before 2026-03-28
 ```
 
 - Freshness: age in days of the newest restricted partition against a given "today" (the runner passes the run date; it allows 2 days).
