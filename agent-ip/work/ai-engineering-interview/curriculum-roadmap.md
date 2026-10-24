@@ -31,7 +31,7 @@ Fellows prepare for AI engineer, LLM engineer and agentic AI interviews at remot
 | O5 | Build a small async FastAPI service with Pydantic validation, structured errors, a concurrency limit, retries with backoff and timeouts, and verify it with tests | Build 9.6 passes its tests; quiz 9.7; 9.8 failure story |
 | O6 | Describe how they would track experiments, trace requests, deploy (serverless or Kubernetes) and monitor quality after launch, with reasons | Quiz 10.6; 10.7 deployment and monitoring plan |
 | O7 | Answer each interview round with a framework, numbers and honest trade-offs | Quiz 12.6; 12.7 written system design and recorded mock answer; capstone defence (13.4) |
-| O8 | Explain prefill, decode and the KV cache, estimate whether a self-hosted model fits a GPU for a given load, and choose fixes (paging, FP8, batching, admission control, more GPUs) with trade-offs | Quiz 11.10; 11.9 drill; 11.11 written sizing |
+| O8 | Explain prefill, decode and the KV cache, estimate whether a self-hosted model fits a GPU for a given load, and choose fixes (paging, FP8, batching, admission control, more GPUs) with trade-offs | Quiz 11.10 (including a fit estimate); 11.9 drill; 11.11 written sizing |
 
 ## Course shape
 | Week | Focus | Modules | Hours | Evidence at the end |
