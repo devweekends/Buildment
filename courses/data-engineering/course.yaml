@@ -1,0 +1,409 @@
+slug: data-engineering
+title: "Data Engineering: Build Reliable Data Pipelines on Your Laptop"
+description: "Learn data engineering by building a real pipeline on your own laptop, with no cloud account and no paid service. Go deep on SQL and data modelling, store data as Parquet, build a DuckDB warehouse with dbt Core, make the pipeline survive late uploads, duplicates, reruns and a schema change, schedule it with retries and backfills, protect personal data, and learn the ideas behind streaming and cluster engines. Finish with interview practice and a second pipeline you build and defend."
+projectGoal: "Build a pipeline that runs offline on your laptop: raw CSV, JSON and a small SQLite registry land as partitioned Parquet, tested dbt models build a star schema with history in DuckDB, a small scheduler runs it with retries and backfills, personal data is pseudonymised, and a weekly report opens on a phone. Then build a second pipeline in a new domain and defend it in a recorded five-minute walkthrough."
+difficulty: Medium
+estimatedHours: 59
+category: tech
+modules:
+  - dir: 01-the-job-and-your-workspace
+    key: de-m01-the-job-and-your-workspace
+    title: "The data engineer's job and your workspace"
+    summary: "See what data engineers do and how the role differs from its neighbours, map the pipeline you will build for Mizan, and set up a workspace that runs offline after one small install."
+    lessons:
+      - file: 01.01-set-the-scene.md
+        key: de-01-01-set-the-scene
+        title: "Set the scene"
+        goal: "Introduce Mizan's weekly price report, the problems behind a wrong number, and what the course will build."
+      - file: 01.02-what-a-data-engineer-does.md
+        key: de-01-02-what-a-data-engineer-does
+        title: "What a data engineer does"
+        goal: "Tell the data engineer's job from the analyst, data scientist, analytics engineer and backend engineer, and trace a wrong number to the stage that broke it."
+      - file: 01.03-the-map-of-a-pipeline.md
+        key: de-01-03-the-map-of-a-pipeline
+        title: "The map of a pipeline"
+        goal: "Place each part of a pipeline on the data lifecycle, and decide from freshness needs whether batch is enough."
+      - file: 01.04-set-up-your-workspace.md
+        key: de-01-04-set-up-your-workspace
+        title: "Set up your workspace and make the raw data"
+        goal: "Install the pinned tools, generate Mizan's raw files and pass the setup check and warm-ups."
+      - file: 01.05-checklist.md
+        key: de-01-05-checklist
+        title: "Checklist and learning log"
+        goal: "Gate: explain the role and the pipeline you will build, in your own words."
+  - dir: 02-sql-joins-and-aggregation
+    key: de-m02-sql-joins-and-aggregation
+    title: "SQL in depth: joins and aggregation"
+    summary: "Write analytical SQL in DuckDB that joins without multiplying rows, aggregates without losing or doubling values, and reads as named steps."
+    lessons:
+      - file: 02.01-set-the-scene.md
+        key: de-02-01-set-the-scene
+        title: "Set the scene"
+        goal: "Introduce the module through a market whose weekly total doubled overnight."
+      - file: 02.02-joins-and-row-counts.md
+        key: de-02-02-joins-and-row-counts
+        title: "Joins and what they do to row counts"
+        goal: "Predict how many rows a join returns, and spot fan-out caused by duplicate keys."
+      - file: 02.03-aggregation-traps.md
+        key: de-02-03-aggregation-traps
+        title: "Aggregation traps: NULLs and double counting"
+        goal: "Aggregate without losing or doubling values, and count the thing you mean to count."
+      - file: 02.04-ctes-and-readable-queries.md
+        key: de-02-04-ctes-and-readable-queries
+        title: "CTEs and queries you can read"
+        goal: "Break a long query into named steps that you can check one at a time."
+      - file: 02.05-build-sql-drills.md
+        key: de-02-05-build-sql-drills
+        title: "Build: SQL drills on the raw data"
+        goal: "Write SQL in DuckDB over Mizan's raw files that passes the drill tests."
+      - file: 02.06-quiz.md
+        key: de-02-06-quiz
+        title: "SQL joins and aggregation"
+        goal: "Graded scenarios on joins, fan-out, NULLs, double counting and CTEs."
+      - file: 02.07-checklist.md
+        key: de-02-07-checklist
+        title: "Checklist and learning log"
+        goal: "Gate: explain a double-counting bug and how you fixed it."
+  - dir: 03-sql-windows-and-plans
+    key: de-m03-sql-windows-and-plans
+    title: "SQL in depth: window functions and query plans"
+    summary: "Use window functions to deduplicate, rank and compare periods, and read query plans to explain why a query is slow and whether an index helps."
+    lessons:
+      - file: 03.01-set-the-scene.md
+        key: de-03-01-set-the-scene
+        title: "Set the scene"
+        goal: "Introduce the module through duplicate uploads and a slow query in the same week."
+      - file: 03.02-ranking-and-deduplication.md
+        key: de-03-02-ranking-and-deduplication
+        title: "Window functions: ranking and deduplication"
+        goal: "Keep the latest row per key with ROW_NUMBER, and choose how to break ties."
+      - file: 03.03-running-totals-and-frames.md
+        key: de-03-03-running-totals-and-frames
+        title: "Running totals, moving averages and frames"
+        goal: "Compute week-over-week change and moving averages with the frame you intend."
+      - file: 03.04-query-plans-and-indexes.md
+        key: de-03-04-query-plans-and-indexes
+        title: "Query plans and indexes"
+        goal: "Read a query plan, and say when an index helps and when a full scan is the right plan."
+      - file: 03.05-build-window-drills.md
+        key: de-03-05-build-window-drills
+        title: "Build: SQL drills with windows and plans"
+        goal: "Deduplicate, rank and compare weeks in SQL, and measure a query plan before and after an index."
+      - file: 03.06-quiz.md
+        key: de-03-06-quiz
+        title: "Window functions and query plans"
+        goal: "Graded scenarios on ranking, deduplication, frames and plans."
+      - file: 03.07-checklist.md
+        key: de-03-07-checklist
+        title: "Checklist and learning log"
+        goal: "Gate: explain a query plan to a teammate."
+  - dir: 04-data-modelling
+    key: de-m04-data-modelling
+    title: "Data modelling"
+    summary: "Choose between normalised and dimensional designs, state the grain before anything else, design a star schema, and keep history with slowly changing dimensions."
+    lessons:
+      - file: 04.01-set-the-scene.md
+        key: de-04-01-set-the-scene
+        title: "Set the scene"
+        goal: "Introduce modelling through a weekly report that the app's own tables make slow and confusing."
+      - file: 04.02-oltp-and-olap.md
+        key: de-04-02-oltp-and-olap
+        title: "OLTP and OLAP: two jobs, two designs"
+        goal: "Choose a normalised or a dimensional design for a workload, with reasons."
+      - file: 04.03-grain-facts-and-dimensions.md
+        key: de-04-03-grain-facts-and-dimensions
+        title: "Grain, facts and dimensions: the star schema"
+        goal: "State the grain first, then design the fact table and its dimensions around it."
+      - file: 04.04-slowly-changing-dimensions.md
+        key: de-04-04-slowly-changing-dimensions
+        title: "Slowly changing dimensions"
+        goal: "Choose type 1 or type 2 history for an attribute, and join each fact to the right version."
+      - file: 04.05-build-star-schema.md
+        key: de-04-05-build-star-schema
+        title: "Build: design and prototype Mizan's star schema"
+        goal: "Write the schema and load the dimensions with SQL, with tests that check the grain and the history."
+      - file: 04.06-quiz.md
+        key: de-04-06-quiz
+        title: "Data modelling"
+        goal: "Graded scenarios on grain, star schemas and slowly changing dimensions."
+      - file: 04.07-checklist.md
+        key: de-04-07-checklist
+        title: "Checklist and learning log"
+        goal: "Gate: defend a grain and a history choice."
+  - dir: 05-files-and-storage
+    key: de-m05-files-and-storage
+    title: "Files and storage"
+    summary: "Store analytical data as Parquet, choose partitions and file sizes for the queries you expect, and explain lakes, warehouses and lakehouses in plain words."
+    lessons:
+      - file: 05.01-set-the-scene.md
+        key: de-05-01-set-the-scene
+        title: "Set the scene"
+        goal: "Introduce storage through a folder of a thousand tiny files that nobody can query quickly."
+      - file: 05.02-rows-columns-and-parquet.md
+        key: de-05-02-rows-columns-and-parquet
+        title: "Rows, columns and Parquet"
+        goal: "Explain how a columnar file and its statistics let an engine skip data it does not need."
+      - file: 05.03-partitions-and-file-sizes.md
+        key: de-05-03-partitions-and-file-sizes
+        title: "Partitions, file sizes and compression"
+        goal: "Choose a partition key and a file size for the queries you expect, and avoid the small-files problem."
+      - file: 05.04-lakes-and-warehouses.md
+        key: de-05-04-lakes-and-warehouses
+        title: "Lakes, warehouses and lakehouses"
+        goal: "Explain each design and what an open table format adds to plain files."
+      - file: 05.05-build-land-as-parquet.md
+        key: de-05-05-build-land-as-parquet
+        title: "Build: land the raw files as Parquet"
+        goal: "Write a landing job that turns one upload day into partitioned Parquet and is safe to rerun."
+      - file: 05.06-quiz.md
+        key: de-05-06-quiz
+        title: "Files and storage"
+        goal: "Graded scenarios on columnar files, partitions and storage designs."
+      - file: 05.07-checklist.md
+        key: de-05-07-checklist
+        title: "Checklist and learning log"
+        goal: "Gate: defend a partitioning choice with numbers."
+  - dir: 06-batch-ingestion
+    key: de-m06-batch-ingestion
+    title: "Batch ingestion"
+    summary: "Load data in the right order and the right zone, make every job safe to rerun, and load only what changed without losing what a watermark misses."
+    lessons:
+      - file: 06.01-set-the-scene.md
+        key: de-06-01-set-the-scene
+        title: "Set the scene"
+        goal: "Introduce ingestion through a rerun after a power cut that doubled a week of prices."
+      - file: 06.02-etl-elt-and-zones.md
+        key: de-06-02-etl-elt-and-zones
+        title: "ETL, ELT and data zones"
+        goal: "Place each step, and each piece of personal data, in the right zone of the pipeline."
+      - file: 06.03-idempotent-jobs.md
+        key: de-06-03-idempotent-jobs
+        title: "Idempotent jobs and safe reruns"
+        goal: "Make a job give the same result however many times it runs."
+      - file: 06.04-incremental-loads-and-cdc.md
+        key: de-06-04-incremental-loads-and-cdc
+        title: "Incremental loads and change data capture"
+        goal: "Load only what changed with a watermark, and know which changes that approach misses."
+      - file: 06.05-build-incremental-ingestion.md
+        key: de-06-05-build-incremental-ingestion
+        title: "Build: incremental, pseudonymised ingestion"
+        goal: "Pseudonymise volunteer data, extract the registry incrementally and record every run in a run log."
+      - file: 06.06-quiz.md
+        key: de-06-06-quiz
+        title: "Batch ingestion"
+        goal: "Graded scenarios on zones, idempotency, incremental loads and change data capture."
+      - file: 06.07-checklist.md
+        key: de-06-07-checklist
+        title: "Checklist and learning log"
+        goal: "Gate: explain why your ingestion is safe to rerun."
+  - dir: 07-transformation-as-code
+    key: de-m07-transformation-as-code
+    title: "Transformation as code"
+    summary: "Turn loose SQL into a dbt project: models that build in dependency order, tests and contracts for the assumptions you rely on, snapshots for history and incremental models for growth."
+    lessons:
+      - file: 07.01-set-the-scene.md
+        key: de-07-01-set-the-scene
+        title: "Set the scene"
+        goal: "Introduce transformation as code through a long SQL file that nobody dares to change."
+      - file: 07.02-models-refs-and-layers.md
+        key: de-07-02-models-refs-and-layers
+        title: "Models, refs and layers in dbt"
+        goal: "Organise SQL into staging and mart models that dbt builds in dependency order."
+      - file: 07.03-tests-contracts-and-docs.md
+        key: de-07-03-tests-contracts-and-docs
+        title: "Tests, contracts and docs"
+        goal: "Write tests for the assumptions you rely on, and know what a passing test cannot prove."
+      - file: 07.04-snapshots-and-incremental-models.md
+        key: de-07-04-snapshots-and-incremental-models
+        title: "Snapshots and incremental models"
+        goal: "Keep history with a snapshot, and process only new rows with an incremental model."
+      - file: 07.05-build-dbt-project.md
+        key: de-07-05-build-dbt-project
+        title: "Build: the Mizan dbt project"
+        goal: "Build staging models, a snapshot, the star schema and tests with dbt Core on DuckDB."
+      - file: 07.06-quiz.md
+        key: de-07-06-quiz
+        title: "Transformation as code"
+        goal: "Graded scenarios on models, tests, snapshots and incremental models."
+      - file: 07.07-checklist.md
+        key: de-07-07-checklist
+        title: "Checklist and learning log"
+        goal: "Gate: explain one test that protects you and one problem it would miss."
+  - dir: 08-late-data-and-backfills
+    key: de-m08-late-data-and-backfills
+    title: "Late data, duplicates, backfills and schema change"
+    summary: "Make the pipeline keep the numbers right when uploads arrive late, records arrive twice, a past range must be rerun and the source adds a field."
+    lessons:
+      - file: 08.01-set-the-scene.md
+        key: de-08-01-set-the-scene
+        title: "Set the scene"
+        goal: "Introduce the module through uploads that arrive three days late after a connection cut."
+      - file: 08.02-event-time-and-late-data.md
+        key: de-08-02-event-time-and-late-data
+        title: "Event time, processing time and late data"
+        goal: "Choose a lookback window, and say what it costs and what it still misses."
+      - file: 08.03-duplicates-and-keys.md
+        key: de-08-03-duplicates-and-keys
+        title: "Duplicates and the keys that remove them"
+        goal: "Choose the business key that removes true duplicates and keeps real repeats."
+      - file: 08.04-backfills-and-schema-evolution.md
+        key: de-08-04-backfills-and-schema-evolution
+        title: "Backfills and schema evolution"
+        goal: "Rerun a past date range safely, and absorb an added field without breaking the pipeline."
+      - file: 08.05-build-survive-the-mess.md
+        key: de-08-05-build-survive-the-mess
+        title: "Build: survive late data, duplicates, a new field and a backfill"
+        goal: "Prove with tests that reruns, late batches and the new field keep the weekly numbers right."
+      - file: 08.06-quiz.md
+        key: de-08-06-quiz
+        title: "Late data and backfills"
+        goal: "Graded scenarios on late data, duplicates, backfills and schema change."
+      - file: 08.07-checklist.md
+        key: de-08-07-checklist
+        title: "Checklist and learning log"
+        goal: "Gate: write the incident note for a late batch."
+  - dir: 09-orchestration
+    key: de-m09-orchestration
+    title: "Orchestration"
+    summary: "Run the pipeline as a graph of tasks on a schedule, retry what can recover, stop on what cannot, backfill on purpose, and publish the report at the end."
+    lessons:
+      - file: 09.01-set-the-scene.md
+        key: de-09-01-set-the-scene
+        title: "Set the scene"
+        goal: "Introduce orchestration through a pipeline that runs only when someone remembers to run it."
+      - file: 09.02-dags-and-schedules.md
+        key: de-09-02-dags-and-schedules
+        title: "DAGs, dependencies and schedules"
+        goal: "Draw a pipeline as a graph of tasks, and choose a schedule that fits when the data arrives."
+      - file: 09.03-retries-and-failures.md
+        key: de-09-03-retries-and-failures
+        title: "Retries, failures and backfills in an orchestrator"
+        goal: "Tell a failure that a retry can fix from one it cannot, and map these ideas to Airflow and Dagster."
+      - file: 09.04-build-scheduler-and-report.md
+        key: de-09-04-build-scheduler-and-report
+        title: "Build: a small scheduler and the published report"
+        goal: "Run the whole pipeline as a graph with retries, a backfill command and a report that opens on a phone."
+      - file: 09.05-quiz.md
+        key: de-09-05-quiz
+        title: "Orchestration"
+        goal: "Graded scenarios on graphs, schedules, retries and backfills."
+      - file: 09.06-checklist.md
+        key: de-09-06-checklist
+        title: "Checklist and learning log"
+        goal: "Gate: write the runbook entry for a failed run."
+  - dir: 10-streaming-and-scale
+    key: de-m10-streaming-and-scale
+    title: "Streaming and scale"
+    summary: "Understand logs, partitions and consumer offsets, what delivery guarantees really promise, and when one machine stops being enough."
+    lessons:
+      - file: 10.01-set-the-scene.md
+        key: de-10-01-set-the-scene
+        title: "Set the scene"
+        goal: "Introduce streaming through a request for live solar readings, and ask whether it needs streaming at all."
+      - file: 10.02-logs-partitions-and-offsets.md
+        key: de-10-02-logs-partitions-and-offsets
+        title: "Logs, topics, partitions and offsets"
+        goal: "Trace events through a partitioned log and a consumer's offsets, and say where order holds."
+      - file: 10.03-delivery-guarantees.md
+        key: de-10-03-delivery-guarantees
+        title: "Delivery guarantees and the exactly-once myth"
+        goal: "Explain at-most-once, at-least-once and exactly-once, and make a sink safe to receive a message twice."
+      - file: 10.04-one-machine-or-a-cluster.md
+        key: de-10-04-one-machine-or-a-cluster
+        title: "When one machine is not enough"
+        goal: "Decide between one machine and a cluster with measurements, not habit."
+      - file: 10.05-quiz.md
+        key: de-10-05-quiz
+        title: "Streaming and scale"
+        goal: "Graded scenarios on logs, offsets, delivery guarantees and scale."
+      - file: 10.06-checklist.md
+        key: de-10-06-checklist
+        title: "Checklist and learning log"
+        goal: "Gate: a written decision on streaming or batch for a request."
+  - dir: 11-quality-and-responsibility
+    key: de-m11-quality-and-responsibility
+    title: "Data quality and responsibility"
+    summary: "Watch data quality with checks that catch real problems, protect the people in the rows, keep costs down, name owners and test every change."
+    lessons:
+      - file: 11.01-set-the-scene.md
+        key: de-11-01-set-the-scene
+        title: "Set the scene"
+        goal: "Introduce the module through a report that was wrong for two weeks and a phone number found in a shared file."
+      - file: 11.02-checks-and-monitoring.md
+        key: de-11-02-checks-and-monitoring
+        title: "Data quality: checks and monitoring"
+        goal: "Add freshness, volume and schema checks with thresholds that catch problems without false alarms."
+      - file: 11.03-personal-data.md
+        key: de-11-03-personal-data
+        title: "Personal data: minimise, pseudonymise, retain"
+        goal: "Explain why a plain hash is not anonymous, and design a flow that keeps personal data where it belongs."
+      - file: 11.04-cost-governance-and-ci.md
+        key: de-11-04-cost-governance-and-ci
+        title: "Cost, governance and CI for data"
+        goal: "Reduce the data a query scans, name an owner for each dataset, and run tests on every change."
+      - file: 11.05-build-checks-retention-ci.md
+        key: de-11-05-build-checks-retention-ci
+        title: "Build: checks, retention and CI"
+        goal: "Add monitoring checks, a retention job for raw personal data and a CI workflow that tests a sample."
+      - file: 11.06-quiz.md
+        key: de-11-06-quiz
+        title: "Data quality and responsibility"
+        goal: "Graded scenarios on checks, personal data, cost and CI."
+      - file: 11.07-checklist.md
+        key: de-11-07-checklist
+        title: "Checklist and learning log"
+        goal: "Gate: a short data protection note for Mizan."
+  - dir: 12-interview-preparation
+    key: de-m12-interview-preparation
+    title: "Interview preparation"
+    summary: "Practise the rounds of a data engineering interview: SQL, data modelling, pipeline design and the story of a project you built."
+    lessons:
+      - file: 12.01-set-the-scene.md
+        key: de-12-01-set-the-scene
+        title: "Set the scene"
+        goal: "Show what each interview round asks and how to practise alone or with a friend."
+      - file: 12.02-the-sql-round.md
+        key: de-12-02-the-sql-round
+        title: "The SQL round"
+        goal: "Clarify, write, test the edge cases and explain a SQL answer aloud."
+      - file: 12.03-the-modelling-round.md
+        key: de-12-03-the-modelling-round
+        title: "The data modelling round"
+        goal: "Run the four modelling steps aloud, starting with the grain."
+      - file: 12.04-the-design-round-and-your-story.md
+        key: de-12-04-the-design-round-and-your-story
+        title: "The pipeline design round and your project story"
+        goal: "Answer a design question by naming failure modes, and tell your project story with numbers."
+      - file: 12.05-quiz.md
+        key: de-12-05-quiz
+        title: "Interview drills"
+        goal: "Graded SQL, modelling and pipeline design scenarios."
+      - file: 12.06-checklist.md
+        key: de-12-06-checklist
+        title: "Checklist and learning log"
+        goal: "Gate: a recorded mock interview answer."
+  - dir: 13-capstone
+    key: de-m13-capstone
+    title: "Capstone: a second pipeline, defended"
+    summary: "Build a second pipeline in a new domain from one of five scenarios, with tests, privacy, a report and a runbook, and defend it in a recorded walkthrough."
+    lessons:
+      - file: 13.01-set-the-scene.md
+        key: de-13-01-set-the-scene
+        title: "Set the scene: choose your scenario"
+        goal: "Choose one of five scenarios, and read the brief, the must-haves and the rubric."
+      - file: 13.02-build-the-pipeline.md
+        key: de-13-02-build-the-pipeline
+        title: "Build the pipeline"
+        goal: "Ingest, land, model, test and orchestrate the new source with the patterns from the course."
+      - file: 13.03-quality-privacy-report.md
+        key: de-13-03-quality-privacy-report
+        title: "Quality, privacy, report and runbook"
+        goal: "Add checks, the privacy design, the report, a README and a runbook to the capstone."
+      - file: 13.04-record-your-defence.md
+        key: de-13-04-record-your-defence
+        title: "Record your defence"
+        goal: "Record a five-minute walkthrough of the capstone and answer follow-up questions."
+      - file: 13.05-checklist.md
+        key: de-13-05-checklist
+        title: "Checklist and learning log"
+        goal: "Gate: final checks, and a look back at your first pipeline."

@@ -1,0 +1,26 @@
+---
+artifact: routing
+course: data-engineering
+version: 1
+owner: orchestrator
+---
+# Which model role runs which agent role. Two model families are available:
+# the drafting family (drafting model, and a smaller review model of the same
+# family) and a second family used through a separate command-line agent.
+roles:
+  orchestrator: { model: drafting model, note: "main session; does not write chapters" }
+  research: { model: review model, note: "separate agent with web search and local install tests" }
+  curriculum-architect: { model: drafting model, note: "main session, roadmap and course.yaml" }
+  project-designer: { model: drafting model, note: "reference build interfaces in the writer pack" }
+  reference-builder: { model: review model, note: "separate agent; code verified by running its tests" }
+  interactive-canvas-builder: { model: drafting model, note: "table-steps renderer in the main session; canvas data by chapter writers" }
+  chapter-writer: { model: review model, note: "parallel agents partitioned by module" }
+  technical-validator: { model: drafting model, note: "execution-based: tests, dbt build, validate, audit, import, click-through" }
+  critic-a-pedagogy-and-continuity: { model: review model, note: "separate agent, no writer rationale; same family as drafting" }
+  critic-b-slop-and-assessment: { model: second-family model, note: "different family from the drafters" }
+  answer-key-blind-check: { model: second-family model, note: "different family from the drafters; keyless batches from blind-keys.mjs" }
+same_model_family:
+  drafting_and_critic_a: true
+  drafting_and_critic_b: false
+  drafting_and_blind_keys: false
+reduced_independence: partial
