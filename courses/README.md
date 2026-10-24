@@ -63,14 +63,21 @@ passes source validation, the strict structure audit and the editorial audit.
 
 `system-design` is published as a five-hour, two-topic lab, with six lessons.
 Its catalog title and description say that the full curriculum is still in
-progress. FreshMarket remains a legacy live course with no `course.yaml`;
-the release binds its existing `freshmarket-multi-vendor-marketplace-v3`
-record to the configured instructor.
+progress. The marketplace package targets `freshmarket-multi-vendor-marketplace-v3`;
+the release binds an existing record to the configured instructor, or creates
+it under that instructor when missing.
+
+Repository publishing uses `repositoryTargetSlug` when configured, otherwise the
+package slug. It creates and publishes the course if that slug is missing. If
+the course exists, it updates it through the reviewed ZIP release workflow only
+when the source hash or published release differs; an already-current published
+course is skipped. The marketplace therefore creates
+`freshmarket-multi-vendor-marketplace-v3` on a fresh database and updates that
+same record on later runs.
 
 Run `pnpm --dir server courses:check` before merging. This validates each
-opted-in package without database access. FreshMarket needs a `course.yaml`
-before repository-managed content updates can opt in; its existing published
-database record is included in the instructor ownership binding.
+opted-in package without database access. The marketplace's `course.yaml`
+opts it into repository-managed publishing.
 
 ## More than one course
 
