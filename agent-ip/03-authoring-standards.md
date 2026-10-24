@@ -147,7 +147,7 @@ At least one diagram per module, and one in every concept-heavy chapter. A diagr
 Before a chapter goes to review, run:
 
 ```bash
-node agent-ip/scripts/audit-course.mjs content/import/<course-slug>
+node agent-ip/scripts/audit-course.mjs courses/<course-slug>
 ```
 
 The chapter must pass:

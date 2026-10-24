@@ -4,8 +4,8 @@
  * and the interactive-first rule (every Learn chapter has an interactive element).
  *
  * Usage:
- *   node agent-ip/scripts/audit-course.mjs courses/ticketline
- *   node agent-ip/scripts/audit-course.mjs courses/ticketline --json
+ *   node agent-ip/scripts/audit-course.mjs <course-folder>
+ *   node agent-ip/scripts/audit-course.mjs <course-folder> --json
  *
  * Exit code 1 when any chapter fails a threshold.
  */
@@ -14,7 +14,11 @@ import fs from "node:fs";
 import path from "node:path";
 
 const args = process.argv.slice(2);
-const target = args.find((arg) => !arg.startsWith("--")) ?? "courses/ticketline";
+const target = args.find((arg) => !arg.startsWith("--"));
+if (!target) {
+  console.error("Usage: node agent-ip/scripts/audit-course.mjs <course-folder> [--json]");
+  process.exit(2);
+}
 const asJson = args.includes("--json");
 
 const CHILD_COMPONENTS = new Set([
