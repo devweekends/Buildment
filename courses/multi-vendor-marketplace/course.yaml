@@ -3311,6 +3311,271 @@ variants:
       - module-23-deploy
       - handmade-closing
   - slug: digital-goods
+    overrides:
+      - lessonKey: lesson-02-01-set-the-scene
+        file: variants/digital-goods/02-project-skeleton/02.01-set-the-scene.md
+      - lessonKey: lesson-02-02-why-structure-matters
+        replacements:
+          - from: "whyItMatters=\"FreshMarket's module folders"
+            to: "whyItMatters=\"Midad's module folders"
+          - from: "FreshMarket uses module folders on the server so each capability"
+            to: "Midad uses module folders on the server so each capability"
+      - lessonKey: lesson-02-03-what-youll-build
+        replacements:
+          - from: "`products/` is about listing groceries, but `db.js` isn't about any single feature"
+            to: "`products/` is about listing products, but `db.js` isn't about any single feature"
+          - from: "← root (name yours: GreenBasket, FreshMarket, …)"
+            to: "← root (name yours: GreenBasket, Midad, …)"
+      - lessonKey: lesson-02-04-layer-vs-module
+        replacements:
+          - from: "whyItMatters=\"FreshMarket uses modules inside the server"
+            to: "whyItMatters=\"Midad uses modules inside the server"
+          - from: "like \"a customer can't buy negative apples.\""
+            to: "like \"a buyer can't buy a negative number of seats.\""
+          - from: "If it's about listing and updating groceries, it's"
+            to: "If it's about listing and updating products, it's"
+      - lessonKey: lesson-02-08-create-the-repo
+        file: variants/digital-goods/02-project-skeleton/02.08-create-the-repo.md
+      - lessonKey: lesson-02-09-scaffold-server-folders
+        replacements:
+          - from: "whyItMatters=\"FreshMarket's server boot order matters"
+            to: "whyItMatters=\"Midad's server boot order matters"
+      - lessonKey: lesson-02-10-server-package-and-scripts
+        replacements:
+          - from: "`npm run dev` in both client and server folders is how you run FreshMarket locally every day."
+            to: "`npm run dev` in both client and server folders is how you run Midad locally every day."
+      - lessonKey: lesson-02-12-scaffold-client-folders
+        file: variants/digital-goods/02-project-skeleton/02.12-scaffold-client-folders.md
+      - lessonKey: lesson-02-13-client-shell-and-routing
+        replacements:
+          - from: "whyItMatters=\"FreshMarket uses React Router so shoppers and vendors navigate smoothly"
+            to: "whyItMatters=\"Midad uses React Router so buyers and creators navigate smoothly"
+          - from: "- Render a short subtitle — e.g. \"Local grocery marketplace\""
+            to: "- Render a short subtitle — e.g. \"Digital products from independent creators\""
+          - from: "if it fights \"local grocery.\""
+            to: "if it fights \"licensed digital work.\""
+      - lessonKey: lesson-02-14-api-client-helper
+        replacements:
+          - from: "whyItMatters=\"Every FreshMarket screen uses the same client helper"
+            to: "whyItMatters=\"Every Midad screen uses the same client helper"
+      - lessonKey: lesson-02-17-practice
+        replacements:
+          - from: "\"name\":\"FreshMarket API\""
+            to: "\"name\":\"Midad API\""
+      - lessonKey: lesson-02-19-checklist
+        file: variants/digital-goods/02-project-skeleton/02.19-checklist.md
+      - lessonKey: lesson-04-01-set-the-scene
+        replacements:
+          - from: "whyItMatters=\"Until MongoDB connects, FreshMarket forgets every vendor and product when you stop the server.\""
+            to: "whyItMatters=\"Until MongoDB connects, Midad forgets every studio and product when you stop the server.\""
+          - from: "Picture a market hall with the lights on but the refrigerators dead — shoppers would assume the produce is cold."
+            to: "Picture a storefront with the lights on but the download links dead — buyers would assume their license still works."
+      - lessonKey: lesson-04-02-why-secrets-matter
+        replacements:
+          - from: "compromise every FreshMarket deployment."
+            to: "compromise every Midad deployment."
+          - from: "mongodb://127.0.0.1:27017/freshmarket-dev"
+            to: "mongodb://127.0.0.1:27017/midad-dev"
+          - from: "FreshMarket teaches config early because every later chapter"
+            to: "Midad teaches config early because every later chapter"
+      - lessonKey: lesson-04-03-what-youll-build
+        replacements:
+          - from: "whyItMatters=\"FreshMarket fails fast at boot if"
+            to: "whyItMatters=\"Midad fails fast at boot if"
+          - from: "FreshMarket teaches config early because every later chapter"
+            to: "Midad teaches config early because every later chapter"
+      - lessonKey: lesson-04-04-env-vs-hardcoded
+        replacements:
+          - from: "title=\"Where FreshMarket configuration lives\""
+            to: "title=\"Where Midad configuration lives\""
+          - from: "MONGODB_URI=mongodb://127.0.0.1:27017/freshmarket-dev"
+            to: "MONGODB_URI=mongodb://127.0.0.1:27017/midad-dev"
+      - lessonKey: lesson-04-05-local-mongodb
+        replacements:
+          - from: "whyItMatters=\"Local `mongodb://127.0.0.1:27017/freshmarket` differs from Atlas"
+            to: "whyItMatters=\"Local `mongodb://127.0.0.1:27017/midad` differs from Atlas"
+          - from: "like `freshmarket-dev` or `greenbasket-dev`"
+            to: "like `midad-dev` or `greenbasket-dev`"
+          - from: "- `freshmarket-dev`"
+            to: "- `midad-dev`"
+      - lessonKey: lesson-04-06-prime-your-thinking
+        file: variants/digital-goods/04-config-and-database/04.06-prime-your-thinking.md
+      - lessonKey: lesson-04-07-quiz
+        file: variants/digital-goods/04-config-and-database/04.07-quiz.md
+      - lessonKey: lesson-04-09-create-env-files
+        replacements:
+          - from: "whyItMatters=\"FreshMarket ships `.env.example` with placeholders"
+            to: "whyItMatters=\"Midad ships `.env.example` with placeholders"
+      - lessonKey: lesson-04-10-config-module
+        replacements:
+          - from: "whyItMatters=\"FreshMarket's config module throws at boot"
+            to: "whyItMatters=\"Midad's config module throws at boot"
+      - lessonKey: lesson-04-11-db-module
+        replacements:
+          - from: "so FreshMarket handles many shoppers without exhausting MongoDB connections."
+            to: "so Midad handles many buyers without exhausting MongoDB connections."
+      - lessonKey: lesson-04-12-wire-db-on-boot
+        replacements:
+          - from: "whyItMatters=\"FreshMarket won't accept cart requests until MongoDB is ready"
+            to: "whyItMatters=\"Midad won't accept cart requests until MongoDB is ready"
+      - lessonKey: lesson-04-13-health-check-db-status
+        replacements:
+          - from: "whyItMatters=\"FreshMarket's `/health` reports"
+            to: "whyItMatters=\"Midad's `/health` reports"
+      - lessonKey: lesson-04-14-client-env
+        replacements:
+          - from: "whyItMatters=\"FreshMarket's client gets `VITE_API_URL` only"
+            to: "whyItMatters=\"Midad's client gets `VITE_API_URL` only"
+          - from: "FreshMarket — System status"
+            to: "Midad — System status"
+      - lessonKey: lesson-04-16-recap-and-whats-next
+        replacements:
+          - from: "- Grocery domain fields — `unit`, `stockQty`, `isPerishable`, etc."
+            to: "- Digital-product fields — `licenseOptions`, `termsVersion`, `checksum`, etc."
+          - from: "Your skeleton has a memory — Chapter 5 fills it with grocery data."
+            to: "Your skeleton has a memory — Chapter 5 fills it with studios, products and licenses."
+      - lessonKey: lesson-06-01-set-the-scene
+        replacements:
+          - from: "FreshMarket cannot know which cart or store belongs to whom until auth identifies the caller."
+            to: "Midad cannot know which cart or Studio belongs to whom until auth identifies the caller."
+          - from: "seeded with two vendors and grocery fields"
+            to: "seeded with two creators and priced license options"
+          - from: "Your grocery data exists — next you control who can act on it."
+            to: "Your catalogue data exists — next you control who can act on it."
+      - lessonKey: lesson-06-02-why-auth-matters
+        replacements:
+          - from: "Anyone can browse produce (public catalogue later). To run a stall or place orders tied to your name"
+            to: "Anyone can browse the catalogue (public product pages later). To open a Studio or place orders tied to your name"
+          - from: "FreshMarket uses brief access tokens plus longer refresh tokens"
+            to: "Midad uses brief access tokens plus longer refresh tokens"
+      - lessonKey: lesson-06-03-what-youll-build
+        replacements:
+          - from: "FreshMarket's auth module is the security foundation every vendor and customer route builds on."
+            to: "Midad's auth module is the security foundation every creator and buyer route builds on."
+      - lessonKey: lesson-06-04-sessions-vs-jwt
+        file: variants/digital-goods/06-authentication-api/06.04-sessions-vs-jwt.md
+      - lessonKey: lesson-06-06-what-a-jwt-is
+        replacements:
+          - from: "FreshMarket access tokens prove identity for cart and vendor routes without server-side session lookup."
+            to: "Midad access tokens prove identity for cart and Studio routes without server-side session lookup."
+          - from: "## Access token payload for FreshMarket"
+            to: "## Access token payload for Midad"
+      - lessonKey: lesson-06-07-prime-your-thinking
+        file: variants/digital-goods/06-authentication-api/06.07-prime-your-thinking.md
+      - lessonKey: lesson-06-08-quiz
+        file: variants/digital-goods/06-authentication-api/06.08-quiz.md
+      - lessonKey: lesson-06-10-scaffold-auth-module
+        replacements:
+          - from: "FreshMarket keeps register/login/refresh together so auth logic does not scatter across the server."
+            to: "Midad keeps register/login/refresh together so auth logic does not scatter across the server."
+      - lessonKey: lesson-06-11-wire-auth-routes
+        replacements:
+          - from: "FreshMarket mounts auth at"
+            to: "Midad mounts auth at"
+      - lessonKey: lesson-06-12-register-handler
+        replacements:
+          - from: "FreshMarket vendors and customers share the same register flow; role selection branches their experience."
+            to: "Midad creators and buyers share the same register flow; role selection branches their experience."
+      - lessonKey: lesson-06-13-login-handler
+        replacements:
+          - from: "FreshMarket returns the same error for bad email and bad password"
+            to: "Midad returns the same error for bad email and bad password"
+      - lessonKey: lesson-06-14-access-token
+        replacements:
+          - from: "FreshMarket attaches access tokens in the Authorization header for cart, store, and product routes."
+            to: "Midad attaches access tokens in the Authorization header for cart, Studio, and Product routes."
+      - lessonKey: lesson-06-15-refresh-token
+        replacements:
+          - from: "Shoppers stay logged in on FreshMarket without re-entering password every fifteen minutes."
+            to: "Buyers stay logged in on Midad without re-entering password every fifteen minutes."
+      - lessonKey: lesson-06-16-otp-verification
+        replacements:
+          - from: "FreshMarket requires OTP after register — reduces fake vendor accounts and spam signups."
+            to: "Midad requires OTP after register — reduces fake creator accounts and spam signups."
+      - lessonKey: lesson-06-17-auth-middleware
+        replacements:
+          - from: "Every protected FreshMarket route uses the same middleware"
+            to: "Every protected Midad route uses the same middleware"
+      - lessonKey: lesson-06-20-checklist
+        file: variants/digital-goods/06-authentication-api/06.20-checklist.md
+      - lessonKey: lesson-07-02-why-token-storage-matters
+        replacements:
+          - from: "FreshMarket's client must store tokens safely and attach them to API calls without leaking them in URLs or logs."
+            to: "Midad's client must store tokens safely and attach them to API calls without leaking them in URLs or logs."
+          - from: "FreshMarket's verify step proves the full browser path"
+            to: "Midad's verify step proves the full browser path"
+      - lessonKey: lesson-07-03-what-youll-build
+        replacements:
+          - from: "FreshMarket shoppers and vendors enter through the same auth screens"
+            to: "Midad buyers and creators enter through the same auth screens"
+      - lessonKey: lesson-07-04-where-tokens-live
+        file: variants/digital-goods/07-login-and-registration/07.04-where-tokens-live.md
+      - lessonKey: lesson-07-05-the-401-retry-loop
+        replacements:
+          - from: "while grocery shopping — unacceptable UX"
+            to: "while browsing the catalogue — unacceptable UX"
+          - from: "In FreshMarket terms: a logged-in customer who clicks a vendor-only action gets 403."
+            to: "In Midad terms: a logged-in buyer who clicks a creator-only action gets 403."
+      - lessonKey: lesson-07-06-prime-your-thinking
+        replacements:
+          - from: "Token storage choice in FreshMarket is partly a bet on how well you sanitize user-generated content later."
+            to: "Token storage choice in Midad is partly a bet on how well you sanitize user-generated content later."
+      - lessonKey: lesson-07-07-quiz
+        file: variants/digital-goods/07-login-and-registration/07.07-quiz.md
+      - lessonKey: lesson-07-09-scaffold-auth-pages
+        replacements:
+          - from: "FreshMarket keeps auth pages separate from shop and vendor dashboard routes."
+            to: "Midad keeps auth pages separate from Shop and creator dashboard routes."
+      - lessonKey: lesson-07-10-auth-context-or-hook
+        replacements:
+          - from: "FreshMarket's header shows login vs avatar based on auth context"
+            to: "Midad's header shows login vs avatar based on auth context"
+      - lessonKey: lesson-07-11-register-page
+        replacements:
+          - from: "FreshMarket register page catches obvious errors before a round-trip to `/api/auth/register`."
+            to: "Midad register page catches obvious errors before a round-trip to `/api/auth/register`."
+      - lessonKey: lesson-07-12-verify-otp-page
+        replacements:
+          - from: "FreshMarket blocks vendor onboarding until OTP succeeds — this page is the gate."
+            to: "Midad blocks creator onboarding until OTP succeeds — this page is the gate."
+      - lessonKey: lesson-07-13-login-page
+        replacements:
+          - from: "Returning FreshMarket users land here — errors must be clear without revealing whether email exists."
+            to: "Returning Midad buyers land here — errors must be clear without revealing whether email exists."
+      - lessonKey: lesson-07-14-api-interceptor
+        replacements:
+          - from: "FreshMarket components call `api.get('/cart')` without manually adding tokens — interceptor handles it."
+            to: "Midad components call `api.get('/cart')` without manually adding tokens — interceptor handles it."
+      - lessonKey: lesson-07-15-protected-route-wrapper
+        replacements:
+          - from: "FreshMarket `/vendor/*` routes render nothing until auth context confirms a logged-in vendor."
+            to: "Midad `/vendor/*` routes render nothing until auth context confirms a logged-in creator."
+      - lessonKey: lesson-07-16-verify-in-browser
+        replacements:
+          - from: "FreshMarket auth debugging starts in Network — see 401, refresh, retry without guessing."
+            to: "Midad auth debugging starts in Network — see 401, refresh, retry without guessing."
+      - lessonKey: lesson-07-18-checklist
+        file: variants/digital-goods/07-login-and-registration/07.18-checklist.md
+      - lessonKey: lesson-23-01-set-the-scene
+        replacements:
+          - from: "Nothing new to learn about grocery or JWT here."
+            to: "Nothing new to learn about license grants or JWT here."
+      - lessonKey: lesson-23-04-vps-vs-paas
+        replacements:
+          - from: "title=\"A deployed FreshMarket has three running parts\""
+            to: "title=\"A deployed Midad has three running parts\""
+          - from: "Both are valid homes for FreshMarket. Pick one and document it — do not half-deploy on three platforms."
+            to: "Both are valid homes for Midad. Pick one and document it — do not half-deploy on three platforms."
+      - lessonKey: lesson-23-05-prime-your-thinking
+        replacements:
+          - from: "Deploy chapter moves FreshMarket from localhost to a URL you can share."
+            to: "Deploy chapter moves Midad from localhost to a URL you can share."
+          - from: "| Topic | Why for FreshMarket |"
+            to: "| Topic | Why for Midad |"
+          - from: "FreshMarket's deploy checklist exists because missing one variable fails silently until traffic hits."
+            to: "Midad's deploy checklist exists because missing one variable fails silently until traffic hits."
+      - lessonKey: lesson-23-15-recap-and-whats-next
+        file: variants/digital-goods/23-deploy/23.15-recap-and-whats-next.md
     modules:
       - key: digital-goods-introduction
         dir: 01-product-introduction
@@ -3490,31 +3755,324 @@ variants:
             goal: >-
               Prove success, decline, invalid signature, duplicate delivery and amount mismatch in test
               mode.
+      - key: digital-goods-why-mongodb
+        dir: 03-why-mongodb-for-entitlements
+        title: Why MongoDB for entitlements
+        lessons:
+          - key: digital-goods-why-mongodb-01
+            file: 03.01-set-the-scene.md
+            title: '3.1 A listing, a private file and a licence'
+            goal: >-
+              Separate the public product listing, the private product file and the license entitlement before choosing a database shape.
+          - key: digital-goods-why-mongodb-02
+            file: 03.02-relational-vs-document.md
+            title: '3.2 Tables and documents for entitlements'
+            goal: >-
+              Compare a relational and a document shape for products, license options, order snapshots and licenses, and name the write that must be atomic.
+          - key: digital-goods-why-mongodb-03
+            file: 03.03-decision-and-erd.md
+            title: '3.3 The decision for Midad and the first ERD'
+            goal: >-
+              Commit a defended data model decision, then draft the product, file, checkout, order and license relationships in docs/erd-draft.md.
+          - key: digital-goods-why-mongodb-04
+            file: 03.04-checklist.md
+            title: '3.4 Data model decision gate'
+            goal: >-
+              Defend the record boundaries, the embed and reference choices, and the guarantee the application now has to supply itself.
+      - key: digital-goods-authorization
+        dir: 08-authorization-and-isolation
+        title: Authorization and isolation
+        lessons:
+          - key: digital-goods-authorization-01
+            file: 08.01-set-the-scene.md
+            title: '8.1 Whose studio, whose licence?'
+            goal: >-
+              Separate studio ownership, product ownership, license holding and seat holding, and decide which record each request must be checked against.
+          - key: digital-goods-authorization-02
+            file: 08.02-object-checks.md
+            title: '8.2 Object checks on studios, products and licences'
+            goal: >-
+              Build a role guard, a scoped studio and product lookup, and a license check that admits the holder or a seat and then tests state.
+          - key: digital-goods-authorization-03
+            file: 08.03-matrix-and-tests.md
+            title: '8.3 Authorization matrix and two-buyer tests'
+            goal: >-
+              Write docs/AUTHORIZATION.md for every actor and record, then prove it with two buyers, two creators and a revoked license.
+          - key: digital-goods-authorization-04
+            file: 08.04-checklist.md
+            title: '8.4 Isolation gate'
+            goal: >-
+              Prove that a second buyer, a second creator and a seat holder are each refused without learning anything, and that revoked and expired licenses are denied.
+      - key: digital-goods-studio-api
+        dir: 09-creator-studio-api
+        title: Creator studio API
+        lessons:
+          - key: digital-goods-studio-api-01
+            file: 09.01-set-the-scene.md
+            title: '9.1 A creator needs a studio'
+            goal: >-
+              Give every creator one owned Studio record that holds the public identity, the slug and the ownership root for products.
+          - key: digital-goods-studio-api-02
+            file: 09.02-studio-routes-and-ownership.md
+            title: '9.2 Studio fields, slugs and ownership'
+            goal: >-
+              Build four studio routes that bind the owner from the session, normalise the slug, reject a second studio and publish only public fields.
+          - key: digital-goods-studio-api-03
+            file: 09.03-checklist.md
+            title: '9.3 Studio API gate'
+            goal: >-
+              Prove one studio per creator, a unique slug, a public projection with no owner fields and denials for the wrong creator.
+      - key: digital-goods-open-studio
+        dir: 10-open-your-studio
+        title: Open your studio
+        lessons:
+          - key: digital-goods-open-studio-01
+            file: 10.01-set-the-scene.md
+            title: '10.1 The creator who has no studio page'
+            goal: >-
+              Decide how a creator without a studio is routed to onboarding, why a client guard is not the only gate, and what the form owes a 360px screen.
+          - key: digital-goods-open-studio-02
+            file: 10.02-onboarding-and-settings.md
+            title: '10.2 Onboarding, settings and the routing gate'
+            goal: >-
+              Build the studio hook, the routing gate, the onboarding form and the settings page, and refuse product routes before a studio exists.
+          - key: digital-goods-open-studio-03
+            file: 10.03-checklist.md
+            title: '10.3 Open-your-studio gate'
+            goal: >-
+              Prove a studio-less creator is routed to onboarding, can finish it on a 360px screen, and cannot reach a product page before the studio exists.
+      - key: digital-goods-products-api
+        dir: 11-products-and-license-options
+        title: Products and license options API
+        lessons:
+          - key: digital-goods-products-api-01
+            file: 11.01-set-the-scene.md
+            title: '11.1 A product is sold under a licence, not a quantity'
+            goal: >-
+              Model a product whose purchasable choice is a license option with its own terms version, seat limit, download limit and integer price.
+          - key: digital-goods-products-api-02
+            file: 11.02-product-routes-and-license-options.md
+            title: '11.2 Product routes, license options and terms versions'
+            goal: >-
+              Build product routes that validate every option, keep prices in minor units, version the terms and refuse to publish without a purchasable option.
+          - key: digital-goods-products-api-03
+            file: 11.03-checklist.md
+            title: '11.3 Products and licence gate'
+            goal: >-
+              Prove product isolation, option validation, integer prices, terms versioning and a publish rule that refuses a product with no live option.
+      - key: digital-goods-dashboard
+        dir: 12-creator-dashboard
+        title: Creator dashboard
+        lessons:
+          - key: digital-goods-dashboard-01
+            file: 12.01-set-the-scene.md
+            title: '12.1 The creator''s back office'
+            goal: >-
+              Plan a creator-only dashboard that answers what is unfinished, unpublished and mispriced for one Studio, with the Studio taken from the session.
+          - key: digital-goods-dashboard-02
+            file: 12.02-dashboard-and-product-form.md
+            title: '12.2 Product table and the license editor'
+            goal: >-
+              Build a scoped product table with counts per status, a price column that shows every license option, and one form that adds, edits and retires options.
+          - key: digital-goods-dashboard-03
+            file: 12.03-checklist.md
+            title: '12.3 Creator dashboard gate'
+            goal: >-
+              Prove two creators see only their own products, every price is shown per license option, and a sold option cannot be deleted from the editor.
+      - key: digital-goods-browse-catalogue
+        dir: 14-browse-catalogue-api
+        title: Browse catalogue API
+        lessons:
+          - key: digital-goods-browse-catalogue-01
+            file: 14.01-set-the-scene.md
+            title: '14.1 A public catalogue with private files'
+            goal: >-
+              Plan an anonymous catalogue route that filters published products quickly and never carries a private file field or a draft product.
+          - key: digital-goods-browse-catalogue-02
+            file: 14.02-catalogue-query-and-n-plus-one.md
+            title: '14.2 Filters, pagination and the N+1 trap'
+            goal: >-
+              Build the public catalogue route from a query counting test: validated filters, derived price fields, stable pagination, one batched Studio lookup and an allowlist serializer.
+          - key: digital-goods-browse-catalogue-03
+            file: 14.03-checklist.md
+            title: '14.3 Browse catalogue gate'
+            goal: >-
+              Prove the public catalogue filters, paginates, costs a fixed number of queries, uses an index and carries no private file field or draft product.
+      - key: digital-goods-shop-marketplace
+        dir: 15-shop-the-marketplace
+        title: Shop the marketplace
+        lessons:
+          - key: digital-goods-shop-marketplace-01
+            file: 15.01-set-the-scene.md
+            title: '15.1 Comparing licences before buying'
+            goal: >-
+              Plan a buyer page that answers allowed use, seats, downloads and price for each license option on a 360 pixel phone.
+          - key: digital-goods-shop-marketplace-02
+            file: 15.02-product-page-and-license-comparison.md
+            title: '15.2 Product page, previews and license comparison'
+            goal: >-
+              Build the buyer grid, a preview gallery and a license comparison that switches between a table and stacked blocks at 360 pixels, with no default selection.
+          - key: digital-goods-shop-marketplace-03
+            file: 15.03-checklist.md
+            title: '15.3 Shop the marketplace gate'
+            goal: >-
+              Prove a buyer can filter the grid, read every license fact at 360 pixels and choose an option, with no private field and no default selection.
+      - key: digital-goods-cart-api
+        dir: 16-cart-api
+        title: Cart API
+        lessons:
+          - key: digital-goods-cart-api-01
+            file: 16.01-set-the-scene.md
+            title: '16.1 A digital cart line is a licence'
+            goal: >-
+              Explain why a Midad cart line is a product plus a license type with no quantity, why a product appears once, and why an owned item is refused.
+          - key: digital-goods-cart-api-02
+            file: 16.02-cart-rules-and-owned-items.md
+            title: '16.2 One line per product, licence switches and owned items'
+            goal: >-
+              Build the cart routes so one line holds a product, a license switch replaces it, and an active License for the same type blocks the add with a 409.
+          - key: digital-goods-cart-api-03
+            file: 16.03-checklist.md
+            title: '16.3 Cart API gate'
+            goal: >-
+              Prove with curl that one line per product holds, a license switch replaces the line, an owned item is refused, and the cart is scoped to the buyer.
+      - key: digital-goods-cart-ui
+        dir: 17-your-cart
+        title: Your cart
+        lessons:
+          - key: digital-goods-cart-ui-01
+            file: 17.01-set-the-scene.md
+            title: '17.1 A cart grouped by creator'
+            goal: >-
+              Explain why the cart page groups flat lines by Studio, what each group must show, and why the owned flag comes from the server rather than the client.
+          - key: digital-goods-cart-ui-02
+            file: 17.02-cart-page-and-license-switch.md
+            title: '17.2 Cart rows, licence badges and switches'
+            goal: >-
+              Build the cart row with a license badge, a personal to commercial switch that reads the server response, owned-item wording, and a layout that holds at 360 pixels.
+          - key: digital-goods-cart-ui-03
+            file: 17.03-checklist.md
+            title: '17.3 Cart UI gate'
+            goal: >-
+              Prove the grouped cart works in a browser at 360 pixels: two creators, badges and prices, an owned item, a license switch and honest refusals.
+      - key: digital-goods-cache-search
+        dir: 22-cache-and-search
+        title: Cache and search
+        lessons:
+          - key: digital-goods-cache-search-01
+            file: 22.01-set-the-scene.md
+            title: '22.1 What may be cached, and what never is'
+            goal: >-
+              Decide what Midad may cache by asking whether a response depends on the buyer, and name the responses that must never enter a shared cache.
+          - key: digital-goods-cache-search-02
+            file: 22.02-cache-and-search.md
+            title: '22.2 Cache the catalogue, never the library'
+            goal: >-
+              Cache public catalogue and product pages in Redis with versioned invalidation, keep entitlement responses out of any cache, and search titles, tags and creator names on a text index.
+          - key: digital-goods-cache-search-03
+            file: 22.03-checklist.md
+            title: '22.3 Cache and search gate'
+            goal: >-
+              Prove with logs and an explain plan that public pages are cached and invalidated, private routes never enter the cache, and search uses the text index.
+      - key: digital-goods-async-jobs
+        dir: 23-async-jobs-and-queues
+        title: Async jobs and queues
+        lessons:
+          - key: digital-goods-async-jobs-01
+            file: 23.01-set-the-scene.md
+            title: '23.1 What leaves the webhook'
+            goal: >-
+              Decide which fulfilment work stays inside the payment webhook and which moves to a worker, and what a receipt may and may not contain.
+          - key: digital-goods-async-jobs-02
+            file: 23.02-worker-receipts-and-reconciliation.md
+            title: '23.2 Worker, receipts and payment reconciliation'
+            goal: >-
+              Run a separate worker, send a receipt and a scoped creator notice with idempotent records, and sweep payments whose webhook never arrived.
+          - key: digital-goods-async-jobs-03
+            file: 23.03-checklist.md
+            title: '23.3 Async jobs gate'
+            goal: >-
+              Prove a separate worker handles the readable work, that receipts and notices stay scoped and harmless, and that the sweep repairs a payment whose webhook was dropped.
+      - key: digital-goods-download-limits
+        dir: 25-download-limits-and-seats
+        title: Download limits and seats
+        lessons:
+          - key: digital-goods-download-limits-01
+            file: 25.01-set-the-scene.md
+            title: '25.1 The stock moved to the licence'
+            goal: >-
+              Explain why a license counter and an embedded seat list are the scarce things in Midad, and how a read then write handler breaks them under parallel requests.
+          - key: digital-goods-download-limits-02
+            file: 25.02-atomic-limits-and-seats.md
+            title: '25.2 Atomic download limits and seat assignment'
+            goal: >-
+              Put the limit inside the update filter, assign seats with a conditional push, survive duplicate webhooks, and commit the parallel test output as evidence.
+          - key: digital-goods-download-limits-03
+            file: 25.03-checklist.md
+            title: '25.3 Limits and seats gate'
+            goal: >-
+              Prove with parallel output that download limits, seat assignment and duplicate webhooks hold their counts when requests race.
+      - key: digital-goods-refunds
+        dir: 26-refunds-and-revocation
+        title: Refunds and revocation
+        lessons:
+          - key: digital-goods-refunds-01
+            file: 26.01-set-the-scene.md
+            title: '26.1 Refunding one creator in a split payment'
+            goal: >-
+              Explain how one partial refund on a single payment maps to one creator's Order, and when access should end.
+          - key: digital-goods-refunds-02
+            file: 26.02-refund-webhook-and-revocation.md
+            title: '26.2 Refund webhook, revocation and licence verify'
+            goal: >-
+              Route a creator refund for one Order, revoke that Order's licenses when the provider confirms it, and publish a status only verify endpoint behind a rate limit.
+          - key: digital-goods-refunds-03
+            file: 26.03-checklist.md
+            title: '26.3 Refund and revocation gate'
+            goal: >-
+              Prove a partial refund of one creator's Order revokes only that Order, that the other creator still downloads, and that verify answers status only behind a rate limit.
+      - key: digital-goods-closing
+        dir: 99-closing
+        title: Closing and capstone
+        lessons:
+          - key: digital-goods-closing-01
+            file: 99.01-ship-and-document.md
+            title: '99.1 Ship and document Midad'
+            goal: >-
+              Write the README, .env.example, ERD review, fulfilment state diagram and download security note that make the deployed Midad reviewable.
+          - key: digital-goods-closing-02
+            file: 99.02-demo-and-viva.md
+            title: '99.2 Five-minute demo and capstone defense'
+            goal: >-
+              Record a five-minute demo of Midad against the deployed app, then defend nine architecture decisions without notes.
     moduleOrder:
       - digital-goods-introduction
       - module-02-project-skeleton
-      - module-03-why-mongodb
+      - digital-goods-why-mongodb
       - module-04-config-and-database
       - digital-goods-data-model
       - module-06-authentication-api
       - module-07-login-and-registration
-      - module-08-authorization-and-isolation
-      - module-09-vendor-store-api
-      - module-10-open-your-shop
-      - module-11-manage-products-api
-      - module-12-vendor-dashboard
+      - digital-goods-authorization
+      - digital-goods-studio-api
+      - digital-goods-open-studio
+      - digital-goods-products-api
+      - digital-goods-dashboard
       - digital-goods-private-files
-      - module-14-browse-catalogue-api
-      - module-15-shop-the-marketplace
-      - module-16-cart-api
-      - module-17-your-cart
+      - digital-goods-browse-catalogue
+      - digital-goods-shop-marketplace
+      - digital-goods-cart-api
+      - digital-goods-cart-ui
       - digital-goods-checkout-orders
       - digital-goods-payment-processing
       - digital-goods-fulfilment
       - digital-goods-library-downloads
-      - module-22-async-jobs-and-queues
+      - digital-goods-cache-search
+      - digital-goods-async-jobs
       - module-23-deploy
-      - module-99-closing
+      - digital-goods-download-limits
+      - digital-goods-refunds
+      - digital-goods-closing
   - slug: books
     overrides:
       - lessonKey: lesson-02-01-set-the-scene
