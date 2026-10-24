@@ -29,3 +29,9 @@
 ## 2026-10-24: G1 accepted
 
 **Decision:** the research dossier is accepted as the basis for the roadmap. Claims it marks UNVERIFIED (the AS definition, class D, the current CGNAT share on mobile, the 5-tuple as a named term) stay out of learner text until a writer sources them.
+
+## 2026-10-24: Real-path commands run on the host, not in the lab
+
+**Decision:** `tracert`/`traceroute` to the real internet, `curl ifconfig.me` and the learner's own address settings run on the host computer. The lab container is only for networks the learner builds.
+
+**Why:** in the environment test, `traceroute` inside the Docker Desktop container showed `172.17.0.1` and then the destination, with no routers in between, while the host's `tracert` showed every hop (dossier 5.5).

@@ -219,6 +219,9 @@ Execution check of the recommended default, on Docker Desktop for Windows (engin
 | Docker's default bridge on the test host | `docker network inspect bridge` shows `172.17.0.0/16`, an observation that backs the inference in section 7. |
 | Size | Base image 119 MB unpacked; with every tool installed the container filesystem is about 198 MB. The compressed download still needs measuring for the published image (open question 3). |
 | Time | First run, including `apt-get install`, about 40 seconds. |
+| `traceroute` to the real internet from the lab container | **Hides the real path.** Default UDP probes: hop 1 is `172.17.0.1`, then only `* * *`. With `-I` (ICMP) or `-T` (TCP): hop 1 `172.17.0.1`, hop 2 the destination itself. Docker Desktop's own networking stands between the VM and the host, so the routers in between never appear. The Windows host's `tracert -d` on the same machine showed every hop, including two private home routers and a private `10.x` address inside the provider. |
+
+**Consequence for the course:** commands about the learner's real internet path (`traceroute`/`tracert`, `curl ifconfig.me`, the host's own addresses) run on the host, not in the lab container. The lab container is for networks the learner builds. Chapters 1.1, 4.1 and 6.4 say which side each command runs on.
 
 Not tested: Docker Desktop on macOS, native Linux, WSL 2 without Docker, and the narrower `--cap-add` alternative. The roadmap keeps `--privileged` as the default and asks for a macOS run before the blueprint is locked.
 
