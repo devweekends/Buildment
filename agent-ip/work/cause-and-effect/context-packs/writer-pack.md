@@ -1,6 +1,6 @@
 ---
 
-Canvas code is shared by web and desktop in `packages/learning-ui/src/canvas/`. Follow `agent-ip/10-interactive-canvases.md` → Shared canvas development and verification for slug synchronization, package refresh, and checks in both apps. Do not implement canvases in the old frontend re-export files or edit generated slug copies. New canvas tests remain in `frontend/tests/unit/canvas/` and should import from `@buildment/learning-ui/canvas/...`.
+Canvas code is shared by web and desktop in `packages/learning-ui/src/canvas/`. Follow `agent-ip/10-interactive-canvases.md` → Shared canvas development and verification for slug synchronization, package refresh, and checks in both apps. Do not recreate the removed frontend canvas folder or edit generated slug copies. New canvas tests remain in `frontend/tests/unit/canvas/` and should import from `@buildment/learning-ui/canvas/...`.
 artifact: context-pack
 course: cause-and-effect
 for: chapter-writer

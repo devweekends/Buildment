@@ -577,7 +577,7 @@ If the last condition is not true, remove the canvas.
 
 ### Shared canvas development and verification
 
-Both web and desktop render the implementations in `packages/learning-ui/src/canvas/`. The old `frontend/src/canvas/` files are compatibility re-exports: do not add implementations there or create a desktop-only copy. Keep canvas models, specs, renderers, and controls in the shared package; keep Next.js, Electron, credentials, and app API clients outside it.
+Both web and desktop render the implementations in `packages/learning-ui/src/canvas/`. The old `frontend/src/canvas/` folder has been removed. Import canvases directly from `@buildment/learning-ui/canvas/...`; do not recreate the frontend folder or create a desktop-only copy. Keep canvas models, specs, renderers, and controls in the shared package; keep Next.js, Electron, credentials, and app API clients outside it.
 
 After adding or changing a canvas:
 
