@@ -24,25 +24,27 @@ Fellows prepare for AI engineer, LLM engineer and agentic AI interviews at remot
 ## Outcomes
 | # | Outcome (observable verb) | Evidence |
 |---|---|---|
-| O1 | Tell a two-minute project story with a problem, a design, numbers, a trade-off and what they would change | 1.5 gate story; 11.2 deep-dive practice; capstone defence (12.4); 12.5 comparison with the 1.5 story |
+| O1 | Tell a two-minute project story with a problem, a design, numbers, a trade-off and what they would change | 1.5 gate story; 12.2 deep-dive practice; capstone defence (13.4); 13.5 comparison with the 1.5 story |
 | O2 | Explain and defend a RAG pipeline (chunking, embeddings, vector store, hybrid search, reranking, query rewriting) with numbers for quality, latency and cost | Quizzes 3.6 and 4.6; 3.7 chunking defence; 4.7 retrieval upgrade plan; capstone design note |
-| O3 | Measure retrieval (recall@k, precision@k, MRR) and generation (faithfulness, grounding) on a golden set, and run it as a regression test | Build 5.5 passes its tests; quiz 5.6; 5.7 gate answer; capstone evaluation report (12.3) |
+| O3 | Measure retrieval (recall@k, precision@k, MRR) and generation (faithfulness, grounding) on a golden set, and run it as a regression test | Build 5.5 passes its tests; quiz 5.6; 5.7 gate answer; capstone evaluation report (13.3) |
 | O4 | Design an agent with tool calling, typed state, reducers, memory, a human approval step and layered prompt-injection defences, and say when not to use an agent | Quizzes 6.5, 7.7 and 8.5; build 7.6; gates 6.6, 7.8 and 8.6 (agent design, state design, threat model) |
 | O5 | Build a small async FastAPI service with Pydantic validation, structured errors, a concurrency limit, retries with backoff and timeouts, and verify it with tests | Build 9.6 passes its tests; quiz 9.7; 9.8 failure story |
 | O6 | Describe how they would track experiments, trace requests, deploy (serverless or Kubernetes) and monitor quality after launch, with reasons | Quiz 10.6; 10.7 deployment and monitoring plan |
-| O7 | Answer each interview round with a framework, numbers and honest trade-offs | Quiz 11.6; 11.7 written system design and recorded mock answer; capstone defence (12.4) |
+| O7 | Answer each interview round with a framework, numbers and honest trade-offs | Quiz 12.6; 12.7 written system design and recorded mock answer; capstone defence (13.4) |
+| O8 | Explain prefill, decode and the KV cache, estimate whether a self-hosted model fits a GPU for a given load, and choose fixes (paging, FP8, batching, admission control, more GPUs) with trade-offs | Quiz 11.10; 11.9 drill; 11.11 written sizing |
 
 ## Course shape
 | Week | Focus | Modules | Hours | Evidence at the end |
 |---|---|---|---|---|
-| 1 | The interview loop; LLM foundations; RAG fundamentals | 1, 2, 3 | 9.9 | Workspace set up; first project story; minimal RAG pipeline passes tests |
-| 2 | Advanced retrieval; evaluation | 4, 5 | 8.3 | Retrieval upgrade plan; regression eval runs as a test |
-| 3 | Agents; LangGraph; MCP and guardrails | 6, 7, 8 | 10.3 | Approval graph passes tests; agent threat model |
-| 4 | Python services; production; mock interviews | 9, 10, 11 | 12.3 | Async service passes tests; deployment plan; recorded mock answer |
-| 5 | Capstone | 12 | 11.4 | Repository, evaluation report and recorded defence submitted |
+| 1 | The interview loop; LLM foundations; RAG fundamentals | 1, 2, 3 | about 10 | Workspace set up; first project story; minimal RAG pipeline passes tests |
+| 2 | Advanced retrieval; evaluation | 4, 5 | about 9 | Retrieval upgrade plan; regression eval runs as a test |
+| 3 | Agents; LangGraph; MCP and guardrails | 6, 7, 8 | about 11 | Approval graph passes tests; agent threat model |
+| 4 | Python services; production | 9, 10 | about 9 | Async service passes tests; deployment plan |
+| 5 | Inference and serving; mock interviews | 11, 12 | about 11 | Written sizing of a deployment; recorded mock answer |
+| 6 | Capstone | 13 | about 11 | Repository, evaluation report and recorded defence submitted |
 | Follow-up | Mentor questions on the defence | none | outside course time | Learner answers the mentor's follow-up probes |
 
-Total from chapter estimates: 3,135 minutes, about 52 hours (matches `estimatedHours: 52` in course.yaml). See open decision 6 on time realism.
+Total from chapter estimates: 3,530 minutes, about 59 hours (matches `estimatedHours: 59` in course.yaml), after the interactive pass of 2026-10-23 and module 11 of 2026-10-24. See open decision 6 on time realism.
 
 ## Module and chapter sequence
 Types: Read (orientation), Learn (concept), Build (laptop work with tests), Check (graded quiz), Gate (checklist, learning log and evidence).
@@ -216,7 +218,7 @@ Hours: 11.4 (685 min)
 | 13.4 | Record your mock-interview defence | Record the walkthrough and probe answers; submit the repository | Build | 110 |
 | 13.5 | Checklist and learning log | Final checks; compare with the first story from module 1 | Gate | 30 |
 
-Count: 12 modules, 79 chapters (12 Read, 36 Learn, 8 Build, 11 Check, 12 Gate). Interactive canvases: 4 (4.2, 5.2, 6.3, 7.2).
+Count: 13 modules, 90 chapters (13 Read, 45 Learn, 8 Build, 11 Check, 13 Gate). Interactive canvases: 26, one in every Learn chapter of modules 2 to 11 (see the interactive pass and module 11 in `decision-log.md`).
 
 ## Interactive canvases
 Four canvases, each one teaching one claim, built on the existing renderers and registered as new slugs (code change in the same PR, `10-interactive-canvases.md`):
