@@ -45,3 +45,9 @@
 - Bind-mount timing on Windows: measured when challenge 0 is built.
 - Sources still to add before any learner text uses them: RFC 1930 (autonomous systems) for 4.5, RFC 3849 (`2001:db8::/32`) for 9.2, and the macOS commands on a real Mac.
 - Splitting module 4: not done. Moving ARP into module 3 removes the overload the critic named.
+
+## 2026-10-24: Roadmap v3 after round 2, and the end of the critic rounds
+
+**Decision:** roadmap v3 fixes the round 2 S2 defects from both critics: module 1 reordered so the install comes early and the first network is built about two hours in (pedagogy N01); a `[replay]` spec and a stated Foundations level with Code alternatives and outcome coverage (pedagogy N03); chapter 3.9 rewritten to the behaviour a third environment test observed (technical N01, dossier 5.7). Most round 2 S3 defects are also fixed (port prediction read from `conntrack`, timeline unit change, ICMP packet for 1.5, the localhost chain, DNS server and `curl.exe` rows, the capstone provider-router path tested, line endings, sourced wording, the captive portal order, gapped challenge 5, per-part restore points). RFC 1930 and RFC 3849 added to the dossier.
+
+**Process:** `06-quality-gates.md` allows two critic rounds before a human decides. Both rounds are done, so v3 goes to the sponsor and instructors at G2B without a third critic round. Open S3 items: novice timings (decision 12), the macOS and WSL 2 runs (decision 1), the Windows bind-mount test, and the data weight per chapter.
