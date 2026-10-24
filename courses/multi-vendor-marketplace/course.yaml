@@ -2442,6 +2442,273 @@ modules:
           questions, portfolio framing, and final learning log gate.
 variants:
   - slug: handmade
+    overrides:
+      - lessonKey: lesson-02-01-set-the-scene
+        file: variants/handmade/02-project-skeleton/02.01-set-the-scene.md
+      - lessonKey: lesson-02-02-why-structure-matters
+        replacements:
+          - from: "whyItMatters=\"FreshMarket's module folders"
+            to: "whyItMatters=\"Ghurza's module folders"
+          - from: "FreshMarket uses module folders on the server so each capability"
+            to: "Ghurza uses module folders on the server so each capability"
+      - lessonKey: lesson-02-03-what-youll-build
+        replacements:
+          - from: "`products/` is about listing groceries, but `db.js` isn't about any single feature"
+            to: "`products/` is about listing pieces, but `db.js` isn't about any single feature"
+          - from: "← root (name yours: GreenBasket, FreshMarket, …)"
+            to: "← root (name yours: GreenBasket, Ghurza, …)"
+      - lessonKey: lesson-02-04-layer-vs-module
+        replacements:
+          - from: "whyItMatters=\"FreshMarket uses modules inside the server"
+            to: "whyItMatters=\"Ghurza uses modules inside the server"
+          - from: "like \"a customer can't buy negative apples.\""
+            to: "like \"a workshop can't sell the same piece twice.\""
+          - from: "If it's about listing and updating groceries, it's"
+            to: "If it's about listing and updating pieces, it's"
+      - lessonKey: lesson-02-08-create-the-repo
+        file: variants/handmade/02-project-skeleton/02.08-create-the-repo.md
+      - lessonKey: lesson-02-09-scaffold-server-folders
+        replacements:
+          - from: "whyItMatters=\"FreshMarket's server boot order matters"
+            to: "whyItMatters=\"Ghurza's server boot order matters"
+      - lessonKey: lesson-02-10-server-package-and-scripts
+        replacements:
+          - from: "is how you run FreshMarket locally every day."
+            to: "is how you run Ghurza locally every day."
+      - lessonKey: lesson-02-12-scaffold-client-folders
+        file: variants/handmade/02-project-skeleton/02.12-scaffold-client-folders.md
+      - lessonKey: lesson-02-13-client-shell-and-routing
+        replacements:
+          - from: "whyItMatters=\"FreshMarket uses React Router so shoppers and vendors navigate smoothly"
+            to: "whyItMatters=\"Ghurza uses React Router so buyers and workshop owners navigate smoothly"
+          - from: "- Render a short subtitle — e.g. \"Local grocery marketplace\""
+            to: "- Render a short subtitle — e.g. \"Local handmade marketplace\""
+          - from: "if it fights \"local grocery.\""
+            to: "if it fights \"handmade marketplace.\""
+      - lessonKey: lesson-02-14-api-client-helper
+        replacements:
+          - from: "whyItMatters=\"Every FreshMarket screen uses the same client helper"
+            to: "whyItMatters=\"Every Ghurza screen uses the same client helper"
+      - lessonKey: lesson-02-17-practice
+        replacements:
+          - from: "\"name\":\"FreshMarket API\""
+            to: "\"name\":\"Ghurza API\""
+      - lessonKey: lesson-02-19-checklist
+        file: variants/handmade/02-project-skeleton/02.19-checklist.md
+      - lessonKey: lesson-04-01-set-the-scene
+        replacements:
+          - from: "Until MongoDB connects, FreshMarket forgets every vendor and product when you stop the server."
+            to: "Until MongoDB connects, Ghurza forgets every workshop and piece when you stop the server."
+          - from: "Picture a market hall with the lights on but the refrigerators dead — shoppers would assume the produce is cold."
+            to: "Picture a workshop with the lights on but the benches empty — buyers would assume the pieces are in stock."
+      - lessonKey: lesson-04-02-why-secrets-matter
+        replacements:
+          - from: "compromise every FreshMarket deployment."
+            to: "compromise every Ghurza deployment."
+          - from: "mongodb://127.0.0.1:27017/freshmarket-dev"
+            to: "mongodb://127.0.0.1:27017/ghurza-dev"
+          - from: "FreshMarket teaches config early because every later chapter"
+            to: "Ghurza teaches config early because every later chapter"
+      - lessonKey: lesson-04-03-what-youll-build
+        replacements:
+          - from: "whyItMatters=\"FreshMarket fails fast at boot if"
+            to: "whyItMatters=\"Ghurza fails fast at boot if"
+          - from: "FreshMarket teaches config early because every later chapter"
+            to: "Ghurza teaches config early because every later chapter"
+      - lessonKey: lesson-04-04-env-vs-hardcoded
+        replacements:
+          - from: "title=\"Where FreshMarket configuration lives\""
+            to: "title=\"Where Ghurza configuration lives\""
+          - from: "MONGODB_URI=mongodb://127.0.0.1:27017/freshmarket-dev"
+            to: "MONGODB_URI=mongodb://127.0.0.1:27017/ghurza-dev"
+      - lessonKey: lesson-04-05-local-mongodb
+        replacements:
+          - from: "`mongodb://127.0.0.1:27017/freshmarket` differs from Atlas"
+            to: "`mongodb://127.0.0.1:27017/ghurza` differs from Atlas"
+          - from: "like `freshmarket-dev` or `greenbasket-dev`"
+            to: "like `ghurza-dev` or `greenbasket-dev`"
+          - from: "- `freshmarket-dev`"
+            to: "- `ghurza-dev`"
+      - lessonKey: lesson-04-06-prime-your-thinking
+        file: variants/handmade/04-config-and-database/04.06-prime-your-thinking.md
+      - lessonKey: lesson-04-07-quiz
+        file: variants/handmade/04-config-and-database/04.07-quiz.md
+      - lessonKey: lesson-04-09-create-env-files
+        replacements:
+          - from: "whyItMatters=\"FreshMarket ships `.env.example` with placeholders"
+            to: "whyItMatters=\"Ghurza ships `.env.example` with placeholders"
+      - lessonKey: lesson-04-10-config-module
+        replacements:
+          - from: "whyItMatters=\"FreshMarket's config module throws at boot"
+            to: "whyItMatters=\"Ghurza's config module throws at boot"
+      - lessonKey: lesson-04-11-db-module
+        replacements:
+          - from: "so FreshMarket handles many shoppers without exhausting MongoDB connections."
+            to: "so Ghurza handles many buyers without exhausting MongoDB connections."
+      - lessonKey: lesson-04-12-wire-db-on-boot
+        replacements:
+          - from: "FreshMarket won't accept cart requests until MongoDB is ready"
+            to: "Ghurza won't accept cart requests until MongoDB is ready"
+      - lessonKey: lesson-04-13-health-check-db-status
+        replacements:
+          - from: "whyItMatters=\"FreshMarket's `/health` reports"
+            to: "whyItMatters=\"Ghurza's `/health` reports"
+      - lessonKey: lesson-04-14-client-env
+        replacements:
+          - from: "whyItMatters=\"FreshMarket's client gets `VITE_API_URL` only"
+            to: "whyItMatters=\"Ghurza's client gets `VITE_API_URL` only"
+          - from: "FreshMarket — System status"
+            to: "Ghurza — System status"
+      - lessonKey: lesson-04-16-recap-and-whats-next
+        replacements:
+          - from: "- Grocery domain fields — `unit`, `stockQty`, `isPerishable`, etc."
+            to: "- Piece domain fields — `status`, `materials`, `technique`, etc."
+          - from: "Your skeleton has a memory — Chapter 5 fills it with grocery data."
+            to: "Your skeleton has a memory — Chapter 5 fills it with pieces, workshops and commissions."
+      - lessonKey: lesson-06-01-set-the-scene
+        replacements:
+          - from: "FreshMarket cannot know which cart or store belongs to whom"
+            to: "Ghurza cannot know which cart or Workshop belongs to whom"
+          - from: "seeded with two vendors and grocery fields"
+            to: "seeded with three workshops and craft fields"
+          - from: "Your grocery data exists — next you control who can act on it."
+            to: "Your handmade catalogue exists — next you control who can act on it."
+      - lessonKey: lesson-06-02-why-auth-matters
+        replacements:
+          - from: "Anyone can browse produce (public catalogue later). To run a stall or place orders tied to your name"
+            to: "Anyone can browse the collection (public catalogue later). To own a Workshop or place orders tied to your name"
+          - from: "FreshMarket uses brief access tokens plus longer refresh tokens"
+            to: "Ghurza uses brief access tokens plus longer refresh tokens"
+      - lessonKey: lesson-06-03-what-youll-build
+        replacements:
+          - from: "FreshMarket's auth module is the security foundation every vendor and customer route builds on."
+            to: "Ghurza's auth module is the security foundation every maker and buyer route builds on."
+      - lessonKey: lesson-06-04-sessions-vs-jwt
+        file: variants/handmade/06-authentication-api/06.04-sessions-vs-jwt.md
+      - lessonKey: lesson-06-06-what-a-jwt-is
+        replacements:
+          - from: "FreshMarket access tokens prove identity for cart and vendor routes"
+            to: "Ghurza access tokens prove identity for cart and Workshop routes"
+          - from: "## Access token payload for FreshMarket"
+            to: "## Access token payload for Ghurza"
+      - lessonKey: lesson-06-07-prime-your-thinking
+        file: variants/handmade/06-authentication-api/06.07-prime-your-thinking.md
+      - lessonKey: lesson-06-08-quiz
+        file: variants/handmade/06-authentication-api/06.08-quiz.md
+      - lessonKey: lesson-06-10-scaffold-auth-module
+        replacements:
+          - from: "FreshMarket keeps register/login/refresh together so auth logic does not scatter across the server."
+            to: "Ghurza keeps register/login/refresh together so auth logic does not scatter across the server."
+      - lessonKey: lesson-06-11-wire-auth-routes
+        replacements:
+          - from: "FreshMarket mounts auth at `/api/auth/register`, `/api/auth/login`"
+            to: "Ghurza mounts auth at `/api/auth/register`, `/api/auth/login`"
+      - lessonKey: lesson-06-12-register-handler
+        replacements:
+          - from: "FreshMarket vendors and customers share the same register flow; role selection branches their experience."
+            to: "Ghurza makers and buyers share the same register flow; role selection branches their experience."
+      - lessonKey: lesson-06-13-login-handler
+        replacements:
+          - from: "FreshMarket returns the same error for bad email and bad password"
+            to: "Ghurza returns the same error for bad email and bad password"
+      - lessonKey: lesson-06-14-access-token
+        replacements:
+          - from: "FreshMarket attaches access tokens in the Authorization header for cart, store, and product routes."
+            to: "Ghurza attaches access tokens in the Authorization header for cart, Workshop, and Piece routes."
+      - lessonKey: lesson-06-15-refresh-token
+        replacements:
+          - from: "Shoppers stay logged in on FreshMarket without re-entering password every fifteen minutes."
+            to: "Buyers stay logged in on Ghurza without re-entering password every fifteen minutes."
+      - lessonKey: lesson-06-16-otp-verification
+        replacements:
+          - from: "FreshMarket requires OTP after register — reduces fake vendor accounts and spam signups."
+            to: "Ghurza requires OTP after register — reduces fake maker accounts and spam signups."
+      - lessonKey: lesson-06-17-auth-middleware
+        replacements:
+          - from: "Every protected FreshMarket route uses the same middleware"
+            to: "Every protected Ghurza route uses the same middleware"
+      - lessonKey: lesson-06-20-checklist
+        file: variants/handmade/06-authentication-api/06.20-checklist.md
+      - lessonKey: lesson-07-02-why-token-storage-matters
+        replacements:
+          - from: "FreshMarket's client must store tokens safely and attach them to API calls without leaking them in URLs or logs."
+            to: "Ghurza's client must store tokens safely and attach them to API calls without leaking them in URLs or logs."
+          - from: "FreshMarket's verify step proves the full browser path"
+            to: "Ghurza's verify step proves the full browser path"
+      - lessonKey: lesson-07-03-what-youll-build
+        replacements:
+          - from: "FreshMarket shoppers and vendors enter through the same auth screens — role determines where they land next."
+            to: "Ghurza buyers and makers enter through the same auth screens — role determines where they land next."
+      - lessonKey: lesson-07-04-where-tokens-live
+        file: variants/handmade/07-login-and-registration/07.04-where-tokens-live.md
+      - lessonKey: lesson-07-05-the-401-retry-loop
+        replacements:
+          - from: "while grocery shopping — unacceptable UX"
+            to: "while browsing the collection — unacceptable UX"
+          - from: "In FreshMarket terms: a logged-in customer who clicks a vendor-only action gets 403."
+            to: "In Ghurza terms: a logged-in buyer who clicks a maker-only action gets 403."
+      - lessonKey: lesson-07-06-prime-your-thinking
+        replacements:
+          - from: "Token storage choice in FreshMarket is partly a bet on how well you sanitize user-generated content later."
+            to: "Token storage choice in Ghurza is partly a bet on how well you sanitize user-generated content later."
+      - lessonKey: lesson-07-07-quiz
+        file: variants/handmade/07-login-and-registration/07.07-quiz.md
+      - lessonKey: lesson-07-09-scaffold-auth-pages
+        replacements:
+          - from: "FreshMarket keeps auth pages separate from shop and vendor dashboard routes."
+            to: "Ghurza keeps auth pages separate from the collection and maker dashboard routes."
+      - lessonKey: lesson-07-10-auth-context-or-hook
+        replacements:
+          - from: "FreshMarket's header shows login vs avatar based on auth context"
+            to: "Ghurza's header shows login vs avatar based on auth context"
+      - lessonKey: lesson-07-11-register-page
+        replacements:
+          - from: "FreshMarket register page catches obvious errors before a round-trip"
+            to: "Ghurza register page catches obvious errors before a round-trip"
+      - lessonKey: lesson-07-12-verify-otp-page
+        replacements:
+          - from: "FreshMarket blocks vendor onboarding until OTP succeeds"
+            to: "Ghurza blocks maker onboarding until OTP succeeds"
+      - lessonKey: lesson-07-13-login-page
+        replacements:
+          - from: "Returning FreshMarket users land here"
+            to: "Returning Ghurza users land here"
+      - lessonKey: lesson-07-14-api-interceptor
+        replacements:
+          - from: "FreshMarket components call `api.get('/cart')`"
+            to: "Ghurza components call `api.get('/cart')`"
+      - lessonKey: lesson-07-15-protected-route-wrapper
+        replacements:
+          - from: "FreshMarket `/vendor/*` routes render nothing"
+            to: "Ghurza `/vendor/*` routes render nothing"
+          - from: "until auth context confirms a logged-in vendor."
+            to: "until auth context confirms a logged-in Workshop owner."
+      - lessonKey: lesson-07-16-verify-in-browser
+        replacements:
+          - from: "FreshMarket auth debugging starts in Network"
+            to: "Ghurza auth debugging starts in Network"
+      - lessonKey: lesson-07-18-checklist
+        file: variants/handmade/07-login-and-registration/07.18-checklist.md
+      - lessonKey: lesson-23-01-set-the-scene
+        replacements:
+          - from: "Nothing new to learn about grocery or JWT here."
+            to: "Nothing new to learn about commissions or JWT here."
+      - lessonKey: lesson-23-04-vps-vs-paas
+        replacements:
+          - from: "title=\"A deployed FreshMarket has three running parts\""
+            to: "title=\"A deployed Ghurza has three running parts\""
+          - from: "Both are valid homes for FreshMarket. Pick one and document it"
+            to: "Both are valid homes for Ghurza. Pick one and document it"
+      - lessonKey: lesson-23-05-prime-your-thinking
+        replacements:
+          - from: "whyItMatters=\"Deploy chapter moves FreshMarket from localhost to a URL you can share.\""
+            to: "whyItMatters=\"Deploy chapter moves Ghurza from localhost to a URL you can share.\""
+          - from: "| Topic | Why for FreshMarket |"
+            to: "| Topic | Why for Ghurza |"
+          - from: "FreshMarket's deploy checklist exists because missing one variable fails silently until traffic hits."
+            to: "Ghurza's deploy checklist exists because missing one variable fails silently until traffic hits."
+      - lessonKey: lesson-23-15-recap-and-whats-next
+        file: variants/handmade/23-deploy/23.15-recap-and-whats-next.md
     modules:
       - key: handmade-introduction
         dir: 01-product-introduction
@@ -2705,31 +2972,344 @@ variants:
             goal: >-
               Prove paid-once transitions, hold expiry, late-success refund and scoped workshop reads
               with test-mode evidence.
+      - key: handmade-why-mongodb
+        dir: 03-why-mongodb-for-commissions
+        title: Why MongoDB for commissions
+        lessons:
+          - key: handmade-why-mongodb-01
+            file: 03.01-set-the-scene.md
+            title: '3.1 A piece, a copy and a commission'
+            goal: >-
+              Separate the three things a buyer can point at: a piece that exists, a request for another like it, and a commission that does not exist yet.
+          - key: handmade-why-mongodb-02
+            file: 03.02-relational-vs-document.md
+            title: '3.2 Tables and documents for one-off work'
+            goal: >-
+              Compare how a table schema and a document shape handle a hold, a terms snapshot and two payments, and name where constraints win.
+          - key: handmade-why-mongodb-03
+            file: 03.03-decision-and-erd.md
+            title: '3.3 The decision for Ghurza and the first ERD'
+            goal: >-
+              Commit a decision table and a first ERD that separate the ready-made sale from the commission, then guard the decision with a test.
+          - key: handmade-why-mongodb-04
+            file: 03.04-checklist.md
+            title: '3.4 Data model decision gate'
+            goal: >-
+              Defend the decision table, the first ERD and the test that guards them, then name the case where a relational schema would win.
+      - key: handmade-authorization
+        dir: 08-authorization-and-isolation
+        title: Authorization and isolation
+        lessons:
+          - key: handmade-authorization-01
+            file: 08.01-set-the-scene.md
+            title: '8.1 Whose workshop, whose commission?'
+            goal: >-
+              Map the four people around a commission and separate the relationships that grant access from the ones that only describe the work.
+          - key: handmade-authorization-02
+            file: 08.02-object-checks.md
+            title: '8.2 Object checks on workshops, pieces and commissions'
+            goal: >-
+              Place workshop, request, quote and commission checks on the request path so a role passes first and the object still decides.
+          - key: handmade-authorization-03
+            file: 08.03-matrix-and-tests.md
+            title: '8.3 Authorization matrix and cross-workshop tests'
+            goal: >-
+              Write the Ghurza authorization matrix, wire the object checks into routes, and prove the denials with a failing test that leaks a field.
+          - key: handmade-authorization-04
+            file: 08.04-checklist.md
+            title: '8.4 Isolation gate'
+            goal: >-
+              Prove with five sessions that workshop, request and commission records stay inside their own relationships and denials reveal no fields.
+      - key: handmade-workshop-api
+        dir: 09-workshop-api
+        title: Workshop API
+        lessons:
+          - key: handmade-workshop-api-01
+            file: 09.01-set-the-scene.md
+            title: '9.1 A workshop needs a public identity'
+            goal: >-
+              Name the six facts a workshop page holds, decide which of them a stranger may read, and see why one owner gets one workshop.
+          - key: handmade-workshop-api-02
+            file: 09.02-workshop-routes-and-ownership.md
+            title: '9.2 Workshop fields, slugs and ownership'
+            goal: >-
+              Build the workshop routes with a validated making range, a collision safe slug, two projections and an ownership filter that refuses a cross-workshop patch.
+          - key: handmade-workshop-api-03
+            file: 09.03-checklist.md
+            title: '9.3 Workshop API gate'
+            goal: >-
+              Prove the workshop API with two workshop owners and a buyer: one workshop per owner, a refused cross-workshop patch, a roster that stays inside its workshop, and a public payload with nothing private in it.
+      - key: handmade-open-workshop
+        dir: 10-open-your-workshop
+        title: Open your workshop
+        lessons:
+          - key: handmade-open-workshop-01
+            file: 10.01-set-the-scene.md
+            title: '10.1 The maker who has no workshop page'
+            goal: >-
+              See why a signed-in maker without a workshop must be routed to setup before any page that needs one mounts, and where that decision belongs in the client.
+          - key: handmade-open-workshop-02
+            file: 10.02-onboarding-and-settings.md
+            title: '10.2 Onboarding, settings and the routing gate'
+            goal: >-
+              Build the workshop context, the two route guards, the setup and settings pages with roster and commission sections, and the 360 pixel frame that keeps a new maker out of pages she has no workshop for.
+          - key: handmade-open-workshop-03
+            file: 10.03-checklist.md
+            title: '10.3 Open-your-workshop gate'
+            goal: >-
+              Prove the routing gate with a brand new maker at 360 pixels: a redirect instead of an empty page, two Artisan credits with different display choices, working commission settings and a keyboard pass.
+      - key: handmade-pieces-api
+        dir: 11-pieces-api
+        title: Pieces API
+        lessons:
+          - key: handmade-pieces-api-01
+            file: 11.01-set-the-scene.md
+            title: '11.1 A piece is one exact object'
+            goal: >-
+              Describe a Piece as one exact object with a status rather than a count, name the fields it carries, and see which moves in its status are allowed and by whom.
+          - key: handmade-pieces-api-02
+            file: 11.02-piece-crud-and-status.md
+            title: '11.2 Piece fields, status and ownership'
+            goal: >-
+              Build create, edit, publish and archive for a Piece, with a status aware field list, a validated Artisan credit, a conditional status change and a 403 for every other workshop.
+          - key: handmade-pieces-api-03
+            file: 11.03-checklist.md
+            title: '11.3 Pieces API gate'
+            goal: >-
+              Prove the Pieces API with four Piece states and two workshops: a draft that publishes, a held Piece that refuses an archive, a sold Piece that refuses every edit and a cross-workshop patch that returns 403.
+      - key: handmade-maker-dashboard
+        dir: 12-maker-dashboard
+        title: Maker dashboard
+        lessons:
+          - key: handmade-maker-dashboard-01
+            file: 12.01-set-the-scene.md
+            title: '12.1: The maker''s back office'
+            goal: >-
+              Plan a maker-only dashboard that answers what is unfinished, unanswered and unpaid for one workshop.
+          - key: handmade-maker-dashboard-02
+            file: 12.02-dashboard-and-piece-management.md
+            title: '12.2: Pieces, commissions and the maker dashboard'
+            goal: >-
+              Build one scoped dashboard route, a status filtered piece table with edit, publish and archive, and honest empty panels for later records.
+          - key: handmade-maker-dashboard-03
+            file: 12.03-checklist.md
+            title: '12.3: Maker dashboard gate'
+            goal: >-
+              Show two makers, one dashboard each, a refused buyer, an empty panel and a conflict that leaves the row unchanged.
+      - key: handmade-piece-photos
+        dir: 13-piece-photos
+        title: Piece photos
+        lessons:
+          - key: handmade-piece-photos-01
+            file: 13.01-set-the-scene.md
+            title: '13.1: A buyer cannot touch the stitch'
+            goal: >-
+              Decide what a piece photo has to prove before you store one, from the whole object to the stitch, the grain and the scale.
+          - key: handmade-piece-photos-02
+            file: 13.02-photo-upload-and-craft-evidence.md
+            title: '13.2: Upload real piece photos and craft evidence'
+            goal: >-
+              Add four bounded photo subdocuments, a scoped upload route, replace and delete with ownership, and a frozen set after a sale.
+          - key: handmade-piece-photos-03
+            file: 13.03-checklist.md
+            title: '13.3: Piece photo gate'
+            goal: >-
+              Show four honest photographs, a refused fifth, a refused cross workshop upload and a receipt that still loads after the set changed.
+      - key: handmade-shipping-profiles
+        dir: 14-shipping-profiles
+        title: Shipping profiles and lead times
+        lessons:
+          - key: handmade-shipping-profiles-01
+            file: 14.01-set-the-scene.md
+            title: '14.1: Honest lead times and shipping'
+            goal: >-
+              Separate production, handling and transit into ranges so a buyer can plan without the maker promising a date it cannot control.
+          - key: handmade-shipping-profiles-02
+            file: 14.02-shipping-profile-and-lead-time.md
+            title: '14.2: Shipping profiles, lead times and packaging'
+            goal: >-
+              Model one shipping profile per workshop with zones, handling and transit ranges, a packaging note and a paused state, then resolve a buyer country to one of four answers.
+          - key: handmade-shipping-profiles-03
+            file: 14.03-checklist.md
+            title: '14.3: Shipping profile gate'
+            goal: >-
+              Show three buyer countries receiving three different shipping answers, a paused destination with its note, and ranges with no date anywhere.
+      - key: handmade-browse-collection
+        dir: 15-browse-collection-api
+        title: Browse the collection API
+        lessons:
+          - key: handmade-browse-collection-01
+            file: 15.01-set-the-scene.md
+            title: '15.1 Browsing a collection of one-off pieces'
+            goal: >-
+              Plan a public collection that answers availability, price, ready range and destination, and count its queries before building it.
+          - key: handmade-browse-collection-02
+            file: 15.02-collection-query-and-n-plus-one.md
+            title: '15.2 Collection query, filters and the N+1 trap'
+            goal: >-
+              Build the public collection route with validated filters, a stored ready range and batched lookups, starting from a test that counts queries.
+          - key: handmade-browse-collection-03
+            file: 15.03-checklist.md
+            title: '15.3 Browse collection gate'
+            goal: >-
+              Show a collection that hides private work, keeps sold pieces as portfolio, filters honestly and runs a fixed query count.
+      - key: handmade-shop-collection
+        dir: 16-shop-the-collection
+        title: Shop the collection
+        lessons:
+          - key: handmade-shop-collection-01
+            file: 16.01-set-the-scene.md
+            title: '16.1 A storefront for work that may be one of one'
+            goal: >-
+              Plan a gallery and a piece page that show craft, maker credit and honest ranges, and give a sold piece a request path instead of an alert.
+          - key: handmade-shop-collection-02
+            file: 16.02-piece-page-and-request-path.md
+            title: '16.2 Piece page, maker credit and the request path'
+            goal: >-
+              Build the gallery card, the URL-backed filter bar and a piece page whose action area depends on status, starting from a test that fails on held work.
+          - key: handmade-shop-collection-03
+            file: 16.03-checklist.md
+            title: '16.3 Shop the collection gate'
+            goal: >-
+              Prove the gallery and piece page on a narrow phone, with maker credit, honest logistics and a sold piece that leads to a request.
+      - key: handmade-cart-api
+        dir: 17-cart-api
+        title: Cart API
+        lessons:
+          - key: handmade-cart-api-01
+            file: 17.01-set-the-scene.md
+            title: '17.1 A cart of exact pieces'
+            goal: >-
+              Plan a cart whose lines are exact piece IDs, owned by one buyer, with status shown at read time rather than reserved on add.
+          - key: handmade-cart-api-02
+            file: 17.02-cart-rules-and-holds.md
+            title: '17.2 Add, remove and reject sold or held pieces'
+            goal: >-
+              Build add, remove and read routes for a one-cart-per-buyer model, with unique piece lines and a refusal for every unavailable state.
+          - key: handmade-cart-api-03
+            file: 17.03-checklist.md
+            title: '17.3 Cart API gate'
+            goal: >-
+              Show two isolated carts, one line per exact piece, refusals for every unavailable state, and totals that add in minor units.
+      - key: handmade-cart-ui
+        dir: 18-your-cart
+        title: Your cart
+        lessons:
+          - key: handmade-cart-ui-01
+            file: 18.01-set-the-scene.md
+            title: '18.1 One cart, several workshops, exact pieces'
+            goal: >-
+              Plan a cart page where every row is one exact piece and every group names the workshop that will ship it.
+          - key: handmade-cart-ui-02
+            file: 18.02-cart-page-and-removal.md
+            title: '18.2 Cart rows, workshop groups and removal'
+            goal: >-
+              Build the grouped cart page, a remove that survives a slow connection, and a header count that matches the server.
+          - key: handmade-cart-ui-03
+            file: 18.03-checklist.md
+            title: '18.3 Cart page gate'
+            goal: >-
+              Prove the cart page groups by workshop, reports change honestly at 360 pixels, and sends one removal per tap.
+      - key: handmade-track-orders
+        dir: 21-track-orders
+        title: Track orders
+        lessons:
+          - key: handmade-track-orders-01
+            file: 21.01-set-the-scene.md
+            title: '21.1 Following a one-off order to the door'
+            goal: >-
+              Plan buyer and maker order pages that read from snapshots and move a piece through packed, shipped and received.
+          - key: handmade-track-orders-02
+            file: 21.02-order-pages-and-shipping-status.md
+            title: '21.2 Buyer and maker order pages, packed and shipped'
+            goal: >-
+              Add guarded packed, shipped and received transitions, then build both order pages from frozen snapshots.
+          - key: handmade-track-orders-03
+            file: 21.03-checklist.md
+            title: '21.3 Track orders gate'
+            goal: >-
+              Prove both order pages read snapshots, that packed then shipped is guarded, and that the buyer alone closes an order.
+      - key: handmade-async-jobs
+        dir: 25-async-jobs-and-queues
+        title: Async jobs and queues
+        lessons:
+          - key: handmade-async-jobs-01
+            file: 25.01-set-the-scene.md
+            title: '25.1 What should not happen inside a request'
+            goal: >-
+              Separate the work a request must finish before it answers from the work that can run later in a worker.
+          - key: handmade-async-jobs-02
+            file: 25.02-worker-and-jobs.md
+            title: '25.2 Worker, quote reminders and production notifications'
+            goal: >-
+              Run a worker beside the API, schedule quote reminders and expiry, and send commission notices once per fact.
+          - key: handmade-async-jobs-03
+            file: 25.03-checklist.md
+            title: '25.3 Async jobs gate'
+            goal: >-
+              Prove the request answers first, each fact notifies once, and a late or missing job cannot change a rule.
+      - key: handmade-cache-search
+        dir: 26-cache-and-search
+        title: Cache and search
+        lessons:
+          - key: handmade-cache-search-01
+            file: 26.01-set-the-scene.md
+            title: '26.1 What may be cached in a one-off catalogue'
+            goal: >-
+              Decide which collection reads may be cached, which answer must always come from the document, and how search finds craft, material and maker.
+          - key: handmade-cache-search-02
+            file: 26.02-cache-and-search.md
+            title: '26.2 Cache collections, invalidate on sale, search craft and maker'
+            goal: >-
+              Add a read-through cache with a version key, bust it on every sale and archive, and index search across craft, material and maker.
+          - key: handmade-cache-search-03
+            file: 26.03-checklist.md
+            title: '26.3 Cache and search gate'
+            goal: >-
+              Prove collection reads are cached and busted by a sale, checkout never trusts the cache, and search uses the index.
+      - key: handmade-closing
+        dir: 99-closing
+        title: Closing and capstone
+        lessons:
+          - key: handmade-closing-01
+            file: 99.01-ship-and-document.md
+            title: '99.1 Ship and document Ghurza'
+            goal: >-
+              Write the README, the env example, the two diagrams and the evidence file that let a stranger run, check and understand the live marketplace.
+          - key: handmade-closing-02
+            file: 99.02-demo-and-viva.md
+            title: '99.2 Five-minute demo and capstone defense'
+            goal: >-
+              Run the five-minute Ghurza demo on the live URL and answer the defense questions from stored evidence rather than memory.
     moduleOrder:
       - handmade-introduction
       - module-02-project-skeleton
-      - module-03-why-mongodb
+      - handmade-why-mongodb
       - module-04-config-and-database
       - handmade-data-model
       - module-06-authentication-api
       - module-07-login-and-registration
-      - module-08-authorization-and-isolation
-      - module-09-vendor-store-api
-      - module-10-open-your-shop
-      - module-11-manage-products-api
-      - module-12-vendor-dashboard
-      - module-13-product-photos
-      - module-14-browse-catalogue-api
-      - module-15-shop-the-marketplace
-      - module-16-cart-api
-      - module-17-your-cart
+      - handmade-authorization
+      - handmade-workshop-api
+      - handmade-open-workshop
+      - handmade-pieces-api
+      - handmade-maker-dashboard
+      - handmade-piece-photos
+      - handmade-shipping-profiles
+      - handmade-browse-collection
+      - handmade-shop-collection
+      - handmade-cart-api
+      - handmade-cart-ui
       - handmade-checkout-sold-once
       - handmade-payment-processing
-      - module-21-cache-and-search
+      - handmade-track-orders
       - handmade-custom-requests
       - handmade-quotes-deposits
       - handmade-production-balance
-      - module-99-closing
+      - handmade-async-jobs
+      - handmade-cache-search
+      - module-23-deploy
+      - handmade-closing
   - slug: digital-goods
     modules:
       - key: digital-goods-introduction
