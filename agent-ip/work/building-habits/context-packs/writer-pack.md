@@ -7,7 +7,7 @@ version: 1
 
 # Writer pack: Building Habits That Last
 
-Read this whole file before writing. It replaces the chapter briefs for this course (G2C was skipped on the sponsor's instruction; see `../decision-log.md`). The plan is `content/import/building-habits/course.yaml`: write exactly the files, titles and goals listed there for your modules. The roadmap is `../curriculum-roadmap.md` (minutes, outcomes, gate evidence, the course habit). The research dossier is `../research.md`: **every claim about research, a researcher or a book must match the dossier, phrased the way it says**; never state a claim it marks unverified or overstated, except to correct it as a myth. Look at `content/import/cause-and-effect/04-root-causes/` (`04.01`, `04.03`, `04.06`, `04.07`) for the exact file format of a scene, a teaching chapter with a canvas, a quiz chapter and a gate; that course is the quality bar. Skim `agent-ip/03-authoring-standards.md` (voice, forbidden patterns), `agent-ip/04-interactive-playbook.md` (budgets, option-length hygiene, quiz and predict rules) and `agent-ip/agents/chapter-writer.md`.
+Read this whole file before writing. It replaces the chapter briefs for this course (G2C was skipped on the sponsor's instruction; see `../decision-log.md`). The plan is `courses/building-habits/course.yaml`: write exactly the files, titles and goals listed there for your modules. The roadmap is `../curriculum-roadmap.md` (minutes, outcomes, gate evidence, the course habit). The research dossier is `../research.md`: **every claim about research, a researcher or a book must match the dossier, phrased the way it says**; never state a claim it marks unverified or overstated, except to correct it as a myth. Look at `content/import/cause-and-effect/04-root-causes/` (`04.01`, `04.03`, `04.06`, `04.07`) for the exact file format of a scene, a teaching chapter with a canvas, a quiz chapter and a gate; that course is the quality bar. Skim `agent-ip/03-authoring-standards.md` (voice, forbidden patterns), `agent-ip/04-interactive-playbook.md` (budgets, option-length hygiene, quiz and predict rules) and `agent-ip/agents/chapter-writer.md`.
 
 ## 1. What this course is
 
@@ -41,7 +41,7 @@ A practical, warm course on building good habits and weakening unwanted ones, fo
 
 ## 4. Chapter file format and budgets
 
-Path: `content/import/building-habits/<module-dir>/<file>` exactly as in course.yaml. Frontmatter:
+Path: `courses/building-habits/<module-dir>/<file>` exactly as in course.yaml. Frontmatter:
 
 ```yaml
 ---
@@ -246,7 +246,7 @@ The `modelAnswer` holds the mentor key for all three provided cases (the pattern
 - Zero U+2014 and U+2013 characters, in chapters and in canvas files.
 - Every sum, tracker and case checked twice; every MCQ blind re-answered.
 - From `server/`: `node node_modules/tsx/dist/cli.mjs scripts/validate-course-source.ts --course building-habits` and `node node_modules/tsx/dist/cli.mjs scripts/audit-course-structure.ts --course building-habits` with no errors or warnings in your files. (Unregistered canvas slugs will fail validation until the orchestrator registers them; report them, do not edit the registry.)
-- From the repo root: `node agent-ip/scripts/audit-course.mjs content/import/building-habits` with no flags on your chapters (Learn chapters will show no interactive element until registration; that is expected).
+- From the repo root: `node agent-ip/scripts/audit-course.mjs courses/building-habits` with no flags on your chapters (Learn chapters will show no interactive element until registration; that is expected).
 - From `frontend/`: `node node_modules/vitest/vitest.mjs run tests/unit/canvas/<slug>.test.ts` for each slider canvas you made.
 - Edit only your module folders, your canvas folders and your canvas tests. No git commands that change anything. Do not install packages. pnpm is broken here; use the node commands above.
 - Report: files written, canvas slugs and renderers, prose words per chapter from the audit, any dossier claim you were unsure how to phrase.

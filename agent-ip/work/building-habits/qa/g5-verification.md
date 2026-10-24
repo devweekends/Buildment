@@ -8,11 +8,12 @@ date: 2026-10-24
 # Verification report: building-habits
 
 ## Structure
+- Source package: `courses/building-habits/` (moved from `content/import/` when main adopted one course tree). Not opted in to repository publishing (`repositoryPublish` is absent), so `courses:check` does not include it; validation and audits below were rerun on the moved package.
 - 7 modules, 40 chapters, 970 minutes from chapter frontmatter (about 16 hours, `estimatedHours: 16`).
 - Graded items: 94 (68 multiple-choice questions and 26 predictions). Open questions: the seven gates and the capstone. Canvases: 19, one in every Learn chapter (agent-ip v0.4, interactive-first), all on the existing renderers as data plus a 14A spec: 6 state machines, 6 sequences, 5 sliders, 2 factor.
 - `content:validate:source --course building-habits`: 40 of 40 OK.
 - `content:audit --course building-habits`: 0 errors, 0 warnings.
-- `node agent-ip/scripts/audit-course.mjs content/import/building-habits`: Needs work 0. Every set-the-scene, Learn and capstone chapter has at least 1,200 prose words and a diagram; every gate at least 700; every Learn chapter an interactive element; every practice check five questions. 51,897 prose words in all.
+- `node agent-ip/scripts/audit-course.mjs courses/building-habits`: Needs work 0. Every set-the-scene, Learn and capstone chapter has at least 1,200 prose words and a diagram; every gate at least 700; every Learn chapter an interactive element; every practice check five questions. 51,897 prose words in all.
 - No em or en dashes in the chapters, `course.yaml`, the 19 canvas files or the work area. No company, product or AI tool names, no links.
 
 ## Research (G1)
