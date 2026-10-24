@@ -41,10 +41,10 @@ Fellows prepare for AI engineer, LLM engineer and agentic AI interviews at remot
 | 3 | Agents; LangGraph; MCP and guardrails | 6, 7, 8 | about 11 | Approval graph passes tests; agent threat model |
 | 4 | Python services; production | 9, 10 | about 9 | Async service passes tests; deployment plan |
 | 5 | Inference and serving; mock interviews | 11, 12 | about 11 | Written sizing of a deployment; recorded mock answer |
-| 6 | Capstone | 13 | about 11 | Repository, evaluation report and recorded defence submitted |
+| 6 | Capstone | 13 | about 13 | Repository, evaluation report and recorded defence submitted |
 | Follow-up | Mentor questions on the defence | none | outside course time | Learner answers the mentor's follow-up probes |
 
-Total from chapter estimates: 3,530 minutes, about 59 hours (matches `estimatedHours: 59` in course.yaml), after the interactive pass of 2026-10-23 and module 11 of 2026-10-24. See open decision 6 on time realism.
+Total from chapter estimates: 3,650 minutes, about 61 hours (matches `estimatedHours: 61` in course.yaml), after the interactive pass of 2026-10-23, module 11 and the multi-channel capstone of 2026-10-24. See open decision 6 on time realism.
 
 ## Module and chapter sequence
 Types: Read (orientation), Learn (concept), Build (laptop work with tests), Check (graded quiz), Gate (checklist, learning log and evidence).
@@ -272,7 +272,7 @@ The course is shared; only the capstone varies. Eight capstone variants (2026-10
 | 3 | The capstone defence asks for a recording. Some fellows cannot record safely or upload on weak data. | Accept audio only. Allow a written defence plus a live 15 minute call as the alternative, decided by the mentor. | |
 | 4 | Version drift: LangGraph, MCP and provider free tiers change quickly. Chapters date version-specific claims (LangGraph 1.2, checked 2026-10-22). | Re-check build chapters each cohort; pin versions in the capstone's requirements. | |
 | 5 | Tool naming: the course names open-source tools from the spec (LangGraph, MLflow, FastAPI, Pydantic, Kubernetes, MCP) but no companies, cloud vendors or model products. | Keep this rule; it keeps the course general and avoids implying any employer's process. | |
-| 6 | Time realism: 59 hours from chapter estimates. Build chapters for second-language learners with power cuts may take twice as long. | Tell fellows to plan 60 to 70 hours over 5 to 6 weeks; adjust after the first cohort. | |
+| 6 | Time realism: 61 hours from chapter estimates. Build chapters for second-language learners with power cuts may take twice as long. | Tell fellows to plan 60 to 70 hours over 5 to 6 weeks; adjust after the first cohort. | |
 | 7 | Mentor load: 12 gate answers plus the capstone, about 3 hours of review per fellow. | Fully review gates 1.5, 5.7, 12.7 and the capstone; spot-check the rest. | |
 | 8 | Prerequisite gap: some fellows will not have Python basics or a laptop. | Add a short Python readiness check in 1.4 and point to a pairing plan for fellows without a laptop. | |
 | 9 | Order with sibling courses: the managerial round overlaps Communication and Ownership. | Cross-reference rather than cut; this course keeps the AI-specific managerial questions. | |
