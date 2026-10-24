@@ -19,7 +19,7 @@ A practical course for fellows applying to startups and small remote teams, wher
 ## Learner and entry prerequisites
 - **Learner:** Gaza fellowship fellows applying to startups and small remote teams (engineering, product, design, operations), early career to mid level. Arabic first language, English second, mostly on phones with weak or expensive data.
 - **Prior knowledge:** at least one project, job, internship, freelance gig or volunteer role they can talk about, and a resume draft. No interview training assumed. A provided fellow (Hadeel) is available at every gate for anyone without a suitable story or who prefers not to use their own.
-- **Time available:** about 3 to 5 hours a week for 3 weeks. The core path is about 15 hours; the optional AI drills add about an hour (see Shape).
+- **Time available:** the brief says about 3 to 5 hours a week for 3 weeks. The course as built needs about 18 hours on the written path and about 20 with every AI drill (see Shape and open decision 1).
 - **Entry diagnostic:** none graded; the predict in 1.1 sets the tone.
 
 ## Outcomes
@@ -28,98 +28,105 @@ A practical course for fellows applying to startups and small remote teams, wher
 | O1 | Tell a story you owned end to end about one real time, naming your own decisions, the trade-offs and what you would change | Checks in 1.2 to 1.4; quiz 1.5; gate 1; capstone part 1 |
 | O2 | State impact with a before, an after, a time window and a source, say how much was yours, or say plainly what you did not measure and how you would | Quiz 2.5; gate 2; capstone part 1 |
 | O3 | Answer a chain of whys on any resume line or project choice with the reason you had at the time, without inventing | Quiz 3.5; gate 3; capstone part 2; mentor defence |
-| O4 | Work through a founder's case question aloud: clarify, assume, compare options, decide and name what you would measure | Quiz 4.5; gate 4; capstone part 3 |
-| O5 | Explain your best technical work in a short founder version and a deeper engineer version that answers "why not this?" and "what happens if?" | Quiz 5.5; gate 5; capstone part 1 |
-| O6 | Name a strength with evidence and a real weakness with a plan, and handle nerves, video calls and time to think | Quiz 6.5; gate 6; capstone part 3 |
-| O7 | Run a full practice interview, read its feedback critically, find the gaps in your story bank and plan how to fill them | Chapter 7.2; capstone 7.4; course gate 7.5 |
+| O4 | Work through a founder's case question: clarify, assume, compare options, decide and name what you would measure, written and then said aloud | Quiz 4.5; gate 4 (written, plus a timed spoken run); capstone part 3; live defence |
+| O5 | Explain your best technical work in a short founder version (said aloud in under a minute) and a deeper engineer version that answers "why not this?" and "what happens if?" | Quiz 5.5; gate 5 (written, plus a timed spoken run); capstone part 1; live defence |
+| O6 | Name a strength with evidence and a real weakness with a plan, and handle nerves, video calls and time to think | Quiz 6.5; gate 6 (written, plus a timed spoken run); capstone part 3; live defence (spoken delivery) |
+| O7 | Run a full practice interview, tag your own answers with the five flags, read any feedback critically, find the gaps in your story bank and plan how to fill them | Chapter 7.2; capstone 7.4; course gate 7.5 |
 
 ## Shape
 | Part | Focus | Modules | Minutes | Evidence at the end |
 |---|---|---|---|---|
-| 1 | Your stories and your numbers | 1 to 2 | 270 | One owned story; two stories with honest numbers or honest gaps |
-| 2 | Under questioning | 3 to 4 | 270 | An audited resume; a case worked aloud |
-| 3 | Depth and self-knowledge | 5 to 6 | 270 | The founder and engineer versions of your best technical work; a strength and a weakness with evidence |
-| 4 | The full interview | 7 | 165 | The story bank, a full practice interview and its feedback, the mentor defence |
+| 1 | Your stories and your numbers | 1 to 2 | 320 | One owned story; two stories with honest numbers or honest gaps |
+| 2 | Under questioning | 3 to 4 | 320 | An audited resume; a case worked aloud |
+| 3 | Depth and self-knowledge | 5 to 6 | 320 | The founder and engineer versions of your best technical work; a strength and a weakness with evidence |
+| 4 | The full interview | 7 | 215 | The story bank, a full practice interview and its feedback, the mentor defence |
 
-Total: 975 minutes over 41 chapters (`estimatedHours: 16`). Each gate's 30 minutes includes about 10 minutes for the optional AI drill and the capstone's 80 minutes about 20 for the full practice interview, so a fellow who uses only the written fallbacks needs about 895 minutes, about 15 hours: the top of the brief's range (open decision 1).
+Total: 1,175 minutes over 41 chapters (`estimatedHours: 20`), re-estimated after G5 round 1 (critic A found the first estimates optimistic for second-language readers on phones). Each gate's 40 minutes includes about 10 minutes for the optional AI drill and the capstone's 120 minutes about 30 for its two drills, so a fellow who uses only the written fallbacks needs about 1,085 minutes, about 18 hours. That is over the brief's 9 to 15 hours (open decision 1).
 
 ## Module and chapter sequence
 
-### Module 1: Stories you owned (135 min)
+### Module 1: Stories you owned (160 min)
 | # | Chapter | One-line outcome | Type | Min |
 |---|---|---|---|---|
 | 1.1 | Set the scene | A first founder interview where every answer was "we" and "usually" | Read | 20 |
-| 1.2 | One time, not "usually" | A story about one time, not a self-description or a habit | Learn | 25 |
-| 1.3 | Your part and the team's | "I" and "we", and the whole path from problem to after it shipped | Learn | 25 |
-| 1.4 | Decisions, trade-offs and what you would change | The decision at the centre of the story | Learn | 25 |
+| 1.2 | One time, not "usually" | A story about one time, not a self-description or a habit | Learn | 30 |
+| 1.3 | Your part and the team's | "I" and "we", and the whole path from problem to after it shipped | Learn | 30 |
+| 1.4 | Decisions, trade-offs and what you would change | The decision at the centre of the story | Learn | 30 |
 | 1.5 | Stories you owned | Five graded cases with an AI check | Check | 10 |
-| 1.6 | Checklist and learning log | One owned story; first drill (ownership, storytelling) | Gate | 30 |
+| 1.6 | Checklist and learning log | One owned story; first drill (ownership, storytelling) | Gate | 40 |
 
-### Module 2: Impact with honest numbers (135 min)
+### Module 2: Impact with honest numbers (160 min)
 | # | Chapter | One-line outcome | Type | Min |
 |---|---|---|---|---|
 | 2.1 | Set the scene | "50 percent faster" falls apart at "from what?" | Read | 20 |
-| 2.2 | A number needs a before | Before, after, time window, source | Learn | 25 |
-| 2.3 | Find your numbers | Where the evidence lives when you never looked: database counts, logs and API calls, analytics, bills, support messages, time saved | Learn | 25 |
-| 2.4 | How much was yours, and "I did not measure that" | Attribution, estimates, honest gaps | Learn | 25 |
+| 2.2 | A number needs a before | Before, after, time window, source | Learn | 30 |
+| 2.3 | Find your numbers | Where the evidence lives when you never looked: database counts, logs and API calls, analytics, bills, support messages, time saved | Learn | 30 |
+| 2.4 | How much was yours, and "I did not measure that" | Attribution, estimates, honest gaps | Learn | 30 |
 | 2.5 | Impact with honest numbers | Five graded cases with an AI check | Check | 10 |
-| 2.6 | Checklist and learning log | Two stories with honest numbers or gaps; drill (impact, ownership) | Gate | 30 |
+| 2.6 | Checklist and learning log | Two stories with honest numbers or gaps; drill (impact, ownership) | Gate | 40 |
 
-### Module 3: Every resume line survives five whys (135 min)
+### Module 3: Every resume line survives five whys (160 min)
 | # | Chapter | One-line outcome | Type | Min |
 |---|---|---|---|---|
 | 3.1 | Set the scene | The strongest resume line, unexplained past the second why | Read | 20 |
-| 3.2 | How a why chain works and where it breaks | Chains that end at a decision or a checked fact; chains that end at blame or a guess | Learn | 25 |
-| 3.3 | Real reasons, not tidy ones | The reason you had then; "that was not my decision" | Learn | 25 |
-| 3.4 | The resume line audit | Every line: what, why, result, how you know, what you would change | Learn | 25 |
+| 3.2 | How a why chain works and where it breaks | Chains that end at a decision or a checked fact; chains that end at blame or a guess | Learn | 30 |
+| 3.3 | Real reasons, not tidy ones | The reason you had then; "that was not my decision" | Learn | 30 |
+| 3.4 | The resume line audit | Every line: what, why, result, how you know, what you would change | Learn | 30 |
 | 3.5 | Every line survives five whys | Five graded cases with an AI check | Check | 10 |
-| 3.6 | Checklist and learning log | The audited resume and one line defended; drill (resume, five whys) | Gate | 30 |
+| 3.6 | Checklist and learning log | The audited resume and one line defended; drill (resume, five whys) | Gate | 40 |
 
-### Module 4: Case questions aloud (135 min)
+### Module 4: Case questions aloud (160 min)
 | # | Chapter | One-line outcome | Type | Min |
 |---|---|---|---|---|
 | 4.1 | Set the scene | Ten ideas and no decision | Read | 20 |
-| 4.2 | Clarify and say your assumptions | One to three questions; assumptions aloud | Learn | 25 |
-| 4.3 | Options and trade-offs | Two or three options compared | Learn | 25 |
-| 4.4 | Decide and say what you would measure | One choice, one number, one line that would change your mind | Learn | 25 |
+| 4.2 | Clarify and say your assumptions | One to three questions; assumptions aloud | Learn | 30 |
+| 4.3 | Options and trade-offs | Two or three options compared | Learn | 30 |
+| 4.4 | Decide and say what you would measure | One choice, one number, one line that would change your mind | Learn | 30 |
 | 4.5 | Case questions aloud | Five graded cases | Check | 10 |
-| 4.6 | Checklist and learning log | A case worked aloud; drill (case study, impact) | Gate | 30 |
+| 4.6 | Checklist and learning log | A case worked aloud; drill (case study, impact) | Gate | 40 |
 
-### Module 5: The best technical thing you did (135 min)
+### Module 5: The best technical thing you did (160 min)
 | # | Chapter | One-line outcome | Type | Min |
 |---|---|---|---|---|
 | 5.1 | Set the scene | Lost the founder in jargon, then stuck at "why not this?" | Read | 20 |
-| 5.2 | Choosing the story | Your own decision, five whys deep, not the shiniest tools | Learn | 25 |
-| 5.3 | The founder version | Problem, what you built, key choice, result, in plain words | Learn | 25 |
-| 5.4 | The engineer version | "Why not this?", "what happens if?", how you tested, what you would change | Learn | 25 |
+| 5.2 | Choosing the story | Your own decision, five whys deep, not the shiniest tools | Learn | 30 |
+| 5.3 | The founder version | Problem, what you built, key choice, result, in plain words | Learn | 30 |
+| 5.4 | The engineer version | "Why not this?", "what happens if?", how you tested, what you would change | Learn | 30 |
 | 5.5 | The best technical thing you did | Five graded cases with an AI check | Check | 10 |
-| 5.6 | Checklist and learning log | Both versions written; drill (best technical, five whys) | Gate | 30 |
+| 5.6 | Checklist and learning log | Both versions written; drill (best technical, five whys) | Gate | 40 |
 
-### Module 6: Strengths, weaknesses and how you come across (135 min)
+### Module 6: Strengths, weaknesses and how you come across (160 min)
 | # | Chapter | One-line outcome | Type | Min |
 |---|---|---|---|---|
 | 6.1 | Set the scene | "I am a perfectionist" on a video call | Read | 20 |
-| 6.2 | Strengths with evidence | Narrow, checkable, recent, seen by someone else | Learn | 25 |
-| 6.3 | A real weakness with a plan | A real weakness, an example and what you are doing about it | Learn | 25 |
-| 6.4 | Nerves, accent and time to think | What you cannot control, and what you can | Learn | 25 |
+| 6.2 | Strengths with evidence | Narrow, checkable, recent, seen by someone else | Learn | 30 |
+| 6.3 | A real weakness with a plan | A real weakness, an example and what you are doing about it | Learn | 30 |
+| 6.4 | Nerves, accent and time to think | What you cannot control, and what you can | Learn | 30 |
 | 6.5 | Strengths, weaknesses and how you come across | Five graded cases | Check | 10 |
-| 6.6 | Checklist and learning log | One strength and one weakness with evidence; drill (strengths and weaknesses, storytelling) | Gate | 30 |
+| 6.6 | Checklist and learning log | One strength and one weakness with evidence; drill (strengths and weaknesses, storytelling) | Gate | 40 |
 
-### Module 7: The full interview (165 min)
+### Module 7: The full interview (215 min)
 | # | Chapter | One-line outcome | Type | Min |
 |---|---|---|---|---|
 | 7.1 | Set the scene | First and last practice feedback, side by side | Read | 20 |
-| 7.2 | Reading feedback and filling the gaps | Read feedback critically; plan to fill a gap, including a project around a need of your own | Learn | 25 |
+| 7.2 | Reading feedback and filling the gaps | Tag your own answers, read feedback critically; plan to fill a gap, including a project around a need of your own | Learn | 30 |
 | 7.3 | Mixed review: what is missing? | Fresh answers from every module | Check | 15 |
-| 7.4 | Capstone: your story bank and a full interview | Story bank, audited resume, full practice interview, defence | Build | 80 |
-| 7.5 | Course checklist and your interview kit | Final checks, kit, next interview | Gate | 25 |
+| 7.4 | Capstone: your story bank and a full interview | Story bank, audited resume, two practice drills or the written version, defence | Build | 120 |
+| 7.5 | Course checklist and your interview kit | Final checks, kit, next interview | Gate | 30 |
 
 ## Practice with the AI interviewer
-- Every module gate holds one AI interview drill (```aiinterview, `required: false`) on the module's focus, and from module 3 one earlier focus as well, so fellows choose which story fits which question. The capstone holds one full interview across all eight focus areas, with the fellow's resume pasted as context.
+- Every module gate holds one AI interview drill (```aiinterview, `required: false`) on the module's focus and a second focus, so fellows choose which story fits which question. The capstone holds two drills that together cover all eight focus areas (four each, `whyDepth: 2`, 12 answers each), because one drill of 20 answers at depth 3 reaches only five areas.
 - The gate's open question is the written fallback: it asks for the same evidence the drill practises, has a model answer and a mentor key, and completes the gate for everyone. No fellow needs a key or credit to finish.
+- The platform's feedback card has strengths, weaknesses with a fix each, notes per area and three next steps, and no flags field. So learners tag their own answers (the transcript, or their written answers) with the five flag names and compare tags from the first and last drill; on the AI path they also compare their tags with the card.
 - Each drill's server-only rubric follows the dossier's design notes (finding 11): reward an honest "I did not measure that" over an invented number, score features rather than length, ask for evidence behind numbers ("how do you know?", "where did that number come from?") and for alternatives and failure cases on technical answers ("why not this?", "what happens if?"), and use the same flag names in every drill (vague ownership, unsupported number, pseudo-story, invented reason risk, jargon without explanation) so the first and last drills can be compared.
 - Every drill says in one line what not to paste (names, contact details, ID numbers, client names, passwords, keys, private company data, other people's details; use roles instead). Transcripts and feedback are saved for the fellow and their mentors.
 - Platform dependency: `AI_INTERVIEW` and the learner key setting are in PR #62 (`feat/ai-interviewer-byok`), which must merge before this course can import.
+
+## The story bank
+The bank grows gate by gate: story 1 at gate 1; an honest number added to story 1 and story 2 at gate 2; story 3 (the technical story, both versions) at gate 5; story 4 (a time a weakness showed and what you did) at gate 6; story 5 and the final check in the capstone. Each story is one page or one note: the time, your part, the decision, the number with its source or the honest gap, what you would change.
+
+## Own work and the provided fellow
+Gates ask for the fellow's own work first and offer Hadeel's material when a fellow has no story for that gate yet. The capstone requires at least two of the five stories and the resume audit to be the fellow's own (study, volunteer, freelance and family business work count), and the defence runs on one of the fellow's own lines. A fellow with no own story first follows 7.2's path: a small project built around a need of their own.
 
 ## Gate evidence at a glance
 | Module | Gate evidence |
@@ -133,10 +140,10 @@ Total: 975 minutes over 41 chapters (`estimatedHours: 16`). Each gate's 30 minut
 | 7 | The capstone (7.4), final checklist, interview kit and plan for the next interview (7.5) |
 
 ## Capstone
-- **What the learner submits:** a story bank of five owned stories (one line each for the time, your part, the decision, the number or honest gap, and what you would change); the audited resume with the two weakest lines rewritten; one full practice interview (AI transcript and feedback, or the written full-interview version: answers to six provided questions with the follow-up whys); a reading of the feedback: which flags appeared, which they disagree with and why, and one gap in the story bank with a plan to fill it. Written, with an optional voice note link. A provided fellow (Hadeel) is available for anyone who prefers not to use their own resume.
-- **Five-minute defence:** the mentor picks one resume line and one story and asks four whys on each; the fellow answers with the real reasons, including honest gaps.
+- **What the learner submits:** a story bank of five owned stories (at least two of them the learner's own) (one line each for the time, your part, the decision, the number or honest gap, and what you would change); the audited resume with the two weakest lines rewritten; two practice drills (AI transcripts and cards, or the written version: answers to six provided questions with the follow-up whys); the learner's own tags of their answers with the five flags, one they will act on, one card line or mentor question they question and why, and one gap in the story bank with a plan to fill it. Written, with an optional voice note link. A provided fellow (Hadeel) is available for anyone who prefers not to use their own resume.
+- **Five-minute defence (live, spoken):** the mentor picks one of the fellow's own resume lines and one own story and asks four whys on each; the fellow answers with the real reasons, including honest gaps, and gives the founder version of their technical story in under a minute.
 - **Defence questions:** Which part of this was yours alone? Where does that number come from? Why that option and not the other? What would you do differently? What did the feedback get wrong?
-- **Review:** a rubric with Met, Partly and Not yet per line, a pass rule, and a mentor key for the provided case in the model answer, about 25 minutes per capstone (brief: under 30).
+- **Review:** a rubric with Met, Partly and Not yet for each of six parts, the course-wide pass rule (no part Not yet, at most one Partly), and a mentor key with Partly and Not yet examples, about 25 minutes per capstone (brief: under 30).
 
 ## Variants
 Not applicable for version 1. Role packs (engineering, product, design, operations) could become variants later (open decision 6).
@@ -147,14 +154,18 @@ Salary negotiation, offers, visas and contracts; coding interviews and live codi
 ## Open decisions for instructors
 | # | Decision | Recommendation | Instructor decision |
 |---|---|---|---|
-| 1 | Time budget | 975 minutes (16 hours) with every AI drill, about 15 hours on the written path; the brief allows 9 to 15. Keep, or cut module 6 into module 7 | |
-| 2 | Five whys credit | Name Taiichi Ohno as "an engineer at a large Japanese car maker", as course 10 does, without the company name | |
+| 1 | Time budget | 1,175 minutes (about 20 hours) with every AI drill, about 18 hours on the written path, against the brief's 9 to 15. Either run the course over four weeks at 5 hours, or cut scope (for example merge module 6 into module 7, or drop one Learn chapter per module) | |
+| 2 | Five whys credit | "Attributed to Taiichi Ohno, an engineer who helped build a Japanese car maker's production system" (as drafted in 3.2), without the company name | |
 | 3 | Researcher names | At most two or three per chapter, in plain words, only as the dossier's credits table allows | |
 | 4 | Founder probe list | Confirm with instructors who have hired in startups (dossier finding 3 rests on first-party essays, not research) | |
-| 5 | Accent bias | One plain paragraph in 6.4, followed at once by what the fellow controls | |
+| 5 | Accent bias | One plain paragraph in 6.4 (as drafted), followed at once by what the fellow controls | |
 | 6 | Role packs as variants | Defer until after the first cohort | |
 | 7 | AI drill defaults | whyDepth 3 in most drills and 5 in module 3; maxTurns 10, and 20 in the capstone; the separate judge call is the platform's choice | |
 | 8 | Written fallback uses the same rubric flags as the AI feedback | Yes, so mentors compare like with like | |
 | 9 | Spoken practice | One optional spoken mock with a peer or mentor in the capstone, since text practice does not train speaking pace | |
 | 10 | Arabic answers | Instructors decide whether gate answers may be written in Arabic | |
-| 11 | Tapping study | Use without numbers in 5.3, or drop | |
+| 11 | Tapping study | Use without numbers in 5.3 (as drafted), or drop | |
+| 12 | Capstone own work | At least two of five stories and the resume audit must be the fellow's own; Hadeel only for the rest | |
+| 13 | Spoken evidence | A timed spoken run reported in gates 4 to 6 and the live defence; or require a recorded voice note at gate 5 despite data costs | |
+| 14 | Sources on the page | Resume rewrites may print a source in brackets ("my manager's figure"), or keep it for speaking only | |
+| 15 | Pass rule | One rule for every gate: no part Not yet, at most one Partly | |
