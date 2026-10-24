@@ -1,4 +1,6 @@
 ---
+
+Canvas code is shared by web and desktop in `packages/learning-ui/src/canvas/`. Follow `agent-ip/10-interactive-canvases.md` → Shared canvas development and verification for slug synchronization, package refresh, and checks in both apps. Do not recreate the removed frontend canvas folder or edit generated slug copies. New canvas tests remain in `frontend/tests/unit/canvas/` and should import from `@buildment/learning-ui/canvas/...`.
 artifact: context-pack
 course: cause-and-effect
 for: chapter-writer
@@ -141,8 +143,8 @@ Set-the-scene open questions use only `prompt`, `required`, `minWords`, `allowSp
 
 | Chapter | Slug | Data |
 |---|---|---|
-| 4.3 The five whys | `five-whys-chain` | `frontend/src/canvas/five-whys-chain/data.ts` and `spec.md` |
-| 5.3 Guess, test, repeat | `laptop-charging-detective` | `frontend/src/canvas/laptop-charging-detective/data.ts` and `spec.md` |
+| 4.3 The five whys | `five-whys-chain` | `packages/learning-ui/src/canvas/five-whys-chain/data.ts` and `spec.md` |
+| 5.3 Guess, test, repeat | `laptop-charging-detective` | `packages/learning-ui/src/canvas/laptop-charging-detective/data.ts` and `spec.md` |
 
 Read the data and spec first; match every name, time and number. Put a predict before the canvas matching its first "Try this" line, introduce it in one or two sentences, place `<InteractiveCanvas slug="..." />` on its own line, explain what it showed in prose after it, and follow with a quiz MCQ on a new case. The predict must come before the chapter or the canvas reveals the answer, and the canvas must not repeat a question the chapter already answered. The chapter must teach the claim in prose too (the canvas is not the only path). No other chapter uses a canvas.
 
@@ -152,8 +154,8 @@ agent-ip v0.4 (`04-interactive-playbook.md`, `10-interactive-canvases.md`, `agen
 
 For each of your Learn chapters that has no canvas yet:
 - Pick the claim the chapter's decision depends on, and the renderer that fits it (`10-interactive-canvases.md` → Reusable renderers): **sequence** for something moving between two to four actors over time (a message, a test, a delivery), **state machine** for a chain, a loop or a lifecycle (grid at most 3 columns by 2 rows; edge labels at most 14 characters, at most 3 characters on an arrow between two states in the same column; no diagonal beside a parallel arrow), **factor** for weighing options against criteria.
-- Create `frontend/src/canvas/<slug>/data.ts` (typed with the renderer's spec type, header comment naming the course and chapter, `title`, `purpose`, `summary` for screen readers, steps with `title` and `note` in the course's plain English, `tryThis` with the first line matching your predict, honest `limits`) and `frontend/src/canvas/<slug>/spec.md` on template 14A (teaching claim, why a canvas, model, rendering, copy, edge cases, accessibility, acceptance criteria). Use an existing canvas such as `five-whys-chain` or `laptop-charging-detective` as the model. Slugs are lower-case with hyphens, unique, and describe the claim.
-- **Do not edit** `frontend/src/canvas/registry.ts` or any `slugs.ts`: the orchestrator registers every slug after you report, then runs the registry tests and sends back any failure.
+- Create `packages/learning-ui/src/canvas/<slug>/data.ts` (typed with the renderer's spec type, header comment naming the course and chapter, `title`, `purpose`, `summary` for screen readers, steps with `title` and `note` in the course's plain English, `tryThis` with the first line matching your predict, honest `limits`) and `packages/learning-ui/src/canvas/<slug>/spec.md` on template 14A (teaching claim, why a canvas, model, rendering, copy, edge cases, accessibility, acceptance criteria). Use an existing canvas such as `five-whys-chain` or `laptop-charging-detective` as the model. Slugs are lower-case with hyphens, unique, and describe the claim.
+- **Do not edit** `packages/learning-ui/src/canvas/registry.ts` or any `slugs.ts`: the orchestrator registers every slug after you report, then runs the registry tests and sends back any failure.
 - In the chapter: the predict comes first, a sentence sends the learner to step through, `<InteractiveCanvas slug="<slug>" />` on its own line, then a paragraph on what it showed, and later a quiz item that transfers the claim to a new case. The canvas must not repeat a question the chapter already answered. The chapter still teaches the claim in prose. The chapter keeps its Mermaid diagram if it argues something different; otherwise replace the diagram with the canvas and keep the diagram rule met elsewhere in the chapter.
 - Names, numbers and facts in the canvas must match the chapter exactly. No em or en dashes, no idioms, no brand names.
 

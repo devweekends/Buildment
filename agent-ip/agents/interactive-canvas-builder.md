@@ -1,5 +1,7 @@
 # Agent — Interactive Canvas Builder
 
+Canvas code is shared by web and desktop in `packages/learning-ui/src/canvas/`. Follow `agent-ip/10-interactive-canvases.md` → Shared canvas development and verification for slug synchronization, package refresh, and checks in both apps. Do not recreate the removed frontend canvas folder or edit generated slug copies. New canvas tests remain in `frontend/tests/unit/canvas/` and should import from `@buildment/learning-ui/canvas/...`.
+
 ## Role
 
 You build small, focused simulators and visualisers from an approved canvas spec. You do not decide that a canvas is needed, and you do not write the surrounding chapter prose.
@@ -21,19 +23,19 @@ You may render with HTML/CSS, inline SVG, or Canvas 2D. Use HTML for controls an
 
 ## Outputs
 
-- A canvas folder with its data and spec, using an existing renderer (sequence, state machine, factor, timeline) where it fits. Courses are interactive-first, so you build many canvases: reuse first. Check `10-interactive-canvases.md` → The reusable component library before writing any UI: controls come from shadcn/ui on Base UI through `primitives/controls.tsx`, axes from `d3-scale`, charts from shadcn/ui `Chart` (Recharts), node graphs from React Flow. Build time-based models on the shared simulation core (`frontend/src/canvas/sim/`) rather than inventing a new loop. When you add a renderer other courses can use, add it to that table in the same change:
+- A canvas folder with its data and spec, using an existing renderer (sequence, state machine, factor, timeline) where it fits. Courses are interactive-first, so you build many canvases: reuse first. Check `10-interactive-canvases.md` → The reusable component library before writing any UI: controls come from shadcn/ui on Base UI through `primitives/controls.tsx`, axes from `d3-scale`, charts from shadcn/ui `Chart` (Recharts), node graphs from React Flow. Build time-based models on the shared simulation core (`packages/learning-ui/src/canvas/sim/`) rather than inventing a new loop. When you add a renderer other courses can use, add it to that table in the same change:
 
 ```
-frontend/src/canvas/<slug>/
+packages/learning-ui/src/canvas/<slug>/
   data.ts
   spec.md
 ```
 
-- If no renderer fits the model, a reviewed custom React component for that slug with a pure `model.ts` and tests in `frontend/tests/unit/canvas/`. Extract a new renderer under `frontend/src/canvas/renderers/<kind>/` only when multiple canvases share the interaction pattern.
+- If no renderer fits the model, a reviewed custom React component for that slug with a pure `model.ts` and tests in `frontend/tests/unit/canvas/`. Extract a new renderer under `packages/learning-ui/src/canvas/renderers/<kind>/` only when multiple canvases share the interaction pattern.
 
 If the visualisation uses vector geometry, the renderer returns a React SVG component. Static SVG assets, if unavoidable, are sanitized, optimised, hosted locally, and rendered through the component.
 
-- The slug in `server/src/shared/canvas/slugs.ts` (then `pnpm sync-shared`) and a registry entry in `frontend/src/canvas/registry.ts`.
+- The slug in `server/src/shared/canvas/slugs.ts` (then `pnpm --dir server sync-shared`) and a registry entry in `packages/learning-ui/src/canvas/registry.ts`.
 - A check on the preview page, `/workspace/canvases`, which lists every registered canvas.
 - A completed canvas QA report with the technical validator (`08-templates.md` → Canvas QA report).
 - The four copy blocks for the chapter: What this shows, Try this, What changed, Limits of the model.

@@ -1,4 +1,6 @@
 ---
+
+Canvas code is shared by web and desktop in `packages/learning-ui/src/canvas/`. Follow `agent-ip/10-interactive-canvases.md` → Shared canvas development and verification for slug synchronization, package refresh, and checks in both apps. Do not recreate the removed frontend canvas folder or edit generated slug copies. New canvas tests remain in `frontend/tests/unit/canvas/` and should import from `@buildment/learning-ui/canvas/...`.
 artifact: context-pack
 course: logic-building
 for: chapter-writer
@@ -170,9 +172,9 @@ Three chapters embed a canvas. Read the canvas's `data.ts` and `spec.md` first, 
 
 | Chapter | Slug | Data |
 |---|---|---|
-| 2.5 Flowcharts | `freelance-job-flowchart` | `frontend/src/canvas/freelance-job-flowchart/data.ts` |
-| 3.5 Things that change state | `job-application-status` | `frontend/src/canvas/job-application-status/data.ts` |
-| 7.4 Check the AI's answer | `check-the-ai-answer` | `frontend/src/canvas/check-the-ai-answer/data.ts` |
+| 2.5 Flowcharts | `freelance-job-flowchart` | `packages/learning-ui/src/canvas/freelance-job-flowchart/data.ts` |
+| 3.5 Things that change state | `job-application-status` | `packages/learning-ui/src/canvas/job-application-status/data.ts` |
+| 7.4 Check the AI's answer | `check-the-ai-answer` | `packages/learning-ui/src/canvas/check-the-ai-answer/data.ts` |
 
 No other chapter uses a canvas. Never put a canvas in a gate or a quiz chapter.
 
