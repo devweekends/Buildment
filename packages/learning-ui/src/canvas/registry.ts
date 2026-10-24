@@ -121,6 +121,39 @@ import { whichHabitFirst } from "./which-habit-first/data";
 import { dinaStudyBlock } from "./dina-study-block/data";
 import { prayerTimeAnchors } from "./prayer-time-anchors/data";
 import { joinFanOut } from "./join-fan-out/data";
+import { wrongNumberTrace } from "./wrong-number-trace/data";
+import { batchFreshness } from "./batch-freshness/data";
+import { nullAverageTrap } from "./null-average-trap/data";
+import { cteSteps } from "./cte-steps/data";
+import { rowNumberDedupe } from "./row-number-dedupe/data";
+import { movingAverageFrame } from "./moving-average-frame/data";
+import { indexOrScan } from "./index-or-scan/data";
+import { oltpOrStar } from "./oltp-or-star/data";
+import { chooseTheGrain } from "./choose-the-grain/data";
+import { scd2MarketMove } from "./scd2-market-move/data";
+import { rowVsColumnRead } from "./row-vs-column-read/data";
+import { partitionFileSize } from "./partition-file-size/data";
+import { lakeWarehouseLakehouse } from "./lake-warehouse-lakehouse/data";
+import { eltZonesFlow } from "./elt-zones-flow/data";
+import { rerunAppendVsOverwrite } from "./rerun-append-vs-overwrite/data";
+import { cdcWatermark } from "./cdc-watermark/data";
+import { dbtBuildOrder } from "./dbt-build-order/data";
+import { whatTestsCatch } from "./what-tests-catch/data";
+import { snapshotSeesRuns } from "./snapshot-sees-runs/data";
+import { lateDataLookback } from "./late-data-lookback/data";
+import { dedupeKeyChoice } from "./dedupe-key-choice/data";
+import { schemaChangePath } from "./schema-change-path/data";
+import { pipelineDagRetry } from "./pipeline-dag-retry/data";
+import { retryBackoffOutage } from "./retry-backoff-outage/data";
+import { partitionOffsets } from "./partition-offsets/data";
+import { deliveryGuarantees } from "./delivery-guarantees/data";
+import { oneMachineOrCluster } from "./one-machine-or-cluster/data";
+import { volumeCheckThreshold } from "./volume-check-threshold/data";
+import { hashIsNotAnonymous } from "./hash-is-not-anonymous/data";
+import { ciBlocksBadChange } from "./ci-blocks-bad-change/data";
+import { sqlRoundSteps } from "./sql-round-steps/data";
+import { modellingRoundSteps } from "./modelling-round-steps/data";
+import { designRoundChoice } from "./design-round-choice/data";
 
 // The closed set of canvases a chapter can embed, keyed by the slugs in
 // server/src/shared/canvas/slugs.ts. Each entry is data for one of the four
@@ -254,6 +287,39 @@ export const canvasRegistry: Record<CanvasSlug, CanvasSpec> = {
   "dina-study-block": dinaStudyBlock,
   "prayer-time-anchors": prayerTimeAnchors,
   "join-fan-out": joinFanOut,
+  "wrong-number-trace": wrongNumberTrace,
+  "batch-freshness": batchFreshness,
+  "null-average-trap": nullAverageTrap,
+  "cte-steps": cteSteps,
+  "row-number-dedupe": rowNumberDedupe,
+  "moving-average-frame": movingAverageFrame,
+  "index-or-scan": indexOrScan,
+  "oltp-or-star": oltpOrStar,
+  "choose-the-grain": chooseTheGrain,
+  "scd2-market-move": scd2MarketMove,
+  "row-vs-column-read": rowVsColumnRead,
+  "partition-file-size": partitionFileSize,
+  "lake-warehouse-lakehouse": lakeWarehouseLakehouse,
+  "elt-zones-flow": eltZonesFlow,
+  "rerun-append-vs-overwrite": rerunAppendVsOverwrite,
+  "cdc-watermark": cdcWatermark,
+  "dbt-build-order": dbtBuildOrder,
+  "what-tests-catch": whatTestsCatch,
+  "snapshot-sees-runs": snapshotSeesRuns,
+  "late-data-lookback": lateDataLookback,
+  "dedupe-key-choice": dedupeKeyChoice,
+  "schema-change-path": schemaChangePath,
+  "pipeline-dag-retry": pipelineDagRetry,
+  "retry-backoff-outage": retryBackoffOutage,
+  "partition-offsets": partitionOffsets,
+  "delivery-guarantees": deliveryGuarantees,
+  "one-machine-or-cluster": oneMachineOrCluster,
+  "volume-check-threshold": volumeCheckThreshold,
+  "hash-is-not-anonymous": hashIsNotAnonymous,
+  "ci-blocks-bad-change": ciBlocksBadChange,
+  "sql-round-steps": sqlRoundSteps,
+  "modelling-round-steps": modellingRoundSteps,
+  "design-round-choice": designRoundChoice,
 };
 
 /** The spec for a slug from MDX, or null for anything not registered. */
