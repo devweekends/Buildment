@@ -148,7 +148,7 @@ modules:
       - file: 07.02-feedback-and-gaps.md
         title: "Reading feedback and filling the gaps"
         goal: "Read feedback critically, compare flags across practice interviews, and plan how to fill a gap in your story bank, including a small project built around a need of your own."
-      - file: 07.03-mixed-review.md
+      - file: 07.03-quiz.md
         title: "Mixed review: what is missing?"
         goal: "Mixed practice check: in fresh answers from every module, find the quality that is missing."
       - file: 07.04-capstone-full-interview.md
