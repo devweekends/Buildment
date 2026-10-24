@@ -2,12 +2,12 @@
 artifact: context-pack
 course: ai-engineering-interview
 for: chapter-writer
-version: 1
+version: 2
 ---
 
 # Writer pack: Cracking the AI Engineering and Agentic AI Interview
 
-Read this whole file before writing. It replaces the chapter briefs for this course (G2C was skipped on the sponsor's instruction; see `../decision-log.md`). The plan is `content/import/ai-engineering-interview/course.yaml`: write exactly the files, titles and goals listed there for your modules. The roadmap is `../curriculum-roadmap.md` (minutes per chapter, outcomes, gate evidence). Also skim `agent-ip/agents/chapter-writer.md`, `agent-ip/04-interactive-playbook.md` (budgets, option-length hygiene, quiz and predict rules) and `agent-ip/03-authoring-standards.md` (voice, forbidden patterns). Look at `content/import/decision-making/` for the exact file format of a teaching chapter, a quiz chapter and a gate.
+Read this whole file before writing. It replaces the chapter briefs for this course (G2C was skipped on the sponsor's instruction; see `../decision-log.md`). The plan is `courses/ai-engineering-interview/course.yaml`: write exactly the files, titles and goals listed there for your modules. Keep draft chapters in `agent-ip/work/ai-engineering-interview/chapters/`; the orchestrator promotes reviewed files into `courses/ai-engineering-interview/`. The roadmap is `../curriculum-roadmap.md` (minutes per chapter, outcomes, gate evidence). Also skim `agent-ip/agents/chapter-writer.md`, `agent-ip/04-interactive-playbook.md` (budgets, option-length hygiene, quiz and predict rules) and `agent-ip/03-authoring-standards.md` (voice, forbidden patterns). Look at `courses/decision-making/` for the exact file format of a teaching chapter, a quiz chapter and a gate.
 
 ## 1. Learner and voice
 
@@ -31,7 +31,7 @@ Read this whole file before writing. It replaces the chapter briefs for this cou
 
 ## 3. Chapter file format
 
-Path: `content/import/ai-engineering-interview/<module-dir>/<file>` exactly as in course.yaml. Frontmatter:
+Draft path: `agent-ip/work/ai-engineering-interview/chapters/<module-dir>/<file>` exactly as in course.yaml. Frontmatter:
 
 ```yaml
 ---
@@ -273,12 +273,16 @@ In the chapter: a `predict` right before the canvas, then the canvas, then four 
 
 ## 11. Validate before you report
 
-From `server/` in your checkout, using pnpm 10:
+From the repo root, audit your draft chapters:
+```
+node agent-ip/scripts/audit-course.mjs agent-ip/work/ai-engineering-interview/chapters/
+```
+After review, the orchestrator promotes approved chapters and validates the final package from `server/`:
 ```
 pnpm content:validate:source --course ai-engineering-interview
 pnpm content:audit --course ai-engineering-interview
 ```
-Other writers are working on other modules at the same time, so you will see "Planned lesson file does not exist" for their modules. Your own files must have zero errors and zero warnings. Also run, from the repo root, `grep -rnP "[\x{2013}\x{2014}]" content/import/ai-engineering-interview/<your module dirs>` and fix anything it prints, and grep your files for the banned company and model names.
+Your own files must have zero errors and zero warnings. Also search `agent-ip/work/ai-engineering-interview/chapters/<your module dirs>` for en and em dashes and fix anything found, and search your files for the banned company and model names.
 
 Do not touch any file outside your module folders and your scratch reference folder. Do not run git commands that change state (no add, commit, stash, checkout, reset). Do not run database or import commands.
 

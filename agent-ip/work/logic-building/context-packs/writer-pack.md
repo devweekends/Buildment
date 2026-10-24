@@ -2,12 +2,12 @@
 artifact: context-pack
 course: logic-building
 for: chapter-writer
-version: 1
+version: 2
 ---
 
 # Writer pack: Think Clearly: Logic for the AI Era
 
-Read this whole file before writing. It replaces the chapter briefs for this course (G2C was skipped on the sponsor's instruction; see `../decision-log.md`). The plan is `content/import/logic-building/course.yaml`: write exactly the files, titles and goals listed there for your modules. The roadmap is `../curriculum-roadmap.md` (minutes per chapter, outcomes, gate evidence). Look at `content/import/decision-making/` for the exact file format of a teaching chapter, a quiz chapter and a gate (for example `02-trade-offs-and-competing-options/02.01`, `02.03`, `02.05` and `02.06`). Also skim `agent-ip/04-interactive-playbook.md` (option-length hygiene, quiz and predict rules) and `agent-ip/03-authoring-standards.md` (voice, forbidden patterns).
+Read this whole file before writing. It replaces the chapter briefs for this course (G2C was skipped on the sponsor's instruction; see `../decision-log.md`). The plan is `courses/logic-building/course.yaml`: write exactly the files, titles and goals listed there for your modules. Keep draft chapters in `agent-ip/work/logic-building/chapters/`; the orchestrator promotes reviewed files into `courses/logic-building/`. The roadmap is `../curriculum-roadmap.md` (minutes per chapter, outcomes, gate evidence). Look at `courses/decision-making/` for the exact file format of a teaching chapter, a quiz chapter and a gate (for example `02-trade-offs-and-competing-options/02.01`, `02.03`, `02.05` and `02.06`). Also skim `agent-ip/04-interactive-playbook.md` (option-length hygiene, quiz and predict rules) and `agent-ip/03-authoring-standards.md` (voice, forbidden patterns).
 
 ## 1. What this course is
 
@@ -42,7 +42,7 @@ The gentle starting point of the fellowship: a non-coding, non-technical course 
 
 ## 4. Chapter file format
 
-Path: `content/import/logic-building/<module-dir>/<file>` exactly as in course.yaml. Frontmatter:
+Draft path: `agent-ip/work/logic-building/chapters/<module-dir>/<file>` exactly as in course.yaml. Frontmatter:
 
 ```yaml
 ---
@@ -217,5 +217,5 @@ Open question: `minWords: 200`, `allowSpeechInput: true`, `allowUrl: true`, `url
 - Every file in your modules exists, with the exact title from course.yaml and the minutes from the roadmap.
 - Search your files for U+2014 and U+2013: zero.
 - Every puzzle and sum solved twice. Every MCQ blind re-answered.
-- Run from `server/` (pnpm is broken on this machine, so call tsx directly): `node node_modules/tsx/dist/cli.mjs scripts/validate-course-source.ts --course logic-building` and `node node_modules/tsx/dist/cli.mjs scripts/audit-course-structure.ts --course logic-building`, and fix every error and every warning in your files. (Other writers' modules may still be missing; ignore errors that are only about missing files outside your modules.)
-- Do not edit files outside your modules, course.yaml, or anything outside `content/import/logic-building/`. Do not commit.
+- From the repo root, run `node agent-ip/scripts/audit-course.mjs agent-ip/work/logic-building/chapters/` and fix every flag in your modules. After review, the orchestrator promotes approved chapters and runs source validation and the strict structure audit against `courses/logic-building/`.
+- Edit only your assigned draft module folders; leave `course.yaml` and the final package to the orchestrator. Do not commit.

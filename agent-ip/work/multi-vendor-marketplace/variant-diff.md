@@ -9,7 +9,7 @@ instructors_reviewed: []
 
 # Variant set: multi-vendor marketplace
 
-FreshMarket (`content/import/multi-vendor-marketplace/`) is the general course. These five variants keep its spine and outcomes and change the product. Each variant has its own roadmap and diff in `variants/<slug>/`. Nothing here is a chapter: **no variant chapter is written until instructors confirm that variant's roadmap.**
+FreshMarket (`courses/multi-vendor-marketplace/`) is the general course. These five variants keep its spine and outcomes and change the product. Each variant has its own roadmap and diff in `variants/<slug>/`. Nothing here is a chapter: **no variant chapter is written until instructors confirm that variant's roadmap.**
 
 The personalization layer (brand style, project name, wordmark, accent) is separate and does not count toward uniqueness: see [`personalization-layer.md`](personalization-layer.md). Platform work for both is in [`platform-needs.md`](platform-needs.md).
 

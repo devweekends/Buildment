@@ -32,7 +32,7 @@ Turn the chapter brief into prose that teaches a decision, shows a specific exam
 - a reflect prompt and a bridge;
 - source notes for any claim that needs a citation.
 
-Drafts and revisions stay in the work area. After review and QA, the orchestrator arranges promotion to `content/import/<course-slug>/`. Keep source notes and review evidence in the work area; do not write drafts into the CI publishing source. Follow `README.md` → Work areas.
+Drafts and revisions stay in the work area. After review and QA, the orchestrator arranges promotion to `courses/<course-slug>/`. Keep source notes and review evidence in the work area; do not write drafts into the CI publishing source. Follow `README.md` → Work areas.
 
 ## Chapter skeleton
 
