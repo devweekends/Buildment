@@ -283,7 +283,7 @@ modules:
         goal: "Estimate aloud whether a deployment fits, with the arithmetic, the units and a fix with its trade-off."
       - file: 11.10-quiz.md
         title: "Inference and serving"
-        goal: "Graded scenarios on prefill and decode, the KV cache, memory budgets, batching and admission control."
+        goal: "Graded scenarios on a fit estimate, paging, speculative decoding, splitting a model across GPUs and admission control."
       - file: 11.11-checklist.md
         title: "Checklist and learning log"
         goal: "Gate: a written sizing of a self-hosted deployment with two fixes and their trade-offs."
