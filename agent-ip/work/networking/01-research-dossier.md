@@ -221,6 +221,25 @@ Execution check of the recommended default, on Docker Desktop for Windows (engin
 | Time | First run, including `apt-get install`, about 40 seconds. |
 | `traceroute` to the real internet from the lab container | **Hides the real path.** Default UDP probes: hop 1 is `172.17.0.1`, then only `* * *`. With `-I` (ICMP) or `-T` (TCP): hop 1 `172.17.0.1`, hop 2 the destination itself. Docker Desktop's own networking stands between the VM and the host, so the routers in between never appear. The Windows host's `tracert -d` on the same machine showed every hop, including two private home routers and a private `10.x` address inside the provider. |
 
+### 5.6 Second environment test, 2026-10-24 (after the G2A critiques)
+
+Same host and image as 5.5, extra packages `conntrack` and `busybox`. Topology: laptop `192.168.1.23` and phone `192.168.1.24` on a bridge in a router namespace, a guest `192.168.50.10` on its own router interface, a server `203.0.113.80` outside, nft masquerade out of the outside interface, a DNAT rule `203.0.113.1:8080 -> 192.168.1.23:80`, and a `forward` chain rule dropping guest to home. A one-line busybox `httpd` CGI on the server answers with the address and port it sees.
+
+| Check | Result |
+|---|---|
+| One client, source port 40000 | The server saw `203.0.113.1:40000`. **The address is rewritten, the port is kept.** |
+| A second client using the same source port (41000) while the first is open | The server saw `203.0.113.1:37613`. **The port is rewritten only when it would clash.** `conntrack -L` shows both mappings (`sport=41000 ... dport=37613`), so `conntrack` is the real NAT table to show learners. |
+| Server to `192.168.1.23` with no route | Fails at once (curl exit 7). |
+| Server to the router's outside address, port 22, nothing listening | Connection refused (exit 7), not a silent timeout. |
+| Server adds a route `192.168.1.0/24 via 203.0.113.1` | The connection to the laptop **succeeds**. A masquerade-only router is not a firewall; the real internet simply has no route to private ranges. |
+| DNAT port forwarding, tested from the server namespace | Works: `203.0.113.1:8080` reached the laptop's web server. |
+| Guest isolation with a `forward` drop rule | Guest to home blocked; guest to server works (seen as `203.0.113.1`). |
+| Per-namespace resolver file `/etc/netns/laptop/resolv.conf` | Works: `curl http://web.test/...` resolved through dnsmasq on the router. |
+| A DHCP client with no server (`busybox udhcpc -n -q -t 3 -T 1`) | Gives up after about 3 seconds and the interface has **no address**. Linux clients do not fall back to `169.254.x.x` here; that fallback is a Windows and macOS behaviour, to be taught as client dependent. |
+| `dig -4 +trace` from the lab container | No answer within 40 seconds. Treat `dig +trace` as unavailable in the lab on Docker Desktop; use a recorded trace. |
+
+Still untested: Docker Desktop on macOS; WSL 2 without Docker Desktop; IPv6 forwarding through a router namespace and router advertisements (SLAAC); WireGuard; a novice's timing of any challenge.
+
 **Consequence for the course:** commands about the learner's real internet path (`traceroute`/`tracert`, `curl ifconfig.me`, the host's own addresses) run on the host, not in the lab container. The lab container is for networks the learner builds. Chapters 1.1, 4.1 and 6.4 say which side each command runs on.
 
 Not tested: Docker Desktop on macOS, native Linux, WSL 2 without Docker, and the narrower `--cap-add` alternative. The roadmap keeps `--privileged` as the default and asks for a macOS run before the blueprint is locked.
