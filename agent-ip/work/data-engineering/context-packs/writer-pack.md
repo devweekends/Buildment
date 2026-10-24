@@ -104,6 +104,19 @@ The exact counts, dates, codes, names and outputs come from `reference-build/REF
 
 Side cases (quizzes, examples, gates) use other settings so the learner transfers the idea: a clinic's appointment list, a school's attendance sheet, a solar shop's battery readings, a freelance client's online orders, a water delivery round, a bakery's sales, a pharmacy's stock. Every quiz actor has a name, a place and a number.
 
+## 5B. Notes from the reference build (read `REFERENCE.md` section 0 in full)
+
+- **Install path:** the virtual environment must live at a short path such as `C:\deenv` (or the project at `C:\de\mizan`). At a long path, `pip` or `uv` may install without error, but dbt crashes on its first parse because one dependency file passes the Windows 260-character limit. The install check is `dbt parse` (or `python scripts/check_setup.py` plus `dbt parse`), never only `dbt --version`, which works even when the install is broken.
+- **Numbers depend on `--days`.** Quote counts for the default 28 days unless a chapter says otherwise (the late-data tests use 16 days). Seed-7, 28-day facts: 2,712 lines, 2,633 distinct reports, 2,620 accepted, 211 late, 79 duplicate sends, 13 bad rows (9 price, 4 missing item), 31 true repeats, 140 of 224 market-days with all 12 items, M05 outage: 37 lines on 12 March for 9 to 11 March (34 distinct good reports).
+- **Time zones:** `reported_at` ends in `Z`; DuckDB reads it as a timestamp with time zone, and casting to a date uses the machine's time zone. `land.py` converts to plain UTC once. A good near-miss for 5.5 or 8.2.
+- **The form change is by upload date:** a report made on 14 March and uploaded on 16 March already has `unit`.
+- **Chapter versions:** in 5.5 `land_uploads` has no contract; in 8.5 bad rows go to quarantine. In 7.5 `stg_price_reports` filters bad rows with one `where` line; from 8.5 landing quarantines them. Say so where it matters.
+- **Pseudonyms:** V07 has two `volunteer_key` values because the key is made from the phone and the phone changed (use it in 11.3: a pseudonym tied to a changing attribute splits one person in two). V11's hard delete is invisible to watermark extraction (a test documents it).
+- **Quarantine holds personal data** (full raw rows), so it is restricted, and retention (11.5) deletes old quarantine partitions too.
+- **Late dimensions:** the lookback covers late facts, not late dimension changes; a market change found late needs a backfill (a test documents it).
+- **dbt keys:** in dbt, surrogate keys are hashes (`dbt_scd_id`, `md5(item_code)`); in the 4.5 prototype they are integers. The first snapshot version of each market starts at 1900-01-01. Explain why where each appears.
+- **Computing a number yourself:** you may run the reference build to get a number for a canvas or an example. Copy `reference-build/mizan-prices` to `C:/Users/Zeeshan/bm-de-scratch/ref-<your writer letter>/` and use the existing environment `C:/de/venv/Scripts/python.exe` (set `PYTHONUTF8=1`). Never install anything, never edit the reference build itself.
+
 ## 5A. Name pools (quiz and side characters; grep the course before using any name)
 
 - Writer A (modules 1, 2): Adam, Salma, Tareq, Reem, Bilal, Nadia, Fadi, Asma
