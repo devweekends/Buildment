@@ -2,10 +2,11 @@
 artifact: module-brief
 course: networking
 module: 06-nat
-version: 1
+version: 2
 owner: curriculum-architect
 roadmap_version: 3.1
 roadmap_confirmed: true
+agent_ip_version: 0.5.3
 ---
 
 # Module 06: NAT: how every device at home reaches the internet
@@ -63,44 +64,82 @@ Totals: 11 chapters: 1 Read (6.1), 4 Learn (6.2 to 6.5), 1 Code, 2 Build, 1 Lab,
 | 6.10 | NAT | Check | 15 | Predict addresses on both sides of one and two NATs, and whether the port changes; two questions from module 5 | napt, cgnat | none | quiz |
 | 6.11 | Answer the course question | Gate | 25 | Answer it with your own capture and `conntrack` output; branches if your own public address is IPv6 or shared | napt, conntrack | none | course question answered with own capture |
 
-Budgets for every chapter below: Learn and Build at least 1,200 prose words; Read, Code and Lab chapters and Gates at least 700 (a proposed course exception that waits for the sponsor's G2C decision; if it is rejected, the Read chapter is re-timed to 15 to 20 minutes); Check is quiz-only. At most 6 top-level components, 25 JSX tags (cap `GlossaryTerm` at 10) and 3 assessment interactions. Every diagram has a text legend. Fictional public addresses use only `192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`, with a visible note in 6.1 (decision 11).
+Budgets for every chapter below (agent-ip v0.5.3, sponsor decision at G2C, 2026-10-26): Learn and Read follow the beats rules (Learn: four to eight beats, at most 70 visible words per beat, 300 to 700 visible words and at least 900 with `GoDeeper` folds, at least one playable beat, no BigWordAlert; Read: one or two beats); Build at least 1,200 prose words; Code, Lab and Gate at least 700; Check is quiz-only. Build, Code, Lab, Check and Gate chapters keep at most 6 top-level components and 25 JSX tags (cap `GlossaryTerm` at 10 per chapter); Learn chapters at most 40 JSX tags; at most 3 assessment interactions in all. Every diagram has a text legend.
 
 ## Chapter blocks
 
 **6.1 Fifteen devices, one public address** (Read; reinforces nat-first-look)
 - Hook: the module's opening question: all your devices are connected to the router and none has a public address, so how do they reach the internet? (The roadmap gives no separate "Problem first" for this Read.) Claim: a server cannot tell fifteen devices apart by source address; to it they are one.
 - Example: fifteen devices `192.168.1.20` to `192.168.1.34` each open a connection to `203.0.113.80`. The server logs `203.0.113.45` fifteen times, the same number as the opener in 1.1.
-- Diagram: none; the canvas is the picture. `LearningObjectives` sits here.
-- Interactive: `net-lab-home-router-first-look`, explore. Predict first: fifteen devices connect to one server; how many different source addresses does it see (1, 15, it depends)? The learner also looks at their own 1.1 notes: the address on the laptop and the one the website saw.
-- Assess: 1 `PREDICT`. Near miss: the canvas uses `203.0.113.45` (the opener) while the tested build uses `203.0.113.1`; say once that both stand in for a public address. If the learner's own result in 1.1 was IPv6 or shared, point to the branch in 6.11.
+- Format (agent-ip v0.5.3): `format: beats`, 2 beats (a Read chapter has one or two); at most 70 visible words per beat; depth and the worked example go in `GoDeeper` folds; the commands the chapter asks the learner to run stay as code fences; no BigWordAlert (terms use `GlossaryTerm`). The hook and claim above stay as the chapter's opening lines.
+- Beats:
+  1. **Fifteen devices, one address in the log** (playable). InteractiveCanvas `net-m6-home-router-first-look` (`[netlab]`). Shows: fifteen devices 192.168.1.20 to .34 each open a connection to 203.0.113.80; the server logs 203.0.113.45 fifteen times. Learner: open connections from different devices and read the server's log.
+  2. **The two numbers from 1.1, again** (fixed picture). MermaidDiagram `mmd-6-1-two-numbers-again` (inline, no registration). Shows: your computer's 192.168.1.23 and the address a website saw, now with the router between them.
+- Predict (right before beat 1, "Fifteen devices, one address in the log"): Fifteen devices connect to one server. How many different source addresses does the server see? Options: 1 / 15 / it depends. Answerable from: 1.1 showed that a website sees a different address from the computer's own, and 2.4 showed a router rewriting the source; the learner combines them.
+- Quick check (after the last beat): (1) A server logs two connections from 203.0.113.45: can it tell which device made each (taught in beat 1).
+- Components: GlossaryTerm (public address, documentation range); 1 Callout; LearningObjectives; Checklist; one `GoDeeper` fold per beat; about 9 of 40 JSX tags; 2 of 3 assessments.
+- Near miss: The canvas uses `203.0.113.45` (the opener) while the tested build uses `203.0.113.1`; say once that both stand in for a public address. If the learner's own result in 1.1 was IPv6 or shared, point to the branch in 6.11.
 
 **6.2 The NAT table** (Learn; reinforces nat-first-look)
 - Hook: your phone and laptop both send from port 41000 to the same server. Replies come back to one address. Which device gets which? Claim: the router keeps one table row per conversation; it always rewrites the source address, keeps the port unless two conversations would collide, and uses the row to send replies back [S17, S18].
 - Example: laptop `192.168.1.23` and phone `192.168.1.24`, both from port 41000 to `203.0.113.80:8080`, router outside `203.0.113.1`. Laptop: source becomes `203.0.113.1:41000` (kept). Phone: `203.0.113.1:<new port>` (changed). Tested behaviour [dossier 5.6]: address rewritten, port kept; port rewritten only on a clash; `conntrack -L` shows both rows. The new port is chosen by the kernel (one run gave 37613); never print one as the answer.
-- Diagram: `MermaidDiagram` flowchart of one packet before and after the router with the table row. Claim: the row is what lets the reply find its device.
-- Interactive: `net-lab-nat-table`: watch the table fill, inspect each packet before and after. Predict first: both send from 41000; what does the server see (both change, only the second changes, neither changes)? (Only the second.)
-- Assess: 1 `PREDICT`, 1 `QUIZ` (two devices, different source ports: does anything change?). Near miss: "other routers may differ"; RFC 4787 says mapping must be endpoint-independent, but real routers vary and no measurement is sourced, so teach the requirement, not "all routers do this" [S18]. The lab's limits line says the same. The netlab generator covers `conntrack -L`, so the rows come from the model's state; the learner reads a real table in 6.7 (untested in the lab generator: verify at G3).
+- Format (agent-ip v0.5.3): `format: beats`, 5 beats; at most 70 visible words per beat, 300 to 700 visible words in all and at least 900 with the `GoDeeper` folds (the claim and worked example above are spread over the beats and their folds); one visual per beat; at least one playable beat; at most 40 JSX tags and 3 assessment interactions; no BigWordAlert (terms use `GlossaryTerm`). The hook above is the chapter's one or two opening sentences.
+- Beats:
+  1. **The router rewrites the source address** (playable). InteractiveCanvas `net-m6-nat-rewrite` (`[netlab]`). Shows: a packet from 192.168.1.23 leaves the router with the router's outside address as its source. Learner: inspect the packet before and after the router.
+  2. **One row per conversation** (playable). InteractiveCanvas `net-m6-nat-table-fills` (`[netlab]`). Shows: the NAT table gains a row each time a device opens a connection. Learner: open connections from the laptop and the phone.
+  3. **The row sends the reply home** (fixed picture). MermaidDiagram `mmd-6-2-reply-path` (inline, no registration). Shows: a reply to the outside address and port is matched to its row and sent to the right device.
+  4. **Two devices, same port: one must change** (playable). InteractiveCanvas `net-m6-nat-clash` (`[netlab]`). Shows: laptop and phone both send from 41000 to 203.0.113.80:8080; the laptop keeps 41000, the phone gets another port. Learner: make both devices use port 41000.
+  5. **Read the real table with conntrack** (playable). InteractiveCanvas `net-m6-conntrack` (`[netlab]`). Shows: conntrack -L rows showing sport=41000 and the new port, generated from the model's state. Learner: run conntrack -L after the clash.
+- Predict (right before beat 4, "Two devices, same port: one must change"): Both devices send from port 41000 to the same server. What does the server see: both ports change, only the second changes, or neither? Options: both change / only the second changes / neither changes. Answerable from: 5.2 taught that five numbers name a conversation; beats 1 to 3 showed the address rewrite with the port kept (as in 2.4); two identical sets of five numbers cannot both exist.
+- Quick check (after the last beat): (1) Two devices send from different source ports: does anything change (taught in beat 4).
+- Components: GlossaryTerm (NAT table, conntrack, masquerade); 1 Callout; one `GoDeeper` fold per beat; about 14 of 40 JSX tags; 2 of 3 assessments.
+- Near miss: 'Other routers may differ': RFC 4787 says mapping must be endpoint-independent, but real routers vary and no measurement is sourced, so teach the requirement, not 'all routers do this' [S18]. The lab's limits line says the same. The new port is chosen by the kernel (one run gave 37613); never print one as the answer. Annotate one `conntrack -L` row: each row has two tuples (original and reply). Tested behaviour: address rewritten, port kept, rewritten only on a clash (dossier 5.6).
 
 **6.3 Why the internet cannot reach your laptop** (Learn; reinforces address-kinds)
 - Hook: a friend wants to open the website on your laptop at home and types your public address. What happens to their packet? Claim: two separate reasons stop it: the internet has no route to private ranges, and an unsolicited packet at the router has no mapping to translate; NAT is not a firewall, and a filter is a separate rule, which 6.8 builds.
 - Example: friend at `198.51.100.77` sends to `203.0.113.45:8080`. No row, no rule: the router answers refused (tested, dossier 5.6). If the outside had a route `192.168.1.0/24` via the router, a packet addressed straight to `192.168.1.23` gets through (tested, dossier 5.6), so masquerade is not a firewall. Add a forward `203.0.113.1:8080` to `192.168.1.23:80` (tested), then a filter.
-- Diagram: `MermaidDiagram` flowchart: inbound packet, "mapping or rule?", drop or rewrite. Claim: only an outbound packet or a forwarding rule creates the mapping.
-- Interactive: `net-lab-inbound-forward`: send an inbound packet with no mapping; give the outside a route and watch it pass; add a forwarding rule; add a filter. Predict first: a friend sends to your router's public address, no rule, no earlier outbound packet; what comes back (refused, silent timeout, your laptop's page)? (Refused.)
-- Assess: 1 `PREDICT`, 1 `QUIZ` (which of three setups lets the packet in). Near miss: do not claim that home routers always add a firewall. The chapter says NAT is not a firewall and a filter is a separate rule built in 6.8; the lab router has no filter until the learner adds one, so an unforwarded port is refused. `docker run -p` publishes a port using NAT rules [S75] (the source names no rule type).
+- Format (agent-ip v0.5.3): `format: beats`, 6 beats; at most 70 visible words per beat, 300 to 700 visible words in all and at least 900 with the `GoDeeper` folds (the claim and worked example above are spread over the beats and their folds); one visual per beat; at least one playable beat; at most 40 JSX tags and 3 assessment interactions; no BigWordAlert (terms use `GlossaryTerm`). The hook above is the chapter's one or two opening sentences.
+- Beats:
+  1. **A friend types your public address** (playable). InteractiveCanvas `net-m6-inbound-unsolicited` (`[netlab]`). Shows: a friend's packet reaches your router's outside address with no earlier outbound packet. Learner: send an inbound packet with no mapping.
+  2. **No row, no rule: the router refuses** (fixed picture). MermaidDiagram `mmd-6-3-mapping-or-rule` (inline, no registration). Shows: inbound packet, mapping or rule? no, so the router answers connection refused; only an outbound packet or a forwarding rule creates a mapping.
+  3. **With a route, the outside gets in** (playable). InteractiveCanvas `net-m6-route-leak` (`[netlab]`). Shows: with a route to 192.168.1.0/24 via the router, a packet addressed straight to 192.168.1.23 reaches the laptop. Learner: add or remove the route on the outside network.
+  4. **A forwarding rule opens one port** (playable). InteractiveCanvas `net-m6-forward-rule` (`[netlab]`). Shows: 203.0.113.1:8080 forwarded to 192.168.1.23:80; other ports stay refused. Learner: add the rule and test two ports.
+  5. **A filter is a separate rule** (playable). InteractiveCanvas `net-m6-filter-rule` (`[netlab]`). Shows: a forward-chain rule drops what you choose; NAT alone filters nothing. Learner: add the filter and retest.
+  6. **docker run -p uses the same idea** (fixed picture). MermaidDiagram `mmd-6-3-docker-publish` (inline, no registration). Shows: docker run -p 8080:80 publishes a container port using NAT rules [S75].
+- Predict (right before beat 3, "With a route, the outside gets in"): The outside network is given a route to your home range. A friend sends a packet straight to 192.168.1.23. Does it reach your laptop? Options: yes, it reaches the laptop / no, the router drops it / no, the address is private so it is lost on the way. Answerable from: 4.7 taught that a router with forwarding on forwards what it has a route for, and beat 2 showed that NAT adds no rule; the learner combines them.
+- Quick check (after the last beat): (1) Which of three setups lets the packet in (taught in beats 3 to 5).
+- Components: GlossaryTerm (port forwarding, firewall, filter rule); 1 Callout; one `GoDeeper` fold per beat; about 16 of 40 JSX tags; 2 of 3 assessments.
+- Near miss: Do not claim that home routers always add a firewall. The chapter says NAT is not a firewall and a filter is a separate rule built in 6.8; the lab router has no filter until the learner adds one, so an unforwarded port is refused, and beat 2 shows the refusal so 6.8 and 7.7 can use it. Friend at `198.51.100.77` sends to `203.0.113.45:8080` (tested effects, dossier 5.6). `docker run -p` publishes a port using NAT rules [S75] (the source names no rule type).
 
 **6.4 Carrier-grade NAT** (Learn)
 - Hook: your router's page says its outside address is `100.72.14.9`, but websites see `203.0.113.45`. Who is the second router? Claim: a provider can run NAT too, with `100.64.0.0/10` on the link to customers [S11, S19]; a packet can be translated twice; an address in that block is one sign, not proof.
 - Example: laptop `192.168.1.23` to home router outside `100.72.14.9` to provider NAT to public `203.0.113.45` to server `203.0.113.80`. Source at each stage: `192.168.1.23`, `100.72.14.9`, `203.0.113.45`. Dated evidence only: a study with data from 2014 to 2016 found CGN in over 92 percent of cellular networks [S34]; the 2026 share is UNVERIFIED. CGN must limit ports per subscriber and drop new flows rather than evict old ones [S19].
-- Diagram: `MermaidDiagram` flowchart of two NAT layers with the address at each hop. Claim: the packet is rewritten twice.
-- Interactive: `net-lab-cgnat`: two layers, inspect the packet at each. Predict first: how many rewrites between laptop and server (one, two, none)? (Two.) The learner runs a trace on their own computer, not the lab, and looks for `10.x` or `100.64.0.0/10` hops after their router; hotspot learners use only the trace.
-- Assess: 1 `PREDICT`, 1 `QUIZ` (read a router status line and a trace). Near miss: a private `10.x` hop is a sign too; a recorded sample from dossier 5.5 (two private home routers, then a private hop inside the provider) shows that private hops can also mean a second home router.
+- Format (agent-ip v0.5.3): `format: beats`, 5 beats; at most 70 visible words per beat, 300 to 700 visible words in all and at least 900 with the `GoDeeper` folds (the claim and worked example above are spread over the beats and their folds); one visual per beat; at least one playable beat; at most 40 JSX tags and 3 assessment interactions; no BigWordAlert (terms use `GlossaryTerm`). The hook above is the chapter's one or two opening sentences.
+- Beats:
+  1. **The router's outside address is private** (fixed picture). VisualDiagram `net-m6-router-status-annotated` (annotated picture of real outputs). Shows: a router status page showing outside address 100.72.14.9 while websites see 203.0.113.45.
+  2. **A second router rewrites it again** (playable). InteractiveCanvas `net-m6-cgnat-layers` (`[netlab]`). Shows: laptop 192.168.1.23, then 100.72.14.9 after the home router, then 203.0.113.45 after the provider NAT. Learner: inspect the packet at each stage.
+  3. **A shared address is a sign, not proof** (fixed picture). MermaidDiagram `mmd-6-4-sign-not-proof` (inline, no registration). Shows: 100.64.0.0/10 on the router's outside address is one sign; a private 10.x hop in a trace can also mean a second home router.
+  4. **Look for private hops in your own trace** (fixed picture). MermaidDiagram `mmd-6-4-own-trace` (inline, no registration). Shows: a recorded sample trace with two private home routers and a private provider hop; run yours on your own computer.
+  5. **Providers ran out of addresses too** (fixed picture). MermaidDiagram `mmd-6-4-why-providers` (inline, no registration). Shows: the shortage from 2.1 again: providers share addresses across customers; a 2014 to 2016 study found CGN in over 92 percent of cellular networks [S34].
+- Predict (right before beat 2, "A second router rewrites it again"): Your laptop reaches the server through two routers that both do NAT. How many times is the source address rewritten? Options: once / twice / never. Answerable from: 6.2 taught that each NAT router rewrites the source; beat 1 shows two routers.
+- Quick check (after the last beat): (1) Read a router status line and a trace: is there a second NAT (taught in beats 1, 3 and 4).
+- Components: GlossaryTerm (carrier-grade NAT, shared address, hop); 1 Callout; one `GoDeeper` fold per beat; about 14 of 40 JSX tags; 2 of 3 assessments.
+- Near miss: A private `10.x` hop is a sign too; a recorded sample from dossier 5.5 (two private home routers, then a private hop inside the provider) shows that private hops can also mean a second home router. The 2026 share is UNVERIFIED: give dated evidence only [S34]. CGN must limit ports per subscriber and drop new flows rather than evict old ones [S19]. The trace runs on the learner's own computer, not the lab; hotspot learners use only the trace.
 
 **6.5 NAT timeouts, keepalives and video calls** (Learn)
 - Hook: your chat app sits untouched for an hour and messages stop arriving until you open it. What expired? Claim: a mapping is state with a timer; silence deletes it, and then an inbound packet is unknown and dropped; keepalives reset the timer; call apps use STUN to learn their outside address and a relay when that is not enough [S18, S20, S21, S51].
 - Example: model numbers, labelled illustrative: idle timeout 300 s, keepalive every 120 s, server pushes at minute 60. UDP timers must not be under two minutes, five recommended [S18]. One cloud NAT gateway times out idle connections at 350 seconds and later packets get a reset; the fix is keepalives below that [S51]. STUN returns the address and port a peer sees, default port 3478 [S20]; ICE tries host, server-reflexive and relayed candidates [S21]. One box only.
-- Diagram: `MermaidDiagram` state diagram: mapping created, active (traffic resets the timer), expired, later packet dropped. Claim: a mapping is a timed state, not a permanent rule.
-- Interactive: `net-timeline-nat-idle`, a new `[timeline]` model, seconds to hours (renderer change): a mapping expires in a quiet period, then keepalives are added. Predict first: quiet for an hour, timeout 5 minutes, a message arrives; what happens (it reaches the laptop, it is dropped, the router asks the laptop)? (Dropped.) `MustRead`: the cloud NAT gateway page [S51]; afterwards the learner can state the timeout and the fix.
-- Assess: 1 `PREDICT`, 1 `QUIZ` (which keepalive interval is safe for a 350 s timeout). Near miss: the lab router's `conntrack -L` shows its own timers; record the real output at G3 and quote it, never a Linux default from memory, and say plainly that a different NAT has a different timer. RFC 6888 gives no TCP idle figure [S19].
+- Format (agent-ip v0.5.3): `format: beats`, 5 beats; at most 70 visible words per beat, 300 to 700 visible words in all and at least 900 with the `GoDeeper` folds (the claim and worked example above are spread over the beats and their folds); one visual per beat; at least one playable beat; at most 40 JSX tags and 3 assessment interactions; no BigWordAlert (terms use `GlossaryTerm`). The hook above is the chapter's one or two opening sentences.
+- Beats:
+  1. **The chat app went quiet** (watch only). InteractiveCanvas `net-m6-scene-quiet-chat` (the `scene` renderer). Shows: a chat app sits untouched for an hour and messages stop arriving until the app is opened.
+  2. **A mapping is a row with a timer** (fixed picture). MermaidDiagram `mmd-6-5-mapping-states` (inline, no registration). Shows: created, active (traffic resets the timer), expired, later packet dropped.
+  3. **Quiet for an hour: the row is gone** (playable). InteractiveCanvas `net-m6-nat-idle-expire` (`[timeline]`). Shows: a model mapping with a 300 s idle timeout expires during a quiet hour and an inbound message is dropped. Learner: drag the quiet time.
+  4. **Keepalives reset the timer** (playable). InteractiveCanvas `net-m6-nat-keepalive` (`[timeline]`). Shows: a keepalive every 120 s keeps the row alive; one slower than the timeout does not. Learner: set the keepalive interval.
+  5. **Calls need STUN or a relay** (fixed picture). MermaidDiagram `mmd-6-5-stun-relay` (inline, no registration). Shows: STUN tells a peer its outside address and port (default port 3478 [S20]); when that is not enough a relay is used (ICE tries host, server-reflexive and relayed candidates [S21]).
+- Predict (right before beat 3, "Quiet for an hour: the row is gone"): A chat app is quiet for an hour. The router's idle timeout is 5 minutes. A message arrives from the server. What happens? Options: it reaches the laptop / it is dropped / the router asks the laptop. Answerable from: 6.3 taught that an inbound packet with no mapping is not translated; beat 2 says a mapping is a row with a timer.
+- Quick check (after the last beat): (1) Which keepalive interval is safe for a 350 s timeout (taught in beat 4).
+- Components: GlossaryTerm (idle timeout, keepalive, STUN, relay); 1 Callout; MustRead (cloud NAT gateway page [S51], in a fold); one `GoDeeper` fold per beat; about 16 of 40 JSX tags; 2 of 3 assessments.
+- Near miss: Model numbers are labelled illustrative: idle timeout 300 s, keepalive every 120 s. UDP timers must not be under two minutes, five recommended [S18]. One cloud NAT gateway times out idle connections at 350 seconds and later packets get a reset; the fix is keepalives below that [S51]. The lab router's `conntrack -L` shows its own timers: record the real output at G3 and quote it (29 seconds left on an unanswered UDP flow and 119 on a closed TCP flow were seen on 2026-10-26, dossier 5.8), never a Linux default from memory, and say that a different NAT has a different timer. RFC 6888 gives no TCP idle figure [S19].
 
 **6.6 Code: a NAT table** (Code; see Code spec). Hook (derived): turn the table from 6.2 into a function. Claim: a NAT is a map from inside conversations to outside ports plus a clock.
 
@@ -156,32 +195,83 @@ Mode fault, three levels, checks pass or fail; commands `ping`, `ip route`, `ip 
 
 ## Interactions
 
-| Ch | Planned top-level components (max 6) | Assessments (max 3) |
-|---|---|---|
-| 6.1 | LearningObjectives, InteractiveCanvas, predict, Callout (documentation-range note), Checklist | 1 |
-| 6.2 | MermaidDiagram, InteractiveCanvas, predict, quiz, BigWordAlert (NAT table), TerminalBlock (`conntrack -L` sample) | 2 |
-| 6.3 | MermaidDiagram, InteractiveCanvas, predict, quiz, BigWordAlert (port forwarding), Callout (NAT is not a firewall) | 2 |
-| 6.4 | MermaidDiagram, InteractiveCanvas, predict, quiz, BigWordAlert (carrier-grade NAT), Callout (sign, not proof) | 2 |
-| 6.5 | MermaidDiagram, InteractiveCanvas (timeline), predict, quiz, MustRead (NAT gateway page), Callout (STUN box) | 2 |
-| 6.6 | codeexercise, TerminalBlock, Callout (the model is not a real capture) | 1 |
-| 6.7, 6.8 | Steps, FileTree, TerminalBlock, Callout, InteractiveCanvas (replay, phone-only section), Checklist | 0 |
-| 6.9 | InteractiveCanvas (lab), Checklist | lab checks |
-| 6.10 | 5 quiz fences | 5 (one instrument) |
-| 6.11 | Checklist, LearningLog, ChapterRecap, openquestion | 1 |
+Updated for agent-ip v0.5.3 (Learn chapters are visual-first beats). Per-chapter beats, predicts and quizzes are in each chapter block above and, with the density counts, in `interaction-map.yaml`. Counting rules from `audit-course.mjs`: a tag is any opening `<Component`; child tags (Step, TerminalLine, CompareColumn, TraceStep) count toward the total but not toward the 6 top-level names; quiz, predict and openquestion fences are free of tags and count as assessments; command output goes in plain code fences, not TerminalBlock.
 
-Diagram plan: MermaidDiagram in 6.2 to 6.5 (at least one per module, one per concept-heavy chapter). One `MustRead` (6.5).
+Budgets by chapter type (sponsor decision at G2C, 2026-10-26, and `03-authoring-standards.md` → Visual-first Learn chapters):
+
+- Learn: beats rules. Four to eight beats, one visual each, at most 70 visible words per beat, 300 to 700 visible words and at least 900 with `GoDeeper` folds, at least one playable beat, at most 40 JSX tags, at most 3 assessment interactions (one Predict before the key beat, one or two quiz questions at the end), no BigWordAlert.
+- Read: one or two beats, at most 70 visible words each, depth in folds, no BigWordAlert.
+- Build: at least 1,200 prose words; at most 6 top-level components and 25 JSX tags; a diagram; at most one BigWordAlert and only for a load-bearing term.
+- Code, Lab and Gate: at least 700 prose words; same component and tag limits as Build; a Gate has no canvas and no new content.
+- Check: quiz-only (three to five questions, one instrument), no canvas, no lesson text.
+
+| Ch | Format | Components | JSX tags (est.) | Assessments | Text budget |
+|---|---|---|---|---|---|
+| 6.1 | beats (2) | 2 beat visuals (1 canvas, 1 diagram), GoDeeper x2, GlossaryTerm x2, Callout x1, LearningObjectives, Checklist | 9 | PREDICT, QUIZ | one or two beats, at most 70 words each |
+| 6.2 | beats (5) | 5 beat visuals (4 canvas, 1 diagram), GoDeeper x5, GlossaryTerm x3, Callout x1 | 14 | PREDICT, QUIZ | at most 70 words a beat; 300 to 700, 900+ with folds |
+| 6.3 | beats (6) | 6 beat visuals (4 canvas, 2 diagram), GoDeeper x6, GlossaryTerm x3, Callout x1 | 16 | PREDICT, QUIZ | at most 70 words a beat; 300 to 700, 900+ with folds |
+| 6.4 | beats (5) | 5 beat visuals (1 canvas, 4 diagram), GoDeeper x5, GlossaryTerm x3, Callout x1 | 14 | PREDICT, QUIZ | at most 70 words a beat; 300 to 700, 900+ with folds |
+| 6.5 | beats (5) | 5 beat visuals (3 canvas, 2 diagram), GoDeeper x5, GlossaryTerm x4, Callout x1, MustRead (in a fold) | 16 | PREDICT, QUIZ | at most 70 words a beat; 300 to 700, 900+ with folds |
+| 6.6 | prose | codeexercise, MermaidDiagram, Callout | 5 | CODE | 700 prose words |
+| 6.7 | prose | Steps, FileTree, MermaidDiagram, Callout, InteractiveCanvas (replay), Checklist | 18 | none | 1,200 prose words |
+| 6.8 | prose | Steps, FileTree, MermaidDiagram, Callout, InteractiveCanvas (replay), Checklist | 18 | none | 1,200 prose words |
+| 6.9 | prose | InteractiveCanvas (lab), MermaidDiagram, Checklist | 5 | lab checks | 700 prose words |
+| 6.10 | prose | none | 0 | QUIZ x5 | quiz only |
+| 6.11 | prose | Checklist, LearningLog, ChapterRecap, openquestion | 4 | OPEN_QUESTION | 700 prose words |
+
+`LearningObjectives` in 6.1, `ChapterRecap` in 6.11. One MustRead (the cloud NAT gateway page [S51]) sits in a 6.5 fold. Fictional public addresses use only the documentation ranges, with a visible note in 6.1 (decision 11).
+
+Diagram plan: Beat diagrams: the second look at the learner's two numbers (6.1), the reply path through the row (6.2), mapping-or-rule and Docker's published port (6.3), sign-not-proof, the learner's own trace and why providers share too (6.4), the mapping's states and the STUN or relay choice (6.5). Code and Build chapters (6.6, 6.7, 6.8) and the Lab (6.9) each get a Mermaid diagram, added in this revision because the audit requires a diagram in every chapter that is not a Check or Gate.
+
+Changes to the earlier plan in this revision (interaction designer, G3):
+
+- 6.6: Added a MermaidDiagram and dropped TerminalBlock (audit: a diagram in every chapter that is not a Check or Gate; command output goes in plain code fences).
+- 6.7: Added a MermaidDiagram and dropped TerminalBlock to stay at six top-level components (audit: a diagram in every chapter that is not a Check or Gate).
+- 6.8: Added a MermaidDiagram and dropped TerminalBlock to stay at six top-level components.
+- 6.9: Added a MermaidDiagram (audit: a diagram in every chapter that is not a Check or Gate).
 
 ## Canvases
 
-| Slug | Chapter | Renderer | Claim | Stated limit | Fallback |
-|---|---|---|---|---|---|
-| `net-lab-home-router-first-look` | 6.1 | `[netlab]` home router, host; explore; slice 2 | The server sees one address for many devices | Linux-style NAT only | `[sequence]` phone, laptop, router, server, Predict before the key steps only, within the chapter's budget of 3 assessments (exception) |
-| `net-lab-nat-table` | 6.2 | `[netlab]` home router, NAT, inspector; step; slice 2 | One row per conversation; port changes only on a clash | Linux masquerade; other routers differ (limits line) | `[sequence]` phone, laptop, router, server |
-| `net-lab-inbound-forward` | 6.3 | `[netlab]` home router, NAT, filter; step; slice 2 | Inbound needs a mapping or a rule; NAT is not a firewall | No router firewall modelled | `[sequence]` friend, router, laptop |
-| `net-lab-cgnat` | 6.4 | `[netlab]` home router, provider NAT, inspector; step; slice 2 | The packet is rewritten twice | One provider layer, no port limits shown | `[sequence]` laptop, home router, provider NAT, server |
-| `net-timeline-nat-idle` | 6.5 | `[timeline]` new model, needs the seconds-to-hours renderer change | A quiet mapping expires; keepalives reset it | Model timers (300 s, 120 s), not a real router's | A worked-example table of the mapping timeline plus a Predict (roadmap v3.1) |
-| `net-lab-reach-home-server` | 6.9 | `[netlab]` home router, provider NAT, fault; three levels; slice 2 | Forwarding works until a second NAT sits in front | Fixed scenario | Blocked; recorded-output quiz |
-| `net-replay-masquerade`, `net-replay-forward-guest` | 6.7, 6.8 | `[replay]` | Predict each command's output, then see it | Recorded, not live | `[sequence]` learner and lab with Predict blocks before the key steps only, within the chapter's budget of 3 assessments |
+Canvas decisions (interaction designer, G3):
+
+- NAT is the module's causal model and the course question, so every claim about the table, an inbound packet and two layers of NAT is a `[netlab]` home router, NAT, filter, provider NAT and inspector beat (slice 2) in beat mode, one slug per claim; Mermaid carries only fixed relationships.
+- 6.5 uses the new `[timeline]` model, which needs the seconds-to-hours renderer change, with one draggable control per playable beat (quiet time, keepalive interval); the fallback is a worked-example table plus a Predict (roadmap v3.1).
+- 6.7 and 6.8 keep a `[replay]` each in a phone-only section; 6.9 is a graded `[netlab]` fault-mode lab (`net-lab-reach-home-server`, three levels).
+- 6.1 is a Read chapter with one netlab beat (the server sees one address) and one Mermaid beat that returns to the learner's own 1.1 numbers.
+
+Slugs follow the registry convention `net-m<module>-<name>` (graded labs keep `net-lab-`) and are proposed: none is written into a chapter until it is built and registered. The full registry with modes and chapters is in `interaction-map.yaml`. Fallbacks are named per chapter below the table.
+
+| Slug (proposed) | Renderer | Chapter, beat | Mode | What it shows |
+|---|---|---|---|---|
+| `net-m6-home-router-first-look` | [netlab] | 6.1, beat 1 | playable | fifteen devices 192.168.1.20 to .34 each open a connection to 203.0.113.80; the server logs 203.0.113.45 fifteen times |
+| `net-m6-nat-rewrite` | [netlab] | 6.2, beat 1 | playable | a packet from 192.168.1.23 leaves the router with the router's outside address as its source |
+| `net-m6-nat-table-fills` | [netlab] | 6.2, beat 2 | playable | the NAT table gains a row each time a device opens a connection |
+| `net-m6-nat-clash` | [netlab] | 6.2, beat 4 | playable | laptop and phone both send from 41000 to 203.0.113.80:8080; the laptop keeps 41000, the phone gets another port |
+| `net-m6-conntrack` | [netlab] | 6.2, beat 5 | playable | conntrack -L rows showing sport=41000 and the new port, generated from the model's state |
+| `net-m6-inbound-unsolicited` | [netlab] | 6.3, beat 1 | playable | a friend's packet reaches your router's outside address with no earlier outbound packet |
+| `net-m6-route-leak` | [netlab] | 6.3, beat 3 | playable | with a route to 192.168.1.0/24 via the router, a packet addressed straight to 192.168.1.23 reaches the laptop |
+| `net-m6-forward-rule` | [netlab] | 6.3, beat 4 | playable | 203.0.113.1:8080 forwarded to 192.168.1.23:80; other ports stay refused |
+| `net-m6-filter-rule` | [netlab] | 6.3, beat 5 | playable | a forward-chain rule drops what you choose; NAT alone filters nothing |
+| `net-m6-cgnat-layers` | [netlab] | 6.4, beat 2 | playable | laptop 192.168.1.23, then 100.72.14.9 after the home router, then 203.0.113.45 after the provider NAT |
+| `net-m6-scene-quiet-chat` | the scene renderer | 6.5, beat 1 | watch only | a chat app sits untouched for an hour and messages stop arriving until the app is opened |
+| `net-m6-nat-idle-expire` | [timeline] | 6.5, beat 3 | playable | a model mapping with a 300 s idle timeout expires during a quiet hour and an inbound message is dropped |
+| `net-m6-nat-keepalive` | [timeline] | 6.5, beat 4 | playable | a keepalive every 120 s keeps the row alive; one slower than the timeout does not |
+| `net-m6-replay-masquerade` | replay | 6.7 (phone-only section) | replay | predict each command's output, then see the recorded result from the reference run |
+| `net-m6-replay-forward-guest` | replay | 6.8 (phone-only section) | replay | predict each command's output, then see the recorded result from the reference run |
+| `net-lab-reach-home-server` | netlab (graded lab) | 6.9 | lab | fault mode, three levels: forward a port after an injected fault; two servers on port 80; provider NAT stops forwarding |
+
+Inline diagram beats (MermaidDiagram, VisualDiagram, TraceRequest; no registration): 6.1 beat 2 `mmd-6-1-two-numbers-again`; 6.2 beat 3 `mmd-6-2-reply-path`; 6.3 beat 2 `mmd-6-3-mapping-or-rule`; 6.3 beat 6 `mmd-6-3-docker-publish`; 6.4 beat 1 `net-m6-router-status-annotated`; 6.4 beat 3 `mmd-6-4-sign-not-proof`; 6.4 beat 4 `mmd-6-4-own-trace`; 6.4 beat 5 `mmd-6-4-why-providers`; 6.5 beat 2 `mmd-6-5-mapping-states`; 6.5 beat 5 `mmd-6-5-stun-relay`.
+
+Stated limits and fallbacks by chapter:
+
+- 6.1: limit: Linux-style NAT only. Fallback if not built: [sequence] phone, laptop, router, server, Predict before the key beat only, within the chapter's budget of 3 assessments (exception). Needs netlab slice 2.
+- 6.2: limit: Linux masquerade; other routers differ (limits line). Fallback if not built: [sequence] phone, laptop, router, server. Needs netlab slice 2.
+- 6.3: limit: No router firewall modelled. Fallback if not built: [sequence] friend, router, laptop. Needs netlab slice 2.
+- 6.4: limit: One provider layer, no port limits shown. Fallback if not built: [sequence] laptop, home router, provider NAT, server. Needs netlab slice 2.
+- 6.5: limit: Model timers (300 s, 120 s), not a real router's. Fallback if not built: a worked-example table of the mapping timeline plus a Predict (roadmap v3.1).
+- Replays and labs: a replay falls back to a `[sequence]` of two actors (learner, lab) with Predict blocks before the key steps only, within the chapter's budget of 3 assessments; a graded lab that is blocked falls back to a diagnosis from recorded command output, graded as a quiz (roadmap).
+
+All netlab beats need slice 2 (NAT, home router, provider NAT); the filter comes from slice 1. If slice 2 is late, the Learn chapters fall back to `[sequence]` with one Predict before the key beat.
 
 ## Gate: 6.11 Answer the course question (25 min)
 
@@ -205,9 +295,9 @@ Diagram plan: MermaidDiagram in 6.2 to 6.5 (at least one per module, one per con
 3. `conntrack -L` missing from the generator: resolved. The generator covers `conntrack -L`, `ip route get`, `ss` and `curl`.
 4. "Home routers add a firewall" and `docker run -p`: resolved. The firewall claim is removed (NAT is not a firewall; a filter is a separate rule built in 6.8); `docker run -p` publishes a port using NAT rules [S75].
 5. 6.9 level 1's injected fault: resolved. The brief's proposed fault is accepted.
-6. 6.1 at 10 minutes and the prose floor for Read, Code and Lab: resolved by the proposed course exception (700 words; Learn and Build keep 1,200), pending the sponsor's G2C decision.
+6. 6.1 at 10 minutes and the prose floor for Read, Code and Lab: resolved by the proposed course exception (700 words; Learn and Build keep 1,200); decided by the sponsor at G2C on 2026-10-26 and, for Learn and Read chapters, superseded by the beats rules of agent-ip v0.5.3.
 
 ## Still open
 
 - Verify at G3 (untested): the 6.5 timer column and the real `conntrack -L` timers; `curl --local-port 41000` for fixing a source port (6.7); the exact `nft` DNAT syntax (6.8); the guest-to-home block giving exit 28 (6.8); `conntrack -L` and `curl` output from the lab generator.
-- The 700-word floor for Read, Code and Lab chapters and Gates awaits the sponsor's G2C decision.
+- Prose floors are decided (sponsor, G2C, 2026-10-26): Build 1,200 prose words; Code, Lab and Gate 700; Learn and Read follow the beats rules (agent-ip v0.5.3, decision log 2026-10-26); Check chapters are quiz-only.

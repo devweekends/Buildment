@@ -2,10 +2,11 @@
 artifact: module-brief
 course: networking
 module: 08-capstone
-version: 1
+version: 2
 owner: curriculum-architect
 roadmap_version: 3.1
 roadmap_confirmed: true
+agent_ip_version: 0.5.3
 ---
 
 # Module 08: Capstone: a whole internet on one laptop
@@ -92,9 +93,19 @@ The roadmap's "Problem first" column is filled only for 8.1. The static home web
 - Hook (roadmap): you press Enter. What happens before the first byte of the page arrives?
 - Claim: opening a link is not one event but ten small steps in a fixed order, and each is something the learner has already built or measured. When one step breaks, the symptom names it.
 - Worked example, with capstone numbers: (1) lease: `home1` goes from no address to `192.168.1.101/24`, gateway and DNS `192.168.1.1`, one hour; (2) ARP for `192.168.1.1`; (3) DNS: `web.test` answers `203.0.113.80`; (4) `203.0.113.80` is outside `192.168.1.0/24`, so use the gateway; (5) SYN leaves with destination IP the server and destination MAC the router; (6) home router: forwarding on, longest prefix is the default route via `198.51.100.1`, TTL 64 to 63, source rewritten to `198.51.100.2` (port kept unless it clashes, dossier 5.6); (7) provider router: connected route, TTL 62; (8) server sees `198.51.100.2` and TTL 62, answers; (9) the reply returns through the router's mapping (read it with `conntrack -L`); (10) the handshake finishes, the GET is sent, the first byte arrives. TTL values are derived from [S28, S30], not captured. Plain HTTP only; TLS and QUIC belong to the system design course.
-- Diagram: MermaidDiagram flowchart of the ten steps, each labelled with the module that explained it. Claim: nothing here is new; it is the course in order. The netlab canvas shows packets; this shows where to look things up.
-- Interactive: `[netlab: every part the journey uses]`, step mode, one packet and one hop at a time, with the Inspector on. Predict first: at step 6, which of source IP, destination IP, destination MAC, TTL and source port change? Correct: source IP, destination MAC and TTL always; the source port only on a clash.
-- Assessment: one PREDICT, one QUIZ question (which step fails when the router's default route is removed; step 6, `Destination Net Unreachable`, dossier 5.7). Near miss: thinking the server's MAC appears in the learner's capture, or that DNS comes after the TCP connection.
+- Format (agent-ip v0.5.3): `format: beats`, 7 beats; at most 70 visible words per beat, 300 to 700 visible words in all and at least 900 with the `GoDeeper` folds (the claim and worked example above are spread over the beats and their folds); one visual per beat; at least one playable beat; at most 40 JSX tags and 3 assessment interactions; no BigWordAlert (terms use `GlossaryTerm`). The hook above is the chapter's one or two opening sentences.
+- Beats:
+  1. **Pressing Enter starts ten small steps** (fixed picture). MermaidDiagram `mmd-8-1-ten-steps` (inline, no registration). Shows: lease, ARP, DNS, gateway decision, SYN, home router, provider router, server, reply, first byte, each labelled with the module that explained it.
+  2. **A lease, then the router's MAC** (step through). InteractiveCanvas `net-m8-journey-lease-arp` (`[netlab]`). Shows: home1 goes from no address to 192.168.1.101/24 with gateway and DNS 192.168.1.1, then asks ARP for 192.168.1.1. Learner: step through steps 1 and 2.
+  3. **The name becomes an address** (step through). InteractiveCanvas `net-m8-journey-dns` (`[netlab]`). Shows: web.test is asked of the router's resolver and answers 203.0.113.80. Learner: step through step 3.
+  4. **Off my subnet: use the gateway** (step through). InteractiveCanvas `net-m8-journey-gateway` (`[netlab]`). Shows: 203.0.113.80 is outside 192.168.1.0/24, so the SYN leaves with the server's IP and the router's MAC. Learner: step through steps 4 and 5.
+  5. **The home router changes the packet** (playable). InteractiveCanvas `net-m8-journey-nat-hop` (`[netlab]`). Shows: forwarding on, default route via 198.51.100.1, TTL 64 to 63, source rewritten to 198.51.100.2 (port kept unless it clashes). Learner: tap each header field to see before and after.
+  6. **The row sends the reply home** (step through). InteractiveCanvas `net-m8-journey-reply` (`[netlab]`). Shows: provider router TTL 62, the server sees 198.51.100.2, and the reply returns through the mapping (conntrack -L). Learner: step through steps 7 to 9.
+  7. **The handshake ends and the page arrives** (step through). InteractiveCanvas `net-m8-journey-first-byte` (`[netlab]`). Shows: the three-way handshake finishes, the GET is sent and the first byte arrives; a real browser adds TLS and often QUIC (system design course). Learner: step through step 10.
+- Predict (right before beat 5, "The home router changes the packet"): At the home router, which of source IP, destination IP, destination MAC, TTL and source port change? Options: source IP, destination MAC and TTL always; the source port only on a clash / all five always / only the source IP. Answerable from: 4.2 taught the MAC change, 4.4 the TTL, 6.2 the rewrite and the clash; beats 2 to 4 have shown the packet arriving at the router.
+- Quick check (after the last beat): (1) Which step fails when the router's default route is removed (step 6, Destination Net Unreachable) (taught in beats 4 and 5).
+- Components: GlossaryTerm (lease, gateway, conntrack); 1 Callout; LearningObjectives; one `GoDeeper` fold per beat; about 19 of 40 JSX tags; 2 of 3 assessments.
+- Near miss: Thinking the server's MAC appears in the learner's capture, or that DNS comes after the TCP connection. TTL values are derived from [S28, S30], not captured; two routers gives 62 (dossier 5.8). Plain HTTP only; TLS and QUIC belong to the system design course. In the fallback only one Predict (before the NAT beat) is kept, so the chapter stays within 3 assessments.
 
 ### 8.2 Capstone part 1: addresses and routes (Build, 60 min) `08.02-capstone-addresses-routes.md`
 - Hook (derived): your scripts from challenges 2 and 4 each built a piece. Join them into one network with its own address plan.
@@ -133,7 +144,7 @@ The roadmap's "Problem first" column is filled only for 8.1. The static home web
 - Claim: one program in the router namespace serves both subnets, each with its own pool, router and DNS option, and the guest can still ask the router for names even though forwarding to home is blocked.
 - Worked example: home pool `192.168.1.100` to `192.168.1.150`, guest pool `192.168.50.100` to `192.168.50.150`; `home1` leases an address, then `curl http://web.test:8080/`; `guest1` does the same and the server reports `198.51.100.2`.
 - Diagram: none; the topology stays the 8.2 diagram.
-- Interactive: `[replay]`. Predict first: can `guest1` still get names from the router while it cannot reach `192.168.1.20`? Correct: yes, because the drop rule is in the forward chain and a DNS query to the router itself is not forwarded (verify at G3).
+- Interactive: `[replay]`. Predict first (reworded at G3, never ask before you teach): the guest-to-home rule drops packets from `192.168.50.0/24` to `192.168.1.0/24`; a guest asks the router at `192.168.50.1` for a name: does the rule match that packet? Correct: no, the destination is the router itself (verify at G3). The forward-chain explanation follows in the chapter.
 - Assessment: one PREDICT. Near miss: asking whether a guest that can ping `192.168.1.1` is isolated; that address is the router itself, not the home subnet (verify at G3).
 
 #### 8.4 build details
@@ -206,28 +217,67 @@ Defence probes (the mentor picks three), with what a good answer cites:
 
 ## Interactions
 
-Prose minimums follow roadmap v3.1: 8.1 (Learn) and 8.2 to 8.5 (Build) at least 1,200 words; 8.7 (Gate) at least 700, a proposed course exception that waits for the sponsor's G2C decision; 8.6 quiz fences only.
+Updated for agent-ip v0.5.3 (Learn chapters are visual-first beats). Per-chapter beats, predicts and quizzes are in each chapter block above and, with the density counts, in `interaction-map.yaml`. Counting rules from `audit-course.mjs`: a tag is any opening `<Component`; child tags (Step, TerminalLine, CompareColumn, TraceStep) count toward the total but not toward the 6 top-level names; quiz, predict and openquestion fences are free of tags and count as assessments; command output goes in plain code fences, not TerminalBlock.
 
-| Chapter | Top-level components | Assessments |
-|---|---|---|
-| 8.1 | LearningObjectives, PREDICT, canvas (netlab), MermaidDiagram, QUIZ, Callout | 1 PREDICT, 1 QUIZ |
-| 8.2 | Steps, FileTree, MermaidDiagram, PREDICT, canvas (replay), Callout | 1 PREDICT |
-| 8.3 | Steps, FileTree, PREDICT, canvas (replay), Callout | 1 PREDICT |
-| 8.4 | Steps, FileTree, PREDICT, canvas (replay), Callout | 1 PREDICT |
-| 8.5 | Steps, FileTree, canvas (replay), Callout | none |
-| 8.6 | five quiz fences | 5 (one instrument) |
-| 8.7 | Checklist, LearningLog, ChapterRecap, OPEN_QUESTION | 1 OPEN_QUESTION |
+Budgets by chapter type (sponsor decision at G2C, 2026-10-26, and `03-authoring-standards.md` → Visual-first Learn chapters):
 
-Each chapter stays at or under 6 top-level components, 25 JSX tags and 3 assessment interactions. `LearningObjectives` in 8.1 (build and prove a network from your own scripts; break it and find each fault from evidence; explain it in five minutes). `ChapterRecap` in 8.7 only. This module plans no MustRead, InterestingRead or RealWorldEvent: it adds no new content, and the primary sources were read in modules 4, 6 and 7.
+- Learn: beats rules. Four to eight beats, one visual each, at most 70 visible words per beat, 300 to 700 visible words and at least 900 with `GoDeeper` folds, at least one playable beat, at most 40 JSX tags, at most 3 assessment interactions (one Predict before the key beat, one or two quiz questions at the end), no BigWordAlert.
+- Read: one or two beats, at most 70 visible words each, depth in folds, no BigWordAlert.
+- Build: at least 1,200 prose words; at most 6 top-level components and 25 JSX tags; a diagram; at most one BigWordAlert and only for a load-bearing term.
+- Code, Lab and Gate: at least 700 prose words; same component and tag limits as Build; a Gate has no canvas and no new content.
+- Check: quiz-only (three to five questions, one instrument), no canvas, no lesson text.
 
-Diagram plan: 8.1 ten-step map; 8.2 topology (reused by 8.3 to 8.5). The fault matrix table replaces a diagram in 8.5.
+| Ch | Format | Components | JSX tags (est.) | Assessments | Text budget |
+|---|---|---|---|---|---|
+| 8.1 | beats (7) | 7 beat visuals (6 canvas, 1 diagram), GoDeeper x7, GlossaryTerm x3, Callout x1, LearningObjectives | 19 | PREDICT, QUIZ | at most 70 words a beat; 300 to 700, 900+ with folds |
+| 8.2 | prose | Steps, FileTree, MermaidDiagram, Callout, InteractiveCanvas (replay) | 16 | PREDICT | 1,200 prose words |
+| 8.3 | prose | Steps, FileTree, MermaidDiagram, Callout, InteractiveCanvas (replay) | 16 | PREDICT | 1,200 prose words |
+| 8.4 | prose | Steps, FileTree, MermaidDiagram, Callout, InteractiveCanvas (replay) | 16 | PREDICT | 1,200 prose words |
+| 8.5 | prose | Steps, FileTree, MermaidDiagram, Callout, InteractiveCanvas (replay) | 16 | none | 1,200 prose words |
+| 8.6 | prose | none | 0 | QUIZ x5 | quiz only |
+| 8.7 | prose | Checklist, LearningLog, ChapterRecap, OPEN_QUESTION | 4 | OPEN_QUESTION | 700 prose words |
+
+`LearningObjectives` in 8.1 (build and prove a network from your own scripts; break it and find each fault from evidence; explain it in five minutes). `ChapterRecap` in 8.7 only. No MustRead, InterestingRead or RealWorldEvent: the module adds no new content and the primary sources were read in modules 4, 6 and 7.
+
+Diagram plan: 8.1 gets the ten-step map (each step labelled with the module that explained it) as its first beat. 8.2 keeps the capstone topology, which the later chapters reuse and do not redraw. 8.3, 8.4 and 8.5 each get one small diagram that argues something the topology does not (which hook handles which packet; one dnsmasq serving two ranges; the layer order for finding a fault), added in this revision because the audit requires a diagram in every chapter that is not a Check or Gate. The fault matrix table in 8.5 stays the reference for the faults.
+
+Changes to the earlier plan in this revision (interaction designer, G3):
+
+- 8.3: Added a MermaidDiagram (audit: a diagram in every chapter that is not a Check or Gate); the brief's 'reuse the 8.2 topology' stays true for the topology itself.
+- 8.4: Predict reworded to read the rule's match; added a MermaidDiagram (audit: a diagram in every chapter that is not a Check or Gate).
+- 8.5: Added a MermaidDiagram (audit: a diagram in every chapter that is not a Check or Gate); still no PREDICT, because a PREDICT mid-diagnosis would break the flow.
 
 ## Canvases
 
-| Slug | Renderer | Chapter | Claim | Stated limit | Fallback if not built |
-|---|---|---|---|---|---|
-| `net-full-journey` | `[netlab]` parts: Host, Switch, Router (two), Inspector, NAT, Home router (DHCP and DNS), DNS; step mode; slice 3 | 8.1 | The whole trip is ten small steps and each one is something already learned | One packet at a time; plain HTTP; no loss, TLS or QUIC; NAT follows Linux, other routers differ | Scripted `[sequence]` of the same packets (laptop, home router, provider router, server: four actors) with predictions before the key steps only, recorded as an exception; the brief plans three predictions (steps 4, 6, 9) to stay within the chapter's budget of 3 assessments |
-| `net-replay-capstone-1` to `net-replay-capstone-4` | `[replay]` | 8.2 to 8.5 | Predicting real recorded output lets phone readers practise each part | One reference run each; 8.5 uses a demonstration seed; no editing | `[sequence]` of two actors (learner, lab) with Predict blocks before the key steps only, within the chapter's budget of 3 assessments |
+Canvas decisions (interaction designer, G3):
+
+- The full journey (8.1) is a sequence of packets across several devices with fields that change, so it is the module's one model-backed canvas family: `[netlab]` host, switch, two routers, inspector, NAT, home router (DHCP and DNS) and DNS (slice 3) in beat mode, one slug per group of steps. If slice 3 is late, the fallback is a scripted `[sequence]` with one Predict before the NAT beat and a sorter beat as the playable one (exception recorded).
+- 8.2 to 8.5 are Build chapters; each keeps a `[replay]` in a phone-only section (`net-m8-replay-capstone-1` to `-4`). There is no canvas in the gate, and no beat canvas in a Build chapter.
+- The capstone network is the course's reference build and the answer key for every graded instrument in this module.
+
+Slugs follow the registry convention `net-m<module>-<name>` (graded labs keep `net-lab-`) and are proposed: none is written into a chapter until it is built and registered. The full registry with modes and chapters is in `interaction-map.yaml`. Fallbacks are named per chapter below the table.
+
+| Slug (proposed) | Renderer | Chapter, beat | Mode | What it shows |
+|---|---|---|---|---|
+| `net-m8-journey-lease-arp` | [netlab] | 8.1, beat 2 | step through | home1 goes from no address to 192.168.1.101/24 with gateway and DNS 192.168.1.1, then asks ARP for 192.168.1.1 |
+| `net-m8-journey-dns` | [netlab] | 8.1, beat 3 | step through | web.test is asked of the router's resolver and answers 203.0.113.80 |
+| `net-m8-journey-gateway` | [netlab] | 8.1, beat 4 | step through | 203.0.113.80 is outside 192.168.1.0/24, so the SYN leaves with the server's IP and the router's MAC |
+| `net-m8-journey-nat-hop` | [netlab] | 8.1, beat 5 | playable | forwarding on, default route via 198.51.100.1, TTL 64 to 63, source rewritten to 198.51.100.2 (port kept unless it clashes) |
+| `net-m8-journey-reply` | [netlab] | 8.1, beat 6 | step through | provider router TTL 62, the server sees 198.51.100.2, and the reply returns through the mapping (conntrack -L) |
+| `net-m8-journey-first-byte` | [netlab] | 8.1, beat 7 | step through | the three-way handshake finishes, the GET is sent and the first byte arrives; a real browser adds TLS and often QUIC (system design course) |
+| `net-m8-replay-capstone-1` | replay | 8.2 (phone-only section) | replay | predict each command's output, then see the recorded result from the reference run |
+| `net-m8-replay-capstone-2` | replay | 8.3 (phone-only section) | replay | predict each command's output, then see the recorded result from the reference run |
+| `net-m8-replay-capstone-3` | replay | 8.4 (phone-only section) | replay | predict each command's output, then see the recorded result from the reference run |
+| `net-m8-replay-capstone-4` | replay | 8.5 (phone-only section) | replay | predict each command's output, then see the recorded result from the reference run |
+
+Inline diagram beats (MermaidDiagram, VisualDiagram, TraceRequest; no registration): 8.1 beat 1 `mmd-8-1-ten-steps`.
+
+Stated limits and fallbacks by chapter:
+
+- 8.1: limit: One packet at a time; plain HTTP; no loss, TLS or QUIC; NAT follows Linux, other routers differ. Fallback if not built: scripted [sequence] of the same packets (laptop, home router, provider router, server) with one Predict before the NAT beat only; the playable beat becomes a sorter that places six steps under the module that explained them (net-m8-sort-step-module); recorded as an exception. Needs netlab slice 3.
+- Replays and labs: a replay falls back to a `[sequence]` of two actors (learner, lab) with Predict blocks before the key steps only, within the chapter's budget of 3 assessments; a graded lab that is blocked falls back to a diagnosis from recorded command output, graded as a quiz (roadmap).
+
+The 8.1 beats need slice 3 and every netlab part the journey uses (not the captive portal or the IPv6 view). Replay slugs are made from the reference run of each part; 8.5 uses a demonstration seed.
 
 ## Gate
 

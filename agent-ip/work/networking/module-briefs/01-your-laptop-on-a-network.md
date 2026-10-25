@@ -2,10 +2,11 @@
 artifact: module-brief
 course: networking
 module: 01-your-laptop-on-a-network
-version: 1
+version: 2
 owner: curriculum-architect
 roadmap_version: 3.1
 roadmap_confirmed: true
+agent_ip_version: 0.5.3
 ---
 
 # Module 1: Your laptop is already on a network
@@ -45,9 +46,14 @@ Core 230 minutes. Slow path 340 minutes (Build slow paths 90, 40 and 70, plus a 
 - Hook: your computer says `192.168.1.23`, a website says `203.0.113.45`. Which is yours? The learner commits a guess before running anything.
 - Claim: the learner must understand that an address is a fact about a place on a path, so one computer can have more than one number depending on who is looking. Prose names each number (address, mask, gateway, DNS server, public IPv4, IPv6) and says "why they differ" is answered in modules 2 and 6. Why before what: the course question comes before any definition.
 - Worked example: one home with address `192.168.1.23`, mask `255.255.255.0`, gateway `192.168.1.1`, DNS `192.168.1.1`, website sees `203.0.113.45`, IPv6 shown as `2001:db8:...` (documentation prefix [S69]). Commands on your computer: Windows `ipconfig`, `ipconfig /all`, `curl.exe -4 ifconfig.me` (plain `curl` in PowerShell is a different command); macOS `ifconfig`, `netstat -rn`, `scutil --dns` (unverified, check on a Mac before publish); Linux `ip addr`, `ip route`, `resolvectl status`; phone: the Wi-Fi details screen. The echo service is a third party [S52]: optional, never graded.
-- Diagram: MermaidDiagram, flowchart left to right: laptop `192.168.1.23` to home router to "something further along the path" to website `203.0.113.45`. Claim: the two numbers sit on different sides of the router, which is why they differ.
-- Interactive: the learner's own computer is the interactive piece. PREDICT first: "In most homes, will the website print the address your computer shows?" Then the learner runs the commands and writes five numbers in the LearningLog.
-- Assessment: one PREDICT and one QUIZ (read an annotated output and pick the gateway line). Failure or near miss: the result is IPv6 or `-4` fails; the address starts with `100.` (shared space, "one sign, not proof", S11); a VPN is on; the learner runs `curl` inside the lab, which shows the lab's view, not theirs (dossier tested only `traceroute` there, so `curl` is untested: verify at G3). The Callout states that the documentation range is a stand-in.
+- Format (agent-ip v0.5.3): `format: beats`, 2 beats (a Read chapter has one or two); at most 70 visible words per beat; depth and the worked example go in `GoDeeper` folds; the commands the chapter asks the learner to run stay as code fences; no BigWordAlert (terms use `GlossaryTerm`). The hook and claim above stay as the chapter's opening lines.
+- Beats:
+  1. **Your computer and a website disagree** (fixed picture). MermaidDiagram `mmd-1-1-two-numbers` (inline, no registration). Shows: the laptop at 192.168.1.23 and the website at 203.0.113.45 sit on different sides of the router.
+  2. **Read your own numbers on your computer** (fixed picture). VisualDiagram `net-m1-own-numbers-annotated` (annotated picture of real outputs). Shows: annotated Windows, macOS, Linux and phone outputs with address, mask, gateway, DNS server and the address a website sees marked. Learner: runs the commands and copies five numbers into the LearningLog.
+- Predict (right before beat 1, "Your computer and a website disagree"): Before you look: in most homes, will the website print the address your computer shows? Options: yes, the same address / no, a different one / it depends on the website. Answerable from: everyday intuition only; the learner has seen one computer and one website and has to commit before any number is shown.
+- Quick check (after the last beat): (1) Read an annotated output and pick the line that is the router your computer hands everything else to, in plain words (taught in beat 2 annotations).
+- Components: GlossaryTerm (gateway, DNS server, public address, documentation range); 1 Callout; LearningObjectives; LearningLog; one `GoDeeper` fold per beat; about 11 of 40 JSX tags; 2 of 3 assessments.
+- Near miss: Result is IPv6, or `-4` fails; the address starts with `100.` (shared space, one sign, not proof, S11); a VPN is on; the learner runs `curl` inside the lab, which shows the lab's view, not theirs (dossier tested only `traceroute` there; `curl` is untested, verify at G3). The Callout says the documentation range is a stand-in (decision 11). The echo service is a third party [S52]: optional, never graded.
 
 ### 1.2 Install the lab (Build, 40 min, slow path 90)
 - Challenge: challenge 0 part 1, `challenges/challenge-0-setup/part-1-checker/` (proposed name). Support: guided (every command typed one at a time, each line explained, expected output shown).
@@ -57,7 +63,7 @@ Core 230 minutes. Slow path 340 minutes (Build slow paths 90, 40 and 70, plus a 
 - Acceptance tests: must pass: the checker prints PASS for namespace create, veth create and every named tool, and exits 0. Must fail: the same checker in a container started without `--privileged` exits non-zero and prints the failure name `no-privilege` with its fix. Captured output to commit: `results.md` with the PASS lines, tool versions and image digest.
 - Hints: first nudge "read the first FAIL line, it names the check"; second "the README table maps each name to its fix"; third the command. If you are stuck: run the checker again (scripts are safe to rerun), then try `docker version` and `docker info` (untested, verify at G3).
 - Diagram: MermaidDiagram: your computer, Docker Desktop's Linux machine, the lab container, with a note that real-path commands run on your computer. One MustRead: Docker's Windows install requirements [S57], so the learner can answer "does my laptop meet them?".
-- Interactive: `net-replay-setup-checker` (phone readers predict the next output, then see the recorded one). One QUIZ: given three checker lines, name the failure and its fix.
+- Interactive: `net-m1-replay-setup-checker` (phone readers predict the next output, then see the recorded one). One QUIZ: given three checker lines, name the failure and its fix.
 
 ### 1.3 Seven commands and your own numbers (Build, 25 min, slow path 40)
 - Challenge: challenge 0 part 2, `part-2-your-numbers/` (proposed). Support: guided.
@@ -65,7 +71,7 @@ Core 230 minutes. Slow path 340 minutes (Build slow paths 90, 40 and 70, plus a 
 - Worked example: from 1.1, `192.168.1.23` with `255.255.255.0` is `/24`; macOS `ifconfig` prints `netmask 0xffffff00` (also `/24`; check on a Mac), and `0xfffff000` is `255.255.240.0`, which is `/20`. No arithmetic yet: the checker prints the prefix. `Ctrl+C` is practised on `ping 127.0.0.1`; `exit` leaves the lab.
 - Acceptance tests: must pass: `my-numbers.txt` with address, mask and gateway prints the prefix (`255.255.255.0` prints `/24`; `0xffffff00` prints `/24`) and exits 0. Must fail: a mask written with three numbers prints "mask needs four numbers" and exits non-zero. Captured output: `results.md` with the learner's own numbers and the prefix line. Hints: "copy the numbers from the command on your computer, not from the lab"; stuck diagnostic: `cat my-numbers.txt` shows what the checker read.
 - Diagram: MermaidDiagram: command on your computer, paste into `my-numbers.txt`, checker in the lab prints the prefix. Claim: your numbers live on your computer; the lab only reads what you paste, and the lab checker is what checks them.
-- Interactive: `net-replay-own-numbers`. One QUIZ: for three commands, "On your computer or in the lab?" (one of the three is `sudo`: not needed in the lab). Near miss: typing `ipconfig` in the lab, or a Windows editor saving CRLF line endings.
+- Interactive: `net-m1-replay-own-numbers`. One QUIZ: for three commands, "On your computer or in the lab?" (one of the three is `sudo`: not needed in the lab). Near miss: typing `ipconfig` in the lab, or a Windows editor saving CRLF line endings.
 
 ### 1.4 Two computers inside your laptop (Build, 45 min, slow path 70)
 - Challenge: challenge 1 part 1, `challenges/challenge-1-two-computers/part-1-virtual-cable/` (proposed). Support: guided.
@@ -73,21 +79,37 @@ Core 230 minutes. Slow path 340 minutes (Build slow paths 90, 40 and 70, plus a 
 - Worked example: namespaces `laptop` (`192.168.1.10/24`) and `phone` (`192.168.1.20/24`), one cable, both ends brought up; `ping -c2 -W1`; capture on the `phone` side with `tcpdump -n -v`. Expected: ARP request and reply first, then echo request and reply with TTL 64 (Linux default `ip_default_ttl` is 64 [S28]). Dossier 5.5 to 5.7 tested namespaces, veth pairs and `ping -c2 -W1`; the exact `tcpdump -n -v` option set and TTL display are untested: verify at G3. Names and addresses are the lab's own, separate from the learner's real home network.
 - Acceptance tests: must pass: `laptop` pings `192.168.1.20` with 0% loss. Must fail (negative control): `laptop` pings `192.168.1.99`, which nobody owns, and shows silent loss (dossier 5.7 saw 2 sent, 0 received). Captured output: `capture.txt` and `results.md`. 3.9 revisits the silent loss. Slow path 70.
 - Hints: "ping reaches the other end of the cable: does that end have an address and is it up?"; then "both ends need `ip link set ... up`"; stuck diagnostic: `ip netns list` and `ip addr` in each namespace.
-- Diagram: MermaidDiagram: two namespaces joined by one cable with addresses. Interactive: `net-replay-virtual-cable`. PREDICT first: "You ping once. Will the capture show only the ping?" One QUIZ on reading one capture line.
+- Diagram: MermaidDiagram: two namespaces joined by one cable with addresses. Interactive: `net-m1-replay-virtual-cable`. PREDICT (before the capture; reworded at G3 so everyday intuition answers it): "For one ping with `-c1`, how many lines do you expect in the capture?" (two; the extra ARP lines in the capture are the surprise, explained in 3.3). One QUIZ on reading one capture line.
 
 ### 1.5 What one ping actually sent (Learn, 35 min)
 - Hook: your capture is a few lines of numbers. What exactly crossed the cable? Claim: a packet is a bundle of labelled numbers, each set by a different party; a ping has addresses, TTL and a type but no port, a DNS query has ports.
 - Worked example: one echo request from `192.168.1.10` to `192.168.1.20`, TTL 64, type echo request (reply is the echo reply); a DNS query from a high source port to port 53 for `web.test` (dossier 5.5 resolved `web.test` through dnsmasq). Care: ICMP type numbers 8 and 0 are not in the dossier (it cites only type 11 [S29]): use tcpdump's words, or confirm at G3. DNS port 53 is not in the dossier either: take it from the capture or the IANA registry. Ephemeral ranges differ: IANA 49152 to 65535 [S27], Linux 32768 to 60999 [S28].
-- Diagram: MermaidDiagram sequence: ARP request, ARP reply, echo request, echo reply between `laptop` and `phone`. Claim: one ping is more than one packet.
-- Interactive: `net-packet-inspect`. PREDICT first: "Does a ping packet carry a source port?" Then the learner taps each field of their echo and of the DNS query.
-- Assessment: one PREDICT, two QUIZ (match three of their own `tcpdump -n -v` lines to fields; which field changes if you ping a different address). Near miss: reading the ARP lines as ping lines; assuming ping uses ports.
+- Format (agent-ip v0.5.3): `format: beats`, 5 beats; at most 70 visible words per beat, 300 to 700 visible words in all and at least 900 with the `GoDeeper` folds (the claim and worked example above are spread over the beats and their folds); one visual per beat; at least one playable beat; at most 40 JSX tags and 3 assessment interactions; no BigWordAlert (terms use `GlossaryTerm`). The hook above is the chapter's one or two opening sentences.
+- Beats:
+  1. **One ping is more than one packet** (fixed picture). MermaidDiagram `mmd-1-5-ping-packets` (inline, no registration). Shows: ARP request, ARP reply, echo request and echo reply between laptop and phone.
+  2. **A DNS query carries two ports** (playable). InteractiveCanvas `net-m1-packet-dns` (`[packet]`). Shows: a real DNS query with source address, destination address, TTL, source port and destination port 53. Learner: tap a field to see what it is, who set it and which module explains it.
+  3. **A ping has addresses and TTL, no ports** (playable). InteractiveCanvas `net-m1-packet-echo` (`[packet]`). Shows: the ICMP echo from challenge 1: addresses, TTL and type, and no port field. Learner: tap each field of the echo.
+  4. **Match your own capture to the fields** (playable). InteractiveCanvas `net-m1-packet-own-lines` (`[packet]`). Shows: three tcpdump -n -v lines (ARP request, echo request, echo reply) with the matching fields lit. Learner: tap a capture line to light its fields.
+  5. **Change the target, see what changes** (playable). InteractiveCanvas `net-m1-packet-change` (`[packet]`). Shows: the same echo sent to a different address: only the destination address and the MACs change. Learner: pick a new destination and watch which fields change.
+- Predict (right before beat 3, "A ping has addresses and TTL, no ports"): Does a ping packet carry a source port? Options: yes / no / only sometimes. Answerable from: beat 2 has just shown that a port names the app at each end; the learner reasons about whether ping talks to an app. Nothing about ICMP is assumed.
+- Quick check (after the last beat): (1) Match three of your own tcpdump -n -v lines to fields (address, TTL, type) (taught in beat 4). (2) Which field changes when you ping a different address (taught in beat 5).
+- Components: GlossaryTerm (TTL, ICMP echo, port, MAC address); 1 Callout; one `GoDeeper` fold per beat; about 15 of 40 JSX tags; 3 of 3 assessments.
+- Near miss: Reading the ARP lines as ping lines; assuming ping uses ports. ICMP type numbers 8 and 0 are not in the dossier (it cites only type 11 [S29]): use tcpdump's words or confirm at G3. DNS port 53 is not in the dossier either: take it from the capture or the IANA registry. Ephemeral ranges differ: IANA 49152 to 65535 [S27], Linux 32768 to 60999 [S28].
 
 ### 1.6 Why does one packet carry three kinds of address? (Learn, 30 min)
 - Hook: your Wi-Fi only reaches your router, yet your packet crosses the world and lands in one app. Claim: three jobs need three addresses: reach the next device on this link (MAC), reach the far computer (IP), reach one program (port). Each device reads only the layer it needs.
 - Worked example: `192.168.1.23` sends from port 40000 to `203.0.113.80` port 8080 (as in dossier 5.6): Ethernet (destination MAC is the router's, source MAC is the laptop's; fictional locally administered MACs such as `02:00:00:00:00:23`), then IP, then TCP, then the message. The broadcast MAC `ff:ff:ff:ff:ff:ff` is not in the dossier: show it from the learner's own capture with `tcpdump -e` (untested, verify at G3). MAC is 48 bits [S22]. A note says Wi-Fi frames differ; the lab uses Ethernet.
-- Diagram: MermaidDiagram flowchart: message inside TCP inside IP inside Ethernet. Claim: wrap order, and which header the next device removes.
-- Interactive: `net-packet-wrap`. PREDICT first: "When the packet reaches your router, which header does the router remove first?" Ethernet, IP or TCP.
-- Assessment: one PREDICT and one QUIZ (which address would change if the same message were sent to a device on your own network). Near miss: "why not use only MAC addresses?"; the answer is that a MAC only names a device on one link (reasoning, not sourced).
+- Format (agent-ip v0.5.3): `format: beats`, 5 beats; at most 70 visible words per beat, 300 to 700 visible words in all and at least 900 with the `GoDeeper` folds (the claim and worked example above are spread over the beats and their folds); one visual per beat; at least one playable beat; at most 40 JSX tags and 3 assessment interactions; no BigWordAlert (terms use `GlossaryTerm`). The hook above is the chapter's one or two opening sentences.
+- Beats:
+  1. **Wi-Fi reaches the router, not the world** (fixed picture). MermaidDiagram `mmd-1-6-link-vs-path` (inline, no registration). Shows: laptop to router is one link; laptop to server is a path of many links.
+  2. **Three jobs, three kinds of address** (playable). InteractiveCanvas `net-m1-packet-jobs` (`[packet]`). Shows: Ethernet header (this link, MAC), IP header (the far computer), TCP header (which app, port). Learner: tap each header to see its job and who reads it.
+  3. **Wrap a message, outermost last** (playable). InteractiveCanvas `net-m1-packet-wrap` (`[packet]`). Shows: message inside TCP inside IP inside Ethernet, with fictional locally administered MACs. Learner: add the headers in order and watch the packet grow.
+  4. **The router opens only the outer layer** (playable). InteractiveCanvas `net-m1-packet-unwrap` (`[packet]`). Shows: the router removes the Ethernet header, reads the IP header and builds a new Ethernet header for the next link. Learner: step the packet through the router.
+  5. **A broadcast MAC reaches everyone** (watch only). InteractiveCanvas `net-m1-scene-broadcast-mac` (the `scene` renderer). Shows: a frame to ff:ff:ff:ff:ff:ff is heard by every device on the link, the unicast reply by one.
+- Predict (right before beat 4, "The router opens only the outer layer"): When the packet reaches your router, which header does the router remove first? Options: Ethernet / IP / TCP. Answerable from: beat 3 has just shown Ethernet as the outermost wrapper; taking the outer wrapper off first is everyday intuition, and the picture shows the order.
+- Quick check (after the last beat): (1) Which address would change if the same message were sent to a device on your own network (taught in beats 2 to 4).
+- Components: GlossaryTerm (MAC address, broadcast, header, port); 1 Callout; one `GoDeeper` fold per beat; about 15 of 40 JSX tags; 2 of 3 assessments.
+- Near miss: 'Why not use only MAC addresses?' The answer is that a MAC only names a device on one link (reasoning, not sourced). The broadcast MAC `ff:ff:ff:ff:ff:ff` is shown from the learner's own capture with `tcpdump -e` (shown by the 2026-10-26 environment test, dossier 5.8). MAC is 48 bits [S22]. A note says Wi-Fi frames differ; the lab uses Ethernet.
 
 ### 1.7 Your laptop on a network (Check, 15 min)
 - Five QUIZ fences, quiz-only file `1.7-laptop-on-a-network-quiz.md`. Each shows a real output (an `ipconfig` block, a capture line, a `curl` result) and asks which address, port or layer. No earlier module exists to mix in. Outputs come from the reference captures. Every option gets one reason; re-answer every key blind.
@@ -98,34 +120,64 @@ Core 230 minutes. Slow path 340 minutes (Build slow paths 90, 40 and 70, plus a 
 
 ## Interactions
 
-Counting rules from `audit-course.mjs`: a tag is any opening `<Component`; child tags (Step, TerminalLine, CompareColumn, TraceStep) count toward 25 but not toward the 6 top-level names; quiz, predict and openquestion fences are free of tags and count as assessments (max 3; a quiz chapter max 5); command output goes in plain code fences, not TerminalBlock; a canvas is at most one per chapter and never in a gate or quiz chapter; every chapter that is not a Check or Gate needs a diagram (so Build chapters get one too).
+Updated for agent-ip v0.5.3 (Learn chapters are visual-first beats). Per-chapter beats, predicts and quizzes are in each chapter block above and, with the density counts, in `interaction-map.yaml`. Counting rules from `audit-course.mjs`: a tag is any opening `<Component`; child tags (Step, TerminalLine, CompareColumn, TraceStep) count toward the total but not toward the 6 top-level names; quiz, predict and openquestion fences are free of tags and count as assessments; command output goes in plain code fences, not TerminalBlock.
 
-| Ch | Top-level components | Tags (est.) | Assessments | Prose floor |
-|---|---|---|---|---|
-| 1.1 | LearningObjectives, Callout, MermaidDiagram, LearningLog, GlossaryTerm | 8 | PREDICT, QUIZ | 700 |
-| 1.2 | Steps, MermaidDiagram, Callout, MustRead, InteractiveCanvas, GlossaryTerm | 17 | QUIZ | 1,200 |
-| 1.3 | Steps, MermaidDiagram, Callout, InteractiveCanvas, GlossaryTerm | 14 | QUIZ | 1,200 |
-| 1.4 | Steps, MermaidDiagram, Callout, InteractiveCanvas, GlossaryTerm, BigWordAlert (network namespace) | 17 | PREDICT, QUIZ | 1,200 |
-| 1.5 | MermaidDiagram, InteractiveCanvas, BigWordAlert (TTL), GlossaryTerm, Callout | 8 | PREDICT, QUIZ x2 | 1,200 |
-| 1.6 | MermaidDiagram, InteractiveCanvas, BigWordAlert (MAC address), GlossaryTerm, Callout | 7 | PREDICT, QUIZ | 1,200 |
-| 1.7 | none | 0 | QUIZ x5 | quiz only |
-| 1.8 | Checklist, LearningLog, ChapterRecap, Callout | 4 | OPEN_QUESTION | 700 |
+Budgets by chapter type (sponsor decision at G2C, 2026-10-26, and `03-authoring-standards.md` → Visual-first Learn chapters):
 
-Prose floors follow roadmap v3.1: Learn and Build chapters at least 1,200 prose words; Read, Code and Lab chapters and Gates at least 700. The 700 floor is a proposed course exception that waits for the sponsor's G2C decision; if it is rejected, the Read chapter is re-timed to 15 to 20 minutes. Check chapters are quiz-only.
+- Learn: beats rules. Four to eight beats, one visual each, at most 70 visible words per beat, 300 to 700 visible words and at least 900 with `GoDeeper` folds, at least one playable beat, at most 40 JSX tags, at most 3 assessment interactions (one Predict before the key beat, one or two quiz questions at the end), no BigWordAlert.
+- Read: one or two beats, at most 70 visible words each, depth in folds, no BigWordAlert.
+- Build: at least 1,200 prose words; at most 6 top-level components and 25 JSX tags; a diagram; at most one BigWordAlert and only for a load-bearing term.
+- Code, Lab and Gate: at least 700 prose words; same component and tag limits as Build; a Gate has no canvas and no new content.
+- Check: quiz-only (three to five questions, one instrument), no canvas, no lesson text.
 
-`LearningObjectives` in 1.1, `ChapterRecap` in 1.8. Diagram plan: six Mermaid diagrams (1.1 to 1.6, none in the Check or Gate); the module's required diagram is covered many times over, and every Learn chapter has one. No InterestingRead or RealWorldEvent in this module; the one MustRead is in 1.2.
+| Ch | Format | Components | JSX tags (est.) | Assessments | Text budget |
+|---|---|---|---|---|---|
+| 1.1 | beats (2) | 2 beat visuals (diagrams), GoDeeper x2, GlossaryTerm x4, Callout x1, LearningObjectives, LearningLog | 11 | PREDICT, QUIZ | one or two beats, at most 70 words each |
+| 1.2 | prose | Steps, MermaidDiagram, Callout, MustRead, InteractiveCanvas (replay), GlossaryTerm | 17 | QUIZ | 1,200 prose words |
+| 1.3 | prose | Steps, MermaidDiagram, Callout, InteractiveCanvas (replay), GlossaryTerm | 14 | QUIZ | 1,200 prose words |
+| 1.4 | prose | Steps, MermaidDiagram, Callout, InteractiveCanvas (replay), GlossaryTerm, BigWordAlert (network namespace) | 17 | PREDICT, QUIZ | 1,200 prose words |
+| 1.5 | beats (5) | 5 beat visuals (4 canvas, 1 diagram), GoDeeper x5, GlossaryTerm x4, Callout x1 | 15 | PREDICT, QUIZ x2 | at most 70 words a beat; 300 to 700, 900+ with folds |
+| 1.6 | beats (5) | 5 beat visuals (4 canvas, 1 diagram), GoDeeper x5, GlossaryTerm x4, Callout x1 | 15 | PREDICT, QUIZ | at most 70 words a beat; 300 to 700, 900+ with folds |
+| 1.7 | prose | none | 0 | QUIZ x5 | quiz only |
+| 1.8 | prose | Checklist, LearningLog, ChapterRecap, Callout | 4 | OPEN_QUESTION | 700 prose words |
+
+`LearningObjectives` in 1.1, `ChapterRecap` in 1.8. No InterestingRead or RealWorldEvent in this module; the one MustRead is in 1.2.
+
+Diagram plan: Beat diagrams: the two numbers and the annotated command outputs (1.1), the packets of one ping (1.5), link versus path (1.6). Each Build chapter has a Mermaid diagram (1.2 where the lab runs, 1.3 where the numbers live, 1.4 two namespaces and one cable). Learn chapters 1.5 and 1.6 are otherwise packet canvases: the learner taps a field or adds a header, so Mermaid carries only what is fixed.
 
 ## Canvases
 
-| Slug (proposed) | Renderer | Chapter | Claim | Stated limit | Fallback if not built |
-|---|---|---|---|---|---|
-| `net-packet-inspect` | `[packet]` inspect | 1.5 | Every field in a packet is a number someone set, and the fields differ by protocol | Two captured packets only (ICMP echo, one DNS query); not a live capture | Annotated static captures with a quiz per field |
-| `net-packet-wrap` | `[packet]` wrap | 1.6 | One packet carries three addresses for three jobs, and each hop removes one layer | One packet, one direction, Ethernet only, no TCP behaviour | Same fallback |
-| `net-replay-setup-checker` | `[replay]` | 1.2 | The checker names the failure and its fix | Recorded run from the reference solution | `[sequence]` of two actors (learner, lab) with a Predict before the key steps only, within the chapter's budget of 3 assessments |
-| `net-replay-own-numbers` | `[replay]` | 1.3 | Your numbers live on your computer; the lab reads what you paste | Recorded run | Same fallback |
-| `net-replay-virtual-cable` | `[replay]` | 1.4 | One ping starts with ARP | Recorded run | Same fallback |
+Canvas decisions (interaction designer, G3):
 
-Do not write any slug into a chapter until it is registered. A chapter with a missing canvas and no Predict-plus-step fallback fails the interactive-first check; record an exception.
+- Packets are the module's causal model, so they get the `[packet]` renderer (modes inspect, jobs, wrap, unwrap) rather than Mermaid: the learner taps a field or adds a header and sees which job it does. Mermaid carries only the fixed packet sequence of one ping (1.5 beat 1) and the link-versus-path picture (1.6 beat 1).
+- The three Build chapters keep a `[replay]` of the reference run for phone readers, in a phone-only section, because laptop learners already prove the same thing by building.
+- The documentation addresses (`203.0.113.45`, `192.168.1.x`) are used in every picture; the learner's real numbers appear only in 1.1 and in the chapters where they paste them (1.3).
+
+Slugs follow the registry convention `net-m<module>-<name>` (graded labs keep `net-lab-`) and are proposed: none is written into a chapter until it is built and registered. The full registry with modes and chapters is in `interaction-map.yaml`. Fallbacks are named per chapter below the table.
+
+| Slug (proposed) | Renderer | Chapter, beat | Mode | What it shows |
+|---|---|---|---|---|
+| `net-m1-replay-setup-checker` | replay | 1.2 (phone-only section) | replay | predict each command's output, then see the recorded result from the reference run |
+| `net-m1-replay-own-numbers` | replay | 1.3 (phone-only section) | replay | predict each command's output, then see the recorded result from the reference run |
+| `net-m1-replay-virtual-cable` | replay | 1.4 (phone-only section) | replay | predict each command's output, then see the recorded result from the reference run |
+| `net-m1-packet-dns` | [packet] | 1.5, beat 2 | playable | a real DNS query with source address, destination address, TTL, source port and destination port 53 |
+| `net-m1-packet-echo` | [packet] | 1.5, beat 3 | playable | the ICMP echo from challenge 1: addresses, TTL and type, and no port field |
+| `net-m1-packet-own-lines` | [packet] | 1.5, beat 4 | playable | three tcpdump -n -v lines (ARP request, echo request, echo reply) with the matching fields lit |
+| `net-m1-packet-change` | [packet] | 1.5, beat 5 | playable | the same echo sent to a different address: only the destination address and the MACs change |
+| `net-m1-packet-jobs` | [packet] | 1.6, beat 2 | playable | Ethernet header (this link, MAC), IP header (the far computer), TCP header (which app, port) |
+| `net-m1-packet-wrap` | [packet] | 1.6, beat 3 | playable | message inside TCP inside IP inside Ethernet, with fictional locally administered MACs |
+| `net-m1-packet-unwrap` | [packet] | 1.6, beat 4 | playable | the router removes the Ethernet header, reads the IP header and builds a new Ethernet header for the next link |
+| `net-m1-scene-broadcast-mac` | the scene renderer | 1.6, beat 5 | watch only | a frame to ff:ff:ff:ff:ff:ff is heard by every device on the link, the unicast reply by one |
+
+Inline diagram beats (MermaidDiagram, VisualDiagram, TraceRequest; no registration): 1.1 beat 1 `mmd-1-1-two-numbers`; 1.1 beat 2 `net-m1-own-numbers-annotated`; 1.5 beat 1 `mmd-1-5-ping-packets`; 1.6 beat 1 `mmd-1-6-link-vs-path`.
+
+Stated limits and fallbacks by chapter:
+
+- 1.5: limit: Two captured packets only (ICMP echo, one DNS query); not a live capture. Fallback if not built: annotated static captures with a quiz per field.
+- 1.6: limit: One packet, one direction, Ethernet only, no TCP behaviour. Fallback if not built: annotated static captures with a quiz per field.
+- Replays and labs: a replay falls back to a `[sequence]` of two actors (learner, lab) with Predict blocks before the key steps only, within the chapter's budget of 3 assessments; a graded lab that is blocked falls back to a diagnosis from recorded command output, graded as a quiz (roadmap).
+
+Do not write any slug into a chapter until it is registered. A beat whose canvas is missing falls back to the picture named in its row; a fallback with no playable beat needs an exception recorded in the chapter's QA.
 
 ## Gate
 
@@ -141,7 +193,7 @@ Gate 1.8 (25 minutes, review within three days, learners carry on). Evidence: th
 - Second stall: 1.3 and 1.4 "two places to type". Mitigation: every command block says **On your computer** or **In the lab**, the first lab prompt shows the side, and 1.3 quizzes the difference.
 - Third: the lab's `192.168.1.x` addresses look like the learner's real home addresses. Say in 1.4 that the lab is separate.
 - Accuracy traps from the dossier: the echo service is a third party and never graded [S52]; the Google IPv6 figure and the cellular CGN study are dated and must be re-checked [S33, S34]; `100.64.0.0/10` is "one sign, not proof" [S11]; do not use "5-tuple" (unverified); ephemeral port ranges differ (IANA vs Linux) [S27, S28]; never put a real public address in a lab, prose or quiz (decision 11, [S10]).
-- Prose floor: 1.1 is a Read chapter with a 700-word floor (a proposed course exception), which leaves room in 15 minutes for the commands; keep it to the commands in the roadmap's table.
+- Text budget: 1.1 is a Read chapter of two beats (at most 70 visible words each) plus the commands in the roadmap's table; keep it to those commands. Learn chapters 1.5 and 1.6 follow the beats rules.
 
 ## Resolved in roadmap v3.1
 
@@ -156,4 +208,4 @@ Gate 1.8 (25 minutes, review within three days, learners carry on). Evidence: th
 - Verify at G3 (untested): `curl` inside the lab (1.1), the exact `tcpdump -n -v` option set and TTL display (1.4), `tcpdump -e` for the broadcast MAC (1.6), the exact failure messages for the five named setup failures (1.2), and `docker version` and `docker info` as stuck diagnostics (1.2).
 - Not yet measured: the compressed image size and the Windows bind-mount flow (tested with challenge 0).
 - macOS commands (1.1, 1.3) are to be checked on a Mac before publish.
-- The 700-word floor for Read, Code and Lab chapters and Gates awaits the sponsor's G2C decision.
+- Prose floors are decided (sponsor, G2C, 2026-10-26): Build 1,200 prose words; Code, Lab and Gate 700; Learn and Read follow the beats rules (agent-ip v0.5.3, decision log 2026-10-26); Check chapters are quiz-only.
