@@ -1009,15 +1009,15 @@ modules:
     title: "Visual lab: design a product search box (search and typeahead)"
     summary: "Build Dalil's search box on the lab board from a load balancer, app servers, a cache, a search index, a product database, a queue and a worker, then press Run: the board plays your design through peak traffic and three failures and lists every functional and non-functional check as pass or fail with the number it measured."
     lessons:
-      - file: 34.01-set-the-scene-sale-night-and-the-checks.md
-        title: "Set the scene: sale night and the checks"
+      - file: 34.01-set-the-scene-a-busy-evening-and-the-checks.md
+        title: "Set the scene: a busy evening and the checks"
         goal: "Split what a marketplace search box must do from how well it must do it, and see the twelve checks the board runs."
       - file: 34.02-visual-lab-design-a-product-search.md
         title: "Visual lab: design a product search box (search and typeahead)"
         goal: "Build the design on the board and fix it until all twelve checks pass inside the hourly budget."
       - file: 34.03-read-your-run-what-each-failure-teaches.md
         title: "Read your run: what each failure teaches"
-        goal: "Read the four scenes as lessons, see why a design that skips the queue looks cheap, and name the failures the board cannot show."
+        goal: "Read the four scenes as lessons, see why a design that skips the queue looks almost free, and name the failures the board cannot show."
       - file: 34.04-quiz.md
         title: "Quiz: the product search box"
         goal: "Answer graded scenarios on a cheap design that skips a job, a backlog, small versus big search nodes, and what an all-green board hides."
