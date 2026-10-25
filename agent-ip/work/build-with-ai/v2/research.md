@@ -30,6 +30,13 @@ Fetched again by the orchestrator on 2026-10-25:
 | A29: BLS projects 10% growth for software developers, QA analysts and testers, 2025 to 2035, from 1,905,400 jobs | Confirmed on the BLS page |
 | B31: Redis licences by version (7.2 and earlier BSD-3; 7.4 to 7.8 RSALv2 or SSPLv1; 8 and later RSALv2, SSPLv1 or AGPLv3) | Confirmed on redis.io |
 
+## Claims added by the orchestrator during writing (2026-10-26)
+
+| Id | Claim | Source | Checked |
+|---|---|---|---|
+| C77 | GitHub renders Mermaid diagrams in Markdown files, issues, discussions, pull requests and wikis | GitHub Docs, "Creating diagrams" | 2026-10-26, fetched |
+| C78 | Fine-grained tokens are made under Settings, Developer settings, Personal access tokens, Fine-grained tokens; GitHub highly recommends an expiration | GitHub Docs, "Managing your personal access tokens" | 2026-10-26, fetched |
+
 ## Learner and context
 
 As in the v1 dossier. New for v2: most labour evidence is from the US (part A, U16 has no Gaza or regional data), so chapters say "in US data" and never predict one person's future. Several new tools need 18 or older or a paid plan (part C), so every step keeps two tools per job and a no-account fallback.
