@@ -262,6 +262,7 @@ export function challengeFor(spec: HldLabSpec): ChallengeDef {
 export function runModel(spec: HldLabSpec, board: Board, load: number, targets: Targets = {}): ModelResult {
   const options: ModelOptions = {
     inlineWrites: Boolean(spec.challenge?.inlineClicks) && !board.nodes.some((n) => roleOf(n.kind) === "queue"),
+    shares: spec.challenge?.shares,
   };
   return runTieredModel(board, load, targets, options);
 }
