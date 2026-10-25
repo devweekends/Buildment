@@ -181,3 +181,15 @@
 **Platform impact:** Existing Mermaid and canvas slots support this instruction. Each new canvas still requires a coded and reviewed slug; the IP does not claim a generic authorable canvas editor exists.
 
 **Review:** Delivery lead and one additional reviewer pending. No published course structure changes in this IP update.
+
+## 2026-10-24: A lab board counts as a beat's opening visual
+
+**Status:** Applied in `scripts/audit-course.mjs`; delivery lead review pending.
+
+**Problem:** Lab chapters embed the component lab board as `<Lab slug="..." />`. The beats audit only accepted canvases and diagrams as the visual that opens a beat, so a beat that opens with the board the learner builds on was flagged as text-first.
+
+**Decision:** Add `Lab` to the audit's opening-visual tags. A lab board is the most playable visual a chapter can have. Every other beats rule (word limits, depth, beat count) is unchanged.
+
+**Platform impact:** None. `<Lab>` was already in the MDX allowlist and checked against `LAB_SLUGS` at publish.
+
+**Review:** Delivery lead pending. Used by system design chapters 2.5, 4.9 and 20.6.
