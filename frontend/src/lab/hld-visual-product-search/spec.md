@@ -2,14 +2,14 @@
 
 **Claim:** a search box that only returns products is easy to build and easy to break. To pass, the design must also serve suggestions as the shopper types, get a seller's product change into the index, and keep answering when an app server, a search node or the indexing worker dies. Each of those needs a part, and each part costs money, so the lab asks for the cheapest design that survives. The case study is Dalil, the made-up marketplace search box of module 23.
 
-**Inputs:** the parts the learner places (client, load balancer, app server, cache, search index, product database, queue, worker), the links between them, and per part its size, count, zones, and for the cache its hit rate, for the database its read share, read replicas and standby, and for the worker its count and size. The offered load is fixed by the brief at 2,000 lookups a second.
+**Inputs:** the parts the learner places (client, load balancer, app server, cache, search index, product database, queue, worker), the links between them, and per part its size, count, zones, and for the cache its hit rate, for the database its read share, read replicas and standby, and for the worker its count and size. The offered load is fixed by the brief at 3,000 lookups a second.
 
 **Rule:** the tiered-architecture model in `frontend/src/lab/tiered-architecture.ts`, played through four scenarios by `frontend/src/lab/challenge.ts`:
 
-1. Peak traffic ("sale night"): everything healthy at 2,000 lookups a second.
+1. Peak traffic: everything healthy at 3,000 lookups a second.
 2. An app server dies: one instance of the app fleet is lost (a fleet of one is lost whole).
 3. A search node dies: one node of the search index is lost (an index of one node is lost whole).
-4. The indexing worker dies: every worker is taken down for 30 seconds, then comes back.
+4. The indexing worker dies: every worker is taken down for 300 seconds (5 minutes), then comes back.
 
 Twelve checks read the four scenarios.
 
@@ -19,83 +19,83 @@ Twelve checks read the four scenarios.
 | Functional | A suggestion is served as you type | peak | a client reaches a cache through an app server |
 | Functional | Results show full product details | peak | the app server can read the product from a database (the cache is optional) |
 | Functional | A product change reaches the index | peak | a change travels app server, queue, worker, search node |
-| Non-functional | Serves the whole peak | peak | capacity is at least 2,000/s |
+| Non-functional | Serves the whole peak | peak | capacity is at least 3,000/s |
 | Non-functional | p99 | peak | p99 is at most 130 ms |
 | Non-functional | Everyone is still served when an app server dies | app server dies | at least 99.9% of the load is still served |
 | Non-functional | Everyone is still served when a search node dies | search node dies | at least 99.9% of the load is still served |
 | Non-functional | p99 while a search node is down | search node dies | p99 is at most 160 ms |
-| Non-functional | No product change is lost when the indexing worker dies | worker dies | a queue holds the changes, and the workers index 30 s of backlog within 30 s |
+| Non-functional | No product change is lost when the indexing worker dies | worker dies | a queue holds the changes, and the workers index a 300 s backlog within 30 s |
 | Non-functional | Availability | peak | the model's availability is at least 99.95% |
-| Non-functional | Cost per hour | peak | at most $3.00 an hour |
+| Non-functional | Cost per hour | peak | at most $2.50 an hour |
 
-**What the model does with this board, in plain words.** Load enters at the client and every branch of the app server sees the whole stream: the cache, the search index and the queue each see all 2,000 a second, and only the cache misses reach the database. A worker writes everything it takes from the queue to the search index. So the index carries the lookups and the product changes together: 2,000 + 2,000 = 4,000 a second in the reference design. That is why the index is the busiest and most expensive part, and why a design with no queue and no worker looks cheaper ($2.39 an hour) and faster (p99 87 ms) than it should: it never updates the index. Each search node answers 300 lookups a second for each vCPU (the model's rule for a search node), so a memory-small node (2 vCPU) handles 600 a second and a memory-medium node (4 vCPU) 1,200.
+**The share of changes.** The challenge sets `shares: { queue: 0.025 }`: 1 lookup in 40 leaves a product change in the queue, wherever the learner links the queue, and the worker behind it gets the same share. The figure is the ratio of chapter 23.1: about 174 product changes a second against about 7,000 searches a second at the peak (174 / 7,000 = 2.5%). At 3,000 lookups a second that is 75 changes a second. Every other branch of the app server (cache, search index) still sees the whole stream. The board's "lookups" are search-sized requests: the 5 suggestion calls for each search of chapter 23.1 are not added on top, so the cache's suggestion path is checked by a link, not loaded separately.
+
+**What the model does with this board, in plain words.** Load enters at the client and the cache, the search index and the product database (misses only) each see the lookups. A worker writes everything it takes from the queue to the search index, so the index carries the lookups and the shared changes together: 3,000 + 75 = 3,075 a second in the reference design. That is why the index is the biggest line on the bill. Each search node answers 300 lookups a second for each vCPU (the model's rule for a search node), so a memory-small node (2 vCPU) handles 600 a second and a memory-medium node (4 vCPU) 1,200. Because changes are rare, one worker is plenty, and the check that bites on the indexing path is whether there is a queue and a worker at all.
 
 **Cache wiring:** the app server may link to both the cache and the database (cache-aside), or the learner may also link the cache onward to the database (read-through). Both give the database the same load, reads times one minus the hit rate. The cache never shields the search index in this model (a cache may link only to a database), so the cache's measurable job is to protect the database and to serve the suggestion path.
 
-**Sale night, not an average day.** Module 23 plans about 7,000 searches, 35,000 suggestion calls and 174 product changes a second for Dalil as a whole. The board cannot split the load by kind, so the lab uses a smaller slice with an invented story: 2,000 lookups a second, with sellers re-pricing so fast that about as many product changes a second reach the index. Do not read 2,000 product changes a second as a real marketplace rate. The idea it teaches is real: indexing competes with searching for the same nodes.
+**Assumptions:** steady state, the cache is warm, 95% of the product database traffic is reads, and prices are illustrative. Freshness in module 23 is 30 seconds, so the drain check asks that the changes that waited through a 5 minute worker outage be indexed within 30 seconds of the worker coming back.
 
-**Assumptions:** steady state, the cache is warm, 95% of the product database traffic is reads, and prices are illustrative. Freshness in module 23 is 30 seconds, so the drain check asks that 30 seconds of waiting product changes be indexed within 30 seconds of the worker coming back.
-
-**Limits:** a model, not a cloud and not a search engine. Latency is in model milliseconds. "Served" is capacity over load, not a request-by-request count. A fleet spread over two zones counts as redundant even when it has one instance, which is a known simplification of the model. The queue is priced per message at an illustrative broker rate and never fills. The board does not rank results, so it cannot show ranking quality. It has no copies that refresh at different times, so it cannot show stale results between two shoppers. It treats the search nodes as one pool of equal nodes, not as 8 shards with copies, so it cannot show the slow-shard tail of chapter 23.2. It sends every lookup to both the cache and the index, while in Dalil a suggestion never reaches the index. The load of product changes is equal to the load of lookups, which is a story, not a measurement. There is no code lab for this design yet, so no number here was compared with a real stack.
+**Limits:** a model, not a cloud and not a search engine. Latency is in model milliseconds. "Served" is capacity over load, not a request-by-request count. A fleet spread over two zones counts as redundant even when it has one instance, which is a known simplification of the model. The queue is priced per message at an illustrative broker rate and never fills. The board does not rank results, so it cannot show ranking quality. It has no copies that refresh at different times, so it cannot show stale results between two shoppers. It treats the search nodes as one pool of equal nodes, not as 8 shards with copies, so it cannot show the slow-shard tail of chapter 23.2. A lookup goes to both the cache and the index, while in Dalil a suggestion never reaches the index, and a cache of popular searches would take load off it. The 1-in-40 share is a peak ratio from the course's own assumptions, not a measurement. There is no code lab for this design yet, so no number here was compared with a real stack.
 
 ## How the targets were tuned
 
-Targets were set against the model alone: there is no paired code lab yet, so nothing was compared with a real run. The numbers compare shapes (a lost app server costs a little, a lost search node costs more because the index is the busiest part, a dead worker costs no searches but needs spare capacity), not milliseconds.
+Targets were set against the model alone: there is no paired code lab yet, so nothing was compared with a real run. The numbers compare shapes (a lost app server costs a little, a lost search node costs more because the index is the biggest part, a dead worker costs no searches but needs a queue), not milliseconds.
 
 | Target | Why this value |
 |---|---|
-| Peak 2,000/s | The same range as module 30 (thousands a second), small enough that one wrong size already shows |
-| p99 at most 130 ms | The reference sits at 125 ms. Nine search nodes (146 ms) fail it |
-| p99 at most 160 ms with a search node down | The reference sits at 146 ms. Ten small nodes lose a tenth when one dies; five bigger nodes lose a fifth and reach 200 ms |
-| Drain 30 s outage within 30 s | The module 23 freshness allowance. Two workers take 22 s, one worker 150 s |
-| Availability at least 99.95% | The reference sits at 99.97%. A single database, a cache in one zone, app servers in one zone and a balancer in one zone each fall below it |
-| Cost at most $3.00 an hour | The reference costs $2.93, so one extra part of almost any kind goes over |
+| Peak 3,000/s | The same size as module 30, small enough that one wrong size already shows |
+| p99 at most 130 ms | The reference sits at 119 ms. Two balancer zones (146 ms), two app servers (138 ms) and seven search nodes (143 ms) each fail it |
+| p99 at most 160 ms with a search node down | The reference sits at 143 ms. Eight small nodes lose an eighth when one dies; four bigger nodes lose a quarter and reach 221 ms |
+| Drain: 300 s outage, 30 s to catch up | The module 23 freshness allowance. One worker clears 22,500 waiting changes in 10 s. With no queue the changes are lost; with no worker they are never indexed |
+| Availability at least 99.95% | The reference sits at 99.98%. A single database, a cache in one zone, app servers in one zone and a balancer in one zone each fall below it |
+| Cost at most $2.50 an hour | The reference costs $2.45, so one extra search node or a second worker goes over |
 
-**Checked against the model (2,000 lookups a second):**
+**Checked against the model (3,000 lookups a second, 1 in 40 leaving a change):**
 
 | Design | Checks | Ceiling | p99 | Availability | Cost | Fails |
 |---|---|---|---|---|---|---|
-| Starting board (balancer, one app server, one search node, database) | 3/12 | 600 | 1,930 ms | 98.55% | $0.52/h | suggestion, index update, capacity, p99, app server dies, search node dies (served and p99), worker dies, availability |
-| Reference (below) | 12/12 | 3,000 | 125 ms | 99.97% | $2.93/h | none |
-| Reference with one balancer zone | 6/12 | 1,600 | 253 ms | 99.87% | $2.83/h | capacity, p99, app server dies, search node dies (served and p99), availability |
-| Reference with one app server | 9/12 | 2,400 | 210 ms | 99.97% | $2.81/h | p99, app server dies (0% served), search-dies p99 |
-| Reference with app servers in one zone | 11/12 | 3,000 | 125 ms | 99.92% | $2.93/h | availability |
-| Reference without the cache | 6/12 | 1,263 | 583 ms | 99.97% | $2.78/h | suggestion, capacity, p99, app server dies, search node dies (served and p99); the database is 158% busy |
-| Reference with the cache in one zone | 11/12 | 3,000 | 125 ms | 99.82% | $2.93/h | availability |
-| Reference with nine search nodes | 10/12 | 2,700 | 146 ms | 99.97% | $2.78/h | p99, search-dies p99 (200 ms) |
-| Reference with seven search nodes | 9/12 | 2,100 | 575 ms | 99.97% | $2.48/h | p99, search node dies (90% served), search-dies p99 |
-| Reference with five memory-medium search nodes | 11/12 | 3,000 | 125 ms | 99.97% | $2.93/h | search-dies p99 (200 ms) |
-| Reference with eleven search nodes | 11/12 | 3,200 | 113 ms | 99.97% | $3.08/h | cost |
-| Reference without queue and worker | 10/12 | 3,200 | 87 ms | 99.98% | $2.39/h | index update, worker dies (60,000 changes lost) |
-| Reference with a queue and no worker | 10/12 | 3,200 | 87 ms | 99.97% | $2.69/h | index update, worker dies (never indexed) |
-| Reference with one worker | 11/12 | 3,000 | 125 ms | 99.97% | $2.81/h | worker dies (400/s to spare, 150 s) |
-| Reference with three workers | 11/12 | 3,000 | 125 ms | 99.97% | $3.05/h | cost |
-| Reference with three balancer zones | 11/12 | 3,000 | 123 ms | 99.97% | $3.03/h | cost |
-| Reference without the database standby | 11/12 | 3,000 | 125 ms | 99.82% | $2.78/h | availability |
-| Reference without the database | 11/12 | 3,000 | 125 ms | 99.97% | $2.63/h | product details |
+| Starting board (balancer, one app server, one search node, database) | 3/12 | 600 | 3,143 ms | 98.55% | $0.52/h | suggestion, index update, capacity, p99, app server dies, search node dies (served and p99), worker dies, availability |
+| Reference (below) | 12/12 | 4,683 | 119 ms | 99.98% | $2.45/h | none |
+| Reference with two balancer zones | 10/12 | 3,200 | 146 ms | 99.98% | $2.35/h | p99, search-dies p99 (170 ms) |
+| Reference with one balancer zone | 6/12 | 1,600 | 247 ms | 99.88% | $2.25/h | capacity, p99, app server dies, search node dies (served and p99), availability |
+| Reference with two app servers | 9/12 | 4,683 | 138 ms | 99.97% | $2.33/h | p99, app server dies (80% served), search-dies p99 (162 ms) |
+| Reference with one app server | 7/12 | 2,400 | 1,418 ms | 99.97% | $2.21/h | capacity, p99, app server dies (0% served), search node dies (served and p99) |
+| Reference with app servers in one zone | 11/12 | 4,683 | 119 ms | 99.93% | $2.45/h | availability |
+| Reference without the cache | 6/12 | 1,263 | 583 ms | 99.99% | $2.30/h | suggestion, capacity, p99, app server dies, search node dies (served and p99); the database is 238% busy |
+| Reference with the cache in one zone | 11/12 | 4,683 | 119 ms | 99.83% | $2.45/h | availability |
+| Reference with seven search nodes | 10/12 | 4,098 | 143 ms | 99.98% | $2.30/h | p99, search-dies p99 (221 ms) |
+| Reference with six search nodes | 9/12 | 3,512 | 221 ms | 99.98% | $2.15/h | p99, search node dies (97.5% served), search-dies p99 (1,716 ms) |
+| Reference with four memory-medium search nodes | 11/12 | 4,683 | 119 ms | 99.98% | $2.45/h | search-dies p99 (221 ms) |
+| Reference with nine search nodes | 11/12 | 4,800 | 108 ms | 99.98% | $2.60/h | cost |
+| Reference without queue and worker | 10/12 | 4,800 | 116 ms | 99.99% | $2.31/h | index update, worker dies (every change in the outage is lost) |
+| Reference with a queue and no worker | 10/12 | 4,800 | 116 ms | 99.98% | $2.33/h | index update, worker dies (never indexed) |
+| Reference with two workers | 11/12 | 4,683 | 119 ms | 99.98% | $2.57/h | cost |
+| Reference without the database standby | 11/12 | 4,683 | 119 ms | 99.83% | $2.30/h | availability |
+| Reference without the database | 11/12 | 4,683 | 119 ms | 99.99% | $2.15/h | product details |
 
-The reference design: a load balancer of size general-small in 2 zones; 2 app servers of size compute-small in 2 zones; one cache node of size memory-small at a 90% hit rate in 2 zones; 10 search nodes of size memory-small in 2 zones; a product database of size memory-small at 95% reads with a failover standby; a queue; 2 workers of size compute-small. The app server links to the cache, the search index, the database and the queue; the queue links to the workers; the workers link to the search index.
+The reference design: a load balancer of size general-small in 3 zones; 3 app servers of size compute-small in 2 zones; one cache node of size memory-small at a 90% hit rate in 2 zones; 8 search nodes of size memory-small in 2 zones; a product database of size memory-small at 95% reads with a failover standby; a queue; 1 worker of size compute-small. The app server links to the cache, the search index, the database and the queue; the queue links to the worker; the worker links to the search index.
 
-Two things the table shows that are worth saying aloud. One worker of the bigger compute-medium size, at the same cost as two small ones, also passes, so there is more than one answer. And in the app-server fault the reference leaves the other server at 83% busy and p99 near 210 ms: everyone is served, but slowly, and the lab does not check that number, as module 30 does not.
+Two things the table shows that are worth saying aloud. The queue and worker barely load the index, so skipping them saves only about $0.14 an hour and looks almost as fast: a missing job is easy to miss, and only the change checks catch it. And in the app-server fault the reference leaves two servers at 63% busy and p99 near 138 ms: everyone is served, a little slower, and the lab does not check that number, as module 30 does not.
 
 **Try this**
 
-1. Run the starting board. Expected: 3 of 12 pass. A search returns products and the product details load, but the search index is 333% busy and the board names it first.
-2. Add a cache at a 90% hit rate and link the app server to it. Expected: the suggestion check passes and the product database drops from 158% busy to under 20%.
-3. Add a queue and a worker and link app server to queue to worker to search. Expected: the index-update check passes, and the search node count that was enough before is now too small, because the index also takes the changes. Raise the node count until capacity and p99 pass.
-4. Take the number of search nodes down to nine, then replace ten small nodes with five medium nodes of the same cost. Run both and compare the search-dies p99.
+1. Run the starting board. Expected: 3 of 12 pass. A search returns products and the product details load, but the search index is 500% busy and the board names it first.
+2. Add a cache at a 90% hit rate and link the app server to it. Expected: the suggestion check passes and the product database drops from 238% busy to 25%.
+3. Add a queue and a worker and link app server to queue to worker to search. Expected: the index-update check passes and the index gets only a little busier, because 1 lookup in 40 leaves a change. Raise the search node count until capacity and p99 pass.
+4. Take the number of search nodes down to seven, then replace eight small nodes with four medium nodes of the same cost. Run both and compare the search-dies p99.
 
 ## Solution
 
-The reference design is in `solution.ts` next to this file, and it passes all 12 checks at $2.93 an hour (the design recorded in the table above). The board offers it through a Solution button, after the learner has pressed Run once and confirmed. It opens read-only, labelled "Reference solution", with a button to copy it onto the learner's board and one to go back. Each part has a short explanation: why it is there, which checks it helps pass, and what happens without it.
+The reference design is in `solution.ts` next to this file, and it passes all 12 checks at $2.45 an hour (the design recorded in the table above). The board offers it through a Solution button, after the learner has pressed Run once and confirmed. It opens read-only, labelled "Reference solution", with a button to copy it onto the learner's board and one to go back. Each part has a short explanation: why it is there, which checks it helps pass, and what happens without it.
 
 | Part | Why it is there | Checks it helps pass |
 |---|---|---|
-| Load balancer, 2 zones | One small zone carries about 1,600 a second, so two carry the 2,000 | capacity, p99, every fault check, availability |
-| App servers, 2 in 2 zones | Losing one leaves one at 83% busy and everyone served | capacity, p99, app server dies, availability |
-| Cache, 90% hits | Serves suggestions and answers 1,800 of 2,000 product lookups, so the database sees 200 | suggestion, capacity, p99, fault checks |
-| Search index, 10 small nodes in 2 zones | Carries 4,000 a second (lookups and changes); losing one leaves 9 at 74% | search, index update, capacity, p99, search node dies |
-| Queue and 2 workers | Changes wait safely; 2,800 a second to spare clears 60,000 in 22 s | index update, worker dies |
+| Load balancer, 3 zones | One small zone carries about 1,600 a second, so three carry the 3,000 | capacity, p99, every fault check, availability |
+| App servers, 3 in 2 zones | Losing one leaves two at 63% busy and everyone served | capacity, p99, app server dies, availability |
+| Cache, 90% hits | Serves suggestions and answers 2,700 of 3,000 product lookups, so the database sees 300 | suggestion, capacity, p99, fault checks |
+| Search index, 8 small nodes in 2 zones | Carries 3,075 a second (lookups and changes); losing one leaves 7 at 73% | search, index update, capacity, p99, search node dies |
+| Queue and 1 worker | Changes wait safely; 2,325 a second to spare clears 22,500 in 10 s | index update, worker dies |
 | Product database with standby | The source of truth; the standby keeps it up if its zone fails | product details, availability |
 
 "Compare with mine" lists, in plain words, which parts, settings and links differ from the learner's design and which failing checks each one helps explain. It gives directions ("lower", "smaller") and no numbers, so it does not hand over the answer.
