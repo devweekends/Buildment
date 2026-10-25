@@ -1,6 +1,6 @@
-# Handoff: networking course, paused 2026-10-24
+# Handoff: networking course
 
-Paused for the weekend at the user's request. Continue on Monday from this note.
+Resumed 2026-10-25. Briefs reviewed and aligned to roadmap v3.1; G2C is with the sponsor for sign-off. The sections below describe the state at the 2026-10-24 pause; see the decision log and run log for 2026-10-25.
 
 ## Where things are
 

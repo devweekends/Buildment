@@ -17,3 +17,5 @@
 | 2026-10-24 | G2B | sponsor | human | decision log: sponsor exception | G2B complete; G2C may start |
 | 2026-10-24 | G2C | curriculum-architect, prerequisites-timeline, project-designer | drafting model | `03-blueprint.md`, `04-project-brief.md`, `skill-graph.yaml`, `timeline.yaml`, `prerequisite-report.md` | drafted; checks pass |
 | 2026-10-24 | G2C | curriculum-architect | bulk model | `module-briefs/01` to `09` | drafted; not yet reviewed; paused for the weekend (`HANDOFF.md`) |
+| 2026-10-25 | G2C | orchestrator | drafting model | roadmap v3.1, dossier S70 to S76, `tools/check_briefs.py` | detail fixes; briefs match the roadmap (76 of 76) |
+| 2026-10-25 | G2C | curriculum-architect | bulk model | `module-briefs/01` to `09` aligned to v3.1 | ready for sponsor review |
