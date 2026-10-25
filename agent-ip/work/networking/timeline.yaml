@@ -993,7 +993,7 @@ chapters:
     requires: ["ip-as-number", "cidr"]
     introduces: ["ipv6-format"]
     reinforces: []
-    evidence: "in-chapter drill"
+    evidence: "in-chapter v6 exercise and quiz"
   - id: "9.3"
     title: "A network without NAT"
     type: Learn

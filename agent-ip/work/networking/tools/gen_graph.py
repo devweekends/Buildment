@@ -173,7 +173,7 @@ D = {
 "8.6": (["full-journey"], [], ["subnet-calc", "lpm", "napt", "dns-resolution"], "final quiz"),
 "8.7": (["fault-diagnosis", "capstone-network"], [], ["napt", "conntrack"], "recorded demo and probes"),
 "9.1": (["own-addresses"], [], [], "own IPv6 addresses recorded"),
-"9.2": (["ip-as-number", "cidr"], ["ipv6-format"], [], "in-chapter drill"),
+"9.2": (["ip-as-number", "cidr"], ["ipv6-format"], [], "in-chapter v6 exercise and quiz"),
 "9.3": (["ipv6-format", "napt", "inbound"], ["ipv6-no-nat"], [], "netlab check"),
 "9.4": (["ipv6-format", "ipv6-no-nat"], [], [], "quiz"),
 "9.5": (["ipv6-no-nat"], [], ["exhaustion", "cgnat"], "short answer"),
