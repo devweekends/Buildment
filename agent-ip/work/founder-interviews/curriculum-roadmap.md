@@ -19,7 +19,7 @@ A practical course for fellows applying to startups and small remote teams, wher
 ## Learner and entry prerequisites
 - **Learner:** Gaza fellowship fellows applying to startups and small remote teams (engineering, product, design, operations), early career to mid level. Arabic first language, English second, mostly on phones with weak or expensive data.
 - **Prior knowledge:** at least one project, job, internship, freelance gig or volunteer role they can talk about, and a resume draft. No interview training assumed. A provided fellow (Hadeel) is available at every gate for anyone without a suitable story or who prefers not to use their own.
-- **Time available:** the brief says about 3 to 5 hours a week for 3 weeks. The course as built needs about 18 hours on the written path and about 20 with every AI drill (see Shape and open decision 1).
+- **Time available:** the brief says about 3 to 5 hours a week for 3 weeks. The course as built needs about 19.5 hours on the written path and about 21 with every AI drill (see Shape and open decision 1).
 - **Entry diagnostic:** none graded; the predict in 1.1 sets the tone.
 
 ## Outcomes
@@ -29,7 +29,7 @@ A practical course for fellows applying to startups and small remote teams, wher
 | O2 | State impact with a before, an after, a time window and a source, say how much was yours, or say plainly what you did not measure and how you would | Quiz 2.5; gate 2; capstone part 1 |
 | O3 | Answer a chain of whys on any resume line or project choice with the reason you had at the time, without inventing | Quiz 3.5; gate 3; capstone part 2; mentor defence |
 | O4 | Work through a founder's case question: clarify, assume, compare options, decide and name what you would measure, written and then said aloud | Quiz 4.5; gate 4 (written, plus a timed spoken run); capstone part 3; live defence |
-| O5 | Explain your best technical work in a short founder version (said aloud in under a minute) and a deeper engineer version that answers "why not this?" and "what happens if?" | Quiz 5.5; gate 5 (written, plus a timed spoken run); capstone part 1; live defence |
+| O5 | Explain your best technical work in a short founder version (said aloud in under a minute) and a deeper engineer version that answers "why not this?" and "what happens if?", defend a technical choice against its alternatives, check your work area by area, and share a demo a founder can open | Chapters 5.5 to 5.7; quiz 5.8; gate 5 (written, plus a timed spoken run); capstone part 1; live defence |
 | O6 | Name a strength with evidence and a real weakness with a plan, and handle nerves, video calls and time to think | Quiz 6.5; gate 6 (written, plus a timed spoken run); capstone part 3; live defence (spoken delivery) |
 | O7 | Run a full practice interview, tag your own answers with the five flags, read any feedback critically, find the gaps in your story bank and plan how to fill them | Chapter 7.2; capstone 7.4; course gate 7.5 |
 
@@ -38,10 +38,10 @@ A practical course for fellows applying to startups and small remote teams, wher
 |---|---|---|---|---|
 | 1 | Your stories and your numbers | 1 to 2 | 320 | One owned story; two stories with honest numbers or honest gaps |
 | 2 | Under questioning | 3 to 4 | 320 | An audited resume; a case worked aloud |
-| 3 | Depth and self-knowledge | 5 to 6 | 320 | The founder and engineer versions of your best technical work; a strength and a weakness with evidence |
+| 3 | Depth and self-knowledge | 5 to 6 | 410 | The founder and engineer versions of your best technical work, a choice defended against its alternative and an honest area check; a strength and a weakness with evidence |
 | 4 | The full interview | 7 | 215 | The story bank, a full practice interview and its feedback, the mentor defence |
 
-Total: 1,175 minutes over 41 chapters (`estimatedHours: 20`), re-estimated after G5 round 1 (critic A found the first estimates optimistic for second-language readers on phones). Each gate's 40 minutes includes about 10 minutes for the optional AI drill and the capstone's 120 minutes about 30 for its two drills, so a fellow who uses only the written fallbacks needs about 1,085 minutes, about 18 hours. That is over the brief's 9 to 15 hours (open decision 1).
+Total: 1,265 minutes over 44 chapters (`estimatedHours: 21`), re-estimated after G5 round 1 (critic A found the first estimates optimistic for second-language readers on phones) and extended on 2026-10-25 with three technical founder chapters in module 5 (sponsor request). Each gate's 40 minutes includes about 10 minutes for the optional AI drill and the capstone's 120 minutes about 30 for its two drills, so a fellow who uses only the written fallbacks needs about 1,175 minutes, about 19.5 hours. That is over the brief's 9 to 15 hours (open decision 1).
 
 ## Module and chapter sequence
 
@@ -85,15 +85,18 @@ Total: 1,175 minutes over 41 chapters (`estimatedHours: 20`), re-estimated after
 | 4.5 | Case questions aloud | Five graded cases | Check | 10 |
 | 4.6 | Checklist and learning log | A case worked aloud; drill (case study, impact) | Gate | 40 |
 
-### Module 5: The best technical thing you did (160 min)
+### Module 5: Technical depth and the technical founder (250 min)
 | # | Chapter | One-line outcome | Type | Min |
 |---|---|---|---|---|
 | 5.1 | Set the scene | Lost the founder in jargon, then stuck at "why not this?" | Read | 20 |
 | 5.2 | Choosing the story | Your own decision, five whys deep, not the shiniest tools | Learn | 30 |
 | 5.3 | The founder version | Problem, what you built, key choice, result, in plain words | Learn | 30 |
 | 5.4 | The engineer version | "Why not this?", "what happens if?", how you tested, what you would change | Learn | 30 |
-| 5.5 | The best technical thing you did | Five graded cases with an AI check | Check | 10 |
-| 5.6 | Checklist and learning log | Both versions written; drill (best technical, five whys) | Gate | 40 |
+| 5.5 | Why this and not that | The need, the rejected option, the undo cost, the revisit trigger | Learn | 30 |
+| 5.6 | Check your work area by area | Correctness, performance, scale, security, reliability, data, monitoring, releases, cost: what you did, did not, would check first | Learn | 30 |
+| 5.7 | A demo they can open | A deployed demo, guest access, a two-minute recording of the core flow | Learn | 30 |
+| 5.8 | Technical depth and the technical founder | Five graded cases with an AI check | Check | 10 |
+| 5.9 | Checklist and learning log | Both versions, one choice defended, one area check; drill (best technical, five whys) | Gate | 40 |
 
 ### Module 6: Strengths, weaknesses and how you come across (160 min)
 | # | Chapter | One-line outcome | Type | Min |
@@ -154,7 +157,7 @@ Salary negotiation, offers, visas and contracts; coding interviews and live codi
 ## Open decisions (resolved at G2B by the sponsor)
 | # | Decision | Recommendation | Instructor decision |
 |---|---|---|---|
-| 1 | Time budget | 1,175 minutes (about 20 hours) with every AI drill, about 18 hours on the written path, against the brief's 9 to 15. Either run the course over four weeks at 5 hours, or cut scope (for example merge module 6 into module 7, or drop one Learn chapter per module) | Keep all seven modules; about 20 hours over about four weeks (Zeeshan, 2026-10-24) |
+| 1 | Time budget | 1,265 minutes (about 21 hours) with every AI drill, about 19.5 hours on the written path (after the 2026-10-25 technical founder chapters), against the brief's 9 to 15. Either run the course over four weeks at 5 hours, or cut scope (for example merge module 6 into module 7, or drop one Learn chapter per module) | Keep all seven modules; about 20 hours over about four weeks (Zeeshan, 2026-10-24) |
 | 2 | Five whys credit | "Attributed to Taiichi Ohno, an engineer who helped build a Japanese car maker's production system" (as drafted in 3.2), without the company name | As recommended (Zeeshan, 2026-10-24) |
 | 3 | Researcher names | At most two or three per chapter, in plain words, only as the dossier's credits table allows | As recommended (Zeeshan, 2026-10-24) |
 | 4 | Founder probe list | Confirm with instructors who have hired in startups (dossier finding 3 rests on first-party essays, not research) | Confirmed as written (Zeeshan, 2026-10-24) |

@@ -4,7 +4,7 @@
 04.03-options-and-trade-offs#3 | B | high | It compares time, cost and scope without pretending the options are equivalent.
 04.04-decide-and-measure#1 | A | high | Thirty-four is within the two-point normal swing around the 35 percent target.
 04.04-decide-and-measure#2 | A | high | The stated rule is keep at 25 or more and change at 23 or less; 24 is the watch zone.
-04.04-decide-and-measure#3 | D | high | It states the 2.9 target and edges outside the recent 2.2–2.6 range.
+04.04-decide-and-measure#3 | D | high | It states the 2.9 target and edges outside the recent 2.2, 2.6 range.
 04.05-quiz#1 | B | high | It uses the clarification to focus first on Fridays in the east.
 04.05-quiz#2 | A | high | The list lacks a chosen action, a measure and a threshold for changing course.
 04.05-quiz#3 | C | high | Seventeen exceeds the 15 target plus the one-point normal swing.
