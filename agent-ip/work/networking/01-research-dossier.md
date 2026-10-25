@@ -370,6 +370,13 @@ All "Date checked" values are 2026-10-24 unless noted. Confidence: H, M, L.
 | S67 | Ubuntu 24.04 iptables backend is nf_tables: vendor guide via search snippet only | https://www.ssdnodes.com/learn/lang/de/iptables-vs-nftables-on-ubuntu | secondary | 2026-10-24 | L (UNVERIFIED) |
 | S68 | AS definition: connected group of IP prefixes, one or more operators, single clearly defined routing policy (RFC 1930, March 1996) | https://www.rfc-editor.org/rfc/rfc1930.txt | standard | 2026-10-24 | H |
 | S69 | `2001:db8::/32` reserved for IPv6 documentation examples (RFC 3849, July 2004) | https://www.rfc-editor.org/rfc/rfc3849.txt | standard | 2026-10-24 | H |
+| S70 | `/31` prefixes on point-to-point links: two addresses, no directed broadcast (RFC 3021, December 2000) | https://www.rfc-editor.org/rfc/rfc3021.txt | standard | 2026-10-25 | H |
+| S71 | DNS implementations must support both UDP and TCP; a truncated UDP answer (TC flag) makes the client retry over TCP (RFC 7766, March 2016) | https://www.rfc-editor.org/rfc/rfc7766.txt | standard | 2026-10-25 | H |
+| S72 | SLAAC: a host forms a global address from a router-advertised prefix plus its interface identifier, after duplicate address detection (RFC 4862, September 2007) | https://www.rfc-editor.org/rfc/rfc4862.txt | standard | 2026-10-25 | H |
+| S73 | Temporary addresses: randomised interface identifiers replaced over time, for privacy (RFC 8981, February 2021) | https://www.rfc-editor.org/rfc/rfc8981.txt | standard | 2026-10-25 | H |
+| S74 | Dual stack: complete support for both IPv4 and IPv6 in hosts and routers (RFC 4213, October 2005) | https://www.rfc-editor.org/rfc/rfc4213.txt | standard | 2026-10-25 | H |
+| S75 | Docker `-p` publishes a container port on the host "using firewall rules to perform Network Address Translation (NAT)"; the page names no rule type | https://docs.docker.com/engine/network/port-publishing/ | first-party | 2026-10-25 | H |
+| S76 | The Linux bridge learns source MAC addresses of received frames into its forwarding database, ages entries out, and floods unicast frames for unknown addresses | https://docs.kernel.org/networking/bridge.html | first-party | 2026-10-25 | H |
 
 Claims kept as UNVERIFIED (not in any row above with H confidence): "5-tuple" as a named term; Class D 224/4 (RFC 1112); RIPE NCC 2012 last /8; current CGNAT share on mobile networks; Ubuntu 24.04 default iptables backend; `--cap-add` sufficiency for `ip netns` in Docker; Docker Desktop VM kernel nftables support; universe enabled in `ubuntu:24.04`; macOS `ifconfig` and `netstat -rn` behaviour; DHCP pool exhaustion incident; download size estimates (labelled ESTIMATE).
 
