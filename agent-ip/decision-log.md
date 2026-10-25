@@ -10,6 +10,8 @@
 
 **Evidence:** 11 checks tuned against the model and compared with the code lab's measured results; 64 lab unit tests; structure audit strict with 0 errors; validator 269 of 269 OK.
 
+**Extension (same day):** the proposal now covers every course with labs: two modules per lab topic, "Visual lab: <topic>" and "Code lab: <topic>", a code lab module template, a "why this matters" prediction at the start and a reflect step at the end of each, and two quality gate checks. Still a proposal; the sidebar shows only module titles, so the prefix does the work until the platform has a module kind.
+
 **Files changed:** none in `agent-ip/` except this entry and the proposal.
 
 **Review:** Delivery lead and one additional reviewer pending.
