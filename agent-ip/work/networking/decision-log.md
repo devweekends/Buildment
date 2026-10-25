@@ -64,3 +64,27 @@
 
 **Owner:** Zeeshan (architect, human sponsor). The delivery lead has not yet recorded the result; that stays open and does not block G2C under this exception.
 
+
+## 2026-10-25: Roadmap v3.1, detail fixes from the module briefs
+
+**Decision:** the module briefs listed roadmap issues. None changes an outcome, a module, the order or the capstone, so they are fixed as v3.1 without re-running G2A, and the sponsor sees them at G2C sign-off:
+- Check chapters are quiz-only: spaced practice uses plain quiz questions in the drill style; `[addr: drill]` stays in Learn chapters (2.2, 2.3, 3.2, 3.5).
+- 2.4 keeps one canvas (`[addr: classify]`); the first look at NAT becomes a `TraceRequest` step-through.
+- Check sizes kept within five questions: 4.9 (three situations plus two earlier), 7.7 (three outputs as one question), 8.6 (five questions that combine modules).
+- Classification exercises may use a sourced real public address (`1.1.1.1`, [S50]); fictional hosts still use documentation ranges (decision 11 refined).
+- `sudo` is taught for the learner's own Linux or WSL 2; in the lab the learner is root. Host numbers are pasted into `my-numbers.txt` for the lab checker.
+- The 4.3 hook uses a plausible provider router, not one the learner can see in their trace. The 7.4 hook follows [S48]: the services "could not be found". 6.3 no longer claims home routers always add a firewall; `docker run -p` is sourced [S75].
+- Capstone: a static home web server (`homeweb`) is the forwarded port's target and the "wrong mask" fault's device; part 1 starts from challenges 2 and 4, part 3 from challenge 5.
+- The network lab's command-output generator also covers `ip link`, `ip addr`, `ip route get`, `ss`, `conntrack -L` and `curl`; the IPv6 view's filter is stateful; two hosts may share a direct link.
+- Fallbacks predict before the key steps, within each chapter's assessment budget. `[timeline]` models fall back to a worked-example table with a Predict.
+- 6.6 states that it simplifies Linux's clash rule and drops a new flow when the port range is full [S19].
+- Module 9 now has outcome evidence (O2: quiz 9.4 and gate 9.5).
+- New sources: [S70] to [S76] (`/31`, DNS over TCP, SLAAC, temporary addresses, dual stack, `docker -p`, bridge MAC learning).
+
+## 2026-10-25: Proposed prose floors for this course (for sponsor decision at G2C)
+
+**Problem:** the audit applies 1,200 prose words to every chapter that is not a gate or a quiz. Read chapters are 10 to 15 minutes, and Code and Lab chapters are mostly doing, not reading. The open proposal `proposals/2026-10-23-prose-minimums-by-course-type.md` covers exactly this.
+
+**Proposal:** Learn and Build chapters keep 1,200; Read, Code and Lab chapters and gates use 700. Recorded as a course exception until the proposal is decided; audit findings for those chapter types are listed in the course PR.
+
+**Status:** proposed, not yet decided. The module briefs follow it; if the sponsor rejects it, the Read chapters are re-timed to 15 to 20 minutes and the briefs updated.

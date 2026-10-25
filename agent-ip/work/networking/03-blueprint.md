@@ -4,7 +4,7 @@ course: networking
 version: 1
 status: draft
 owner: curriculum-architect
-roadmap_version: 3
+roadmap_version: 3.1
 roadmap_confirmed: true
 depends_on: 02-curriculum-roadmap.md, roadmap-confirmation.md, skill-graph.yaml, timeline.yaml, 04-project-brief.md, module-briefs/
 ---
@@ -78,7 +78,7 @@ Each chapter type has a fixed shape, so a learner always knows what to do next:
 | Check | QUIZ only, three to five questions, two from earlier modules (`-quiz.md`) | 3 to 5 |
 | Gate | Checklist, ChapterRecap, LearningLog, one OPEN_QUESTION (written, voice or labelled diagram) | 1 |
 
-Budgets per chapter (`02-course-architecture.md`): at least 1,200 prose words for Read, Learn, Code and Build chapters, 700 for gates; at most 6 top-level components, 25 JSX tags and 3 assessment interactions. `LearningObjectives` in each module's first chapter, `ChapterRecap` in each gate. At least one diagram per module and one in every concept-heavy chapter; topology and packet paths start as MermaidDiagram. The interaction map and canvas specs are G3 artifacts; the module briefs name each piece, its claim, its limit and its fallback.
+Budgets per chapter (`02-course-architecture.md`): at least 1,200 prose words for Learn and Build chapters; 700 for Read, Code and Lab chapters and gates (a proposed course exception, decision log 2026-10-25, pending the sponsor's decision at G2C); at most 6 top-level components, 25 JSX tags and 3 assessment interactions. `LearningObjectives` in each module's first chapter, `ChapterRecap` in each gate. At least one diagram per module and one in every concept-heavy chapter; topology and packet paths start as MermaidDiagram. The interaction map and canvas specs are G3 artifacts; the module briefs name each piece, its claim, its limit and its fallback.
 
 ## Capstone
 
