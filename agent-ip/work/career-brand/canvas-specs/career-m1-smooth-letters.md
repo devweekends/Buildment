@@ -39,7 +39,7 @@ A stack of alike letters and one line with a result, with the reader's attention
       { "kind": "fly", "at": 2.6, "dur": 1.0, "from": "reader", "to": "result", "label": "look here" },
       { "kind": "say", "at": 3.7, "actor": "result", "text": "a real number", "tone": "good" },
       { "kind": "say", "at": 4.0, "actor": "reader", "text": "checks it", "tone": "good" },
-      { "kind": "verdict", "at": 4.7, "text": "A line they can check stands out", "tone": "good" }
+      { "kind": "verdict", "at": 4.7, "text": "A line they can check gets noticed", "tone": "good" }
     ],
     "loop": 8.5
   }
