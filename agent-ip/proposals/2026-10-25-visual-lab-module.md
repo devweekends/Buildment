@@ -33,7 +33,7 @@ The same shape applies to any course that has labs: infra, Kubernetes, Docker, n
 
 Set the scene (the prediction prompt, the brief and the list of checks), the board page, a Learn chapter that reads each failure, a `-quiz.md`, and a `-checklist.md` gate whose last part is the reflect step.
 
-### Code lab module template (six chapters)
+### Code lab module template (six chapters, then a quiz and a checklist)
 
 | Chapter | What it holds |
 |---|---|
@@ -42,7 +42,8 @@ Set the scene (the prediction prompt, the brief and the list of checks), the boa
 | Your turn | Tasks with directions and no answers: change one thing, predict, run, read the number |
 | Check your result | The learner's numbers against the real measured numbers of the repo (`results.md`), and the paired visual lab check ids each result maps to |
 | Solutions | Kept apart from the tasks, opened on purpose, with the reasoning and not only the answer |
-| Reflect and gate | Explain the result in your own words, compare it with your first guess, and name one thing the board could not show; the `-checklist.md` gate |
+| Reflect | Explain the result in your own words (an `openquestion`), compare it with your first guess, and name one thing the board could not show |
+| Quiz and gate | A `-quiz.md` chapter of `type: mcq` scenarios, then the `-checklist.md` Gate with a learning log and a short written report |
 
 The repository carries a **contract file** (`visual-lab-contract.md` and a JSON copy) that lists the components, the knobs and the checks, each with an id that matches the visual lab's check ids, and which checks the board cannot model. The first example is `system-design-labs/labs/lab-1-url-shortener`: `CHAPTER-code-lab.md` is the chapter draft and `visual-lab-contract.md` is the contract. Its three parts (the codes, the cache, break it) become the "Your turn" tasks.
 
