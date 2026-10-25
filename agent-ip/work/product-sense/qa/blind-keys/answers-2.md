@@ -7,7 +7,7 @@
 04.05-rules-that-fail-a-check#1 | B | high | Empirical studies (e.g., Porter/UIE) showed task completion did not drop based on click count.
 04.05-rules-that-fail-a-check#2 | A | high | Miller's 7±2 paper is about short-term memory, not visual menus where items are read rather than recalled.
 04.05-rules-that-fail-a-check#3 | C | high | The 5-user guideline applies per distinct user group and requires iterative fixing and retesting.
-04.07-quiz#1 | B | high | Removing clutter around the core task and testing with 3–5 users moves a 'Good' page toward 'Best'.
+04.07-quiz#1 | B | high | Removing clutter around the core task and testing with 3 to 5 users moves a 'Good' page toward 'Best'.
 04.07-quiz#2 | D | high | Using one accent colour for the main action is a deliberate choice, whereas 'Welcome' and 'Item 1' are unchosen placeholder defaults.
 04.07-quiz#3 | A | high | States the dated observation and its relation to the user's task without guessing motives or citing debunked rules.
 04.07-quiz#4 | C | high | Golden ratio in UI, universal colour psychology, and the 7-item menu rule fail empirical checks and must be verified against sources.
