@@ -4,13 +4,14 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   INTEGRITY_LEAVE_EVENTS,
   INTEGRITY_LIMITS,
+  PROCTORED_RULE,
   type IntegrityAttemptSession,
   type IntegrityCameraStatus,
   type IntegrityEventType,
   type IntegrityEventsResult,
 } from "../../shared/api/integrity";
-import { IntegrityQueue, LeaveCounter, countWords, fullscreenPromptAllowed, isFastAnswer, proctoredKeyAction, screenshotCombo } from "./signals";
-import { CameraSession } from "./camera-session";
+import { FaceWatch, IntegrityQueue, LeaveCounter, countWords, fullscreenPromptAllowed, isFastAnswer, proctoredKeyAction, screenshotCombo } from "./signals";
+import { CameraSession, type CameraLoss } from "./camera-session";
 
 // Quiz integrity signals in the browser. Everything here is best effort and
 // never blocks the quiz: a failed request, a missing camera or an unsupported
@@ -39,7 +40,23 @@ const NOTICE_TEXT: Partial<Record<IntegrityEventType, string>> = {
   FAST_ANSWER: "You answered very fast. Take your time to read each question.",
   PRINT_BLOCKED: "Printing is turned off during this quiz.",
   NAVIGATION_BLOCKED: "You cannot reload or go back during this quiz.",
+  CAMERA_LOST: "Your camera stopped. Turn it back on to continue.",
+  NO_FACE: "We could not see you for a while. Keep your face in view of the camera.",
+  MULTIPLE_FACES: "More than one person is in view. Your mentor will see this.",
 };
+
+/** How often a proctored quiz checks that the window still has focus, in case a blur event was missed. */
+const FOCUS_POLL_MS = 500;
+const FACE_CHECK_MS = 2_000;
+
+type FaceDetectorLike = { detect(image: CanvasImageSource): Promise<unknown[]> };
+type FaceDetectorConstructor = new (options?: { fastMode?: boolean; maxDetectedFaces?: number }) => FaceDetectorLike;
+
+/** The native FaceDetector, where the browser has it. Nothing is installed or downloaded. */
+function faceDetectorClass(): FaceDetectorConstructor | null {
+  if (typeof window === "undefined") return null;
+  return (window as unknown as { FaceDetector?: FaceDetectorConstructor }).FaceDetector ?? null;
+}
 
 /** What the learner is told after they left the quiz screen in a proctored quiz. */
 export type LeaveWarning = { leaves: number; warningsLeft: number };
@@ -87,9 +104,14 @@ export function requestQuizFullscreen() {
   window.dispatchEvent(new Event("buildment:quiz-focus"));
 }
 
+/** What a native shell (the desktop app) reports about its window, beyond what the page can see. */
+export type NativeWindowEvent = "blur" | "focus" | "leave-full-screen" | "minimize";
+
 export type IntegrityTransport = {
   apiFetch: <T>(path: string, options?: Omit<RequestInit, "body"> & { json?: unknown }) => Promise<T>;
   fetch: typeof globalThis.fetch;
+  /** The desktop app bridges its main-process window events here; the web leaves it out. */
+  windowEvents?: (listener: (event: NativeWindowEvent) => void) => () => void;
 };
 
 
@@ -107,7 +129,7 @@ export function useQuizIntegrity({
   currentBlockId: string | null;
   transport: IntegrityTransport;
 }) {
-  const { apiFetch, fetch } = transport;
+  const { apiFetch, fetch, windowEvents } = transport;
   const [session, setSession] = useState<IntegrityAttemptSession | null>(null);
   const [serverFlags, setServerFlags] = useState(0);
   const [pendingFlags, setPendingFlags] = useState(0);
@@ -127,6 +149,10 @@ export function useQuizIntegrity({
   const [locked, setLocked] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [done, setDone] = useState(false);
+  /** A proctored quiz whose camera stopped: the quiz stays covered until it is live again. */
+  const [cameraLost, setCameraLost] = useState(false);
+  /** The native FaceDetector is there and running (a light check, on this device only). */
+  const [faceCheck, setFaceCheck] = useState(false);
   /** Start was pressed and the server has not confirmed it yet. */
   const [starting, setStarting] = useState(false);
 
@@ -155,6 +181,9 @@ export function useQuizIntegrity({
   const leaveCounter = useRef(new LeaveCounter());
   const limitFired = useRef(false);
   const swallowPop = useRef(0);
+  /** The learner is away from the quiz right now (window blur, hidden tab, or a native blur). */
+  const awayRef = useRef(false);
+  const cameraRequiredRef = useRef(false);
 
   // A proctored quiz is armed from Start until the attempt ends: that is when leaving counts.
   const proctored = Boolean(session?.proctored);
@@ -163,6 +192,7 @@ export function useQuizIntegrity({
   useEffect(() => {
     armedRef.current = armed;
     proctoredRef.current = proctored;
+    cameraRequiredRef.current = Boolean(session?.camera.required);
   });
 
   const hiddenKey = `buildment:integrity-hidden:${chapterId}`;
@@ -232,7 +262,15 @@ export function useQuizIntegrity({
           const body = (await response.json().catch(() => null)) as { data?: IntegrityEventsResult } | null;
           queue.ack(ids);
           if (batch.attemptId === attemptIdRef.current && typeof body?.data?.flagCount === "number") setServerFlags(body.data.flagCount);
-          if (batch.attemptId === attemptIdRef.current && body?.data?.locked) reachLimit();
+          if (batch.attemptId === attemptIdRef.current && body?.data) {
+            const serverLeaves = body.data.leaves;
+            // The server counted a leave this page missed: its count wins, and the learner is warned.
+            if (!body.data.locked && typeof serverLeaves === "number" && leaveCounter.current.sync(serverLeaves)) {
+              setLeaves(serverLeaves);
+              setLeaveWarning({ leaves: serverLeaves, warningsLeft: Math.max(0, PROCTORED_RULE.limit - serverLeaves) });
+            }
+            if (body.data.locked) reachLimit();
+          }
         } else if ([400, 403, 404].includes(response.status)) {
           queue.ack(ids); // The server will never take these; do not retry forever.
         } else {
@@ -261,11 +299,15 @@ export function useQuizIntegrity({
       lastByType.current.set(type, now);
       queue.add(attemptId, type, { blockId: blockRef.current, ...(meta ? { meta } : {}) }, options.at ?? new Date(now));
       refreshPending();
-      if (leaving && proctoredRef.current && armedRef.current) countLeave((options.at ?? new Date(now)).getTime());
+      if (leaving && proctoredRef.current && armedRef.current) {
+        countLeave((options.at ?? new Date(now)).getTime());
+        // Do not wait for the timer: the server counts it and the learner may be gone for a while.
+        void flush(document.visibilityState === "hidden");
+      }
       const text = NOTICE_TEXT[type];
       if (text && !options.quiet) showNotice(text);
     },
-    [countLeave, refreshPending, showNotice],
+    [countLeave, flush, refreshPending, showNotice],
   );
 
   // --- Opening the attempt ------------------------------------------------------------------
@@ -348,17 +390,17 @@ export function useQuizIntegrity({
   // --- Camera -------------------------------------------------------------------------------
 
   /** Tells the server the camera state, retrying a couple of times so the mentor's view does not drift. */
-  const putCamera = useCallback(async (status: Exclude<IntegrityCameraStatus, "NOT_REQUESTED">) => {
+  const putCamera = useCallback(async (status: Exclude<IntegrityCameraStatus, "NOT_REQUESTED">): Promise<boolean> => {
     const attemptId = attemptIdRef.current;
-    if (!attemptId) return;
+    if (!attemptId) return false;
     for (let attempt = 0; ; attempt += 1) {
       try {
         await apiFetch(`/api/v1/integrity/attempts/${encodeURIComponent(attemptId)}/camera`, { method: "PUT", json: { status } });
-        return;
+        return true;
       } catch {
-        // Advisory only: the CAMERA_* events tell the same story if this never lands.
+        // Advisory on a normal quiz: the CAMERA_* events tell the same story if this never lands.
         const wait = CAMERA_PUT_RETRY_MS[attempt];
-        if (wait === undefined || cameraStatusRef.current !== status || attemptIdRef.current !== attemptId) return;
+        if (wait === undefined || cameraStatusRef.current !== status || attemptIdRef.current !== attemptId) return false;
         await new Promise((resolve) => window.setTimeout(resolve, wait));
       }
     }
@@ -398,12 +440,21 @@ export function useQuizIntegrity({
   }, []);
 
   const cameraUnavailable = useCallback((reason: string) => {
-    stopStream();
+    // A muted track can come back by itself, so its stream is kept; any other loss needs a new start.
+    if (reason !== "muted") stopStream();
     setCameraIssue(reason);
     if (cameraStatusRef.current === "UNAVAILABLE") return;
     setCamera("UNAVAILABLE");
     void putCamera("UNAVAILABLE");
     record("CAMERA_OFF", { reason }, { quiet: true });
+    if (cameraRequiredRef.current) {
+      // A proctored quiz needs the camera: losing it counts like leaving the screen and covers the quiz.
+      if (armedRef.current) {
+        setCameraLost(true);
+        record("CAMERA_LOST", { reason }, { quiet: true });
+      }
+      return;
+    }
     showNotice("Your camera is off. You can keep going with the quiz.");
   }, [putCamera, record, setCamera, showNotice, stopStream]);
 
@@ -453,27 +504,43 @@ export function useQuizIntegrity({
     }, FIRST_SNAPSHOT_MS);
   }, [session?.camera.intervalSeconds, uploadSnapshot]);
 
-  const startCamera = useCallback(async () => {
-    if (!session?.camera.enabled || finishedRef.current) return;
+  /** Turns the camera on. True when it is live and the server has been told (a proctored quiz needs both to start). */
+  const startCamera = useCallback(async (): Promise<boolean> => {
+    if (!(session?.camera.enabled || session?.camera.required) || finishedRef.current) return false;
     setCameraStarting(true);
-    const result = await cameraSession().start(() => cameraUnavailable("stopped"));
+    const result = await cameraSession().start(
+      (reason: CameraLoss) => cameraUnavailable(reason),
+      {
+        onRestored: () => {
+          // A muted camera came back by itself.
+          setCameraIssue(null);
+          setCamera("ON");
+          setCameraLost(false);
+          void putCamera("ON");
+        },
+      },
+    );
     setCameraStarting(false);
     // The quiz may have finished, or the page left, while the browser asked for permission.
-    if (result.status === "cancelled" || finishedRef.current) return;
+    if (result.status === "cancelled" || finishedRef.current) return false;
     if (result.status === "failed") {
       cameraUnavailable(result.reason);
-      return;
+      return false;
     }
     setCameraIssue(null);
+    setCameraLost(false);
     if (videoRef.current) {
       videoRef.current.srcObject = result.stream;
       void videoRef.current.play().catch(() => undefined);
     }
     setCamera("ON");
-    void putCamera("ON");
     record("CAMERA_ON", undefined, { quiet: true });
-    scheduleSnapshots();
-  }, [cameraSession, cameraUnavailable, putCamera, record, scheduleSnapshots, session?.camera.enabled, setCamera]);
+    // Taking the permission away while the quiz runs is a loss, even if the track lingers.
+    cameraSession().watchPermission(typeof navigator === "undefined" ? undefined : navigator.permissions, () => cameraUnavailable("denied"));
+    // Stills are an opt-in the course makes separately; the on-device check never uploads anything.
+    if (session?.camera.enabled) scheduleSnapshots();
+    return putCamera("ON");
+  }, [cameraSession, cameraUnavailable, putCamera, record, scheduleSnapshots, session?.camera.enabled, session?.camera.required, setCamera]);
 
   /** The learner said no, or turned the camera off: noted for the mentor, never a penalty. */
   const declineCamera = useCallback((reason: "declined" | "learner") => {
@@ -487,7 +554,7 @@ export function useQuizIntegrity({
 
   // Resume the camera after a reload (or on the next attempt) when the learner had said yes.
   useEffect(() => {
-    if (!session?.camera.enabled || dialog === "intro" || cameraSessionRef.current?.current || finishedRef.current) return;
+    if (!(session?.camera.enabled || session?.camera.required) || dialog === "intro" || cameraSessionRef.current?.current || finishedRef.current) return;
     if (cameraStatusRef.current === "ON") void startCamera();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session?.attemptId, dialog]);
@@ -518,9 +585,21 @@ export function useQuizIntegrity({
   }, [apiFetch, showNotice]);
 
   /** Closes the intro. `withCamera` is the learner's consent choice; saying no never blocks the quiz. */
-  const begin = useCallback((withCamera: boolean) => {
+  const begin = useCallback(async (withCamera: boolean) => {
     const attemptId = attemptIdRef.current;
-    if (attemptId) {
+    // Full screen needs the click that called this, so ask before anything is awaited.
+    if (fullscreenSupported() && !document.fullscreenElement) requestQuizFullscreen();
+    if (session?.camera.required) {
+      // A proctored quiz does not start until the camera is live. If it is not, the dialog stays open
+      // with the reason and the learner can try again.
+      setStarting(true);
+      const live = await startCamera();
+      if (!live) {
+        setStarting(false);
+        return;
+      }
+    }
+    if (attemptId && !session?.proctored) {
       try {
         storage()?.setItem(introKey(attemptId), "1");
       } catch {
@@ -528,12 +607,11 @@ export function useQuizIntegrity({
       }
     }
     setDialog(null);
-    if (fullscreenSupported() && !document.fullscreenElement) requestQuizFullscreen();
     if (attemptId) void unlockQuestions(attemptId);
-    if (!session?.camera.enabled) return;
+    if (session?.camera.required || !session?.camera.enabled) return;
     if (withCamera) void startCamera();
     else declineCamera("declined");
-  }, [declineCamera, session?.camera.enabled, startCamera, unlockQuestions]);
+  }, [declineCamera, session?.camera.enabled, session?.camera.required, session?.proctored, startCamera, unlockQuestions]);
 
   // --- Browser signals ----------------------------------------------------------------------
 
@@ -548,8 +626,26 @@ export function useQuizIntegrity({
       record("TAB_HIDDEN", { awayMs: Date.now() - pending.at }, { at: new Date(pending.at), attemptId: pending.attemptId });
     };
 
+    // Proctored quiz: a leave is noted the moment it starts (not when the learner comes back), once per
+    // leave and return, from whichever signal arrives first. Window blur, a hidden tab, a native blur and
+    // a focus poll all feed this; the server counts what is reported.
+    const goneAway = (type: IntegrityEventType, at: number, meta?: Record<string, string | number | boolean>) => {
+      if (!armedRef.current || awayRef.current || at < suppressUntil.current || Date.now() < suppressUntil.current) return;
+      awayRef.current = true;
+      record(type, meta, { at: new Date(at) });
+    };
+    const cameBack = () => {
+      if (document.visibilityState === "visible" && document.hasFocus()) awayRef.current = false;
+    };
+
     const onVisibility = () => {
       if (finishedRef.current) return;
+      if (proctoredRef.current) {
+        if (document.visibilityState === "hidden") goneAway("TAB_HIDDEN", Date.now());
+        else cameBack();
+        void flush(document.visibilityState === "hidden");
+        return;
+      }
       if (document.visibilityState === "hidden") {
         blurStart.current = null;
         mouseOutStart.current = null;
@@ -572,6 +668,14 @@ export function useQuizIntegrity({
 
     const onBlur = () => {
       const at = Date.now();
+      if (proctoredRef.current) {
+        window.setTimeout(() => {
+          if (document.visibilityState === "hidden" || document.hasFocus()) return;
+          if (document.activeElement instanceof HTMLIFrameElement) return; // Focus moved into an embed on the page.
+          goneAway("WINDOW_BLUR", at);
+        }, 250);
+        return;
+      }
       // Let visibilitychange land first: a hidden tab is already its own signal.
       window.setTimeout(() => {
         if (document.visibilityState === "hidden" || at < suppressUntil.current) return;
@@ -581,6 +685,10 @@ export function useQuizIntegrity({
     };
 
     const onFocus = () => {
+      if (proctoredRef.current) {
+        cameBack();
+        return;
+      }
       const start = blurStart.current;
       blurStart.current = null;
       if (start === null || document.visibilityState === "hidden") return;
@@ -687,6 +795,21 @@ export function useQuizIntegrity({
     flagHiddenReturn();
 
     setIsFullscreen(Boolean(document.fullscreenElement));
+    // Some shells never send a blur: look at the focus itself, twice a second, while a proctored quiz runs.
+    const focusPoll = window.setInterval(() => {
+      if (!proctoredRef.current || !armedRef.current) return;
+      if (document.visibilityState === "hidden") goneAway("TAB_HIDDEN", Date.now(), { via: "poll" });
+      else if (!document.hasFocus()) goneAway("WINDOW_BLUR", Date.now(), { via: "poll" });
+      else cameBack();
+    }, FOCUS_POLL_MS);
+    // The desktop app reports what its window does (blur, focus, leaving full screen) from the main process.
+    const stopNative = windowEvents?.((event) => {
+      if (!proctoredRef.current || !armedRef.current) return;
+      if (event === "blur") goneAway("WINDOW_BLUR", Date.now(), { via: "native" });
+      else if (event === "minimize") goneAway("TAB_HIDDEN", Date.now(), { via: "native" });
+      else if (event === "focus") awayRef.current = false;
+      else if (event === "leave-full-screen") record("FULLSCREEN_EXIT", { via: "native" }, { quiet: true });
+    });
     window.addEventListener("beforeprint", onBeforePrint);
     window.addEventListener("beforeunload", onBeforeUnload);
     window.addEventListener("popstate", onPopState, true);
@@ -712,6 +835,8 @@ export function useQuizIntegrity({
     window.addEventListener("online", onOnline);
 
     return () => {
+      window.clearInterval(focusPoll);
+      stopNative?.();
       window.removeEventListener("beforeprint", onBeforePrint);
       window.removeEventListener("beforeunload", onBeforeUnload);
       window.removeEventListener("popstate", onPopState, true);
@@ -778,9 +903,16 @@ export function useQuizIntegrity({
       // Harmless.
     }
     applySession(next);
+    if (next.camera.required) {
+      // The attempt is over: the camera goes off now and is asked for again at the next Start.
+      stopStream();
+      setCameraLost(false);
+      setCamera("NOT_REQUESTED");
+      return;
+    }
     const status = cameraStatusRef.current;
     if (next.camera.enabled && status !== "NOT_REQUESTED" && status !== next.camera.status) void putCamera(status);
-  }, [applySession, flush, openAttempt, putCamera]);
+  }, [applySession, flush, openAttempt, putCamera, setCamera, stopStream]);
 
   /** The quiz is complete: stop watching (leaving full screen now is expected) and release the camera. */
   const finish = useCallback(() => {
@@ -799,6 +931,39 @@ export function useQuizIntegrity({
   useEffect(() => {
     if (!enabled) finish();
   }, [enabled, finish]);
+
+  // A light face check, only where the browser has a native FaceDetector, and only on this device: the
+  // frames are looked at and thrown away, and only a flag with a time is kept. Without it, this is skipped.
+  useEffect(() => {
+    if (!armed || !session?.camera.required || cameraStatus !== "ON") {
+      setFaceCheck(false);
+      return;
+    }
+    const Detector = faceDetectorClass();
+    if (!Detector) {
+      setFaceCheck(false);
+      return;
+    }
+    const detector = new Detector({ fastMode: true, maxDetectedFaces: 4 });
+    const watch = new FaceWatch();
+    setFaceCheck(true);
+    const timer = window.setInterval(() => {
+      const video = videoRef.current;
+      if (!video || video.readyState < 2 || document.visibilityState === "hidden") return;
+      detector
+        .detect(video)
+        .then((faces) => {
+          const flag = watch.observe(faces.length, Date.now());
+          if (flag) record(flag, { faces: faces.length });
+        })
+        .catch(() => {
+          // The detector failed: stop checking rather than flag the learner for it.
+          window.clearInterval(timer);
+          setFaceCheck(false);
+        });
+    }, FACE_CHECK_MS);
+    return () => window.clearInterval(timer);
+  }, [armed, cameraStatus, record, session?.camera.required]);
 
   // The page styles and the reader shell follow this: no printing, no text selection, no way out by shortcut.
   useEffect(() => {
@@ -839,6 +1004,7 @@ export function useQuizIntegrity({
       dismissFullscreenPrompt,
       fullscreenSupported: fullscreenSupported(),
       camera: {
+        required: Boolean(session?.camera.required),
         enabled: Boolean(session?.camera.enabled),
         status: cameraStatus,
         starting: cameraStarting,
@@ -856,6 +1022,12 @@ export function useQuizIntegrity({
       armed,
       leaves,
       leaveWarning,
+      /** A proctored quiz whose camera stopped: covered until it is live again. */
+      cameraLost: cameraLost && armed,
+      /** The on-device face check is running (the browser has a FaceDetector). */
+      faceCheck,
+      /** This browser has a native FaceDetector, so the face check can run. */
+      faceCheckAvailable: faceDetectorClass() !== null,
       /** The learner left too many times (here, or the server says so): the reader must hand their answers in. */
       limitReached: locked,
       starting,
@@ -871,7 +1043,7 @@ export function useQuizIntegrity({
       nextAttempt,
       finish,
     }),
-    [starting, acknowledgeLeave, armed, isFullscreen, leaveWarning, leaves, locked, proctored, attachVideo, begin, cameraIssue, cameraStarting, cameraStatus, checkPace, declineCamera, dismissFullscreenPrompt, enabled, finish, fullscreenPrompt, dialog, nextAttempt, notice, pendingFlags, questionsShown, returnToFullscreen, serverFlags, session, startCamera, withoutFlags],
+    [cameraLost, faceCheck, starting, acknowledgeLeave, armed, isFullscreen, leaveWarning, leaves, locked, proctored, attachVideo, begin, cameraIssue, cameraStarting, cameraStatus, checkPace, declineCamera, dismissFullscreenPrompt, enabled, finish, fullscreenPrompt, dialog, nextAttempt, notice, pendingFlags, questionsShown, returnToFullscreen, serverFlags, session, startCamera, withoutFlags],
   );
 }
 

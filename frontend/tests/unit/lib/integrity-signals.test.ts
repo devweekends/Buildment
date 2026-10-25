@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { IntegrityQueue, LeaveCounter, countWords, expectedReadingMs, isFastAnswer, proctoredKeyAction, screenshotCombo } from "@/lib/integrity/signals";
+import { FaceWatch, IntegrityQueue, LeaveCounter, countWords, expectedReadingMs, isFastAnswer, proctoredKeyAction, screenshotCombo } from "@/lib/integrity/signals";
 import { PROCTORED_RULE, countLeaveIncidents } from "@/shared/api/integrity";
 
 class MemoryStorage {
@@ -156,5 +156,61 @@ describe("LeaveCounter", () => {
     for (const time of times) counter.add(at(time));
     const stored = times.map((time) => ({ type: "TAB_HIDDEN" as const, at: at(time) }));
     expect(counter.leaves).toBe(countLeaveIncidents(stored));
+  });
+});
+
+describe("LeaveCounter, each leave and return", () => {
+  const at = (seconds: number) => 1_700_000_000_000 + seconds * 1000;
+
+  it("counts a second leave a few seconds after the first as a new incident", () => {
+    const counter = new LeaveCounter();
+    expect(counter.add(at(0))?.leaves).toBe(1);
+    expect(counter.add(at(PROCTORED_RULE.incidentWindowSeconds))?.leaves).toBe(2);
+    expect(counter.add(at(PROCTORED_RULE.incidentWindowSeconds * 2))?.limitReached).toBe(true);
+  });
+
+  it("takes the server's count when it saw leaves this page missed", () => {
+    const counter = new LeaveCounter();
+    counter.add(at(0));
+    expect(counter.sync(1)).toBe(false);
+    expect(counter.sync(2)).toBe(true);
+    expect(counter.leaves).toBe(2);
+    expect(counter.add(at(60))?.limitReached).toBe(true);
+  });
+});
+
+describe("FaceWatch", () => {
+  it("says nothing while a face is in view", () => {
+    const watch = new FaceWatch();
+    for (let t = 0; t < 60_000; t += 2_000) expect(watch.observe(1, t)).toBeNull();
+  });
+
+  it("flags no face once, after the face has been gone for a while, and again after it came back and left", () => {
+    const watch = new FaceWatch(10_000, 3);
+    expect(watch.observe(0, 0)).toBeNull();
+    expect(watch.observe(0, 6_000)).toBeNull();
+    expect(watch.observe(0, 10_000)).toBe("NO_FACE");
+    expect(watch.observe(0, 12_000)).toBeNull();
+    expect(watch.observe(1, 14_000)).toBeNull();
+    expect(watch.observe(0, 16_000)).toBeNull();
+    expect(watch.observe(0, 26_000)).toBe("NO_FACE");
+  });
+
+  it("flags more than one face only after several checks in a row, and once", () => {
+    const watch = new FaceWatch(10_000, 3);
+    expect(watch.observe(2, 0)).toBeNull();
+    expect(watch.observe(2, 2_000)).toBeNull();
+    expect(watch.observe(2, 4_000)).toBe("MULTIPLE_FACES");
+    expect(watch.observe(3, 6_000)).toBeNull();
+    expect(watch.observe(1, 8_000)).toBeNull();
+    expect(watch.observe(2, 10_000)).toBeNull();
+  });
+
+  it("ignores a single frame with a second face", () => {
+    const watch = new FaceWatch(10_000, 3);
+    expect(watch.observe(2, 0)).toBeNull();
+    expect(watch.observe(1, 2_000)).toBeNull();
+    expect(watch.observe(2, 4_000)).toBeNull();
+    expect(watch.observe(1, 6_000)).toBeNull();
   });
 });

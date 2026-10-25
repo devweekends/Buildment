@@ -4,6 +4,12 @@
 
 export type CameraFailure = "denied" | "no-camera" | "unsupported" | "error";
 
+/** Why a camera that was live is not any more. */
+export type CameraLoss = "stopped" | "muted" | "denied";
+
+/** A track that stays muted this long counts as lost (short mutes happen when a device wakes up). */
+const MUTED_GRACE_MS = 2_000;
+
 export type CameraStartResult =
   | { status: "on"; stream: MediaStream }
   | { status: "failed"; reason: CameraFailure }
@@ -45,8 +51,13 @@ export class CameraSession {
     return this.closed;
   }
 
-  /** `onEnded` runs if the device stops on its own (unplugged, taken by another app). */
-  async start(onEnded: () => void): Promise<CameraStartResult> {
+  private stopWatching: (() => void) | null = null;
+
+  /**
+   * `onLost` runs if the device stops on its own (unplugged, taken by another app) or stays
+   * muted; `onRestored` runs when a muted track comes back.
+   */
+  async start(onLost: (reason: CameraLoss) => void, options: { onRestored?: () => void; mutedGraceMs?: number } = {}): Promise<CameraStartResult> {
     if (this.closed) return { status: "cancelled" };
     if (!this.getUserMedia) return { status: "failed", reason: "unsupported" };
     const generation = ++this.generation;
@@ -63,14 +74,59 @@ export class CameraSession {
     }
     stopTracks(this.stream);
     this.stream = stream;
-    stream.getVideoTracks()[0]?.addEventListener("ended", () => {
-      if (this.stream === stream) onEnded();
+    const track = stream.getVideoTracks()[0];
+    let muteTimer: ReturnType<typeof setTimeout> | null = null;
+    let lostByMute = false;
+    track?.addEventListener("ended", () => {
+      if (this.stream === stream) onLost("stopped");
+    });
+    track?.addEventListener("mute", () => {
+      if (muteTimer) clearTimeout(muteTimer);
+      muteTimer = setTimeout(() => {
+        if (this.stream !== stream) return;
+        lostByMute = true;
+        onLost("muted");
+      }, options.mutedGraceMs ?? MUTED_GRACE_MS);
+    });
+    track?.addEventListener("unmute", () => {
+      if (muteTimer) clearTimeout(muteTimer);
+      muteTimer = null;
+      if (lostByMute && this.stream === stream) {
+        lostByMute = false;
+        options.onRestored?.();
+      }
     });
     return { status: "on", stream };
   }
 
+  /** Calls `onDenied` if the browser permission is taken away while the camera is in use. */
+  watchPermission(permissions: Pick<Permissions, "query"> | undefined, onDenied: () => void): void {
+    this.stopWatching?.();
+    this.stopWatching = null;
+    if (!permissions) return;
+    let active = true;
+    let status: PermissionStatus | null = null;
+    const onChange = () => {
+      if (active && status?.state === "denied") onDenied();
+    };
+    permissions
+      .query({ name: "camera" as PermissionName })
+      .then((result) => {
+        if (!active) return;
+        status = result;
+        result.addEventListener("change", onChange);
+      })
+      .catch(() => undefined); // Not every browser can report camera permission; the track events still work.
+    this.stopWatching = () => {
+      active = false;
+      status?.removeEventListener("change", onChange);
+    };
+  }
+
   /** Turns the camera off; a start still in flight is discarded when it lands. */
   stop(): void {
+    this.stopWatching?.();
+    this.stopWatching = null;
     this.generation += 1;
     stopTracks(this.stream);
     this.stream = null;

@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { CameraSession } from "@/lib/integrity/camera-session";
 import { fullscreenPromptAllowed } from "@/lib/integrity/signals";
 
@@ -15,7 +15,7 @@ function fakeStream() {
     },
   };
   const stream = { getTracks: () => [track], getVideoTracks: () => [track] } as unknown as MediaStream;
-  return { stream, track, end: () => listeners.ended?.() };
+  return { stream, track, end: () => listeners.ended?.(), fire: (type: string) => listeners[type]?.() };
 }
 
 function deferred<T>() {
@@ -108,5 +108,64 @@ describe("fullscreenPromptAllowed", () => {
     expect(fullscreenPromptAllowed({ supported: true, dismissals: 0 })).toBe(true);
     expect(fullscreenPromptAllowed({ supported: true, dismissals: 1 })).toBe(true);
     expect(fullscreenPromptAllowed({ supported: true, dismissals: 2 })).toBe(false);
+  });
+});
+
+describe("CameraSession losses", () => {
+  afterEach(() => vi.useRealTimers());
+
+  it("reports a stopped device", async () => {
+    const { stream, end } = fakeStream();
+    const lost = vi.fn();
+    await new CameraSession(async () => stream).start(lost);
+    end();
+    expect(lost).toHaveBeenCalledWith("stopped");
+  });
+
+  it("reports a track that stays muted, but not a short mute, and says when it comes back", async () => {
+    vi.useFakeTimers();
+    const { stream, fire } = fakeStream();
+    const lost = vi.fn();
+    const restored = vi.fn();
+    await new CameraSession(async () => stream).start(lost, { onRestored: restored, mutedGraceMs: 2_000 });
+
+    fire("mute");
+    vi.advanceTimersByTime(1_000);
+    fire("unmute");
+    vi.advanceTimersByTime(5_000);
+    expect(lost).not.toHaveBeenCalled();
+
+    fire("mute");
+    vi.advanceTimersByTime(2_000);
+    expect(lost).toHaveBeenCalledWith("muted");
+    fire("unmute");
+    expect(restored).toHaveBeenCalledOnce();
+  });
+
+  it("reports permission taken away while the camera is in use", async () => {
+    const session = new CameraSession(async () => fakeStream().stream);
+    let change: (() => void) | undefined;
+    const status = {
+      state: "granted",
+      addEventListener: (_type: string, listener: () => void) => {
+        change = listener;
+      },
+      removeEventListener: () => undefined,
+    };
+    const denied = vi.fn();
+    session.watchPermission({ query: async () => status as unknown as PermissionStatus }, denied);
+    await Promise.resolve();
+    await Promise.resolve();
+    change?.();
+    expect(denied).not.toHaveBeenCalled();
+    status.state = "denied";
+    change?.();
+    expect(denied).toHaveBeenCalledOnce();
+  });
+
+  it("copes with a browser that cannot report camera permission", () => {
+    const session = new CameraSession(null);
+    expect(() => session.watchPermission(undefined, () => undefined)).not.toThrow();
+    expect(() => session.watchPermission({ query: async () => Promise.reject(new Error("no")) }, () => undefined)).not.toThrow();
   });
 });

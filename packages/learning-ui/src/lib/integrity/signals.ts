@@ -60,6 +60,13 @@ export class LeaveCounter {
     this.incidentStart = Number.NEGATIVE_INFINITY;
   }
 
+  /** The server counted more than the browser did (a leave this page missed): the server wins. */
+  sync(serverLeaves: number): boolean {
+    if (serverLeaves <= this.count) return false;
+    this.count = serverLeaves;
+    return true;
+  }
+
   /**
    * Notes one leave at time `at` (ms). Returns the outcome when it starts a new incident,
    * or null when it belongs to the incident before it (blur, hidden and full screen exit
@@ -74,6 +81,49 @@ export class LeaveCounter {
       limitReached: this.count >= PROCTORED_RULE.limit,
       warningsLeft: Math.max(0, PROCTORED_RULE.limit - this.count),
     };
+  }
+}
+
+/**
+ * The light on-device face check, kept apart from the camera so it can be tested. Feed it
+ * the number of faces each time the detector runs. It speaks up once per episode: no face
+ * for a while, or more than one face for several checks in a row.
+ */
+export class FaceWatch {
+  private noFaceSince: number | null = null;
+  private noFaceReported = false;
+  private manyRun = 0;
+  private manyReported = false;
+
+  constructor(
+    private readonly noFaceMs = 10_000,
+    private readonly manyChecks = 3,
+  ) {}
+
+  observe(faces: number, now: number): "NO_FACE" | "MULTIPLE_FACES" | null {
+    if (faces >= 2) {
+      this.manyRun += 1;
+      this.noFaceSince = null;
+      this.noFaceReported = false;
+      if (this.manyRun >= this.manyChecks && !this.manyReported) {
+        this.manyReported = true;
+        return "MULTIPLE_FACES";
+      }
+      return null;
+    }
+    this.manyRun = 0;
+    this.manyReported = false;
+    if (faces === 1) {
+      this.noFaceSince = null;
+      this.noFaceReported = false;
+      return null;
+    }
+    this.noFaceSince ??= now;
+    if (!this.noFaceReported && now - this.noFaceSince >= this.noFaceMs) {
+      this.noFaceReported = true;
+      return "NO_FACE";
+    }
+    return null;
   }
 }
 
