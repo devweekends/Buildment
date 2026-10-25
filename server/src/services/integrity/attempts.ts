@@ -30,10 +30,15 @@ async function countFlags(attemptId: string): Promise<number> {
   return prisma.integrityEvent.count({ where: { attemptId, type: FLAG_TYPES } });
 }
 
-/** Separate times the learner left the quiz screen in this attempt. */
-async function countLeaves(attemptId: string, db: Pick<typeof prisma, "integrityEvent"> = prisma): Promise<number> {
+/**
+ * Separate times the learner left the quiz screen since they pressed Start. Time spent
+ * on the start card is not part of the attempt, and the server's own receive time is
+ * used (browser clocks drift).
+ */
+async function countLeaves(attemptId: string, since: Date | null, db: Pick<typeof prisma, "integrityEvent"> = prisma): Promise<number> {
+  if (!since) return 0;
   const events = await db.integrityEvent.findMany({
-    where: { attemptId, type: { in: [...INTEGRITY_LEAVE_EVENTS] } },
+    where: { attemptId, type: { in: [...INTEGRITY_LEAVE_EVENTS] }, receivedAt: { gte: since } },
     select: { type: true, at: true },
   });
   return countLeaveIncidents(events);
@@ -135,7 +140,7 @@ export async function openIntegrityAttempt(user: SessionUser | undefined, chapte
         select: { completedAt: true },
       }))?.completedAt)
     : true;
-  const leaves = proctored ? await countLeaves(attempt.id) : 0;
+  const leaves = proctored ? await countLeaves(attempt.id, attempt.questionsShownAt) : 0;
 
   return {
     attemptId: attempt.id,
@@ -246,7 +251,7 @@ export async function recordIntegrityEvents(
     // The one rule for a proctored quiz: the server counts the times the learner left the quiz
     // screen and locks the attempt at the limit. The browser only shows warnings.
     if (proctored && attempt.questionsShownAt) {
-      leaves = await countLeaves(attemptId, tx);
+      leaves = await countLeaves(attemptId, attempt.questionsShownAt, tx);
       if (!lockedAt && leaves >= PROCTORED_RULE.limit) {
         lockedAt = now;
         await tx.integrityAttempt.update({ where: { id: attemptId }, data: { lockedAt } });

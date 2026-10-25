@@ -80,10 +80,10 @@ describe("recording events", () => {
     ];
     const first = await postEvents(attemptId, batch);
     expect(first.status).toBe(200);
-    expect(first.body.data).toEqual({ accepted: 3, flagCount: 2 });
+    expect(first.body.data).toEqual({ accepted: 3, flagCount: 2, leaves: 0, locked: false });
 
     const retry = await postEvents(attemptId, batch);
-    expect(retry.body.data).toEqual({ accepted: 0, flagCount: 2 });
+    expect(retry.body.data).toEqual({ accepted: 0, flagCount: 2, leaves: 0, locked: false });
     expect(await prisma.integrityEvent.count({ where: { attemptId } })).toBe(3);
   });
 
