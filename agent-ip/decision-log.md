@@ -1,5 +1,19 @@
 # Agent IP decision log
 
+## 2026-10-25: Visual lab module for challenges (proposal filed, IP unchanged)
+
+**Status:** Proposal in `proposals/2026-10-25-visual-lab-module.md`. No rule in `agent-ip/` was changed.
+
+**Problem:** The architect asked that each system design challenge have its board as its own module, with the palette on the left, settings in a dark drawer opened from a hover icon, and a Run that reports every functional and non-functional check and shows traffic, saturation and failures.
+
+**Decision:** Build the first such module (`30-visual-lab-design-a-url-shortener`) under today's rules and file the module shape as a proposal. The course content follows the existing gates: audit and beats audit with no flags, `type: mcq` quiz fences, a checklist with a learning log, "Further reading" pointers marked `{/* course-link: <slug> */}`, no em or en dashes. The module is appended after module 29 because chapter slugs are numbered by module order, so a module inserted in the middle would renumber published chapters.
+
+**Evidence:** 11 checks tuned against the model and compared with the code lab's measured results; 64 lab unit tests; structure audit strict with 0 errors; validator 269 of 269 OK.
+
+**Files changed:** none in `agent-ip/` except this entry and the proposal.
+
+**Review:** Delivery lead and one additional reviewer pending.
+
 ## 2026-10-24: Load released courses into the scratch database through the repository publisher
 
 **Status:** Correction to the pre-PR checklist.
