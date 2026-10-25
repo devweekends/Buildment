@@ -12,7 +12,7 @@ export const hldVisualWebCrawler: HldLabSpec = {
   hints: [
     "Run the starting design first. The fetcher saves each page itself, but the links DalilBot finds go nowhere. Read which checks fail and why.",
     "The seen-URL memory (a cache) answers most of the 'did we fetch this already?' questions itself. Only the misses reach the URL table. When the memory stops, the table gets every question.",
-    "Downloaded pages can wait in a queue. Parser workers (the Worker part) take them off it, save the page and add the links they find to the URL table in groups (batches). The board words the batch size as clicks; for DalilBot it counts URL records.",
+    "Downloaded pages can wait in a queue. Parser workers (the Worker part) take them off it, save the page and add the links they find to the URL table in groups (batches).",
     "Saving a page costs money every time, whatever your design. Spend the rest of the budget on the spare machine and the memory, not on sizes that are too large.",
   ],
   allowedComponents: ["client", "load-balancer", "app-server", "cache", "nosql", "object-storage", "queue", "worker"],
