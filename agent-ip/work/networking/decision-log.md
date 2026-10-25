@@ -88,3 +88,7 @@
 **Proposal:** Learn and Build chapters keep 1,200; Read, Code and Lab chapters and gates use 700. Recorded as a course exception until the proposal is decided; audit findings for those chapter types are listed in the course PR.
 
 **Status:** proposed, not yet decided. The module briefs follow it; if the sponsor rejects it, the Read chapters are re-timed to 15 to 20 minutes and the briefs updated.
+
+## 2026-10-26: G2C signed off; prose floors decided
+
+**Decision:** the sponsor signed off G2C ("I sign off G2C for the networking course, and I accept the 700-word prose floor for Read, Code and Lab chapters and gates. Continue to G3."). The course exception proposed on 2026-10-25 is now decided: Learn and Build chapters need at least 1,200 prose words; Read, Code and Lab chapters and gates need at least 700; Check chapters are quiz-only. `audit-course.mjs` still applies 1,200 to Read, Code and Lab chapters, so its findings for those types are expected and are listed in the course PR under this exception, until `proposals/2026-10-23-prose-minimums-by-course-type.md` is decided.

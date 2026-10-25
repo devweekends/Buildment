@@ -19,3 +19,4 @@
 | 2026-10-24 | G2C | curriculum-architect | bulk model | `module-briefs/01` to `09` | drafted; not yet reviewed; paused for the weekend (`HANDOFF.md`) |
 | 2026-10-25 | G2C | orchestrator | drafting model | roadmap v3.1, dossier S70 to S76, `tools/check_briefs.py` | detail fixes; briefs match the roadmap (76 of 76) |
 | 2026-10-25 | G2C | curriculum-architect | bulk model | `module-briefs/01` to `09` aligned to v3.1 | ready for sponsor review |
+| 2026-10-26 | G2C | sponsor | human | blueprint, project brief, skill graph, timeline, module briefs | signed off; G3 may start |
