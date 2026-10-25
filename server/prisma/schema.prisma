@@ -818,6 +818,9 @@ enum IntegrityEventType {
   CAMERA_ON
   PRINT_BLOCKED
   NAVIGATION_BLOCKED
+  CAMERA_LOST
+  NO_FACE
+  MULTIPLE_FACES
 }
 
 enum IntegrityCameraStatus {

@@ -44,7 +44,7 @@ describe("countLeaveIncidents", () => {
   });
 
   it("only leaving the screen counts", () => {
-    expect([...INTEGRITY_LEAVE_EVENTS].sort()).toEqual(["FULLSCREEN_EXIT", "TAB_HIDDEN", "WINDOW_BLUR"]);
+    expect([...INTEGRITY_LEAVE_EVENTS].sort()).toEqual(["CAMERA_LOST", "FULLSCREEN_EXIT", "TAB_HIDDEN", "WINDOW_BLUR"]);
   });
 
   it("locks on the third incident: two warnings, then submit", () => {

@@ -19,6 +19,9 @@ export const INTEGRITY_EVENT_TYPES = [
   "CAMERA_ON",
   "PRINT_BLOCKED",
   "NAVIGATION_BLOCKED",
+  "CAMERA_LOST",
+  "NO_FACE",
+  "MULTIPLE_FACES",
 ] as const;
 export type IntegrityEventType = (typeof INTEGRITY_EVENT_TYPES)[number];
 
@@ -34,25 +37,31 @@ export function isIntegrityFlag(type: IntegrityEventType): boolean {
 /**
  * The strict rule for proctored quizzes: warn twice, then submit.
  *
- * Leaving the quiz screen (another tab, another window, or full screen) is an
- * "incident". The first two incidents are warnings and the learner carries on.
- * The third locks the attempt: the server stops sending its questions, the
+ * Leaving the quiz screen (another tab, another window, or full screen) or losing
+ * the camera (it stops, is muted, or its permission is taken away) is an
+ * "incident". Every separate leave and return counts once. The first two incidents
+ * are warnings and the learner carries on. The third locks the attempt: the server stops sending its questions, the
  * answers the learner has so far are submitted as they stand (unanswered
  * questions are marked incorrect) and the mentor sees the attempt as locked.
- * Blocked actions (copy, paste, right-click, print, reload, back) are recorded
- * as notes for the mentor but never count as an incident, so a stray key press
+ * Blocked actions (copy, paste, right-click, print, reload, back) and the on-device
+ * face checks (no face for a while, more than one face) are recorded as notes for
+ * the mentor but never count as an incident, so a stray key press or a bad light
  * cannot cost a learner their attempt. Only the server counts incidents.
  */
 export const PROCTORED_RULE = {
   warnings: 2,
   /** The incident that locks the attempt. */
   limit: 3,
-  /** Events this close to the first one of an incident belong to it: one Alt+Tab fires blur, hidden and full screen exit together. */
-  incidentWindowSeconds: 15,
+  /**
+   * Events this close to the first one of an incident belong to it: one Alt+Tab fires
+   * blur, hidden and full screen exit together, within a moment. Leaving again after
+   * coming back is a new incident, so the window is kept short.
+   */
+  incidentWindowSeconds: 3,
 } as const;
 
-/** The events that mean the learner left the quiz screen. */
-export const INTEGRITY_LEAVE_EVENTS: ReadonlySet<IntegrityEventType> = new Set(["TAB_HIDDEN", "WINDOW_BLUR", "FULLSCREEN_EXIT"]);
+/** The events that count as an incident: leaving the quiz screen, or losing the camera. */
+export const INTEGRITY_LEAVE_EVENTS: ReadonlySet<IntegrityEventType> = new Set(["TAB_HIDDEN", "WINDOW_BLUR", "FULLSCREEN_EXIT", "CAMERA_LOST"]);
 
 /** How many separate times the learner left the quiz screen. Order does not matter. */
 export function countLeaveIncidents(events: ReadonlyArray<{ type: IntegrityEventType; at: Date | string | number }>): number {
@@ -103,6 +112,9 @@ export const INTEGRITY_EVENT_LABELS: Record<IntegrityEventType, string> = {
   CAMERA_ON: "Camera on",
   PRINT_BLOCKED: "Tried to print",
   NAVIGATION_BLOCKED: "Tried to reload or go back",
+  CAMERA_LOST: "Camera stopped or was blocked",
+  NO_FACE: "No face in view for a while",
+  MULTIPLE_FACES: "More than one face in view",
 };
 
 export const INTEGRITY_CAMERA_LABELS: Record<IntegrityCameraStatus, string> = {
@@ -138,7 +150,12 @@ export type IntegrityAttemptSession = {
   /** Flags already stored for this attempt, so the badge survives a reload. */
   flagCount: number;
   camera: {
-    /** The course has camera snapshots turned on. */
+    /**
+     * A proctored quiz cannot start until the camera is live. The video is checked on the
+     * device and never uploaded; only the violation events are saved.
+     */
+    required: boolean;
+    /** The course has camera snapshots turned on (an opt-in, separate from `required`). */
     enabled: boolean;
     status: IntegrityCameraStatus;
     intervalSeconds: number;

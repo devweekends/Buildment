@@ -45,6 +45,13 @@ const blockState = (headers: Record<string, string> = learner()) =>
 const openAttempt = () => request(app).post(`/api/v1/chapters/${fx.chapterB.id}/integrity`).set(learner());
 const begin = (attemptId: string, headers = learner()) =>
   request(app).post(`/api/v1/integrity/attempts/${attemptId}/begin`).set(headers);
+const putCamera = (attemptId: string, status: "ON" | "DECLINED" | "UNAVAILABLE", headers = learner()) =>
+  request(app).put(`/api/v1/integrity/attempts/${attemptId}/camera`).set(headers).send({ status });
+/** The learner turned the camera on in the browser, then pressed Start. */
+const start = async (attemptId: string) => {
+  await putCamera(attemptId, "ON");
+  return begin(attemptId);
+};
 const submit = () =>
   request(app)
     .post(`/api/v1/chapters/${fx.chapterB.id}/quiz/submit`)
@@ -52,7 +59,7 @@ const submit = () =>
     .send({ answers: fx.quizChapterBlocks.map((block) => ({ blockId: block.id, selected: ["b"] })) });
 
 /** Leave events `secondsAgo` seconds in the past (the server clamps times far from the attempt). */
-const leave = (type: "TAB_HIDDEN" | "WINDOW_BLUR" | "FULLSCREEN_EXIT", secondsAgo: number) => ({
+const leave = (type: "TAB_HIDDEN" | "WINDOW_BLUR" | "FULLSCREEN_EXIT" | "CAMERA_LOST", secondsAgo: number) => ({
   id: eventId(),
   type,
   at: new Date(Date.now() - secondsAgo * 1000).toISOString(),
@@ -147,13 +154,54 @@ describe("a proctored quiz before Start", () => {
   });
 });
 
+describe("the camera", () => {
+  it("must be live before the quiz can start, and nothing starts without it", async () => {
+    const attempt = (await openAttempt()).body.data;
+    expect(attempt.camera).toMatchObject({ required: true, enabled: false, status: "NOT_REQUESTED" });
+
+    const refused = await begin(attempt.attemptId);
+    expect(refused.status).toBe(403);
+    expect(refused.body.code ?? refused.body.error?.code).toBe("CAMERA_REQUIRED");
+    expect((await blockState()).status).toBe(403);
+
+    for (const status of ["DECLINED", "UNAVAILABLE"] as const) {
+      await putCamera(attempt.attemptId, status);
+      expect((await begin(attempt.attemptId)).status).toBe(403);
+    }
+    expect(await prisma.integrityAttempt.findUniqueOrThrow({ where: { id: attempt.attemptId }, select: { questionsShownAt: true } })).toEqual({ questionsShownAt: null });
+  });
+
+  it("is kept on the device: no stills are stored unless the course opted in", async () => {
+    const attempt = (await openAttempt()).body.data;
+    expect((await putCamera(attempt.attemptId, "ON")).body.data.status).toBe("ON");
+    const still = await request(app)
+      .post(`/api/v1/integrity/attempts/${attempt.attemptId}/snapshots`)
+      .set({ ...learner(), "Content-Type": "image/jpeg" })
+      .send(Buffer.concat([Buffer.from([0xff, 0xd8, 0xff, 0xe0]), Buffer.alloc(2000, 7)]));
+    expect(still.status).toBe(403);
+    expect(await prisma.integritySnapshot.count({ where: { attemptId: attempt.attemptId } })).toBe(0);
+    await putCamera(attempt.attemptId, "UNAVAILABLE");
+  });
+
+  it("is not asked of a normal quiz", async () => {
+    await setProctored(false);
+    try {
+      const attempt = (await openAttempt()).body.data;
+      expect(attempt.camera.required).toBe(false);
+      expect((await putCamera(attempt.attemptId, "ON")).body.data.status).toBe("NOT_REQUESTED");
+    } finally {
+      await setProctored(true);
+    }
+  });
+});
+
 describe("Start", () => {
   it("sends the questions only to the learner who started, and only that attempt's owner can start it", async () => {
     const { attemptId } = (await openAttempt()).body.data;
     expect((await begin(attemptId, bearer(strangerToken))).status).toBe(404);
     expect((await blockState()).status).toBe(403);
 
-    expect((await begin(attemptId)).body.data).toEqual({ questionsShown: true });
+    expect((await start(attemptId)).body.data).toEqual({ questionsShown: true });
     expect((await begin(attemptId)).status).toBe(200);
 
     const state = await quizState();
@@ -197,6 +245,7 @@ describe("the leave rule", () => {
     expect(attempt).toMatchObject({ locked: true, questionsShown: false, leaves: PROCTORED_RULE.limit });
     expect((await blockState()).status).toBe(403);
     expect((await quizState()).body.data.started).toBe(false);
+    await putCamera(attempt.attemptId, "ON");
     expect((await begin(attempt.attemptId)).body.data).toEqual({ questionsShown: false });
     expect((await blockState()).status).toBe(403);
   });
@@ -209,7 +258,7 @@ describe("the leave rule", () => {
     const next = (await openAttempt()).body.data;
     expect(next).toMatchObject({ attempt: 2, proctored: true, questionsShown: false, locked: false, leaves: 0 });
     expect((await blockState()).status).toBe(403);
-    await begin(next.attemptId);
+    await start(next.attemptId);
     expect((await blockState()).status).toBe(200);
   });
 

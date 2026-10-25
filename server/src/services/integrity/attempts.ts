@@ -152,6 +152,7 @@ export async function openIntegrityAttempt(user: SessionUser | undefined, chapte
     locked: Boolean(attempt.lockedAt),
     flagCount: await countFlags(attempt.id),
     camera: {
+      required: proctored,
       enabled: cameraEnabled,
       status: attempt.cameraStatus,
       intervalSeconds: INTEGRITY_LIMITS.snapshotIntervalSeconds,
@@ -185,6 +186,10 @@ export async function beginIntegrityAttempt(user: SessionUser | undefined, attem
   const attempt = await requireOwnAttempt(user, attemptId);
   // A locked attempt stays locked: pressing Start again must not hand its questions back.
   if (attempt.lockedAt) return { questionsShown: false };
+  // A proctored quiz cannot start without a live camera. The browser reports it first (PUT camera).
+  if (attempt.chapter.proctored && attempt.cameraStatus !== "ON") {
+    throw new ForbiddenError("Turn on your camera to start this quiz.", "CAMERA_REQUIRED");
+  }
   await prisma.integrityAttempt.updateMany({ where: { id: attempt.id, questionsShownAt: null }, data: { questionsShownAt: new Date() } });
   return { questionsShown: true };
 }
@@ -270,7 +275,8 @@ export async function setIntegrityCamera(
   status: Exclude<IntegrityCameraStatus, "NOT_REQUESTED">,
 ): Promise<{ status: IntegrityCameraStatus }> {
   const attempt = await requireOwnAttempt(user, attemptId);
-  if (!attempt.enrollment.course.integritySnapshots) return { status: "NOT_REQUESTED" };
+  // The camera state is always kept for a proctored quiz; snapshots are a separate course opt-in.
+  if (!attempt.enrollment.course.integritySnapshots && !attempt.chapter.proctored) return { status: "NOT_REQUESTED" };
   const updated = await prisma.integrityAttempt.update({
     where: { id: attemptId },
     data: { cameraStatus: status, lastSeenAt: new Date() },
