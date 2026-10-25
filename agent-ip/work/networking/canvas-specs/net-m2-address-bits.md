@@ -26,7 +26,7 @@ One part of an address is one byte: eight bits worth 128, 64, 32, 16, 8, 4, 2 an
 - Outputs: the decimal value (0 to 255), the place values that are on, an overflow flag.
 - Rule: value = sum of the place values of the bits that are on. Add one: binary increment with carry; at 255 the carry leaves the byte, every bit becomes 0 and the overflow flag is set.
 - Assumptions: unsigned byte.
-- Limitations: real addresses never "add one" across a byte boundary; the button is only there to show the limit.
+- Limitations: the picture shows one byte on its own. In a whole address the carry moves into the next part (`192.168.1.255` plus one is `192.168.2.0`), which the address canvas shows.
 
 ### Rendering
 Inline SVG inside `BeatFrame`. Eight bit cards in one row (about 44 units each), the place value above each card, the bit (0 or 1) on the card, the running sum as chips under the cards ("16 + 4 + 2 + 1"), and the value in a large card ("= 23"). A ghost ninth card on the left, dashed, labelled "no ninth bit".
@@ -40,7 +40,7 @@ Flipping a bit animates the card (150 to 250 ms) and the sum chips update. **Add
 ### Copy
 - Verdict line, always visible: "23 in one byte" by default; "255: the biggest number one byte can hold" when all eight are on; "256 needs a ninth bit. A byte has eight." after overflow.
 - Hint: "Tap the bits. Then turn them all on and press Add 1."
-- Limits fold: "A byte is eight bits, so each part of an IPv4 address is 0 to 255. Adding one across a part is only here to show the limit; addresses are not counted this way."
+- Limits fold: "A byte is eight bits, so each part of an IPv4 address is 0 to 255. This picture shows one byte alone; in a whole address, one more than .255 carries into the next part."
 
 ### Edge cases
 All off (0); all on (255); overflow; rapid taps; keyboard only.
