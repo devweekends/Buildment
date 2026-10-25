@@ -131,6 +131,9 @@ modules:
       - file: 04.08-challenge-3-a-load-balancer.md
         title: "Challenge 3: a load balancer"
         goal: "Build an L7 proxy with health checks, kill a backend and record the p99."
+      - file: 04.09-lab-three-tiers-at-10000-requests-per-second.md
+        title: "Lab: three tiers at 10,000 requests a second"
+        goal: "Size a load balancer, app tier and database for 10,000 requests a second within a budget, and survive losing a zone."
       - file: 04.10-quiz.md
         title: "Scaling out"
         goal: "Answer graded scenarios on sizing for failure, state, health checks, algorithms and routing."
@@ -689,6 +692,9 @@ modules:
       - file: 20.05-code-base62-and-a-key-range-allocator.md
         title: "Code: base62 and a key range allocator"
         goal: "Implement encodeBase62, decodeBase62 and createRangeAllocator and pass the tests."
+      - file: 20.06-lab-a-url-shortener-with-cache-aside.md
+        title: "Lab: a URL shortener with cache-aside"
+        goal: "Put a cache in front of the links store and size its nodes and the database for 100,000 redirects a second within a budget."
       - file: 20.07-quiz.md
         title: "URL shortener"
         goal: "Answer graded scenarios on peak load, code length, redirects, hit rate and p99, and counting off the path."
