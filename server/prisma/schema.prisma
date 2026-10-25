@@ -419,6 +419,8 @@ model Chapter {
   compiled          String?           @db.Text // compiled MDX at publish
   publishedAt       DateTime?
   isMilestone       Boolean           @default(false)
+  /// A strict quiz: questions wait for Start and leaving the quiz screen is limited. Only for readerMode QUIZ.
+  proctored         Boolean           @default(false)
   archivedAt        DateTime?
   blocks            Block[]
   progress          ChapterProgress[]
@@ -444,6 +446,7 @@ model CourseChapterDraft {
   estimatedMinutes Int?
   readerMode ChapterReaderMode
   isMilestone Boolean
+  proctored Boolean @default(false)
   source String @db.Text
   updatedAt DateTime @updatedAt
 
@@ -813,6 +816,8 @@ enum IntegrityEventType {
   FAST_ANSWER
   CAMERA_OFF
   CAMERA_ON
+  PRINT_BLOCKED
+  NAVIGATION_BLOCKED
 }
 
 enum IntegrityCameraStatus {
@@ -839,6 +844,8 @@ model IntegrityAttempt {
   lastSeenAt    DateTime              @default(now())
   /// When the learner pressed Start. Quiz questions are sent only after this.
   questionsShownAt DateTime?
+  /// Set once a proctored attempt reaches the leave limit. A locked attempt gets no more questions.
+  lockedAt         DateTime?
   events        IntegrityEvent[]
   snapshots     IntegritySnapshot[]
 

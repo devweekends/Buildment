@@ -70,10 +70,11 @@ export async function releaseForEnrollment(courseId: string, enrollment: { relea
 export async function releaseModulesWithBlocks(modules: ReleaseModule[]) {
   const ids = modules.flatMap(module => module.chapters.map(chapter => chapter.id));
   const rows = await prisma.chapter.findMany({ where: { id: { in: ids } }, select: {
-    id: true, blocks: { where: { archivedAt: null }, select: { id: true, type: true, required: true, archivedAt: true } },
+    id: true, proctored: true, blocks: { where: { archivedAt: null }, select: { id: true, type: true, required: true, archivedAt: true } },
   } });
-  const byId = new Map(rows.map(row => [row.id, row.blocks]));
-  return modules.map(module => ({ ...module, chapters: module.chapters.map(chapter => ({ ...chapter, blocks: byId.get(chapter.id) ?? [] })) }));
+  const byId = new Map(rows.map(row => [row.id, row]));
+  return modules.map(module => ({ ...module, chapters: module.chapters.map(chapter => ({ ...chapter,
+    proctored: byId.get(chapter.id)?.proctored ?? false, blocks: byId.get(chapter.id)?.blocks ?? [] })) }));
 }
 
 export async function releaseContainsChapter(courseId: string, enrollment: { releaseId: string | null; variantSlug: string | null }, familySlug: string | null, chapterId: string) {

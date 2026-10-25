@@ -86,7 +86,9 @@ export type BlockState =
 
 /** Quiz-mode chapter: every question's last answer, for the wizard's initial state. */
 export type QuizChapterState = {
-  /** False until the learner presses Start; the reader shows no question before then. */
+  /** A proctored quiz: the strict kind. A normal quiz is never gated. */
+  proctored: boolean;
+  /** False until the learner presses Start on a proctored quiz; no question is sent before then. */
   started: boolean;
   steps: Array<{ id: string; type: "QUIZ" | "OPEN_QUESTION" | "PREDICT" | "CODE" }>;
   blockIds: string[];

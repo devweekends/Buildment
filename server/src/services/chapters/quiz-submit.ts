@@ -9,6 +9,7 @@ import { bypassProgressGatingForEmail } from "../auth/seed-access.js";
 import { ChapterLockedError, assertChapterUnlocked } from "../progress/gate.js";
 import { lockEnrollmentVariant, recomputeChapterProgress, recordBlockStats } from "../progress/compute.js";
 import { assertEnrollmentChapter } from "../courses/releases.js";
+import { quizAttemptGate } from "../integrity/attempts.js";
 
 type Grade = { blockId: string; score: number | null; maxScore: number | null; isCorrect: boolean | null };
 
@@ -32,12 +33,18 @@ export async function submitChapterQuiz(input: {
 
   const chapter = await prisma.chapter.findUnique({
     where: { id: chapterId, archivedAt: null },
-    select: { id: true, courseId: true, readerMode: true },
+    select: { id: true, courseId: true, readerMode: true, proctored: true },
   });
   if (!chapter || chapter.readerMode !== "QUIZ") throw new NotFoundError("Quiz chapter not found");
 
   const enrollment = await requireBlockSubmissionAccess(chapter.courseId, user);
   const learner = user!;
+
+  // A proctored quiz is answered inside an attempt the learner started. A locked attempt may
+  // still be submitted: that is how its answers so far are handed in.
+  if (chapter.proctored && !(await quizAttemptGate(enrollment.id, chapterId)).started) {
+    throw new ForbiddenError("Start the quiz before you submit it.", "QUIZ_NOT_STARTED");
+  }
 
   try {
     await assertChapterUnlocked({

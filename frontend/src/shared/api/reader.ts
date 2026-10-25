@@ -38,6 +38,8 @@ export type ChapterReaderView = {
     lessonLabel: string;
     estimatedMinutes: number | null;
     readerMode: ChapterReaderMode;
+    /** A strict quiz: the questions wait for Start and the learner cannot leave the quiz screen. */
+    proctored: boolean;
     isMilestone: boolean;
     blockCount: number;
   };

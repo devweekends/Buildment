@@ -15,5 +15,7 @@ export async function respond(req: Request, res: Response) {
 
 // GET /api/v1/blocks/:blockId/state
 export async function state(req: Request, res: Response) {
+  // A proctored quiz's questions must never sit in a browser or proxy cache.
+  res.setHeader("Cache-Control", "no-store");
   ok(res, await loadBlockState(req.params.blockId as string, req.user));
 }

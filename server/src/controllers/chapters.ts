@@ -43,5 +43,6 @@ export async function putHeadingNote(req: Request, res: Response) {
 
 // GET /api/v1/chapters/:chapterId/quiz
 export async function quizState(req: Request, res: Response) {
+  res.setHeader("Cache-Control", "no-store");
   ok(res, await loadQuizChapterState(req.params.chapterId as string, req.user!.id));
 }

@@ -5,9 +5,12 @@ import type { SessionUser } from "../../types/auth.js";
 import { requireBlockSubmissionAccess } from "../enrollment/api-learn-access.js";
 import { bypassProgressGatingForEmail } from "../auth/seed-access.js";
 import { ChapterLockedError, assertChapterUnlocked } from "../progress/gate.js";
+import { quizQuestionsVisible } from "../integrity/attempts.js";
 
 // The checks every learner write to a block goes through: the block exists, the
 // caller is a verified learner enrolled in its course, and its chapter is unlocked.
+
+const QUIZ_STEP_TYPES: ReadonlySet<string> = new Set(["QUIZ", "OPEN_QUESTION", "PREDICT", "CODE"]);
 
 export async function loadBlockForSubmission(
   blockId: string,
@@ -17,7 +20,7 @@ export async function loadBlockForSubmission(
 ) {
   const block = await prisma.block.findUnique({
     where: { id: blockId },
-    include: { chapter: { select: { archivedAt: true, id: true, courseId: true, readerMode: true, course: { select: { familySlug: true, variantFamily: true } } } } },
+    include: { chapter: { select: { archivedAt: true, id: true, courseId: true, readerMode: true, proctored: true, course: { select: { familySlug: true, variantFamily: true } } } } },
   });
   if (!block || block.archivedAt || block.chapter.archivedAt) throw new NotFoundError("Block not found");
   if (!isRegisteredBlockType(block.type)) {
@@ -40,6 +43,12 @@ export async function loadBlockForSubmission(
       throw new ForbiddenError("This chapter is locked. Finish the previous chapter first.", "CHAPTER_LOCKED");
     }
     throw error;
+  }
+
+  // A proctored quiz takes no answer before Start, or after the attempt was locked.
+  if (block.chapter.readerMode === "QUIZ" && block.chapter.proctored && QUIZ_STEP_TYPES.has(block.type)
+      && !(await quizQuestionsVisible(enrollment.id, block.chapter))) {
+    throw new ForbiddenError("Start the quiz to answer its questions.", "QUIZ_NOT_STARTED");
   }
 
   return { block, enrollment, learner };
