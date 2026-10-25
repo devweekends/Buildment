@@ -14,9 +14,9 @@ Status on 2026-10-25: all agent-ip steps this team can run are done, and PR #66 
 3. Reviewer acceptance of the residuals listed in `decision-log.md` (2026-10-25 rows).
 4. After approval: set `repositoryPublish: true` in `courses/founder-interviews/course.yaml` in the approving change.
 
-## Waiting for another course
+## Linked course
 
-The sponsor's resume, LinkedIn and personal branding ideas are held for the planned resume and LinkedIn course. When it exists, recheck this course: add cross-references to its chapters (for example from 2.3, 3.4, 5.7 and 7.2) instead of repeating its content, and record the change in the decision log.
+Course 16, "Your Career Brand" (PR #71), is cross-referenced from gate 1.6, 2.3, 3.4, 5.7 and 7.2 (decision log, 2026-10-25). If course 16 renumbers its chapters before it merges, update those five sentences.
 
 ## How to run the checks again
 
