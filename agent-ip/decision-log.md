@@ -1,5 +1,17 @@
 # Agent IP decision log
 
+## 2026-10-26: Proposal: check answer cues beyond length and position
+
+**Status:** Proposal only; no rule changed. `proposals/2026-10-26-answer-cue-checks.md`.
+
+**Problem:** Course 18 (`product-sense`) passed the length and position checks, yet its MCQs carried reason clauses and absolute words mostly on wrong options (a no-knowledge strategy expected about 54%), and after a first fix nine of ten yes/no predicts were keyed No.
+
+**Decision:** Open a proposal to extend option-length hygiene to option form (same grammatical shape in every option; yes/no predict keys balanced), add an audit warning in a separate platform PR, and add both measures to the writer and critic roles. Log two follow-ups that are not rules: the shared sorter's small reason text, and four Windows scratch-copy pitfalls met during the build.
+
+**Evidence:** Critic A's rounds 1 and 2 on devweekends/Buildment#72; the measures before and after are in the proposal.
+
+**Review:** Delivery lead and one additional reviewer pending.
+
 ## 2026-10-24: Load released courses into the scratch database through the repository publisher
 
 **Status:** Correction to the pre-PR checklist.
