@@ -1,0 +1,25 @@
+  - dir: 26-web-crawler
+    title: "Web crawler"
+    summary: "Run the design loop on a web crawler: estimate the load and find that politeness, not bandwidth, drives it, sketch the crawl loop, build a polite URL frontier with a queue and a wait for each host, read robots.txt, set revisit gaps, and stop duplicates and crawler traps with URL cleaning, Bloom filters and content fingerprints."
+    lessons:
+      - file: 26.01-set-the-scene-and-requirements.md
+        title: "Set the scene and requirements"
+        goal: "Turn two billion pages a month into pages a second, bandwidth, storage and the number of sites that must be ready at once, and find the number that drives the design."
+      - file: 26.02-high-level-design.md
+        title: "High-level design"
+        goal: "Draw the crawl loop, size the fetcher fleet, add a DNS cache, split the frontier by host so one worker owns each site, and make fetchers disposable with leases."
+      - file: 26.03-deep-dive-the-url-frontier-politeness-and-priority.md
+        title: "Deep dive: the URL frontier, politeness and priority"
+        goal: "Build a two-layer frontier with a queue and a ready time for each host, compute crawl speed from sites and the wait, read robots.txt, and set revisit gaps by how fast pages change."
+      - file: 26.04-deep-dive-duplicates-and-crawler-traps.md
+        title: "Deep dive: duplicates and crawler traps"
+        goal: "Clean URLs, size a Bloom filter for the seen check and name what its error costs, find exact and near copies with fingerprints, and stop traps with a budget for each host."
+      - file: 26.05-code-a-polite-frontier.md
+        title: "Code: a polite frontier"
+        goal: "Implement createFrontier with per-host queues, a wait between calls to a host, three priorities and a budget per host, and pass the tests."
+      - file: 26.07-quiz.md
+        title: "Web crawler"
+        goal: "Answer graded scenarios on sites needed at once, Bloom filter memory and cost, an unreadable robots.txt, and ending a crawler trap."
+      - file: 26.08-checklist.md
+        title: "Checklist and learning log"
+        goal: "Write a design for a price-comparison crawler with one defended trade-off."

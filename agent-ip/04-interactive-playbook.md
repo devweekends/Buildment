@@ -36,22 +36,25 @@ An interaction that cannot answer question one is decoration.
 
 ## Prose first, components second
 
-Components are checkpoints inside an explanation, not the explanation. A chapter that is mostly cards, quizzes, and callouts with a few sentences between them is a template, not a lesson. The learner should be able to learn the concept from the prose even if every component were removed.
+A Learn chapter is a sequence of beats: a visual first, then at most 70 words that explain it, then an optional `GoDeeper` fold (`03-authoring-standards.md` → Visual-first Learn chapters). A chapter that is mostly cards, quizzes, and callouts is a template, not a lesson; so is a chapter that is mostly paragraphs. In a beat, the learner should understand the idea from the picture plus its few words, and find the full mechanism in the fold.
 
 The budget:
 
 | Item | Per chapter | Per module |
 |---|---|---|
-| Prose words (concept/build) | ≥ 1,200 | — |
-| Prose words (checkpoint/gate) | ≥ 700 | — |
-| Top-level components | ≤ 6 | — |
-| Total JSX tags | ≤ 25 | — |
+| Beats (Learn) | 4 to 8, one visual each | |
+| Visible words (Learn) | 300 to 700; at most 70 per beat | |
+| Words including `GoDeeper` folds (Learn) | at least 900 | |
+| Prose words (Build) | at least 1,200 | |
+| Prose words (checkpoint/gate) | at least 700 | |
+| Top-level components (Build, Check, Gate) | at most 6 | |
+| Total JSX tags | at most 40 (Learn), 25 (others) | |
 | Assessment interactions | ≤ 3 | — |
 | `LearningObjectives` | only at module start | 1 |
 | `BigWordAlert` | ≤ 1, only for a load-bearing term | as needed |
 | `ChapterRecap` | only at a gate | 1 |
 | `OpenQuestion` | only at a gate/defense | ≤ 1 |
-| Diagrams | ≤ 1 | ≥ 1 |
+| Visuals (canvas or diagram) | one per beat (Learn); at most 1 (others) | at least 1 |
 
 No component-only section. If a component can be removed without reducing understanding, remove it. Run `node agent-ip/scripts/audit-course.mjs courses/<course-slug>` before review; a chapter that fails the audit is not ready.
 
@@ -397,9 +400,9 @@ Canvases may be rendered with HTML/CSS, inline SVG, or Canvas 2D. Use HTML for c
 
 Placement:
 
-- Required in every **Learn** (concept) chapter, as a canvas or a lighter interactive element; place it immediately before the decision it informs.
+- Required in every beat of a **Learn** (concept) chapter: the beat opens with its visual (a canvas, or a diagram when the relationship is fixed).
 - Never in a quiz or gate chapter.
-- Per chapter, at most one primary canvas plus one small step-through or toggle. No per-module cap.
+- One visual per beat, so a Learn chapter has four to eight. Build, Check and Gate chapters have at most one. No per-module cap.
 - A canvas counts as a high-effort interaction. Do not put it back to back with an `OpenQuestion` or a `CodeExercise`.
 - Pair it with a prediction before and a short check after. Do not count slider use as completion.
 
@@ -425,7 +428,7 @@ Introduce the diagram in prose, explain what to notice, and state the takeaway. 
 | Chapter archetype | Required | Optional | Never |
 |---|---|---|---|
 | Orientation | `ProjectPreview`, `Roadmap`, `LearningObjectives` | `Callout`, `BigWordAlert` | `Quiz` spam, `OpenQuestion` |
-| Concept | Prose, one worked example, one interactive element (a canvas when a causal model is the best teacher, otherwise a step-through or interactive diagram), a `Predict` before it | `BigWordAlert`, `ComparePanel`, `MermaidDiagram`, `GlossaryTerm`, a quick-check quiz | `CodeExercise` for a concept the learner has not built; a canvas that only decorates |
+| Concept (Learn, beats) | Four to eight beats, each a visual first, then at most 70 words, then an optional `GoDeeper` fold; a `Predict` before the key beat; one or two quick-check quiz questions at the end | `ComparePanel`, `GlossaryTerm`, code inside `GoDeeper` | Long prose sections; `BigWordAlert`; `CodeExercise` for a concept the learner has not built; a visual that only decorates |
 | Build | `Steps`, code fence, `FileTree` or `TerminalBlock` | `Callout`, `DiffBlock`, `ApiRequestPanel`, `TraceRequest` | `OpenQuestion` mid-build |
 | Verify | Acceptance criteria, one failure test | `Checklist`, `TraceRequest`, `DiffBlock` | New conceptual content |
 | Quiz | Three to five `quiz` fences | `openquestion`, `predict` or `codeexercise` fences | Lesson text, headings, `ChapterRecap`, `Checklist`, `InterestingRead`, `RealWorldEvent`, `BigWordAlert` |
@@ -437,13 +440,13 @@ Introduce the diagram in prose, explain what to notice, and state the takeaway. 
 Per chapter:
 
 - At most one `BigWordAlert`, and only for a load-bearing term.
-- At most one diagram of any kind.
+- Learn chapters: one visual per beat. Other chapters: at most one diagram of any kind.
 - At most two `Callout`s.
 - At most one `Predict`.
 - At most one quiz at a checkpoint or decision point. A quiz chapter may have three to five questions; a normal chapter should not have a quiz after every section.
 - At most one `OpenQuestion`, and only at a module gate or architecture defense.
 - At most one `CodeExercise`, and only when the build does not already prove the skill.
-- At least one interactive element in a Learn chapter; at most one primary canvas plus one small step-through or toggle. A canvas counts as a high-effort interaction.
+- Learn chapters: one visual per beat, four to eight beats. Other chapters: at most one canvas. A canvas counts as a high-effort interaction, but beat visuals are the lesson itself, so two beats in a row are fine; never put a canvas back to back with an `OpenQuestion` or `CodeExercise`.
 - At most one `InterestingRead`.
 - At most one `RealWorldEvent`.
 - At most three assessment interactions total (quiz + predict + open question). A dedicated quiz chapter may contain three to five quiz questions; treat that set as one assessment instrument for this budget, not as three to five separate interactions.

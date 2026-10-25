@@ -1,0 +1,35 @@
+  - dir: 09-partitioning-and-sharding
+    title: "Partitioning and sharding"
+    summary: "Split data across machines, keep load even, and survive a celebrity."
+    lessons:
+      - file: 09.01-set-the-scene-one-table-too-big.md
+        title: "Set the scene: one table too big for one machine"
+        goal: "See a database run out of disk and write capacity, and why copies do not help but slices do."
+      - file: 09.02-range-and-hash-partitioning.md
+        title: "Range and hash partitioning"
+        goal: "Compare even spread against fast range scans, and see why hash mod N moves most keys when a shard is added."
+      - file: 09.03-consistent-hashing-and-virtual-nodes.md
+        title: "Consistent hashing and virtual nodes"
+        goal: "Explain why adding a node moves few keys, and what virtual nodes fix."
+      - file: 09.04-hot-partitions-and-skew.md
+        title: "Hot partitions and skew"
+        goal: "Find a hot key and fix it with salting, splitting, caching or a shard of its own."
+      - file: 09.05-rebalancing-and-request-routing.md
+        title: "Rebalancing and request routing"
+        goal: "Compare fixed partitions and dynamic splits, move data safely, and choose where the partition map lives."
+      - file: 09.06-secondary-indexes-and-cross-shard-queries.md
+        title: "Secondary indexes and cross-shard queries"
+        goal: "Compare local and global indexes, and see scatter-gather tail latency grow with the shard count."
+      - file: 09.07-code-a-consistent-hash-ring.md
+        title: "Code: a consistent hash ring"
+        goal: "Implement a ring with virtual nodes and pass tests for exact positions, spread and minimal movement."
+      - file: 09.08-challenge-8-sharding.md
+        title: "Challenge 8: sharding"
+        goal: "Shard a key-value store, measure keys moved when a node joins, and find and fix a hot key on real shard servers."
+      # 09.09 (Lab: 100 million keys on a hash ring) is skipped until the sandbox exists.
+      - file: 09.10-quiz.md
+        title: "Partitioning and sharding"
+        goal: "Answer graded scenarios on partition keys, keys moved, hot keys, safe rebalancing and queries off the key."
+      - file: 09.11-checklist.md
+        title: "Checklist and learning log"
+        goal: "Write the partition key choice for a product of your own with the hot-key plan."

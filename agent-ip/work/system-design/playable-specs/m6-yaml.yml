@@ -1,0 +1,37 @@
+  - dir: 06-apis-the-front-door-and-protecting-it
+    title: "APIs, the front door and protecting it"
+    summary: "Design APIs that are safe to retry, and protect them with gateways, rate limits and authentication."
+    lessons:
+      - file: 06.01-set-the-scene-a-retry-charged-twice.md
+        title: "Set the scene: a retry charged a customer twice"
+        goal: "See a timeout plus a retry cause a double charge."
+      - file: 06.02-api-styles-rest-grpc-graphql.md
+        title: "API styles: REST, gRPC, GraphQL"
+        goal: "Choose a style by client, payload and round trips."
+      - file: 06.03-good-api-design.md
+        title: "Good API design: resources, pagination, versioning, errors"
+        goal: "Choose cursor over offset pagination and explain why, version without breaking clients, and write errors a client can act on."
+      - file: 06.04-idempotency-and-safe-retries.md
+        title: "Idempotency and safe retries"
+        goal: "Make a write safe to retry with an idempotency key claimed before the work."
+      - file: 06.05-rate-limiting-algorithms.md
+        title: "Rate limiting algorithms"
+        goal: "Compare token bucket, leaky bucket, fixed window, sliding log and sliding window counter under a burst."
+      - file: 06.06-api-gateways.md
+        title: "API gateways"
+        goal: "Decide what belongs in a gateway: routing, authentication, limits, aggregation, and what stays in the services."
+      - file: 06.07-authentication-and-authorization-at-scale.md
+        title: "Authentication and authorization at scale"
+        goal: "Compare sessions and signed tokens, revocation, OAuth and OIDC roles, and service-to-service authentication."
+      - file: 06.08-code-token-bucket-and-sliding-window.md
+        title: "Code: token bucket and sliding window"
+        goal: "Implement a token bucket and a sliding window counter against a fake clock and pass the tests."
+      - file: 06.09-challenge-5-a-rate-limiter.md
+        title: "Challenge 5: a rate limiter"
+        goal: "Run in-memory limiters, share one limit across two servers in Valkey with an atomic script, and stop double charges with idempotency keys, with your own measurements."
+      - file: 06.11-quiz.md
+        title: "APIs and the front door"
+        goal: "Answer graded scenarios on safe retries, shared rate limits, pagination, token revocation and choosing a limiter."
+      - file: 06.12-checklist.md
+        title: "Checklist and learning log"
+        goal: "Write the API design for a payments endpoint, with idempotency, rate limits and errors, and link your challenge 5 results."

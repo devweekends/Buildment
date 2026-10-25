@@ -10,6 +10,8 @@ target_publish: after G2B instructor sign-off and G7 delivery lead approval
 
 # Course brief: system-design
 
+> **North star (sponsor, 2026-10-24):** this is our "Grokking the System Design Interview", done properly: a learner should truly grok every idea, and enjoy it, by playing with visuals and doing small labs and challenges, not by reading walls of text. Every module ends with how to explain it in an interview.
+
 Source of intake: the sponsor's requests of 2026-10-22 and 2026-10-23 (topic list, interactive-first direction, the time and clocks questions, the GitHub challenges repo, AWS as a later course). Tech track, after the AI engineering interview course.
 
 ## One sentence
