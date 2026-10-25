@@ -22,6 +22,21 @@
 | 2026-10-24 | No third critique round; round 3 fixes go to human review with critic A at 4.14 and critic B at 4.43 | Run a third round | `agents/orchestrator.md`: stop after two rounds and escalate. Both critics found 0 S1 and 0 S2 in round 2. | Orchestrator |
 | 2026-10-24 | Step-through canvases stay as they are; a learner-choice step is left to the platform owner | Build custom canvases with a choice step | The shared sequence and state-machine renderers have no choice step; agent-ip allows "manipulates or steps through"; a renderer change is outside a content PR. | Orchestrator |
 | 2026-10-24 | Move the course from `content/import/build-with-ai/` to `courses/build-with-ai/` after merging `main` (agent-ip v0.4.4 and v0.4.5), and do not set `repositoryPublish: true` | Keep the old path; opt in like the other nine courses | agent-ip now names `courses/<slug>/` as the only source location. Publication is explicit and belongs in an approved PR; this course has G2B and human review pending, so the reviewers add the flag after sign-off. Checks rerun on the new path; earlier logs keep their original paths. | Orchestrator |
+| 2026-10-25 | **v2 amendment: merge the sponsor's "course 17" material into course 13** (fear versus data, judgment and context, growing fast, the AI toolbelt, content the human way, where humans win, a 30-day plan) as new modules and chapters; no separate course | A separate course 17, `ai-advantage` | Sponsor decision after reading course 13: "this is good we can merge what i was talking about in it". The amendment brief is `v2/00-amendment-brief.md`. | Zeeshan (sponsor) |
+| 2026-10-25 | Keep the slug `build-with-ai`, the title, the voice and the tool-naming decision; revise existing chapters only where new material must connect | Retitle the course | Sponsor instruction. A subtitle change is an open decision for instructors. | Zeeshan (sponsor) |
+| 2026-10-25 | Fit the 30-day plan into the existing capstone (the first 30 days of the six-month plan, carried out) plus a defence chapter, instead of a competing capstone | A second capstone | Sponsor instruction. | Zeeshan (sponsor) |
+| 2026-10-25 | v2 follows agent-ip in full: G1 dossier v2 from primary sources before the amended roadmap, new Learn chapters in beats (v0.5) with a playable canvas each, two critic rounds, blind keys on a second model family, position and length bias checks on every round | A lighter path | Sponsor instruction. Courses 12 and 14 had key position and length bias. | Zeeshan (sponsor) |
+| 2026-10-25 | Existing Learn chapters stay prose-first (pre-v0.5); new Learn chapters are beats | Rewrite the 22 existing Learn chapters as beats | agent-ip allows pre-v0.5 chapters to keep the prose rules; rewriting 22 approved-for-review chapters is outside the sponsor's request and doubles the cost. Open decision for instructors. | Orchestrator |
+| 2026-10-25 | Draft v2 before G2B; the amended roadmap is marked `drafted_before_roadmap: true` and G2B pending; G2C chapter briefs replaced by one v2 writer pack | Wait for G2B | Sponsor's standing instruction. | Zeeshan (sponsor) |
+| 2026-10-25 | Teaching and practice in separate chapters in v2: Learn chapters teach; a practice chapter (Build) after them holds the hands-on task, then the quiz and gate. Not every module has a practice chapter | Practice inside Learn chapters | Sponsor rule: teach, then practise in its own chapter or module; some chapters need no lab. | Zeeshan (sponsor) |
+| 2026-10-25 | Capstone defence uses the existing `aiinterview` block (learner's OpenRouter key) with a written option that completes the same step; no new generic AI practice component | Build an AI practice block now | Sponsor instruction: the generic component comes later; places where it would help are logged under "Where a generic AI practice block would help". | Zeeshan (sponsor) |
+| 2026-10-25 | Branch `content/build-with-ai-advantage` (renamed from `content/ai-advantage` before any push) | Keep the old name | The branch now extends course 13. | Orchestrator |
+| 2026-10-25 | Renumber modules and files; add a stable `key` to every lesson in `course.yaml` | Append new modules after the capstone | The capstone must stay last; course 13 has never been released, so no learner history depends on the old paths; keys protect history from v2 on (`03-authoring-standards.md` → Stable lesson identity). | Orchestrator |
+
+## Where a generic AI practice block would help (v2)
+
+Recorded for the later component (sponsor instruction). Filled in as chapters are written.
+
 
 ## Risks
 
@@ -33,3 +48,6 @@
 | R4 | Access from Gaza for apps, Copilot and Perplexity is unclear | Web path and fallback in every step; roadmap open decision 7 asks fellows to test on a phone in Gaza before publish |
 | R5 | Learning-science and AI-study claims overstated | Writers use the dossier's "Phrase it this way" wording; critic B checks claims against the dossier |
 | R6 | Under-18 fellows told to use an 18+ tool | Two tools per job; roadmap open decision 6 |
+| R7 | v2 labour and AI-impact evidence changes fast and is contested | Every figure carries a source and an access date; chapters teach how to read the evidence, not a forecast |
+| R8 | v2 nearly doubles the course length | The amended roadmap names modules instructors can make optional (open decision) |
+| R9 | v2 critic B shares the drafting model family | Critic A and the blind key check use a second family; a human key check is requested in the PR |
