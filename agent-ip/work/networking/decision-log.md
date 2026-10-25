@@ -98,3 +98,9 @@
 **Context:** merging `origin/main` brought agent-ip v0.5 to v0.5.3: Learn chapters are visual-first beats (`format: beats`, four to eight beats, 300 to 700 visible words, at least 900 with `GoDeeper` folds, at least one playable beat, a predict before the key beat, one or two quiz questions at the end, at most 40 JSX tags); Read chapters are one or two beats; and "never ask before you teach" (every question answerable from earlier chapters or everyday intuition).
 
 **Decision:** this course follows v0.5.3 from G3 on. Learn and Read chapters use the beats rules, which replace the 1,200-word Learn floor in the 2026-10-26 sign-off entry; Build chapters keep 1,200 prose words; Code and Lab chapters and gates keep the sponsor's 700; Check chapters stay quiz-only. Each "Problem first" hook stays as the chapter's opening line, and every predict is checked against "never ask before you teach" at G3. No outcome, module or chapter changes.
+
+## 2026-10-26: Drills are practice; independent reviewers from other model families
+
+**Decision:** the `[addr: drill]` canvases are ungraded practice (canvas spec); O3's graded evidence is code exercises 3.7 and 3.8, lab 3.10 and the by-hand items in quizzes 2.6 and 3.11. Roadmap O3 row and blueprint updated.
+
+**Decision:** at the sponsor's request ("use a lot of argon to help you"), G3 reviews use models from other families through the Antigravity CLI. Gemini 4 Argon hit its account quota on 2026-10-26 (resets in about five days), so the blind answer-key check ran on Gemini 3.8 Flash (3 of 3 keys matched) and the two critics run on Gemini 3.8 Flash (critic A) and GPT-OSS 120B (critic B). Drafting stays on the drafting model; this restores the cross-family independence `01-agent-system.md` asks for.

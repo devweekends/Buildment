@@ -32,7 +32,7 @@ Every outcome has at least one graded piece of evidence.
 |---|---|---|
 | O1 | Read their own computer's address, mask, gateway, DNS server and public address, and explain where each came from | Challenge 0 (1.2, 1.3); gate 1.8; demo 8.7 |
 | O2 | Classify an address as public, private, shared or special against the IANA registry, and explain why private ranges and NAT exist | Code exercise 2.5; quiz 2.6; gate 2.7; quiz 9.4 and gate 9.5 (why IPv6 removes the need for NAT) |
-| O3 | Do CIDR arithmetic (network, broadcast, size, host range, same subnet, split, overlap) by hand without a calculator, and in code | Unassisted drills in 2.2, 2.3, 3.2 and 3.5; code exercises 3.7 and 3.8; lab 3.10; quiz 3.11 |
+| O3 | Do CIDR arithmetic (network, broadcast, size, host range, same subnet, split, overlap) by hand without a calculator, and in code | Code exercises 3.7 and 3.8; lab 3.10; quizzes 2.6 and 3.11 (by-hand items); unassisted drills in 2.2, 2.3, 3.2 and 3.5 as ungraded practice |
 | O4 | Trace a packet from laptop to server (gateway decision, ARP, longest prefix match, TTL, ports, TCP handshake) and confirm each step with commands | Code exercise 4.6; challenges 2 and 3; lab 4.8; quizzes 4.9 and 5.7; gate 4.10 |
 | O5 | Demonstrate NAT: show the source address rewritten (and the port when two devices clash) in a router they built, read the real NAT table, explain why the internet cannot reach a home device, and recognise carrier-grade NAT | Code exercise 6.6; challenge 4; lab 6.9; quiz 6.10; gate 6.11 |
 | O6 | Explain DHCP and DNS (including caching and TTL), and diagnose "no internet" layer by layer | Lab 7.5 (graded diagnosis); fault level in lab 6.9; challenge 5; capstone part 4 (8.5) |

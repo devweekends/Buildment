@@ -19,7 +19,7 @@ Derived from the confirmed roadmap v3 (G2B complete under the sponsor exception,
 |---|---|---|---|
 | O1 Read own address, mask, gateway, DNS server and public address, and explain each | Challenge 0 (1.2, 1.3); gate 1.8; demo 8.7 | Application | 1, 8 |
 | O2 Classify addresses against the IANA registry; explain why private ranges and NAT exist | Code 2.5; quiz 2.6; gate 2.7 | Application, analysis | 2 |
-| O3 CIDR arithmetic by hand and in code | Drills in 2.2, 2.3, 3.2, 3.5; code 3.7, 3.8; lab 3.10; quiz 3.11 | Application | 2, 3 |
+| O3 CIDR arithmetic by hand and in code | Code 3.7, 3.8; lab 3.10; quizzes 2.6, 3.11 (drills in 2.2, 2.3, 3.2, 3.5 are ungraded practice) | Application | 2, 3 |
 | O4 Trace a packet and confirm each step with commands | Code 4.6; challenges 2, 3; lab 4.8; quizzes 4.9, 5.7; gate 4.10 | Analysis | 3, 4, 5 |
 | O5 Demonstrate NAT and explain inbound reachability and carrier-grade NAT | Code 6.6; challenge 4; lab 6.9; quiz 6.10; gate 6.11 | Analysis, evaluation | 6 |
 | O6 Explain DHCP and DNS; diagnose no internet layer by layer | Lab 7.5; lab 6.9 level 1; challenge 5; capstone 8.5 | Evaluation | 6, 7, 8 |
