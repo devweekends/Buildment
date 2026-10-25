@@ -1,7 +1,7 @@
 slug: founder-interviews
 title: "The Founder Interview: Ownership, Impact and Your Story"
-description: "Prepare for the interview a startup founder or a small team's hiring manager runs, where every line on your resume is followed by 'why?' until your real decisions show. Learn to tell one real story you owned, give honest numbers and say how you know them, survive five whys on every resume line, think through a case question aloud, explain your best technical work to a founder and to an engineer, and name your strengths and weaknesses with evidence. Practise with an AI interviewer on your own key, or with a written exercise that completes the same step. Based on research on interviews, with the main ideas credited to the researchers behind them."
-projectGoal: "Build a story bank of five stories you owned, each with an honest number or an honest 'I did not measure that', and a resume where every line survives two whys. Then run one full practice interview in two parts (with the AI interviewer, or the written version), tag your own answers and read the feedback critically, and defend one of your own stories and one of your own resume lines to your mentor in a five-minute conversation."
+description: "Prepare for the interview a startup founder or a small team's hiring manager runs, where every line on your resume is followed by 'why?' until your real decisions show. Learn to tell one real story you owned, give honest numbers and say how you know them, answer a chain of whys on every resume line, think through a case question aloud, explain your best technical work to a founder and to an engineer, and name your strengths and weaknesses with evidence. Practise with an AI interviewer on your own key, or with a written exercise that completes the same step. Based on research on interviews, with the main ideas credited to the researchers behind them."
+projectGoal: "Build a story bank of five stories you owned, each with an honest number or an honest 'I did not measure that', and a resume where every line has an answer two whys deep, and one line you can defend through four whys. Then run one full practice interview in two parts (with the AI interviewer, or the written version), tag your own answers and read the feedback critically, and defend one of your own stories and one of your own resume lines to your mentor in a five-minute conversation."
 difficulty: Medium
 estimatedHours: 20
 category: soft-skills
@@ -71,7 +71,7 @@ modules:
         goal: "Practice check on why chains, real reasons and resume lines, including an AI answer to check."
       - file: 03.06-checklist.md
         title: "Checklist and learning log"
-        goal: "Gate: audit your resume line by line and defend one line through a chain of whys."
+        goal: "Gate: audit your resume line by line and defend one line through four follow-up whys."
   - dir: 04-case-questions-aloud
     title: "Case questions aloud"
     summary: "Founders ask 'How would you solve this problem we have now?'. Learn to clarify the question and say your assumptions, compare two or three real options, and decide, with the number you would watch to know if you were right."
