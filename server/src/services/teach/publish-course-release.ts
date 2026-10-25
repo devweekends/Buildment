@@ -19,7 +19,7 @@ async function equivalent(tx: Prisma.TransactionClient, chapter: ReleaseChapter 
   if (!chapter || chapter.title !== lesson.title || chapter.estimatedMinutes !== lesson.estimatedMinutes ||
       chapter.readerMode !== lesson.readerMode || chapter.isMilestone !== lesson.isMilestone) return false;
   const old = await tx.chapter.findUnique({ where: { id: chapter.id }, include: { blocks: { where: { archivedAt: null }, orderBy: { order: "asc" } } } });
-  if (!old || old.summary !== lesson.summary || old.blocks.length !== lesson.blocks.length) return false;
+  if (!old || old.summary !== lesson.summary || old.proctored !== (lesson.proctored ?? false) || old.blocks.length !== lesson.blocks.length) return false;
   if (plainSource(old.source, old.blocks.map(block => block.id)) !== plainSource(lesson.source, lesson.blocks.map(block => block.id))) return false;
   return old.blocks.every((block, index) => block.type === lesson.blocks[index].type && block.required === lesson.blocks[index].required &&
     canonical(block.config) === canonical(lesson.blocks[index].config));
@@ -37,7 +37,7 @@ export async function createReleaseChapter(tx: Prisma.TransactionClient, courseI
   await tx.chapter.create({ data: { id, courseId, moduleId, slug: `${logicalSlug}--${id.toLowerCase()}`,
     title: lesson.title, summary: lesson.summary, source, compiled: source, publishedAt: new Date(),
     order: lesson.lessonNum, estimatedMinutes: lesson.estimatedMinutes, readerMode: lesson.readerMode,
-    isMilestone: lesson.isMilestone } });
+    isMilestone: lesson.isMilestone, proctored: lesson.readerMode === "QUIZ" && Boolean(lesson.proctored) } });
   if (blocks.length) await tx.block.createMany({ data: blocks });
   return { id, key: lesson.key ?? null, slug: logicalSlug, title: lesson.title, order: lesson.lessonNum,
     estimatedMinutes: lesson.estimatedMinutes, readerMode: lesson.readerMode, isMilestone: lesson.isMilestone };

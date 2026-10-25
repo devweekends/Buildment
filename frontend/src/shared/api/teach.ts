@@ -177,6 +177,8 @@ export type ChapterEditorView = {
   summary: string | null;
   estimatedMinutes: number | null;
   readerMode: ChapterReaderMode;
+  /** A strict quiz: questions wait for Start and leaving the quiz screen is limited. */
+  proctored: boolean;
   isMilestone: boolean;
   publishedAt: string | null;
   hasUnpublishedChanges: boolean;
@@ -212,6 +214,7 @@ export type ChapterSettingsInput = {
   estimatedMinutes: number | null;
   readerMode: ChapterReaderMode;
   isMilestone: boolean;
+  proctored?: boolean;
 };
 
 // ---------------------------------------------------------------------------

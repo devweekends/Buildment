@@ -31,6 +31,7 @@ export function validateParsedLesson(lesson: ReturnType<typeof parseLesson>): vo
   if (lesson.readerMode === "QUIZ" && !isActivityOnlySource(source)) {
     throw new Error("Quiz flow supports activities only: Quiz, OpenQuestion, Predict, and CodeExercise.");
   }
+  if (lesson.proctored && lesson.readerMode !== "QUIZ") throw new Error("Only a quiz lesson can be proctored.");
   const unknown = collectUnknownComponents(source, mdxComponentAllowlist);
   if (unknown.length) throw new Error(`Unknown components: ${unknown.join(", ")}`);
   const canvasProblems = collectCanvasProblems(source);

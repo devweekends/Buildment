@@ -71,6 +71,8 @@ export type ImportPlan = {
     key?: string; lessonNum: number; slugPart: string; title: string; summary: string | null;
     source: string; estimatedMinutes: number | null; readerMode: "DEFAULT" | "QUIZ";
     isMilestone: boolean;
+    /** A strict quiz (frontmatter `proctored: true` on a quiz lesson). */
+    proctored?: boolean;
     blocks: { id: string; type: Prisma.BlockCreateManyInput["type"]; config: Prisma.InputJsonValue; required: boolean }[];
   }[] }[];
   variants?: { slug: string; overrides: { lessonKey: string; lesson: ImportPlan["modules"][number]["lessons"][number] }[];
@@ -163,6 +165,7 @@ async function runCourseImport(user: SessionUser, buffer: Buffer, source: Course
             title: lesson.title, summary: lesson.summary, source: lesson.source, compiled: lesson.source,
             order: lesson.lessonNum, estimatedMinutes: lesson.estimatedMinutes, readerMode: lesson.readerMode,
             isMilestone: lesson.isMilestone,
+            proctored: lesson.readerMode === "QUIZ" && Boolean(lesson.proctored),
           });
           blocks.push(...lesson.blocks.map((block, i) => ({
             ...block, chapterId, order: i + 1, blocking: false, points: 1, tags: [],

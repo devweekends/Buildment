@@ -50,7 +50,7 @@ async function requireChapter(user: SessionUser, chapterId: string) {
 }
 
 async function releasedChapterDraft(chapter: { id: string; courseId: string; title: string; summary: string | null;
-  estimatedMinutes: number | null; readerMode: "DEFAULT" | "QUIZ"; isMilestone: boolean; source: string; compiled: string | null },
+  estimatedMinutes: number | null; readerMode: "DEFAULT" | "QUIZ"; isMilestone: boolean; proctored: boolean; source: string; compiled: string | null },
   status: string) {
   if (status !== "PUBLISHED" && status !== "ARCHIVED") return null;
   const release = await prisma.$transaction(tx => ensureBaselineRelease(tx, chapter.courseId));
@@ -60,7 +60,7 @@ async function releasedChapterDraft(chapter: { id: string; courseId: string; tit
   return prisma.courseChapterDraft.upsert({ where: { chapterId: chapter.id },
     create: { chapterId: chapter.id, courseId: chapter.courseId, baseReleaseId: release.id,
       title: chapter.title, summary: chapter.summary, estimatedMinutes: chapter.estimatedMinutes,
-      readerMode: chapter.readerMode, isMilestone: chapter.isMilestone, source: chapter.compiled ?? chapter.source },
+      readerMode: chapter.readerMode, isMilestone: chapter.isMilestone, proctored: chapter.proctored, source: chapter.compiled ?? chapter.source },
     update: {} });
 }
 
@@ -143,6 +143,7 @@ export async function loadChapterEditor(user: SessionUser, chapterId: string): P
     summary: draft?.summary ?? chapter.summary,
     estimatedMinutes: draft?.estimatedMinutes ?? chapter.estimatedMinutes,
     readerMode: draft?.readerMode ?? chapter.readerMode,
+    proctored: draft?.proctored ?? chapter.proctored,
     isMilestone: draft?.isMilestone ?? chapter.isMilestone,
     publishedAt: chapter.publishedAt?.toISOString() ?? null,
     hasUnpublishedChanges: Boolean(draft) || (chapter.publishedAt !== null && chapter.compiled !== chapter.source),
@@ -152,13 +153,19 @@ export async function loadChapterEditor(user: SessionUser, chapterId: string): P
   };
 }
 
+/** Only a quiz can be proctored; switching a chapter to a lesson clears it. Left out, the setting stays. */
+function proctoredPatch(input: ChapterSettingsBody): { proctored?: boolean } {
+  if (input.readerMode !== "QUIZ") return { proctored: false };
+  return input.proctored === undefined ? {} : { proctored: input.proctored };
+}
+
 export async function updateChapterSettings(user: SessionUser, chapterId: string, input: ChapterSettingsBody): Promise<SavedAtResult> {
   const { chapter, course } = await requireChapter(user, chapterId);
   rejectTokensInChapterFields(input);
   const draft = await releasedChapterDraft(chapter, course.status);
   if (draft) await prisma.courseChapterDraft.update({ where: { chapterId: chapter.id }, data: {
     title: input.title, summary: input.summary || null, estimatedMinutes: input.estimatedMinutes,
-    readerMode: input.readerMode, isMilestone: input.isMilestone,
+    readerMode: input.readerMode, isMilestone: input.isMilestone, ...proctoredPatch(input),
   } });
   else await prisma.chapter.update({
     where: { id: chapter.id },
@@ -168,6 +175,7 @@ export async function updateChapterSettings(user: SessionUser, chapterId: string
       estimatedMinutes: input.estimatedMinutes,
       readerMode: input.readerMode,
       isMilestone: input.isMilestone,
+      ...proctoredPatch(input),
     },
   });
   return { savedAt: new Date().toISOString() };
@@ -218,7 +226,7 @@ export async function publishChapter(user: SessionUser, chapterId: string): Prom
       await publishDashboardChapterRelease(tx, chapter.courseId, chapter.id, draft.baseReleaseId, {
         key: chapter.contentKey ?? undefined, lessonNum: chapter.order, slugPart: chapter.slug,
         title: draft.title, summary: draft.summary, estimatedMinutes: draft.estimatedMinutes,
-        readerMode: draft.readerMode, isMilestone: draft.isMilestone, source: draft.source, blocks,
+        readerMode: draft.readerMode, isMilestone: draft.isMilestone, proctored: draft.proctored, source: draft.source, blocks,
       });
       await tx.courseChapterDraft.delete({ where: { chapterId } });
     }, { isolationLevel: "Serializable", timeout: 60000 });

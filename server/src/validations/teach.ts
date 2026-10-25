@@ -75,6 +75,8 @@ export const chapterSettingsBody = z.object({
   estimatedMinutes: z.number().int().min(1).max(600).nullable(),
   readerMode: z.enum(["DEFAULT", "QUIZ"]),
   isMilestone: z.boolean(),
+  /** A strict quiz. Left out, the chapter keeps its current setting; ignored unless readerMode is QUIZ. */
+  proctored: z.boolean().optional(),
 });
 export type ChapterSettingsBody = z.infer<typeof chapterSettingsBody>;
 

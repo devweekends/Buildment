@@ -7,7 +7,7 @@ export type ExistingChapter = {
   id: string; moduleId: string | null; contentKey?: string | null; title: string; slug: string; order: number;
   source: string; summary: string | null; estimatedMinutes: number | null;
   compiled?: string | null; publishedAt?: Date | string | null;
-  readerMode: string; isMilestone: boolean; archivedAt: Date | string | null;
+  readerMode: string; isMilestone: boolean; proctored?: boolean; archivedAt: Date | string | null;
   blocks: { id: string; type: string; config: unknown; required: boolean; archivedAt: Date | string | null }[];
 };
 export type ExistingModule = { id: string; contentKey?: string | null; title: string; order: number; archivedAt: Date | string | null };
@@ -133,7 +133,7 @@ export function matchCourseUpdate(plan: ImportPlan, modules: ExistingModule[], c
         if (comparableSource(previous) !== comparableSource(lesson) ||
             canonical(previous.blocks.filter(b => !b.archivedAt).map(b => [b.type, activityConfig(b), b.required])) !== canonical(lesson.blocks.map(b => [b.type, activityConfig(b), b.required]))) changes.push("Content or activities");
         if (previous.order !== lesson.lessonNum) changes.push("Order");
-        if (previous.summary !== lesson.summary || previous.estimatedMinutes !== lesson.estimatedMinutes || previous.isMilestone !== lesson.isMilestone || previous.readerMode !== lesson.readerMode) changes.push("Lesson settings");
+        if (previous.summary !== lesson.summary || previous.estimatedMinutes !== lesson.estimatedMinutes || previous.isMilestone !== lesson.isMilestone || previous.readerMode !== lesson.readerMode || (previous.proctored ?? false) !== (lesson.proctored ?? false)) changes.push("Lesson settings");
         if (previous.compiled && comparableSource({ ...previous, source: previous.compiled }) !== comparableSource(lesson)) changes.push("Published content");
         if (previous.publishedAt === null) changes.push("Unpublished chapter");
       }

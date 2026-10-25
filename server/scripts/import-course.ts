@@ -349,6 +349,8 @@ type ParsedLesson = {
   source: string;
   blocks: PendingBlock[];
   isMilestone: boolean;
+  /** A strict quiz: frontmatter `proctored: true` on a quiz lesson. */
+  proctored: boolean;
 };
 
 export function readModuleDirs(): { dirName: string; moduleNum: number }[] {
@@ -826,6 +828,7 @@ export function parseLesson(moduleNum: number, moduleDir: string, fileName: stri
     source: source.trim() + "\n",
     blocks,
     isMilestone,
+    proctored: (frontmatter.proctored === true || String(frontmatter.proctored).toLowerCase() === "true"),
   };
 }
 
@@ -930,6 +933,7 @@ async function main() {
           source: lesson.source,
           compiled: lesson.source,
           isMilestone: lesson.isMilestone,
+          proctored: lesson.readerMode === "QUIZ" && lesson.proctored,
           publishedAt: new Date(),
         },
         create: {
@@ -945,6 +949,7 @@ async function main() {
           source: lesson.source,
           compiled: lesson.source,
           isMilestone: lesson.isMilestone,
+          proctored: lesson.readerMode === "QUIZ" && lesson.proctored,
           publishedAt: new Date(),
         },
       });
