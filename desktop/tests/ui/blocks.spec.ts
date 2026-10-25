@@ -52,6 +52,7 @@ test('native content renders shared blocks, diagrams and working canvas controls
                 slug: 'intro',
                 title: 'How to use this course',
                 readerMode: 'DEFAULT',
+                proctored: false,
                 lessonLabel: '01.02',
                 estimatedMinutes: 20,
               },

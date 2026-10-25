@@ -34,6 +34,7 @@ export function QuizSession({
   const [revision, setRevision] = useState(0);
   const changed = useRef(new Set<string>());
   const root = useRef<HTMLElement>(null);
+  const limitSubmitted = useRef(false);
   const perfect = Boolean(
     score && score.maxScore > 0 && score.score === score.maxScore,
   );
@@ -52,6 +53,16 @@ export function QuizSession({
     currentBlockId: current?.id || null,
     transport: integrityTransport,
   });
+  // A proctored quiz: the learner left the quiz screen too often, so their answers so far are handed in, once.
+  useEffect(() => {
+    if (!integrity.limitReached) {
+      limitSubmitted.current = false;
+      return;
+    }
+    if (limitSubmitted.current) return;
+    limitSubmitted.current = true;
+    void submit(true);
+  }, [integrity.limitReached]);
   useEffect(() => {
     const fullscreen = () => {
       void document.documentElement
@@ -65,7 +76,7 @@ export function QuizSession({
         void document.exitFullscreen().catch(() => undefined);
     };
   }, []);
-  async function submit() {
+  async function submit(forced = false) {
     if (busy || perfect) return;
     const payload = state.blockIds.map((blockId) => ({
       blockId,
@@ -78,6 +89,7 @@ export function QuizSession({
       (answer) => !answer.selected.length,
     ).length;
     if (
+      !forced &&
       unanswered &&
       !integrity.withoutFlags(() =>
         window.confirm(
@@ -89,7 +101,8 @@ export function QuizSession({
       return;
     setBusy(true);
     setError('');
-    integrity.checkPace(score ? [...changed.current] : state.blockIds);
+    if (!forced)
+      integrity.checkPace(score ? [...changed.current] : state.blockIds);
     try {
       const result = await window.buildment.learning.submitQuiz(
         chapterId,
@@ -145,9 +158,10 @@ export function QuizSession({
     }
   }
   if (!steps.length) return <p>No quiz questions are available yet.</p>;
-  // No question is fetched until the learner presses Start, so proctoring covers the whole attempt.
-  if (!state.started && !complete && !integrity.questionsShown) {
-    const opening = integrity.session !== null && integrity.dialog === null;
+  // A proctored quiz fetches no question until the learner presses Start, so nothing is shown before it.
+  if (state.proctored && !complete && !integrity.questionsShown) {
+    const opening = integrity.starting;
+    const limit = integrity.limitReached;
     return (
       <section ref={root} aria-label="Quiz session" className="mt-7">
         <p className="text-sm font-medium">
@@ -156,24 +170,42 @@ export function QuizSession({
         <IntegrityNotice integrity={integrity} />
         <div className="my-5 rounded-xl border border-border p-5">
           <h2 className="text-lg font-semibold">
-            The questions appear when you start
+            {limit
+              ? 'Your answers are being submitted'
+              : 'The questions appear when you start'}
           </h2>
           <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            This quiz is proctored, so your mentor sees the whole attempt. Read
-            the notes first, then press Start. Find a quiet moment: once you
-            start, try to finish in one go.
+            {limit
+              ? 'You left the quiz screen too many times. Your answers so far are being submitted. Questions you did not answer count as wrong.'
+              : 'This quiz is proctored: it runs in full screen and you cannot leave it until you finish. Read the rules, then press Start. Find a quiet moment first.'}
           </p>
-          <button
-            disabled={integrity.session === null || opening}
-            onClick={integrity.openIntro}
-            className="mt-4 rounded-lg bg-primary px-5 py-2.5 text-sm text-primary-foreground disabled:opacity-50"
-          >
-            {integrity.session === null
-              ? 'Getting your quiz ready…'
-              : opening
-                ? 'Opening your questions…'
-                : 'Start quiz'}
-          </button>
+          {!limit && score && (
+            <p className="mt-2 text-sm">
+              Last attempt: {score.score} of {score.maxScore}. A new attempt
+              starts with the questions you missed.
+            </p>
+          )}
+          {!limit && (
+            <button
+              disabled={integrity.session === null || opening}
+              onClick={integrity.openIntro}
+              className="mt-4 rounded-lg bg-primary px-5 py-2.5 text-sm text-primary-foreground disabled:opacity-50"
+            >
+              {integrity.session === null
+                ? 'Getting your quiz ready…'
+                : opening
+                  ? 'Opening your questions…'
+                  : 'Start quiz'}
+            </button>
+          )}
+          {limit && error && (
+            <button
+              onClick={() => void submit(true)}
+              className="mt-4 rounded-lg bg-primary px-5 py-2.5 text-sm text-primary-foreground"
+            >
+              Try again
+            </button>
+          )}
         </div>
       </section>
     );

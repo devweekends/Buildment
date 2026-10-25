@@ -111,6 +111,7 @@ test('native reader submits quizzes, saves completion, enforces locks and signs 
                 lessonLabel: '01.01',
                 estimatedMinutes: 10,
                 readerMode: chapter === 'lesson-one' ? 'QUIZ' : 'DEFAULT',
+                proctored: false,
                 isMilestone: false,
                 blockCount: 1,
               },
@@ -185,6 +186,8 @@ test('native reader submits quizzes, saves completion, enforces locks and signs 
           quiz: async () => ({
             ok: true,
             data: {
+              proctored: false,
+              started: true,
               steps: [],
               blockIds: ['question-one'],
               initialAnswers: passed ? { 'question-one': ['one'] } : {},
