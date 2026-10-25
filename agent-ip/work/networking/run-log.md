@@ -26,3 +26,4 @@
 | 2026-10-26 | G3 | chapter-writer | bulk model | chapter 2.2 (beats) | drafted; audit clean |
 | 2026-10-26 | G3 | critic A, critic B | review models from other families (Gemini 3.8 Flash, GPT-OSS 120B) | `qa/g3-critique-A-round1.md`, `qa/g3-critique-B-round1.md`, `qa/g3-critique-A-round2.md` | round 2 average 4.41, no dimension below 4; remaining S2 fixed after round 2 |
 | 2026-10-26 | G3 | answer-key check | review model from another family (Gemini 3.8 Flash) | blind keys on chapter 2.2 | 3 of 3 matched, three times |
+| 2026-10-26 | G3 | sponsor | human | interaction map, assessment plan, canvases, sample chapter 2.2 | signed off; G4 starts with module 1 |

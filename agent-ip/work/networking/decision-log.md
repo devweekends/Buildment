@@ -104,3 +104,7 @@
 **Decision:** the `[addr: drill]` canvases are ungraded practice (canvas spec); O3's graded evidence is code exercises 3.7 and 3.8, lab 3.10 and the by-hand items in quizzes 2.6 and 3.11. Roadmap O3 row and blueprint updated.
 
 **Decision:** at the sponsor's request ("use a lot of argon to help you"), G3 reviews use models from other families through the Antigravity CLI. Gemini 4 Argon hit its account quota on 2026-10-26 (resets in about five days), so the blind answer-key check ran on Gemini 3.8 Flash (3 of 3 keys matched) and the two critics run on Gemini 3.8 Flash (critic A) and GPT-OSS 120B (critic B). Drafting stays on the drafting model; this restores the cross-family independence `01-agent-system.md` asks for.
+
+## 2026-10-26: G3 signed off
+
+**Decision:** the sponsor signed off G3 ("I sign off G3 for the networking course. Start G4 with the module 1 chapters, keeping cost lean."). G4 starts with module 1. Challenge drafts live in `agent-ip/work/networking/challenges-template/` until the sponsor approves creating the `devweekends/networking-challenges` template repository.
