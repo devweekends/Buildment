@@ -14,4 +14,5 @@
 | 2026-10-25 | Revision 1 | 54 chapters, 82 canvases; `qa/revision-1-brief.md` | Seven revisers, one per module | smaller drafting-family model | done | Capstone split; 26 hours; bias balanced (key longest 24%, shortest 24%, "because" 16% vs 17%, predict longer 52%) |
 | 2026-10-26 | G5 round 2 | `qa/critique-a-r2.md`, `qa/critique-b-r2.md`, `qa/blind-keys-r2/` | Critic A, critic B (smaller second-family model), blind keys | see routing.yaml | A approve with conditions | A: 4.32, 0 S1, 0 S2, 12 S3, 7 S4; blind keys 107 of 107 |
 | 2026-10-26 | Click-through | `qa/g5-verification.md` | Orchestrator | drafting model | done | 375px and desktop, light and dark; RTL anchor and dark-mode tint bugs found and fixed in the kit |
-| 2026-10-26 | Round 3 fixes | targeted items from critique A round 2 | One fix writer | smaller drafting-family model | running | No third critique round |
+| 2026-10-26 | Round 3 fixes | targeted items from critique A round 2 | One fix writer | smaller drafting-family model | done | No third critique round; final blind keys 106 of 107 (the miss is a designed-surprise predict) |
+| 2026-10-26 | G2B | `roadmap-confirmation.md` | Sponsor | n/a | approved | Single-signature exception; decision 8 answered by the sponsor |

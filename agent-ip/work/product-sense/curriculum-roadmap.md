@@ -2,16 +2,16 @@
 artifact: curriculum-roadmap
 course: product-sense
 version: 1
-status: draft (G2A); G2B instructor sign-off pending
+status: confirmed (G2B), 2026-10-26, by the sponsor (single-signature exception; see roadmap-confirmation.md)
 owner: curriculum-architect
-instructors_reviewed: []
+instructors_reviewed: [Zeeshan (sponsor)]
 drafted_before_roadmap: true
 research: research.md (G1, accepted 2026-10-25 with 16 outline changes)
 ---
 
 # Curriculum roadmap: Product Sense for Engineers: UI, UX and Work People Remember
 
-> **G2B is pending.** Chapters are drafted before instructor sign-off, on the sponsor's standing instruction (see `decision-log.md`), as with courses 3 to 17. If instructors change this roadmap, the chapters will be revised to match.
+> **G2B confirmed on 2026-10-26** by the sponsor (`roadmap-confirmation.md`). Chapters were drafted before sign-off, on the sponsor's standing instruction (see `decision-log.md`).
 
 ## In one paragraph
 A practical course in product sense for engineers. Fellows learn to start from the problem and the job a person hires an app for, to cut scope to fit the time and to say how they will know it worked. They learn the UI fundamentals that decide what a person sees first (hierarchy, type, space, colour and measured contrast) and the UX fundamentals that decide whether people finish (empty, loading and error states, forms, access, small screens, motion with a reason, a first run that reaches value fast). They build taste: a four-level scale with criteria, why defaults look generic, how to study real products and write critiques, and which popular rules fail a check. They learn to spot the generic AI-made look in screens and words and replace it with real content and a point of view, and to use AI design tools as several opinions under their own judgment. Finally they present work: a demo that works with the sound off, a case study page that passes a 10-second skim, and one-click access for reviewers. The running example is Maryam, a fellow whose study-group app Halaqa grows through the course. The capstone is a redesign of the fellow's own project (or the provided Wasel print-shop app) from the generic look to work people remember, defended with the AI interviewer or in writing.
@@ -175,4 +175,4 @@ Design-tool tours (Figma), CSS or framework teaching beyond small examples, resu
 9. **Timing on phones.** Learn chapters are estimated at 25 minutes, practice at 50. Time two Learn chapters, one practice and capstone part 1 with fellows before publish.
 
 ## Confirmation
-G2B: pending. At least two instructors sign `roadmap-confirmation.md` (template 1B) before the chapters are treated as final.
+G2B: approved by the sponsor on 2026-10-26 (`roadmap-confirmation.md`). agent-ip asks for two instructors; the single signature is recorded as an exception, and a second instructor can confirm in review.

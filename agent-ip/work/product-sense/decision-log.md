@@ -28,6 +28,8 @@
 | 2026-10-26 | Left for human review, not fixed in this PR: A2-02 (practice and gate text above the length targets), A2-06 and A2-19 (some diagrams still restate their paragraph), A2-07 (most canvases are compare toggles that record nothing), A2-09 (five Learn chapters heavy for 25 minutes), A2-15 (2.6 "own" ratio can be looked up) | Another rewrite | All S3 or S4; the course passes G5. Each needs an instructor's view of time and depth (open decisions 2 and 9). | Orchestrator |
 | 2026-10-26 | Two human gates before publish: sponsor or instructor acceptance of about 26 hours (A2-11), and a native Arabic reader for the right-to-left canvases in 2.3 and 3.4 (A2-12) | Decide them here | Neither is the orchestrator's call; both are listed in the PR. | Orchestrator |
 
+| 2026-10-26 | G2B signed by the sponsor alone: roadmap approved as written (about 26 hours) with the draft position on each open decision; decision 8 answered: questions and follow-ups about a learner's own work use the learner's own API key for now, and the written defence still completes 7.8 | Wait for two instructors; make the AI defence required | The sponsor wrote "instrctor sign of done" and "any section where we need questions and followup answers releabt to user data then we will need them to use their own api key for now". agent-ip asks for two instructors, so the single signature is an exception, as for course 14. The brief requires a written option for anyone without a key, so it stays. | Zeeshan (sponsor) |
+
 ## Risks
 
 | # | Risk | Mitigation |
