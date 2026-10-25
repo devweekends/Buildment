@@ -1,5 +1,16 @@
 # Agent IP decision log
 
+## 2026-10-24: Load released courses into the scratch database through the repository publisher
+
+**Status:** Correction to the pre-PR checklist.
+
+**Problem:** `06-quality-gates.md` and the technical validator asked for `content:import` before every pull request. Since releases became the publishing path, `content:import` refuses a course that has a release or learner work. A module 11 update to the AI Engineering Interview course hit this. The writer then loaded the update through the publisher into a database that still held an older `content:import` copy. The release listed old and new versions of seven chapters side by side, and the reader served the old blocks. A fresh database with a single publish gave the right 13 modules and 90 chapters.
+
+**Decision:** Use `content:import` only for a course that has never been released. Load a released course through the repository publisher (`courses:publish`), limited to that course for a local run, into a fresh scratch database. The publisher needs the instructor from `courses/publishing.yaml` as a verified mentor or admin with ZIP import access in that database.
+
+**Evidence:** Module 11 of `ai-engineering-interview` (devweekends/Buildment#64). The mixed database showed 97 lessons where the course has 90. The fresh database showed 90, and the quiz click-through scored 4/5 as answered.
+
+**Review:** Delivery lead pending.
 ## 2026-10-24: Never ask before you teach (IP v0.5.3)
 
 **Status:** Draft for delivery lead and reviewer sign-off under `09-review-and-governance.md`.

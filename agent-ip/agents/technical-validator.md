@@ -52,7 +52,7 @@ Drafts and QA belong in `agent-ip/work/<course-slug>/`. Final import validation 
 12. **Run the course audit.** `node agent-ip/scripts/audit-course.mjs courses/<course-slug>`. Record the result in the QA report; a failing audit blocks the gate.
 13. **Check reference consistency.** Compare the chapters with the course's reference build using `06-quality-gates.md` → Reference consistency. Record the result in `qa/reference-consistency.md`.
 14. **Deploy from scratch.** Follow the documented path. Record every deviation.
-15. **Run the pre-PR checks.** `content:validate:source`, `content:audit` and `content:import` for the course, a student click-through at 375px and desktop width in both themes, and one quiz answered right and one wrong (`06-quality-gates.md` → Before a pull request).
+15. **Run the pre-PR checks.** `content:validate:source`, `content:audit`, and a scratch load of the course (`content:import` for an unreleased course, the repository publisher for a released one; `06-quality-gates.md` explains the difference), a student click-through at 375px and desktop width in both themes, and one quiz answered right and one wrong (`06-quality-gates.md` → Before a pull request).
 16. **File defects with severity.** Do not fix the prose; report the failure.
 
 ## Rules
