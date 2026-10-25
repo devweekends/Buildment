@@ -610,8 +610,8 @@ Both web and desktop render the implementations in `packages/learning-ui/src/can
 
 After adding or changing a canvas:
 
-1. Update the canonical slug list in `server/src/shared/canvas/slugs.ts` when needed, run `pnpm --dir server sync-shared`, and register the spec in `packages/learning-ui/src/canvas/registry.ts`.
-2. Run `pnpm --dir frontend install` and `pnpm --dir desktop install` to refresh both apps' local package snapshots. Include any resulting lockfile changes.
+1. Update the canonical slug list in `server/src/shared/canvas/slugs.ts` when needed, run `pnpm --dir server sync-shared`, and register the spec in `packages/learning-ui/src/canvas/registry.ts`. On Windows, `sync-shared` can rewrite the line endings of every generated file. Stage only the files whose content changed (`git diff --ignore-cr-at-eol --stat` lists them) and restore the rest.
+2. Run `pnpm --dir frontend install` and `pnpm --dir desktop install` to refresh both apps' local package snapshots. Include any resulting lockfile changes. The apps install `@buildment/learning-ui` as a copy, and an install can keep the old copy when the package version has not changed. If a test still sees the old `data.ts`, delete `frontend/node_modules/@buildment/learning-ui` and the matching `frontend/node_modules/.pnpm/@buildment+learning-ui*` folder, install again, and rerun the test.
 3. Keep canvas tests in `frontend/tests/unit/canvas/`; new tests should import the implementation from `@buildment/learning-ui/canvas/...`. Run `pnpm --dir frontend exec vitest run tests/unit/canvas` and `node server/scripts/sync-shared.mjs --check`.
 4. Check both app typechecks and preview the interaction in web and desktop, including keyboard controls, narrow layouts, and light/dark themes. Use `desktop/tests/ui/blocks.spec.ts` for desktop block regression coverage.
 5. Release an updated desktop app before publishing lessons that require a new canvas slug. Canvas implementations are bundled with desktop; importing a lesson does not download new executable canvas code. Older desktop versions show the unavailable fallback for unknown slugs.
