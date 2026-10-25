@@ -206,7 +206,7 @@ function metricCheck(def: Extract<CheckDef, { type: "metric" }>, phases: Map<str
   };
 }
 
-function drainCheck(def: Extract<CheckDef, { type: "drain" }>, steady: PhaseReport, scenarioId: string, inlineClicks: boolean): CheckResult {
+function drainCheck(def: Extract<CheckDef, { type: "drain" }>, steady: PhaseReport, scenarioId: string, inlineClicks: boolean, share = 1): CheckResult {
   const { board, result, load } = steady;
   const queue = board.nodes.find((n) => roleOf(n.kind) === "queue" && result.tiers.find((t) => t.id === n.id)?.reachable);
   const items = def.items ?? "clicks";
@@ -218,7 +218,8 @@ function drainCheck(def: Extract<CheckDef, { type: "drain" }>, steady: PhaseRepo
     return { ...base, pass: true, measured: `no worker to lose: ${items} are saved during the request (inline)` };
   }
   if (!queue) {
-    const lost = Math.round(load * def.outageSeconds);
+    // With no queue there is no link to read the rate from, so take the queue's share of the stream.
+    const lost = Math.round(load * share * def.outageSeconds);
     return { ...base, pass: false, measured: `${lost.toLocaleString("en-US")} ${items} lost in ${def.outageSeconds} s`, reason: `${Items} have nowhere to wait while the worker is down. Put a queue between the app server and the worker.` };
   }
   const workers = board.edges.filter((e) => e.from === queue.id).map((e) => result.tiers.find((t) => t.id === e.to)).filter((t): t is TierLoad => !!t && roleOf(t.kind) === "worker");
@@ -281,7 +282,7 @@ export function runChallenge(spec: HldLabSpec, board: Board, load: number): Chal
   const steady = phases[0]!;
   const checks: CheckResult[] = challenge.checks.map((def) => {
     if (def.type === "path") return pathCheck(def, board);
-    if (def.type === "drain") return drainCheck(def, steady, challenge.scenarios.find((s) => s.faults.some((f) => f.type === "down" && f.role === "worker"))?.id ?? "steady", Boolean(challenge.inlineClicks));
+    if (def.type === "drain") return drainCheck(def, steady, challenge.scenarios.find((s) => s.faults.some((f) => f.type === "down" && f.role === "worker"))?.id ?? "steady", Boolean(challenge.inlineClicks), challenge.shares?.queue ?? 1);
     return metricCheck(def, byId);
   });
   const passed = checks.filter((c) => c.pass).length;
