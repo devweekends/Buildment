@@ -23,6 +23,11 @@
 | 2026-10-25 | `modelAnswer` keeps the full mentor key | Move it to a private field | Checked in the code: it is stored as `sampleAnswer`, which the server strips from learner config (critic A, A-17). | Orchestrator |
 | 2026-10-25 | The shared sorter's small reason text (12.5 units on a 420 viewBox) is a follow-up for agent-ip, not changed here | Change the shared primitive in this PR | Other courses use the sorter; a change belongs in its own reviewed PR (critic A, A-21). | Orchestrator |
 
+| 2026-10-26 | G5 round 2 accepted; no third critique round; one targeted fix pass for A2-01 (predict stance), A2-03 (capstone time), A2-04 (7.5 coverage), A2-05 (Wasel pre-solved in 4.6, 7.6, 7.7), A2-08 (dossier codes in running text), A2-10 and the S4 items | A third critique round | `agents/orchestrator.md`: stop after two rounds. Critic A scored 4.32 (4.29 without the n/a dimension), every dimension at 4, 0 S1 and 0 S2, and asked for these four fixes before publish. Blind keys round 2: 107 of 107 on the second family. | Orchestrator |
+| 2026-10-26 | Critic B's round 2 scorecard (5.00) is not counted; critic A's is the scorecard of record | Average the two | Critic B round 2 ran on the second family's smaller model because the larger one reached its usage limit; it verified every round 1 item with quoted evidence, but scored dimensions that are not the 22 in `06-quality-gates.md`. | Orchestrator |
+| 2026-10-26 | Left for human review, not fixed in this PR: A2-02 (practice and gate text above the length targets), A2-06 and A2-19 (some diagrams still restate their paragraph), A2-07 (most canvases are compare toggles that record nothing), A2-09 (five Learn chapters heavy for 25 minutes), A2-15 (2.6 "own" ratio can be looked up) | Another rewrite | All S3 or S4; the course passes G5. Each needs an instructor's view of time and depth (open decisions 2 and 9). | Orchestrator |
+| 2026-10-26 | Two human gates before publish: sponsor or instructor acceptance of about 26 hours (A2-11), and a native Arabic reader for the right-to-left canvases in 2.3 and 3.4 (A2-12) | Decide them here | Neither is the orchestrator's call; both are listed in the PR. | Orchestrator |
+
 ## Risks
 
 | # | Risk | Mitigation |

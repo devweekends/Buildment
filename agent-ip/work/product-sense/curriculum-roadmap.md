@@ -19,7 +19,7 @@ A practical course in product sense for engineers. Fellows learn to start from t
 ## Learner and entry prerequisites
 - **Learner:** Dev Weekends fellows in Gaza, early-career engineers aiming at remote work; second-language English; mostly on phones with weak data and power cuts.
 - **Prior knowledge:** has built or is building one small app. Reading basic HTML and CSS helps in modules 2 and 3; every task has a phone path and the provided Wasel project.
-- **Time:** about 26 hours (1,552 minutes of chapters) over about five weeks.
+- **Time:** about 26 hours (1,582 minutes of chapters) over about five weeks.
 - **Entry diagnostic:** none graded; the scene in 1.1 asks what the learner would cut first.
 
 ## Where it sits
@@ -43,13 +43,13 @@ After course 13 (`build-with-ai`: tools by job, privacy, owned files, honest AI 
 | 1 | Think product first | 1 | 212 | A one-page product brief |
 | 2 | UI and UX fundamentals | 2 to 3 | 449 | One screen fixed; one flow's unhappy paths |
 | 3 | Taste and the generic look | 4 to 5 | 399 | A critique log; one page de-slopped |
-| 4 | Tools, presenting, capstone | 6 to 7 | 492 | A three-opinion critique; the capstone package and defence |
+| 4 | Tools, presenting, capstone | 6 to 7 | 522 | A three-opinion critique; the capstone package and defence |
 
 ## Format (agent-ip v0.5.3)
 Learn chapters are beats (`format: beats`): four to six beats, each opening with a visual, at most 70 visible words, depth in `GoDeeper` folds, a predict before the key beat and one or two quiz questions after the last. Every Learn chapter has at least one playable canvas, built on the specimen kit (a small screen drawn from data: compare versions, drag along a ladder, tap to spot problems, skim for ten seconds) or the sorter. Read chapters are one or two beats. Teaching and practice are separate: every module ends its teaching with a **Practice** chapter (Build, prose rules) that produces one piece of the capstone and is read by a mentor, then a quiz, then a gate.
 
 ## Module and chapter sequence
-Minutes are each chapter's `estimatedMinutes`. Total 1,552 minutes, about 26 hours: `estimatedHours: 26`. The first draft said 22; critic A measured the visible text and the practice load (G5 round 1, A-08) and the minutes were raised to an honest estimate. That is six hours over the requested 20; open decision 2 offers ways back.
+Minutes are each chapter's `estimatedMinutes`. Total 1,582 minutes, about 26 hours: `estimatedHours: 26`. The first draft said 22; critic A measured the visible text and the practice load (G5 round 1, A-08) and the minutes were raised to an honest estimate. That is six hours over the requested 20; open decision 2 offers ways back.
 
 ### Module 1: Think product first (212 min)
 | # | Chapter | One-line outcome | Type | Min | Playable canvas |
@@ -121,7 +121,7 @@ Minutes are each chapter's `estimatedMinutes`. Total 1,552 minutes, about 26 hou
 | 6.5 | Using AI design tools well | Five graded cases | Check | 12 | none |
 | 6.6 | Checklist and learning log | Gate 6 | Gate | 35 | none |
 
-### Module 7: Present the work, and capstone (330 min)
+### Module 7: Present the work, and capstone (360 min)
 | # | Chapter | One-line outcome | Type | Min | Playable canvas |
 |---|---|---|---|---|---|
 | 7.1 | Set the scene: the link nobody opened | A login wall and a silent video | Read | 15 | scene picture |
@@ -129,8 +129,8 @@ Minutes are each chapter's `estimatedMinutes`. Total 1,552 minutes, about 26 hou
 | 7.3 | A case study page that passes the skim | Result first; problem, role, choices, trade-off | Learn | 25 | `product-m7-skim-before` and `product-m7-skim-after` (skim) |
 | 7.4 | Show it where people look, open in one click | Guest access, fallback chain, hosting terms | Learn | 25 | `product-m7-one-click-access` (compare) |
 | 7.5 | Mixed review: which fix first? | Fresh cases from every module | Check | 15 | none |
-| 7.6 | Capstone, part 1: before and after, and the critique log | Screens and a reason and a cost for every change | Build | 90 | none |
-| 7.7 | Capstone, part 2: the case study page and the demo | A page that passes the skim, one-click access, a muted-first demo | Build | 90 | none |
+| 7.6 | Capstone, part 1: before and after, and the critique log | Screens and a reason and a cost for every change | Build | 105 | none |
+| 7.7 | Capstone, part 2: the case study page and the demo | A page that passes the skim, one-click access, a muted-first demo | Build | 105 | none |
 | 7.8 | Course checklist and your defence | AI interviewer or written defence | Gate | 45 | none |
 
 ## Practice chapters (teaching and practice are separate)
@@ -145,7 +145,7 @@ Each practice chapter is a Build chapter: the task, a worked example on Maryam's
 | 5.5 | One page de-slopped, screen and words | Before and after; critique log |
 | 6.4 | Three AI critiques, checked, with decisions | Critique log |
 
-## Capstone (7.6 and 7.7, Build, 90 minutes each)
+## Capstone (7.6 and 7.7, Build, 105 minutes each)
 The fellow redesigns **their own project**, or **Wasel** (provided: a print and copy shop's order app made in one evening with an AI tool, in the generic look), and hands in four parts:
 1. **Before and after screenshots** of at least three screens, each change numbered.
 2. **A critique log**: for each change, what was wrong, the rule or evidence, the change, and what was given up; at least one AI critique point checked and one rejected with a reason.
