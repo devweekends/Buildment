@@ -1,7 +1,7 @@
 ---
 artifact: course-brief
 course: career-brand
-working_title: "Your Career Brand: Proof of Work, Resume, LinkedIn and Writing"
+working_title: "Your Career Brand: Resume, LinkedIn, Personal Site and Proof of Work"
 version: 1
 status: accepted
 owner: Zeeshan (architect, human sponsor)
@@ -12,7 +12,7 @@ target_publish: after G2B instructor sign-off and G7 delivery lead approval
 
 Source of intake: the sponsor's request of 2026-10-25 for course 16 of the fellowship pipeline, "very nice, structured, very heavy, good". It is the companion to course 14, "The Founder Interview" (ownership, impact, telling your story, the AI interviewer). Course 14 is the interview. This course builds the proof and the profile that come before it.
 
-**Final title:** Your Career Brand: Proof of Work, Resume, LinkedIn and Writing
+**Final title:** Your Career Brand: Resume, LinkedIn, Personal Site and Proof of Work (renamed on 2026-10-26 at the sponsor's request, so the catalog name shows the resume, LinkedIn and personal site; first chosen as "Your Career Brand: Proof of Work, Resume, LinkedIn and Writing")
 **Slug:** `career-brand`
 
 ## One sentence

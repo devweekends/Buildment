@@ -9,7 +9,7 @@ inputs: 00-course-brief.md (accepted), research.md (topics A to F), research-pla
 manifest: courses/career-brand/course.yaml
 ---
 
-# Curriculum roadmap: Your Career Brand: Proof of Work, Resume, LinkedIn and Writing
+# Curriculum roadmap: Your Career Brand: Resume, LinkedIn, Personal Site and Proof of Work
 
 ## In one paragraph
 Fellows apply and hear nothing back, because their best work is invisible: a GitHub link nobody runs, a resume full of "responsible for", numbers they cannot defend. Employers who publish how they hire say they get more applications than they can read closely, and fluent writing is now cheap, so a reader trusts what they can check. In this course each fellow builds an honest career kit piece by piece, evidence first: a private career arc document, a proof-of-work inventory where every number is a claim card with a source, one strong project plan for the AI era, a showcase a stranger can open on a phone (with a case study that survives when a free demo sleeps), a resume written from the ledger, a LinkedIn profile used well (posts, comments, outreach, slow honest growth), a blog post with a plan for about ten channels, and a website plan. Module 1 diagnoses the fellow's current kit with a ten-second test and a baseline AI drill; the capstone defends the finished kit in a full AI interview or a recorded walkthrough, and compares the result with that baseline. Every AI practice has a written option that completes the same gate, and a provided fellow covers every practice for anyone with no paid work yet or who prefers not to share their own.
