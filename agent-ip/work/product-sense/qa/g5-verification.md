@@ -23,7 +23,7 @@ date: 2026-10-26
 |---|---|
 | Blind key check, round 1, second model family (`blind-keys.mjs`) | 107 of 107 matched |
 | Blind key check, round 2, second model family (smaller model) | 107 of 107 matched |
-| Blind key check on the final version (after round 3 fixes) | running at PR time; result posted on the PR |
+| Blind key check on the final version (after round 3 fixes) | 106 of 107; the one miss is the 7.4 predict, whose designed surprise is that a new guest account opens empty (the reviewer chose what guest mode should show); key kept |
 | MCQ key position (82) | 20, 21, 23, 18 for positions 0 to 3 |
 | MCQ key strict longest / strict shortest | 24% / 24%; none more than 10% longer than the longest wrong option |
 | "because" or "since" in keys / wrong options | 16% / 17% (round 1: 4% / 33%) |
