@@ -1,9 +1,9 @@
 import type { SolutionDef } from "../types";
 
-// The reference design recorded in spec.md: 11 of 11 checks at $2.54 an hour.
+// The reference design recorded in spec.md: 11 of 11 checks at $1.85 an hour.
 export const newsFeedSolution: SolutionDef = {
   summary:
-    "Prepare each feed before anyone asks for it: a queue and three workers push every new post into a cache of ready feeds (fan-out on write), so opening a feed is one quick read. Spread the work over enough small parts that losing any one still leaves room: three load balancer zones, three app servers, and a database with a standby and a read-only copy.",
+    "Prepare each feed before anyone asks for it: a queue and a worker push every new post into a cache of ready feeds (fan-out on write), so opening a feed is one quick read. Spread the work over enough small parts that losing any one still leaves room: three load balancer zones, three app servers, and a database with a standby and a read-only copy.",
   board: {
     nodes: [
       { id: "client", kind: "client", x: 1, y: 0 },
@@ -12,7 +12,7 @@ export const newsFeedSolution: SolutionDef = {
       { id: "cache", kind: "cache", x: 0, y: 3, props: { size: "memory-small", count: 1, hitRate: 0.95, azs: 2 } },
       { id: "q", kind: "queue", x: 2, y: 3 },
       { id: "db", kind: "database", x: 1, y: 4, props: { size: "memory-medium", replicas: 1, readRatio: 0.98, multiAz: 1 } },
-      { id: "w", kind: "worker", x: 2, y: 4, props: { size: "compute-small", count: 3 } },
+      { id: "w", kind: "worker", x: 2, y: 4, props: { size: "compute-small", count: 1 } },
     ],
     edges: [
       { from: "client", to: "lb" },
@@ -36,19 +36,19 @@ export const newsFeedSolution: SolutionDef = {
       without: "With two servers each is 67% busy even when all is well, so p99 is 84 ms, over the 65 ms target. Losing one leaves a single server at 133% busy and only 75% of requests are served. With one server, nothing is left.",
     },
     cache: {
-      why: "The cache holds ready-made feeds. At a 95% hit rate it answers 3,040 of the 3,200 feed opens a second itself, so only about 160 a second reach the database. The workers also write each new post into it.",
+      why: "The cache holds ready-made feeds. At a 95% hit rate it answers 3,040 of the 3,200 feed opens a second itself, so only about 160 a second reach the database. The worker also writes each new post into it.",
       checks: ["fanout", "p99", "cache-dies", "cache-dies-p99"],
-      without: "With no cache, the workers have nowhere to put a new post, so the delivery check fails (the path stops at the worker). The database also does all 3,200 reads, is 65% busy, and p99 is 75 ms, over the 65 ms target.",
+      without: "With no cache, the worker has nowhere to put a new post, so the delivery check fails (the path stops at the worker). The database also does all 3,200 reads, is 65% busy, and p99 is 75 ms, over the 65 ms target.",
     },
     q: {
-      why: "When a post is saved, the app server puts a note about it on the queue and answers at once. The queue holds the notes until a worker delivers them, so the author never waits for the spreading, and no post is lost while the worker is away.",
+      why: "When a post is saved, the app server puts a note about it on the queue and answers at once. The queue holds the notes until a worker delivers them, so the author never waits for the spreading, and no post is lost while the worker is away. Only about 1 request in 50 is a post (chapter 21.1), so the queue sees about 64 notes a second and costs about $0.02 an hour.",
       checks: ["fanout", "worker-dies"],
-      without: "With no queue nothing delivers posts to feeds, and a stopped worker would have nowhere to leave them: 144,000 posts in 45 seconds are lost. It would save $0.47 an hour, because the queue is priced per message.",
+      without: "With no queue nothing delivers posts to feeds, and a stopped worker would have nowhere to leave them, so every post made while it is away is lost. The queue is so cheap ($0.02 an hour) that removing it saves almost nothing.",
     },
     w: {
-      why: "Three workers take notes from the queue and write each post into the followers' feeds in the cache. Together they handle 7,200 a second while 3,200 arrive, so they have 4,000 a second to spare. That clears the 144,000 posts that wait during a 45 second outage in 36 seconds.",
+      why: "One worker takes notes from the queue and writes each post into the followers' feeds in the cache. It handles 2,400 a second while about 64 arrive, so it is 3% busy. After a 2 minute outage, the 7,680 waiting posts are all delivered 4 seconds after it returns.",
       checks: ["fanout", "worker-dies"],
-      without: "Two workers have only 1,600 a second to spare, so the same 144,000 waiting posts take 90 seconds, over the 60 second limit. Four workers pass too, but the design then costs $2.66 an hour, over the $2.60 budget. With no worker, posts pile up and are never delivered.",
+      without: "With no worker, posts pile up and are never delivered. A second worker is not needed here, and it makes the design cost $1.97 an hour, over the $1.95 budget.",
     },
     db: {
       why: "The database keeps every post. An extra copy in a second zone takes over if the main one's zone fails (a failover standby). One read-only copy (a read replica) shares the reads, so if the feed cache dies the database can serve all 3,200 feed opens a second (65% busy).",
