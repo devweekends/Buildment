@@ -68,6 +68,15 @@ const postEvents = (attemptId: string, events: unknown[]) =>
   request(app).post(`/api/v1/integrity/attempts/${attemptId}/events`).set(learner()).send({ events });
 
 const PROMPT = QUIZ_CONFIG.prompt;
+/** The attempt the learner started in the Start test; later tests keep using it so no page is "reopened". */
+let liveAttempt = "";
+const heartbeat = (attemptId: string, headers = learner()) =>
+  request(app).post(`/api/v1/integrity/attempts/${attemptId}/heartbeat`).set(headers);
+const latestAttempt = () =>
+  prisma.integrityAttempt.findFirstOrThrow({ where: { enrollmentId: fx.enrollment.id, chapterId: fx.chapterB.id }, orderBy: { attempt: "desc" } });
+/** Pretend the last camera proof was `seconds` ago. */
+const ageHeartbeat = (attemptId: string, seconds: number) =>
+  prisma.integrityAttempt.update({ where: { id: attemptId }, data: { cameraLiveAt: new Date(Date.now() - seconds * 1000) } });
 
 describe("a normal quiz", () => {
   beforeAll(async () => {
@@ -203,6 +212,7 @@ describe("Start", () => {
 
     expect((await start(attemptId)).body.data).toEqual({ questionsShown: true });
     expect((await begin(attemptId)).status).toBe(200);
+    liveAttempt = attemptId;
 
     const state = await quizState();
     expect(state.body.data).toMatchObject({ proctored: true, started: true });
@@ -210,13 +220,12 @@ describe("Start", () => {
     expect(block.status).toBe(200);
     expect(JSON.stringify(block.body)).toContain(PROMPT);
     expect(block.headers["cache-control"]).toBe("no-store");
-    expect((await openAttempt()).body.data).toMatchObject({ questionsShown: true, locked: false });
   });
 });
 
 describe("the leave rule", () => {
   it("warns twice, then locks the attempt on the third time the learner leaves", async () => {
-    const { attemptId } = (await openAttempt()).body.data;
+    const attemptId = liveAttempt;
 
     // Blur, hidden and full screen exit from one Alt+Tab are one incident.
     const first = await postEvents(attemptId, [leave("WINDOW_BLUR", 100), leave("TAB_HIDDEN", 99), leave("FULLSCREEN_EXIT", 98)]);
@@ -268,6 +277,78 @@ describe("the leave rule", () => {
     expect(attempts.find((attempt) => attempt.attempt === 1)).toMatchObject({ locked: true });
     expect(attempts.find((attempt) => attempt.attempt === 2)).toMatchObject({ locked: false });
     expect(attempts.find((attempt) => attempt.attempt === 1)?.counts).toMatchObject({ PRINT_BLOCKED: 1, NAVIGATION_BLOCKED: 1 });
+  });
+});
+
+describe("the camera heartbeat", () => {
+  it("sends questions only while the browser keeps proving a live camera", async () => {
+    const attempt = await latestAttempt();
+    expect(attempt.attempt).toBe(2);
+    await heartbeat(attempt.id).expect(200);
+    expect((await blockState()).status).toBe(200);
+    expect((await quizState()).body.data.started).toBe(true);
+
+    // The beats stop (page closed, camera gone, network down): the questions are withheld again.
+    await ageHeartbeat(attempt.id, PROCTORED_RULE.cameraFreshSeconds + 5);
+    const lapsed = await blockState();
+    expect(lapsed.status).toBe(403);
+    expect(JSON.stringify(lapsed.body)).not.toContain(PROMPT);
+    expect((await quizState()).body.data.started).toBe(false);
+    await prisma.integrityAttempt.update({ where: { id: attempt.id }, data: { cameraLiveAt: null } });
+
+    // The next beat brings them back.
+    await heartbeat(attempt.id).expect(200);
+    expect((await blockState()).status).toBe(200);
+  });
+
+  it("is refused before Start, for a stranger, and when the camera is not on", async () => {
+    const attempt = await latestAttempt();
+    expect((await heartbeat(attempt.id, bearer(strangerToken))).status).toBe(404);
+    await putCamera(attempt.id, "UNAVAILABLE");
+    expect((await heartbeat(attempt.id)).status).toBe(403);
+    // Losing the camera hides the questions at once, without waiting for the beat to lapse.
+    expect((await blockState()).status).toBe(403);
+    await putCamera(attempt.id, "ON");
+    await heartbeat(attempt.id).expect(200);
+    expect((await blockState()).status).toBe(200);
+  });
+});
+
+describe("reloading the page mid-attempt", () => {
+  it("counts as leaving, takes the camera away and sends no question until the camera is proven again", async () => {
+    const before = await latestAttempt();
+    const reopened = await openAttempt();
+    expect(reopened.body.data.attemptId).toBe(before.id);
+    expect(reopened.body.data).toMatchObject({ leaves: 1, locked: false, questionsShown: false, camera: { status: "NOT_REQUESTED" } });
+    expect(await prisma.integrityEvent.count({ where: { attemptId: before.id, type: "PAGE_RELOAD" } })).toBe(1);
+
+    // Nothing the browser remembers helps: no question content, no state, no heartbeat.
+    const refused = await blockState();
+    expect(refused.status).toBe(403);
+    expect(JSON.stringify(refused.body)).not.toContain(PROMPT);
+    expect((await quizState()).body.data.started).toBe(false);
+    expect((await heartbeat(before.id)).status).toBe(403);
+    expect((await begin(before.id)).status).toBe(403);
+
+    // Through the gate again: camera on, Start.
+    expect((await start(before.id)).body.data).toEqual({ questionsShown: true });
+    expect((await blockState()).status).toBe(200);
+  });
+
+  it("locks the attempt on the third reload or reopened tab, each counted once", async () => {
+    const attempt = await latestAttempt();
+    // Two reopens within a moment are one incident; a later one is another.
+    await prisma.integrityEvent.updateMany({ where: { attemptId: attempt.id, type: "PAGE_RELOAD" }, data: { at: new Date(Date.now() - 60_000) } });
+    const second = await openAttempt();
+    const secondAgain = await openAttempt();
+    expect(second.body.data.leaves).toBe(2);
+    expect(secondAgain.body.data.leaves).toBe(2);
+
+    await prisma.integrityEvent.updateMany({ where: { attemptId: attempt.id, type: "PAGE_RELOAD", at: { gt: new Date(Date.now() - 30_000) } }, data: { at: new Date(Date.now() - 30_000) } });
+    const third = await openAttempt();
+    expect(third.body.data).toMatchObject({ leaves: PROCTORED_RULE.limit, locked: true, questionsShown: false });
+    expect((await blockState()).status).toBe(403);
+    expect((await submit()).status).toBe(200);
   });
 });
 

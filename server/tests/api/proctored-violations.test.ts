@@ -116,11 +116,12 @@ describe("each leave and return counts once", () => {
     expect(res.body.data.flagCount).toBe(4);
   });
 
-  it("returns the count again when the page reopens, so a reload cannot reset the warnings", async () => {
+  it("returns the count again when the page reopens, and a reload counts as a leave, so it cannot reset the warnings", async () => {
     const attemptId = await startedAttempt();
     await post(attemptId, [event("TAB_HIDDEN", 60)]);
     await post(attemptId, [event("WINDOW_BLUR", 40)]);
     const reopened = await request(app).post(`/api/v1/chapters/${fx.chapterB.id}/integrity`).set(learner());
-    expect(reopened.body.data).toMatchObject({ attemptId, leaves: 2, locked: false, questionsShown: true });
+    // The reload itself is the third leave, so the attempt locks and shows no question.
+    expect(reopened.body.data).toMatchObject({ attemptId, leaves: 3, locked: true, questionsShown: false });
   });
 });

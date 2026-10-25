@@ -22,6 +22,7 @@ export const INTEGRITY_EVENT_TYPES = [
   "CAMERA_LOST",
   "NO_FACE",
   "MULTIPLE_FACES",
+  "PAGE_RELOAD",
 ] as const;
 export type IntegrityEventType = (typeof INTEGRITY_EVENT_TYPES)[number];
 
@@ -58,10 +59,17 @@ export const PROCTORED_RULE = {
    * coming back is a new incident, so the window is kept short.
    */
   incidentWindowSeconds: 3,
+  /** The browser proves a live camera this often while a proctored quiz runs. */
+  cameraHeartbeatSeconds: 8,
+  /** The server sends questions only this long after the last proof. A missed beat or two is forgiven. */
+  cameraFreshSeconds: 25,
 } as const;
 
-/** The events that count as an incident: leaving the quiz screen, or losing the camera. */
-export const INTEGRITY_LEAVE_EVENTS: ReadonlySet<IntegrityEventType> = new Set(["TAB_HIDDEN", "WINDOW_BLUR", "FULLSCREEN_EXIT", "CAMERA_LOST"]);
+/**
+ * The events that count as an incident: leaving the quiz screen, losing the camera, or reloading
+ * the page (the server notes that itself when the attempt is reopened after Start).
+ */
+export const INTEGRITY_LEAVE_EVENTS: ReadonlySet<IntegrityEventType> = new Set(["TAB_HIDDEN", "WINDOW_BLUR", "FULLSCREEN_EXIT", "CAMERA_LOST", "PAGE_RELOAD"]);
 
 /** How many separate times the learner left the quiz screen. Order does not matter. */
 export function countLeaveIncidents(events: ReadonlyArray<{ type: IntegrityEventType; at: Date | string | number }>): number {
@@ -115,6 +123,7 @@ export const INTEGRITY_EVENT_LABELS: Record<IntegrityEventType, string> = {
   CAMERA_LOST: "Camera stopped or was blocked",
   NO_FACE: "No face in view for a while",
   MULTIPLE_FACES: "More than one face in view",
+  PAGE_RELOAD: "Reloaded or reopened the quiz page",
 };
 
 export const INTEGRITY_CAMERA_LABELS: Record<IntegrityCameraStatus, string> = {

@@ -3,6 +3,7 @@ import { BadRequestError } from "../utils/errors.js";
 import { created, ok } from "../utils/responses.js";
 import {
   beginIntegrityAttempt,
+  recordCameraHeartbeat,
   openIntegrityAttempt,
   recordIntegrityEvents,
   saveIntegritySnapshot,
@@ -23,6 +24,12 @@ export async function openAttempt(req: Request, res: Response) {
 // POST /api/v1/integrity/attempts/:attemptId/begin
 export async function begin(req: Request, res: Response) {
   ok(res, await beginIntegrityAttempt(req.user, req.params.attemptId as string));
+}
+
+// POST /api/v1/integrity/attempts/:attemptId/heartbeat
+export async function heartbeat(req: Request, res: Response) {
+  res.setHeader("Cache-Control", "no-store");
+  ok(res, await recordCameraHeartbeat(req.user, req.params.attemptId as string));
 }
 
 // POST /api/v1/integrity/attempts/:attemptId/events

@@ -64,7 +64,12 @@ export type QuizAttemptGate = {
   locked: boolean;
   /** The chapter is finished, so its questions can be reviewed without a new attempt. */
   completed: boolean;
+  /** The browser proved a live camera within PROCTORED_RULE.cameraFreshSeconds. */
+  cameraFresh: boolean;
 };
+
+const isFresh = (liveAt: Date | null | undefined, now = Date.now()) =>
+  Boolean(liveAt && now - liveAt.getTime() <= PROCTORED_RULE.cameraFreshSeconds * 1000);
 
 /** Where a learner stands with a proctored quiz chapter: the attempt they are on, and whether the chapter is done. */
 export async function quizAttemptGate(enrollmentId: string, chapterId: string): Promise<QuizAttemptGate> {
@@ -72,25 +77,31 @@ export async function quizAttemptGate(enrollmentId: string, chapterId: string): 
   const [attempt, progress] = await Promise.all([
     prisma.integrityAttempt.findUnique({
       where: { enrollmentId_chapterId_attempt: { enrollmentId, chapterId, attempt: attemptNumber } },
-      select: { questionsShownAt: true, lockedAt: true },
+      select: { questionsShownAt: true, lockedAt: true, cameraLiveAt: true },
     }),
     prisma.chapterProgress.findUnique({
       where: { enrollmentId_chapterId: { enrollmentId, chapterId } },
       select: { completedAt: true },
     }),
   ]);
-  return { started: Boolean(attempt?.questionsShownAt), locked: Boolean(attempt?.lockedAt), completed: Boolean(progress?.completedAt) };
+  return {
+    started: Boolean(attempt?.questionsShownAt),
+    locked: Boolean(attempt?.lockedAt),
+    completed: Boolean(progress?.completedAt),
+    cameraFresh: isFresh(attempt?.cameraLiveAt),
+  };
 }
 
 /**
  * Whether a proctored quiz chapter's questions may be sent to this learner now: they
- * pressed Start on this attempt and it is not locked, or the chapter is finished.
+ * pressed Start on this attempt, it is not locked and the browser has just proved a live
+ * camera (a heartbeat, so a reload or a lapsed camera hides them again), or the chapter is finished.
  * A normal quiz is never gated, so callers pass the chapter's own `proctored` flag.
  */
 export async function quizQuestionsVisible(enrollmentId: string, chapter: { id: string; proctored: boolean }): Promise<boolean> {
   if (!chapter.proctored) return true;
   const gate = await quizAttemptGate(enrollmentId, chapter.id);
-  return gate.completed || (gate.started && !gate.locked);
+  return gate.completed || (gate.started && !gate.locked && gate.cameraFresh);
 }
 
 /**
@@ -106,7 +117,7 @@ export async function assertProctoredQuestionsVisible(
   if (!user) throw new ForbiddenError("Sign in and start the quiz to see its questions.", "QUIZ_NOT_STARTED");
   if (enrollmentId) {
     if (await quizQuestionsVisible(enrollmentId, { id: chapter.id, proctored: true })) return;
-    throw new ForbiddenError("Start the quiz to see its questions.", "QUIZ_NOT_STARTED");
+    throw new ForbiddenError("Start the quiz and keep your camera on to see its questions.", "QUIZ_NOT_STARTED");
   }
   try {
     await requireCourseById(user, chapter.courseId, "SUBMISSION_EVALUATOR");
@@ -128,12 +139,29 @@ export async function openIntegrityAttempt(user: SessionUser | undefined, chapte
   const attemptNumber = await currentAttemptNumber(enrollment.id, chapterId);
   const cameraEnabled = chapter.course.integritySnapshots && cameraPhotosAvailable();
 
-  const attempt = await prisma.integrityAttempt.upsert({
+  const now = new Date();
+  let attempt = await prisma.integrityAttempt.upsert({
     where: { enrollmentId_chapterId_attempt: { enrollmentId: enrollment.id, chapterId, attempt: attemptNumber } },
     create: { enrollmentId: enrollment.id, chapterId, attempt: attemptNumber },
-    update: { lastSeenAt: new Date() },
-    select: { id: true, attempt: true, cameraStatus: true, startedAt: true, questionsShownAt: true, lockedAt: true },
+    update: { lastSeenAt: now },
+    select: { id: true, attempt: true, cameraStatus: true, startedAt: true, questionsShownAt: true, lockedAt: true, cameraLiveAt: true },
   });
+  // A proctored attempt that was already started is being opened again: the page was reloaded, went back
+  // and forward, or a second tab opened it. That counts as leaving, and the learner goes back through the
+  // camera check before any question is sent again. The server notes it, so nothing depends on the browser.
+  if (proctored && attempt.questionsShownAt && !attempt.lockedAt) {
+    const settled = await prisma.$transaction(async (tx) => {
+      await tx.integrityEvent.create({
+        data: { attemptId: attempt.id, clientId: `server-${randomUUID().replaceAll("-", "")}`, type: "PAGE_RELOAD", at: now },
+      });
+      await tx.integrityAttempt.update({
+        where: { id: attempt.id },
+        data: { eventCount: { increment: 1 }, cameraStatus: "NOT_REQUESTED", cameraLiveAt: null },
+      });
+      return settleLeaves(tx, attempt.id, attempt.questionsShownAt, null, now);
+    });
+    attempt = { ...attempt, cameraStatus: "NOT_REQUESTED", cameraLiveAt: null, lockedAt: settled.lockedAt };
+  }
   const completed = proctored
     ? Boolean((await prisma.chapterProgress.findUnique({
         where: { enrollmentId_chapterId: { enrollmentId: enrollment.id, chapterId } },
@@ -147,7 +175,7 @@ export async function openIntegrityAttempt(user: SessionUser | undefined, chapte
     attempt: attempt.attempt,
     startedAt: attempt.startedAt.toISOString(),
     proctored,
-    questionsShown: !proctored || completed || (Boolean(attempt.questionsShownAt) && !attempt.lockedAt),
+    questionsShown: !proctored || completed || (Boolean(attempt.questionsShownAt) && !attempt.lockedAt && isFresh(attempt.cameraLiveAt)),
     leaves,
     locked: Boolean(attempt.lockedAt),
     flagCount: await countFlags(attempt.id),
@@ -161,6 +189,26 @@ export async function openIntegrityAttempt(user: SessionUser | undefined, chapte
       retentionDays: INTEGRITY_LIMITS.retentionDays,
     },
   };
+}
+
+/**
+ * The one rule for a proctored quiz: count the times the learner left since Start and lock the
+ * attempt at the limit. Runs inside the caller's transaction so a reload and an event batch cannot race.
+ */
+async function settleLeaves(
+  tx: Pick<typeof prisma, "integrityEvent" | "integrityAttempt">,
+  attemptId: string,
+  questionsShownAt: Date | null,
+  lockedAt: Date | null,
+  now: Date,
+): Promise<{ leaves: number; lockedAt: Date | null }> {
+  if (!questionsShownAt) return { leaves: 0, lockedAt };
+  const leaves = await countLeaves(attemptId, questionsShownAt, tx);
+  if (!lockedAt && leaves >= PROCTORED_RULE.limit) {
+    await tx.integrityAttempt.update({ where: { id: attemptId }, data: { lockedAt: now } });
+    return { leaves, lockedAt: now };
+  }
+  return { leaves, lockedAt };
 }
 
 async function requireOwnAttempt(user: SessionUser | undefined, attemptId: string) {
@@ -190,8 +238,24 @@ export async function beginIntegrityAttempt(user: SessionUser | undefined, attem
   if (attempt.chapter.proctored && attempt.cameraStatus !== "ON") {
     throw new ForbiddenError("Turn on your camera to start this quiz.", "CAMERA_REQUIRED");
   }
-  await prisma.integrityAttempt.updateMany({ where: { id: attempt.id, questionsShownAt: null }, data: { questionsShownAt: new Date() } });
+  const now = new Date();
+  await prisma.integrityAttempt.updateMany({ where: { id: attempt.id, questionsShownAt: null }, data: { questionsShownAt: now } });
+  // Start (or coming back through the gate after a reload) is itself proof of a live camera.
+  if (attempt.chapter.proctored) await prisma.integrityAttempt.update({ where: { id: attempt.id }, data: { cameraLiveAt: now } });
   return { questionsShown: true };
+}
+
+/**
+ * The browser says its camera is live right now. Questions of a proctored quiz are sent only for
+ * PROCTORED_RULE.cameraFreshSeconds after this, so a lapsed camera, a closed page or a reload hides them.
+ */
+export async function recordCameraHeartbeat(user: SessionUser | undefined, attemptId: string): Promise<{ liveForSeconds: number }> {
+  const attempt = await requireOwnAttempt(user, attemptId);
+  if (!attempt.chapter.proctored) return { liveForSeconds: 0 };
+  if (attempt.lockedAt || !attempt.questionsShownAt) throw new ForbiddenError("Start the quiz first.", "QUIZ_NOT_STARTED");
+  if (attempt.cameraStatus !== "ON") throw new ForbiddenError("Turn on your camera to continue.", "CAMERA_REQUIRED");
+  await prisma.integrityAttempt.update({ where: { id: attempt.id }, data: { cameraLiveAt: new Date() } });
+  return { liveForSeconds: PROCTORED_RULE.cameraFreshSeconds };
 }
 
 function clampTime(value: string, earliest: Date, now: Date): Date {
@@ -255,13 +319,7 @@ export async function recordIntegrityEvents(
     });
     // The one rule for a proctored quiz: the server counts the times the learner left the quiz
     // screen and locks the attempt at the limit. The browser only shows warnings.
-    if (proctored && attempt.questionsShownAt) {
-      leaves = await countLeaves(attemptId, attempt.questionsShownAt, tx);
-      if (!lockedAt && leaves >= PROCTORED_RULE.limit) {
-        lockedAt = now;
-        await tx.integrityAttempt.update({ where: { id: attemptId }, data: { lockedAt } });
-      }
-    }
+    if (proctored) ({ leaves, lockedAt } = await settleLeaves(tx, attemptId, attempt.questionsShownAt, lockedAt, now));
     return created.count;
   });
 
@@ -279,7 +337,7 @@ export async function setIntegrityCamera(
   if (!attempt.enrollment.course.integritySnapshots && !attempt.chapter.proctored) return { status: "NOT_REQUESTED" };
   const updated = await prisma.integrityAttempt.update({
     where: { id: attemptId },
-    data: { cameraStatus: status, lastSeenAt: new Date() },
+    data: { cameraStatus: status, lastSeenAt: new Date(), ...(status === "ON" ? {} : { cameraLiveAt: null }) },
     select: { cameraStatus: true },
   });
   return { status: updated.cameraStatus };

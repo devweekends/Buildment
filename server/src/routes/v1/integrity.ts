@@ -14,6 +14,12 @@ router.use(authenticate);
 
 router.post("/attempts/:attemptId/begin", validateParams(attemptParams), integrity.begin);
 router.post(
+  "/attempts/:attemptId/heartbeat",
+  validateParams(attemptParams),
+  userRateLimit({ scope: "integrity-heartbeat", max: 30, keyFrom: (req) => req.params.attemptId as string, message: "Too many camera checks." }),
+  integrity.heartbeat
+);
+router.post(
   "/attempts/:attemptId/events",
   validate({ params: attemptParams, body: integrityEventsBody }),
   userRateLimit({ scope: "integrity-events", max: 30, keyFrom: (req) => req.params.attemptId as string, message: "Too many integrity reports." }),

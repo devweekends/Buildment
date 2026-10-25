@@ -821,6 +821,7 @@ enum IntegrityEventType {
   CAMERA_LOST
   NO_FACE
   MULTIPLE_FACES
+  PAGE_RELOAD
 }
 
 enum IntegrityCameraStatus {
@@ -849,6 +850,8 @@ model IntegrityAttempt {
   questionsShownAt DateTime?
   /// Set once a proctored attempt reaches the leave limit. A locked attempt gets no more questions.
   lockedAt         DateTime?
+  /// Last time the browser proved a live camera. A proctored quiz's questions are sent only while this is fresh.
+  cameraLiveAt     DateTime?
   events        IntegrityEvent[]
   snapshots     IntegritySnapshot[]
 
