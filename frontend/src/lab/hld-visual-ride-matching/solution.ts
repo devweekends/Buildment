@@ -1,9 +1,9 @@
 import type { SolutionDef } from "../types";
 
-// The reference design recorded in spec.md: 11 of 11 checks at $2.31 an hour.
+// The reference design recorded in spec.md: 11 of 11 checks at $1.49 an hour.
 export const rideMatchingSolution: SolutionDef = {
   summary:
-    "Keep each driver's latest place in a small in-memory map split over two nodes, so a place report never touches the database. Let trips go to a database with a standby copy, and record trip events off the request path with a queue and three workers that save in groups.",
+    "Keep each driver's latest place in a small in-memory map split over two nodes, so a place report never touches the database. Let trips go to a database with a standby copy, and record the few trip events (about 1 request in 200) off the request path with a queue and one worker.",
   board: {
     nodes: [
       { id: "client", kind: "client", x: 1, y: 0 },
@@ -12,7 +12,7 @@ export const rideMatchingSolution: SolutionDef = {
       { id: "cache", kind: "cache", x: 0, y: 3, props: { size: "memory-small", count: 2, hitRate: 0.95, azs: 2 } },
       { id: "q", kind: "queue", x: 2, y: 3 },
       { id: "db", kind: "database", x: 1, y: 4, props: { size: "memory-small", replicas: 0, readRatio: 0.5, multiAz: 1 } },
-      { id: "w", kind: "worker", x: 2, y: 4, props: { size: "compute-small", count: 3, batchSize: 500 } },
+      { id: "w", kind: "worker", x: 2, y: 4, props: { size: "compute-small", count: 1, batchSize: 1 } },
     ],
     edges: [
       { from: "client", to: "lb" },
@@ -38,22 +38,22 @@ export const rideMatchingSolution: SolutionDef = {
     cache: {
       why: "The map holds each driver's latest place, split over two nodes. Reports and searches are answered from memory, so at a 95% hit rate only about 200 of the 4,000 requests a second (ride requests and trips) reach the database. If one node stops, the other keeps serving, and the lost drivers report again within 4 seconds.",
       checks: ["places", "capacity", "p99", "app-dies", "map-dies", "map-dies-p99"],
-      without: "With no map, the small database takes all 4,000 requests a second and is 167% busy: it serves 2,395 a second and p99 is 594 ms. With a map of one node, it is fine until that node stops. Then the database is 167% busy, only 59.8% are served and p99 is 594 ms. A larger database would pass, at $3.06 an hour.",
+      without: "With no map, the small database takes all 4,000 requests a second and is 168% busy: it serves 2,388 a second and p99 is 594 ms. With a map of one node, it is fine until that node stops. Then the database is 168% busy, only 59.7% are served and p99 is 594 ms. A larger database (memory-large with a standby) would pass, but at $2.24 an hour, over the $1.65 budget.",
     },
     q: {
-      why: "The queue holds each trip event until a worker saves it. The request never waits for the save, and no event is lost while the workers are away.",
-      checks: ["events", "worker-dies", "capacity", "p99"],
-      without: "With no queue, every request saves its event in the database first (inline): 4,000 extra writes a second on the main copy. The database is 342% busy, it can serve only about 1,171 a second and p99 is 594 ms. Even a database of the largest size, memory-xlarge, costs $3.46 an hour.",
+      why: "About 1 request in 200 leaves a trip event (a ride is requested, offered or accepted), which is 20 events a second. The queue holds each one until a worker saves it, so the request never waits for the save, and no event is lost while the worker is away. It costs about a cent an hour.",
+      checks: ["events", "worker-dies"],
+      without: "With no queue, trip events have nowhere to wait while the worker is down, and the events check fails because the path stops at the app server. The design costs $1.36 an hour and fails 2 of the 11 checks.",
     },
     w: {
-      why: "Three workers take events from the queue and save them in groups of 500 (batches), so the database sees about 8 saves a second instead of 4,000. Three workers leave 3,200 events a second to spare, which clears 30 seconds of waiting events (120,000) in 38 seconds.",
-      checks: ["events", "worker-dies", "capacity", "p99"],
-      without: "With two workers only 800 events a second are spare, so the 120,000 waiting events take 150 seconds, over the 60 second limit. One worker handles 2,400 a second while 4,000 arrive, so the queue never clears. A batch size of 1 sends 4,000 saves a second to the database, which is 175% busy, with a ceiling of 2,286 a second.",
+      why: "One worker takes the 20 events a second from the queue and saves them in the database. It handles 2,400 a second, so it is 1% busy. If it stops for 60 seconds, 1,200 events wait, and the worker clears them in about 1 second after it returns.",
+      checks: ["events", "worker-dies"],
+      without: "With a queue and no worker, nothing saves the events: they pile up and are never saved, and the events and worker checks both fail. A second worker passes too, but adds $0.12 an hour for no gain.",
     },
     db: {
-      why: "The database keeps trips. An extra copy in a second zone takes over if the main one's zone fails (a failover standby). It is only 9% busy, because the map and the batching keep almost everything away from it.",
+      why: "The database keeps trips. An extra copy in a second zone takes over if the main one's zone fails (a failover standby). It is only 9% busy, because the map and the small share of trip events keep almost everything away from it.",
       checks: ["trip", "availability", "events"],
-      without: "With no standby the database is the weak link and uptime (availability) falls to about 99.84%, under the 99.9% target. A medium database in place of the small one adds cost and no passing check: $2.61 an hour, over the $2.50 budget.",
+      without: "With no standby the database is the weak link and uptime (availability) falls to about 99.84%, under the 99.9% target. A medium database in place of the small one adds cost and no passing check: $1.79 an hour, over the $1.65 budget.",
     },
   },
 };
