@@ -32,10 +32,22 @@
 | 2026-10-25 | Capstone defence uses the existing `aiinterview` block (learner's OpenRouter key) with a written option that completes the same step; no new generic AI practice component | Build an AI practice block now | Sponsor instruction: the generic component comes later; places where it would help are logged under "Where a generic AI practice block would help". | Zeeshan (sponsor) |
 | 2026-10-25 | Branch `content/build-with-ai-advantage` (renamed from `content/ai-advantage` before any push) | Keep the old name | The branch now extends course 13. | Orchestrator |
 | 2026-10-25 | Renumber modules and files; add a stable `key` to every lesson in `course.yaml` | Append new modules after the capstone | The capstone must stay last; course 13 has never been released, so no learner history depends on the old paths; keys protect history from v2 on (`03-authoring-standards.md` → Stable lesson identity). | Orchestrator |
+| 2026-10-26 | Close each beats chapter with "### Quick check" inside the last beat (module 9: a recap diagram beat) instead of a bare "## Quick check" section | Change the audit script | audit-course.mjs counts any section after the last beat as a beat that must open with a visual; the system design chapters have no Next line. Candidate agent-ip lesson for a separate PR. | Orchestrator, from the writers |
+| 2026-10-26 | Narrow 10.3 to Medium's current wording (AI-made text and images need a label; grammar or outline help does not) | Keep the v1 sentence | Dossier v2 C71 re-checked Medium's policy. | Orchestrator, from the module 10 writer |
+| 2026-10-26 | Mentor keys stay in `modelAnswer` | Split keys out of the chapter files | Critic B (B-20) asked whether learners see them. The importer stores `modelAnswer` as `sampleAnswer`, which the block sanitizer strips from the client (`server/src/shared/blocks/open-question/schema.ts`); mentors see it in review. | Orchestrator |
+| 2026-10-26 | Critic A runs on the second family's faster model for round 1 | Wait for the larger model's quota | The larger second-family model hit its quota (resets in about five days); the faster model is the same family, so independence from the drafting family holds. | Orchestrator |
 
 ## Where a generic AI practice block would help (v2)
 
-Recorded for the later component (sponsor instruction). Filled in as chapters are written.
+Recorded for the later component (sponsor instruction), from the writers' reports:
+
+- 1.2 and gate 1.10: the learner pastes a claim they heard; the block applies the five "read the claim" questions, scores them and generates a fresh claim.
+- 5.4 and gate 5.6: generate a decision question from the learner's own stack, score the decision record, ask follow-ups on the "what changed" paragraph.
+- 6.6 and gate 6.8: generate a new default question from the learner's stack, score the "when each wins" table, ask "why not the other option?".
+- 8.2 to 8.5: a docs-first checklist and tiny lab for the learner's own tool with explain-back questions; play reviewer on a pull request note or a weekly update.
+- 9.3, 9.6 and 9.7: generate a short lesson on the learner's topic and check the claim they pick; critique the learner's README against a rubric; score token and scope choices.
+- 10.5 and 10.7: generate reader questions from the learner's draft and check each claim against their own commits.
+- 11.2 to 11.4 and 11.7: build cases from the learner's own job and weakest modules; generate "why not the other option?" follow-ups in the defence (the existing AI interview block covers the defence itself today).
 
 
 ## Risks
