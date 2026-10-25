@@ -76,7 +76,7 @@ function isPlayable(slug) {
   return !/kind:\s*"scene"/.test(fs.readFileSync(data, "utf8"));
 }
 
-const VISUAL_TAG = /^<(InteractiveCanvas|MermaidDiagram|StateMachine|TraceRequest|EntityDiagram|ArchitectureDiagram|VisualDiagram)\b/;
+const VISUAL_TAG = /^<(InteractiveCanvas|Lab|MermaidDiagram|StateMachine|TraceRequest|EntityDiagram|ArchitectureDiagram|VisualDiagram)\b/;
 const words = (text) => text.split(/\s+/).filter(Boolean).length;
 
 /**
