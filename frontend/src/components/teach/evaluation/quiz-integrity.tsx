@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Camera, CameraOff, ChevronDown, ImageOff, RefreshCw, ShieldAlert, ShieldCheck } from "lucide-react";
+import { Camera, CameraOff, ChevronDown, ImageOff, Lock, RefreshCw, ShieldAlert, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { apiFetch } from "@/lib/api-client";
@@ -165,6 +165,12 @@ function AttemptRow({ attempt, showChapter }: { attempt: IntegrityAttemptSummary
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-1.5">
+          {attempt.locked ? (
+            <Badge variant="destructive" className="gap-1" title="The learner left the quiz screen too many times. Their answers so far were submitted.">
+              <Lock aria-hidden />
+              Locked
+            </Badge>
+          ) : null}
           <Badge variant={attempt.flagCount ? "secondary" : "outline"} className="gap-1">
             {attempt.flagCount ? <ShieldAlert aria-hidden /> : <ShieldCheck aria-hidden />}
             {attempt.flagCount} {attempt.flagCount === 1 ? "flag" : "flags"}

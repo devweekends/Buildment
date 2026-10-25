@@ -130,6 +130,13 @@ export function ChapterReaderShell({
 
   const [showSkeleton, setShowSkeleton] = useState(!skipSkeleton);
   const [focusMode, setFocusMode] = useState(false);
+  /** A proctored quiz is under way: no leaving it by shortcut, by the focus dock or by Esc. */
+  const [quizLocked, setQuizLocked] = useState(false);
+  useEffect(() => {
+    const onLock = (event: Event) => setQuizLocked(Boolean((event as CustomEvent<boolean>).detail));
+    window.addEventListener("buildment:quiz-lock", onLock);
+    return () => window.removeEventListener("buildment:quiz-lock", onLock);
+  }, []);
   const study = useStudySession(chapterId);
   const layoutBeforeFocus = useRef({ left: true, right: true });
   const quizAutoFocusSlug = useRef<string | null>(null);
@@ -169,10 +176,11 @@ export function ChapterReaderShell({
   useEffect(() => {
     if (!focusMode) return;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") void exitFocusMode();
+      if (event.key === "Escape" && !quizLocked) void exitFocusMode();
     };
     const onFullscreenChange = () => {
-      if (!document.fullscreenElement && focusMode) {
+      // Under a proctored quiz the page stays in focus layout; the quiz covers it until full screen is back.
+      if (!document.fullscreenElement && focusMode && !quizLocked) {
         setFocusMode(false);
         setLeftCollapsed(layoutBeforeFocus.current.left);
         setRightCollapsed(layoutBeforeFocus.current.right);
@@ -184,7 +192,7 @@ export function ChapterReaderShell({
       window.removeEventListener("keydown", onKeyDown);
       document.removeEventListener("fullscreenchange", onFullscreenChange);
     };
-  }, [focusMode, exitFocusMode, setLeftCollapsed, setRightCollapsed]);
+  }, [focusMode, quizLocked, exitFocusMode, setLeftCollapsed, setRightCollapsed]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo(0, 0);
@@ -196,7 +204,7 @@ export function ChapterReaderShell({
   const nextHref = next && !nextLocked ? `/courses/${courseSlug}/${next.slug}` : null;
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
+      if (quizLocked || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
       const target = event.target as HTMLElement | null;
       if (target?.closest("input, textarea, select, [contenteditable=''], [contenteditable='true'], dialog[open]")) {
         return;
@@ -206,7 +214,7 @@ export function ChapterReaderShell({
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [router, prevHref, nextHref]);
+  }, [router, prevHref, nextHref, quizLocked]);
 
   useEffect(() => {
     if (readerMode !== "QUIZ") return;
@@ -483,7 +491,7 @@ export function ChapterReaderShell({
           </div>
         </div>
 
-        {focusMode && <ReaderFocusDock onExitFocus={() => void exitFocusMode()} />}
+        {focusMode && !quizLocked && <ReaderFocusDock onExitFocus={() => void exitFocusMode()} />}
       </ReaderShellFade>
     </div>
   );

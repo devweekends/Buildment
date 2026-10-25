@@ -69,7 +69,7 @@ export function QuizChapterSessionClient({
 }) {
   const router = useRouter();
   const steps = React.Children.toArray(children).filter(Boolean);
-  const total = locked ? stepIds.length : steps.length;
+  const total = steps.length;
   const [index, setIndex] = useState(() =>
     isPerfectScore(initialScoreSummary)
       ? Math.max(0, total - 1)
@@ -133,8 +133,8 @@ export function QuizChapterSessionClient({
 
   // Start was pressed and the server agreed: fetch the page again, now with the questions.
   useEffect(() => {
-    if (locked && integrity.questionsShown) router.refresh();
-  }, [locked, integrity.questionsShown, router]);
+    if (locked && integrity.questionsShown && !integrity.limitReached) router.refresh();
+  }, [locked, integrity.questionsShown, integrity.limitReached, router]);
 
   useEffect(() => {
     if (isPerfectScore(initialScoreSummary) && individualActivityCount === 0) {
@@ -165,7 +165,7 @@ export function QuizChapterSessionClient({
     };
   }, []);
 
-  const submitQuiz = async () => {
+  const submitQuiz = async (forced = false) => {
     if (submitting || perfectScore || quizBlockIds.length === 0) return;
     setSubmitting(true);
     setSubmitError(null);
@@ -191,6 +191,7 @@ export function QuizChapterSessionClient({
     });
     const unanswered = answers.filter((answer) => answer.selected.length === 0).length;
     if (
+      !forced &&
       unanswered > 0 &&
       !integrity.withoutFlags(() =>
         window.confirm(
@@ -201,7 +202,7 @@ export function QuizChapterSessionClient({
       setSubmitting(false);
       return;
     }
-    integrity.checkPace(reviewMode ? quizBlockIds.filter((blockId) => dirtyBlockIds.has(blockId)) : quizBlockIds);
+    if (!forced) integrity.checkPace(reviewMode ? quizBlockIds.filter((blockId) => dirtyBlockIds.has(blockId)) : quizBlockIds);
 
     try {
       const body = await apiFetch<QuizSubmitResponse>(`/api/v1/chapters/${encodeURIComponent(chapterId)}/quiz/submit`, {
@@ -274,6 +275,19 @@ export function QuizChapterSessionClient({
     }
   };
 
+  // A proctored quiz: the learner left the quiz screen too often, so their answers so far are handed in, once.
+  const limitSubmitted = useRef(false);
+  useEffect(() => {
+    if (!integrity.limitReached) {
+      limitSubmitted.current = false;
+      return;
+    }
+    if (limitSubmitted.current) return;
+    limitSubmitted.current = true;
+    void submitQuiz(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [integrity.limitReached]);
+
   const moveToNextChapter = async () => {
     if (!nextHref || movingNext) return;
     if (chapterComplete || (!nextLocked && (!perfectScore || !canMarkComplete))) {
@@ -311,31 +325,45 @@ export function QuizChapterSessionClient({
     [chapterTitle, total, reviewMode, dirtyBlockIds, blockGrades]
   );
 
-  if (total === 0) return null;
-
-  if (locked) {
-    const opening = integrity.session !== null && integrity.dialog === null;
+  // A locked quiz renders no questions yet, so its length comes from the step ids.
+  if (locked && stepIds.length > 0) {
+    const opening = integrity.starting;
+    const limit = integrity.limitReached;
     return (
       <section ref={sectionRef} id="quiz-chapter-session" className="not-prose mb-10 scroll-mt-24" aria-label="Quiz session">
         <header className="mb-8 border-b border-border pb-6">
           <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Quiz: {chapterTitle}</h1>
           <p className="mt-3 text-sm font-medium text-muted-foreground">
-            {total} {total === 1 ? "question" : "questions"}
+            {stepIds.length} {stepIds.length === 1 ? "question" : "questions"}
           </p>
           <QuizIntegrityPanel integrity={integrity} />
         </header>
         <div className="rounded-xl border border-border bg-card px-5 py-6 text-card-foreground">
-          <h2 className="text-lg font-semibold text-foreground">The questions appear when you start</h2>
+          <h2 className="text-lg font-semibold text-foreground">{limit ? "Your answers are being submitted" : "The questions appear when you start"}</h2>
           <p className="mt-2 max-w-prose text-sm leading-6 text-muted-foreground">
-            This quiz is proctored, so your mentor sees the whole attempt. Read the notes first, then press Start. Find a quiet moment: once you start, try to finish in one go.
+            {limit
+              ? "You left the quiz screen too many times. Your answers so far are being submitted. Questions you did not answer count as wrong."
+              : "This quiz is proctored: it runs in full screen and you cannot leave it until you finish. Read the rules, then press Start. Find a quiet moment first."}
           </p>
-          <Button className="mt-5" onClick={integrity.openIntro} disabled={integrity.session === null || opening}>
-            {integrity.session === null ? "Getting your quiz ready…" : opening ? "Opening your questions…" : "Start quiz"}
-          </Button>
+          {!limit && scoreSummary ? (
+            <p className="mt-2 text-sm text-foreground">Last attempt: {scoreSummary.score} of {scoreSummary.maxScore}. A new attempt starts with the questions you missed.</p>
+          ) : null}
+          {limit && submitError ? (
+            <p role="alert" className="mt-3 text-sm text-destructive">{submitError}</p>
+          ) : null}
+          {limit ? (
+            submitError ? <Button className="mt-5" onClick={() => void submitQuiz(true)} disabled={submitting}>Try again</Button> : null
+          ) : (
+            <Button className="mt-5" onClick={integrity.openIntro} disabled={integrity.session === null || opening}>
+              {integrity.session === null ? "Getting your quiz ready…" : opening ? "Opening your questions…" : "Start quiz"}
+            </Button>
+          )}
         </div>
       </section>
     );
   }
+
+  if (total === 0) return null;
 
   return (
     <QuizSessionContext.Provider value={sessionValue}>

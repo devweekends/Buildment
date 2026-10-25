@@ -29,6 +29,7 @@ export default async function ChapterEditorPage({
       chapterSummary={chapter.summary}
       estimatedMinutes={chapter.estimatedMinutes}
       readerMode={chapter.readerMode}
+      proctored={chapter.proctored}
       isMilestone={chapter.isMilestone}
       initialPublishedAt={chapter.publishedAt}
       initialHasUnpublishedChanges={chapter.hasUnpublishedChanges}

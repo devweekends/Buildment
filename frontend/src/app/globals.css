@@ -627,3 +627,20 @@
     width: 100%;
   }
 }
+
+/* Proctored quiz under way (set by the integrity hook): no printing, no text selection,
+   except where the learner types their own answer. */
+html[data-quiz-lock] body {
+  -webkit-user-select: none;
+  user-select: none;
+}
+html[data-quiz-lock] textarea,
+html[data-quiz-lock] input {
+  -webkit-user-select: text;
+  user-select: text;
+}
+@media print {
+  html[data-quiz-lock] body * {
+    display: none !important;
+  }
+}

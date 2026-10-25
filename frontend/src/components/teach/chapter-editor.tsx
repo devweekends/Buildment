@@ -14,6 +14,7 @@ import {
   Flag,
   LoaderCircle,
   Settings2,
+  ShieldCheck,
 } from "lucide-react";
 import { safelyRunChapterAction } from "./editor/chapter-action-result";
 import { Badge } from "@/components/ui/badge";
@@ -53,6 +54,7 @@ export function ChapterEditor({
   chapterSummary,
   estimatedMinutes,
   readerMode,
+  proctored = false,
   isMilestone,
   initialPublishedAt,
   initialHasUnpublishedChanges,
@@ -67,6 +69,7 @@ export function ChapterEditor({
   chapterSummary: string | null;
   estimatedMinutes: number | null;
   readerMode: "DEFAULT" | "QUIZ";
+  proctored?: boolean;
   isMilestone: boolean;
   initialPublishedAt: string | null;
   initialHasUnpublishedChanges: boolean;
@@ -88,6 +91,7 @@ export function ChapterEditor({
     summary: chapterSummary ?? "",
     estimatedMinutes: estimatedMinutes?.toString() ?? "",
     readerMode,
+    proctored,
     isMilestone,
   });
   const [settingsState, setSettingsState] = useState<SaveState>({ kind: "idle" });
@@ -173,6 +177,7 @@ export function ChapterEditor({
       summary: settings.summary.trim() || null,
       estimatedMinutes: minutes ? Number(minutes) : null,
       readerMode: settings.readerMode,
+      proctored: settings.readerMode === "QUIZ" && settings.proctored,
       isMilestone: settings.isMilestone,
     }));
     if (result.ok) {
@@ -325,6 +330,24 @@ export function ChapterEditor({
                 <option value="QUIZ">Quiz flow (enables quiz blocks)</option>
               </select>
             </div>
+            {settings.readerMode === "QUIZ" ? (
+              <div className="flex items-start gap-3 rounded-lg border bg-muted/30 p-3 md:col-span-2">
+                <Checkbox
+                  id="proctored"
+                  checked={settings.proctored}
+                  onCheckedChange={(checked) => {
+                    setSettings((current) => ({ ...current, proctored: checked === true }));
+                    setSettingsState({ kind: "dirty" });
+                  }}
+                />
+                <div className="space-y-1">
+                  <Label htmlFor="proctored"><ShieldCheck className="size-3.5" /> Proctored quiz (strict)</Label>
+                  <p className="text-xs leading-5 text-muted-foreground">
+                    The questions appear only after the learner presses Start, the quiz runs in full screen, and leaving it twice gives warnings. The third time, the answers so far are submitted. A normal quiz is not affected.
+                  </p>
+                </div>
+              </div>
+            ) : null}
             <div className="flex items-start gap-3 rounded-lg border bg-muted/30 p-3 md:col-span-2">
               <Checkbox
                 id="is-milestone"

@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { Camera, CameraOff, Maximize, ShieldCheck, X } from "lucide-react";
+import { Camera, CameraOff, Lock, Maximize, ShieldCheck, TriangleAlert, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { QuizIntegrity } from "@/lib/integrity/use-quiz-integrity";
-import { INTEGRITY_LIMITS } from "@/shared/api/integrity";
+import { INTEGRITY_LIMITS, PROCTORED_RULE } from "@/shared/api/integrity";
 import { cn } from "@/lib/utils";
 
 // What the learner sees of quiz integrity: a "Proctored" badge with a count, short
@@ -17,6 +17,14 @@ const NOTED = [
   "Copy, paste, or right-click attempts (blocked), and screenshot keys (noticed when the browser reports them)",
   "Your pointer leaving the page, or a second screen when the browser reports it",
   "Answers submitted unusually quickly",
+];
+
+// The strict kind. What the learner is told before Start, in short plain English.
+const STRICT_RULES = [
+  "The quiz opens in full screen and has to stay there.",
+  "You cannot switch tabs or windows, copy, paste, print, right-click, reload or go back.",
+  `If you leave the quiz screen, you get a warning. You have ${PROCTORED_RULE.warnings} warnings. The next time you leave, your answers are submitted as they are, and questions you did not answer count as wrong.`,
+  "Your mentor can see every note.",
 ];
 
 const CAMERA_HELP: Record<string, string> = {
@@ -41,7 +49,10 @@ function IntegrityDialog({ integrity }: { integrity: QuizIntegrity }) {
   }, [open]);
 
   // Closing the intro (X or Esc) starts the quiz without the camera: never a dead end.
+  const strict = integrity.proctored;
+  // On a proctored quiz the intro only closes with Start: the rules have to be read first.
   const close = () => {
+    if (intro && strict) return;
     if (intro) integrity.begin(false);
     else integrity.closeInfo();
   };
@@ -66,14 +77,17 @@ function IntegrityDialog({ integrity }: { integrity: QuizIntegrity }) {
                 <p className="text-xs font-semibold uppercase tracking-wider">Proctored quiz</p>
               </div>
               <h2 id="quiz-integrity-title" className="mt-2 text-xl font-semibold tracking-tight sm:text-2xl">
-                Your mentor can review this quiz
+                {strict ? "Stay on this screen until you finish" : "Your mentor can review this quiz"}
               </h2>
               <p id="quiz-integrity-description" className="mt-1 text-sm leading-6 text-muted-foreground">
-                These notes do not change your score or stop your quiz. Your mentor reads them and decides.
+                {strict
+                  ? "The questions appear when you press Start. Find a quiet moment and a good connection first."
+                  : "These notes do not change your score or stop your quiz. Your mentor reads them and decides."}
               </p>
             </div>
             <button
               type="button"
+              hidden={intro && strict}
               onClick={close}
               aria-label={intro && camera.enabled ? "Start without camera" : intro ? "Start quiz" : "Close"}
               className="shrink-0 rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
@@ -84,11 +98,20 @@ function IntegrityDialog({ integrity }: { integrity: QuizIntegrity }) {
 
           <div className="min-h-0 space-y-4 overflow-y-auto px-5 py-4 sm:px-6">
             <section aria-labelledby="quiz-signals-title" className="rounded-xl border bg-muted/20 p-4">
-              <h3 id="quiz-signals-title" className="text-sm font-semibold">What your mentor can see</h3>
-              <ul className="mt-2 grid gap-1.5 pl-5 text-sm leading-5 text-foreground/85 marker:text-muted-foreground sm:grid-cols-2 sm:gap-x-7">
-                {NOTED.map((item) => <li key={item} className="list-disc">{item}</li>)}
-              </ul>
-              {integrity.fullscreenSupported ? (
+              <h3 id="quiz-signals-title" className="text-sm font-semibold">{strict ? "The rules" : "What your mentor can see"}</h3>
+              {strict ? (
+                <ul className="mt-2 grid gap-1.5 pl-5 text-sm leading-5 text-foreground/85 marker:text-muted-foreground">
+                  {STRICT_RULES.map((item) => <li key={item} className="list-disc">{item}</li>)}
+                </ul>
+              ) : (
+                <ul className="mt-2 grid gap-1.5 pl-5 text-sm leading-5 text-foreground/85 marker:text-muted-foreground sm:grid-cols-2 sm:gap-x-7">
+                  {NOTED.map((item) => <li key={item} className="list-disc">{item}</li>)}
+                </ul>
+              )}
+              {strict && !integrity.fullscreenSupported ? (
+                <p className="mt-3 text-xs leading-5 text-muted-foreground">This browser cannot use full screen. Leaving the page still counts as leaving the quiz.</p>
+              ) : null}
+              {!strict && integrity.fullscreenSupported ? (
                 <p className="mt-3 text-xs leading-5 text-muted-foreground">The quiz opens in full screen. You can leave it with Esc; that is noted, never blocked.</p>
               ) : null}
             </section>
@@ -172,6 +195,67 @@ function CameraPreview({ attach, visible }: { attach: (element: HTMLVideoElement
   );
 }
 
+/**
+ * A proctored quiz covers the page, so nothing can be read or answered while the
+ * learner is outside the quiz screen: a warning after leaving, a "go back to full
+ * screen" cover, and the cover shown while the answers are handed in.
+ */
+function ProctorGuard({ integrity }: { integrity: QuizIntegrity }) {
+  const action = useRef<HTMLButtonElement>(null);
+  const warning = integrity.leaveWarning;
+  const variant = integrity.limitReached ? "limit" : warning ? "warning" : integrity.needsFullscreen && integrity.dialog === null ? "fullscreen" : null;
+  useEffect(() => {
+    if (variant === "warning" || variant === "fullscreen") action.current?.focus();
+  }, [variant]);
+  if (!variant) return null;
+  return (
+    <div
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="proctor-guard-title"
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-background p-4"
+    >
+      <div className="w-full max-w-md rounded-2xl border bg-card p-6 text-card-foreground shadow-2xl">
+        <div className="flex items-center gap-2 text-primary">
+          {variant === "limit" ? <Lock className="size-4" aria-hidden /> : variant === "warning" ? <TriangleAlert className="size-4" aria-hidden /> : <Maximize className="size-4" aria-hidden />}
+          <p className="text-xs font-semibold uppercase tracking-wider">Proctored quiz</p>
+        </div>
+        {variant === "limit" ? (
+          <>
+            <h2 id="proctor-guard-title" className="mt-2 text-xl font-semibold tracking-tight">You left the quiz screen too many times</h2>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">Your answers so far are being submitted. Questions you did not answer count as wrong. Please wait.</p>
+          </>
+        ) : variant === "warning" && warning ? (
+          <>
+            <h2 id="proctor-guard-title" className="mt-2 text-xl font-semibold tracking-tight">
+              You left the quiz screen. Warning {warning.leaves} of {PROCTORED_RULE.warnings}
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              {warning.warningsLeft === 1
+                ? "If you leave once more, your answers are submitted as they are."
+                : `You can leave ${warning.warningsLeft - 1} more time before your answers are submitted as they are.`}{" "}
+              Your mentor can see this.
+            </p>
+            <Button ref={action} type="button" className="mt-5 w-full gap-1.5" onClick={integrity.acknowledgeLeave}>
+              <Maximize className="size-4" aria-hidden />
+              Back to the quiz
+            </Button>
+          </>
+        ) : (
+          <>
+            <h2 id="proctor-guard-title" className="mt-2 text-xl font-semibold tracking-tight">Full screen is needed to continue</h2>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">The questions are hidden until you are back in full screen.</p>
+            <Button ref={action} type="button" className="mt-5 w-full gap-1.5" onClick={integrity.returnToFullscreen}>
+              <Maximize className="size-4" aria-hidden />
+              Go full screen
+            </Button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function QuizIntegrityPanel({ integrity }: { integrity: QuizIntegrity }) {
   const { camera, notice } = integrity;
   const cameraOn = camera.status === "ON";
@@ -192,6 +276,12 @@ export function QuizIntegrityPanel({ integrity }: { integrity: QuizIntegrity }) 
               Proctored
               <span className="rounded-full bg-primary/15 px-1.5 font-mono tabular-nums">{integrity.flagCount}</span>
             </button>
+            {integrity.proctored && integrity.armed ? (
+              <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                <TriangleAlert className="size-3.5" aria-hidden />
+                Warnings used: {Math.min(integrity.leaves, PROCTORED_RULE.warnings)} of {PROCTORED_RULE.warnings}
+              </span>
+            ) : null}
             {camera.enabled ? (
               <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
                 {cameraOn ? <Camera className="size-3.5" aria-hidden /> : <CameraOff className="size-3.5" aria-hidden />}
@@ -231,6 +321,7 @@ export function QuizIntegrityPanel({ integrity }: { integrity: QuizIntegrity }) 
         </div>
       ) : null}
       <IntegrityDialog integrity={integrity} />
+      <ProctorGuard integrity={integrity} />
     </>
   );
 }
