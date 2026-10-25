@@ -5,7 +5,7 @@ title: "System Design, Hands On: Build It, Break It, Explain It"
 description: "Learn how real systems scale, stay correct and survive failure by playing with live simulations of each idea: push traffic up, kill the leader, cut the network, skew a clock. Write the core algorithms yourself in graded code exercises, build and break small systems in your own system-design-challenges repository, and pass architecture labs where you pick blocks and instance sizes to meet cost, latency and availability targets."
 projectGoal: "Design, build, measure and defend one system against stated cost, p99 latency and availability targets: a design document with estimates, a lab design that passes its targets, the core running in your repository with tests, one failure experiment with a chart, and a recorded defence."
 difficulty: Advanced
-estimatedHours: 191
+estimatedHours: 193
 category: tech
 # Modules are added here as they are written, in the order of
 # agent-ip/work/system-design/02-curriculum-roadmap.md.
@@ -920,3 +920,22 @@ modules:
       - file: 29.06-checklist.md
         title: "Checklist and learning log"
         goal: "Confirm the capstone is complete and compare your Daftar sketch from module 1 with how you would design it now."
+  - dir: 30-visual-lab-design-a-url-shortener
+    title: "Visual lab: design a URL shortener"
+    summary: "Build a short-link service on the lab board from a load balancer, app servers, a cache, a database, a queue and a worker, then press Run: the board plays your design through peak traffic and three failures and lists every functional and non-functional check as pass or fail with the number it measured."
+    lessons:
+      - file: 30.01-set-the-scene-launch-week-and-the-checks.md
+        title: "Set the scene: launch week and the checks"
+        goal: "Split what a short-link service must do from how well it must do it, and see the eleven checks the board runs."
+      - file: 30.02-visual-lab-design-a-url-shortener.md
+        title: "Visual lab: design a URL shortener"
+        goal: "Build the design on the board and fix it until all eleven checks pass inside the hourly budget."
+      - file: 30.03-read-your-run-what-each-failure-teaches.md
+        title: "Read your run: what each failure teaches"
+        goal: "Read the four scenes as lessons, with the numbers a real Docker stack measured, and name the failure the board cannot show."
+      - file: 30.04-quiz.md
+        title: "Visual lab: URL shortener"
+        goal: "Answer graded scenarios on a dead cache, a backlog, a shared Redis and inline counting."
+      - file: 30.05-checklist.md
+        title: "Checklist and learning log"
+        goal: "Defend one trade-off in your design and the failure it was built to survive."
