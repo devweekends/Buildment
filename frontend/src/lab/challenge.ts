@@ -60,7 +60,8 @@ export interface ChallengeReport {
 }
 
 const labelOf = (kind: ComponentKind) => COMPONENT_CATALOG[kind].label;
-const lower = (text: string) => text.charAt(0).toLowerCase() + text.slice(1);
+// Lowercases the first letter of a label for use mid-sentence, but leaves acronyms such as CDN alone.
+const lower = (text: string) => (/^[A-Z]{2}/.test(text) ? text : text.charAt(0).toLowerCase() + text.slice(1));
 const pct = (n: number) => `${(Math.floor(n * 10000) / 100).toFixed(2)}%`;
 const roleLabel = (role: Role) => Object.values(COMPONENT_CATALOG).find((c) => c.role === role)?.label ?? role;
 const perSec = (n: number) => `${Math.round(n).toLocaleString("en-US")}/s`;
