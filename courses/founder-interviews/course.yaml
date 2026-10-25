@@ -1,9 +1,9 @@
 slug: founder-interviews
 title: "The Founder Interview: Ownership, Impact and Your Story"
-description: "Prepare for the interview a startup founder or a small team's hiring manager runs, where every line on your resume is followed by 'why?' until your real decisions show. Learn to tell one real story you owned, give honest numbers and say how you know them, answer a chain of whys on every resume line, think through a case question aloud, explain your best technical work to a founder and to an engineer, and name your strengths and weaknesses with evidence. Practise with an AI interviewer on your own key, or with a written exercise that completes the same step. Based on research on interviews, with the main ideas credited to the researchers behind them."
+description: "Prepare for the interview a startup founder or a small team's hiring manager runs, where every line on your resume is followed by 'why?' until your real decisions show. Learn to tell one real story you owned, give honest numbers and say how you know them, answer a chain of whys on every resume line, think through a case question aloud, explain your best technical work to a founder and to an engineer, defend your technical choices to a technical founder and share a demo they can open, and name your strengths and weaknesses with evidence. Practise with an AI interviewer on your own key, or with a written exercise that completes the same step. Based on research on interviews, with the main ideas credited to the researchers behind them."
 projectGoal: "Build a story bank of five stories you owned, each with an honest number or an honest 'I did not measure that', and a resume where every line has an answer two whys deep, and one line you can defend through four whys. Then run one full practice interview in two parts (with the AI interviewer, or the written version), tag your own answers and read the feedback critically, and defend one of your own stories and one of your own resume lines to your mentor in a five-minute conversation."
 difficulty: Medium
-estimatedHours: 20
+estimatedHours: 21
 category: soft-skills
 modules:
   - dir: 01-stories-you-owned
@@ -95,8 +95,8 @@ modules:
         title: "Checklist and learning log"
         goal: "Gate: work through a case question aloud, with the AI interviewer or in writing."
   - dir: 05-your-best-technical-work
-    title: "The best technical thing you did"
-    summary: "Every founder interview has a moment for 'What is the best technical thing you have done?'. Learn to choose the story, give a short version a founder can follow, and go deeper when an engineer asks 'why not this?' and 'what happens if...?'."
+    title: "Technical depth and the technical founder"
+    summary: "Every founder interview has a moment for 'What is the best technical thing you have done?', and a technical founder will go further. Learn to choose the story, give a short version a founder can follow, go deeper when an engineer asks 'why not this?' and 'what happens if...?', defend each choice against the alternatives, check your own work area by area, and share a demo a busy founder can open."
     lessons:
       - file: 05.01-set-the-scene.md
         title: "Set the scene"
@@ -110,12 +110,21 @@ modules:
       - file: 05.04-the-engineer-version.md
         title: "The engineer version"
         goal: "Answer an engineer's follow-ups: why this and not that, what happens if it fails, how you tested it and what you would do differently."
-      - file: 05.05-quiz.md
-        title: "The best technical thing you did"
-        goal: "Practice check on choosing and explaining a technical story, including an AI answer to check."
-      - file: 05.06-checklist.md
+      - file: 05.05-why-this-and-not-that.md
+        title: "Why this and not that"
+        goal: "Answer a technical founder's 'why not that?': the need the choice served, what you rejected and why, how hard it is to undo, and when you would revisit it."
+      - file: 05.06-check-your-work-area-by-area.md
+        title: "Check your work area by area"
+        goal: "Check your own project for correctness, performance, scale, security, reliability, data, monitoring, releases and cost, and say honestly what you did, what you did not do and what you would check first."
+      - file: 05.07-a-demo-they-can-open.md
+        title: "A demo they can open"
+        goal: "Give a busy founder a deployed demo with guest access and a two-minute recording of the core flow, instead of a link to code they must run."
+      - file: 05.08-quiz.md
+        title: "Technical depth and the technical founder"
+        goal: "Practice check on choosing and explaining a technical story, defending choices and showing your work, including an AI answer to check."
+      - file: 05.09-checklist.md
         title: "Checklist and learning log"
-        goal: "Gate: write the founder version and the engineer version of your best technical work."
+        goal: "Gate: write the founder version and the engineer version of your best technical work, with one choice defended against its alternative and one honest area check."
   - dir: 06-strengths-weaknesses-and-how-you-come-across
     title: "Strengths, weaknesses and how you come across"
     summary: "Name strengths that you can prove, a real weakness with a plan, and handle what is out of your control: nerves, video calls, and interviewers who judge accents. Take time to think and check you understood."
