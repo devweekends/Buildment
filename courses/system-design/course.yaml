@@ -388,7 +388,7 @@ modules:
       - file: 11.10-quiz.md
         title: "Consistency models"
         goal: "Answer graded scenarios on histories, unique names, session tokens, the choice in a network cut and the price of waiting."
-      - file: 11.11-checklist-and-learning-log.md
+      - file: 11.11-checklist.md
         title: "Checklist and learning log"
         goal: "Write a consistency choice for the likes, posts, balance and username of a social app, and link your challenge 10 results."
   - dir: 12-consensus-leader-election-and-coordination
@@ -667,7 +667,7 @@ modules:
       - file: 19.08-quiz.md
         title: "Multi-region and disaster recovery"
         goal: "Answer graded scenarios on meeting an RPO and RTO together, recovering from a bad write, DNS failover time, shared failure domains behind cells, and keeping data in its region."
-      - file: 19.09-checklist-and-learning-log.md
+      - file: 19.09-checklist.md
         title: "Checklist and learning log"
         goal: "Write a disaster recovery plan for a courier app: RPO and RTO, the steps that add up to the RTO, how a bad write is undone, who presses the button, and where every copy lives."
   - dir: 20-url-shortener-and-paste-service
@@ -899,7 +899,7 @@ modules:
     title: "Capstone: design it, build it, break it, defend it"
     summary: "Pick one of three fictional systems, design it against cost, p99 latency and availability targets, build its core in your repository on a seeded simulated network with tests in CI, break it once on purpose with a prediction and a chart, and defend it in a five-minute recording and three probes."
     lessons:
-      - file: 29.01-choose-your-system-and-read-the-rubric.md
+      - file: 29.01-set-the-scene-choose-your-system-and-read-the-rubric.md
         title: "Choose your system and read the rubric"
         goal: "Pick one of three systems, each built on a case study, and read the five deliverables, the design document template, the rubric and the defence format."
       - file: 29.03-build-the-core.md
@@ -911,6 +911,6 @@ modules:
       - file: 29.05-record-your-defence.md
         title: "Record your defence"
         goal: "Check every claim against a fresh measurement, write a five-part script, prepare three probe answers and record the defence."
-      - file: 29.06-checklist-and-learning-log.md
+      - file: 29.06-checklist.md
         title: "Checklist and learning log"
         goal: "Confirm the capstone is complete and compare your Daftar sketch from module 1 with how you would design it now."
