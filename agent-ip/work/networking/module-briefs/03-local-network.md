@@ -4,7 +4,7 @@ course: networking
 module: 03-local-network
 version: 1
 owner: curriculum-architect
-roadmap_version: 3
+roadmap_version: 3.1
 roadmap_confirmed: true
 ---
 
@@ -52,14 +52,14 @@ Core 385 minutes. Slow path 486 minutes (3.9 slow path 75).
 
 ### 3.2 Network part and host part (Learn, 40 min)
 - Hook: your laptop sends to `192.168.1.40` directly but to `192.168.2.40` through the router. How does it decide? Claim: a host ANDs its mask with the destination and compares with its own network [S7]; the network address is address AND mask; the broadcast address is the network with all host bits set to 1 (derived arithmetic, no source needed).
-- Worked example: `192.168.1.23/24`: network `192.168.1.0`, broadcast `192.168.1.255`, 256 addresses, hosts `192.168.1.1` to `192.168.1.254`; `192.168.1.40` is local, `192.168.2.40` is not. Campus `10.20.143.7/20`: 143 is `10001111`, mask part `11110000`, AND gives 128, so network `10.20.128.0`; host bits set gives `10.20.143.255`; 4,096 addresses; hosts `10.20.128.1` to `10.20.143.254` (checked by script). Edges: `/32` is one address (network and broadcast are the address); `/31` has two (this course's convention, RFC 3021 is not in the dossier: see Roadmap issues 1); `/0` is everything. Teach contiguous masks only [S7].
+- Worked example: `192.168.1.23/24`: network `192.168.1.0`, broadcast `192.168.1.255`, 256 addresses, hosts `192.168.1.1` to `192.168.1.254`; `192.168.1.40` is local, `192.168.2.40` is not. Campus `10.20.143.7/20`: 143 is `10001111`, mask part `11110000`, AND gives 128, so network `10.20.128.0`; host bits set gives `10.20.143.255`; 4,096 addresses; hosts `10.20.128.1` to `10.20.143.254` (checked by script). Edges: `/32` is one address (network and broadcast are the address); `/31` has two addresses on a point-to-point link and no directed broadcast [S70]; `/0` is everything. Teach contiguous masks only [S7].
 - Diagram: MermaidDiagram flowchart: destination AND mask equals my network? yes, send straight to the neighbour; no, send to the gateway. Claim: one AND decides local or not.
 - Interactive: `net-addr-mask-and` (`[addr: mask-and, drill]`). PREDICT first: "Your address is `192.168.1.23/23`. Is `192.168.0.40` local?" (yes, because `/23` covers `192.168.0.0` to `192.168.1.255`). Then line up bits, see AND and OR, then unassisted drills.
 - Assessment: one PREDICT, one QUIZ (broadcast of `10.20.143.7/20`). Near miss: the "first three numbers" shortcut from 1.4 breaks for `/20` and `/23`; forgetting that usable hosts are 2 fewer than size.
 
 ### 3.3 Neighbours: MAC addresses and ARP (Learn, 35 min)
 - Hook: you send a file to your friend's laptop at `192.168.1.40` on the same Wi-Fi. Wi-Fi delivers by hardware address, not IP. How does your laptop find your friend's? Claim: before sending, the laptop broadcasts "who has this IPv4 address?", the owner answers it directly, and the answer is cached [S22]; the broadcast is the only packet every device hears. Table ageing is left to the implementer [S22]: give no timeout figure.
-- Worked example: ARP table empty; `192.168.1.23` (fictional MAC `02:00:00:00:00:23`) sends to `192.168.1.40` (`02:00:00:00:00:40`): request "who has `192.168.1.40`, tell `192.168.1.23`" to everyone, reply "`192.168.1.40` is at `02:00:00:00:00:40`", then data. Show the same lines in the learner's own 1.4 capture. The switch learns: a frame arrives on port 2 from MAC X, so it records X on port 2; until it knows a MAC it sends to every port. No dossier source covers switch learning: teach it as how the lab's switch works (Roadmap issues 2). `arp -a` on Windows and macOS, `ip neigh` on Linux; the lab generates the output.
+- Worked example: ARP table empty; `192.168.1.23` (fictional MAC `02:00:00:00:00:23`) sends to `192.168.1.40` (`02:00:00:00:00:40`): request "who has `192.168.1.40`, tell `192.168.1.23`" to everyone, reply "`192.168.1.40` is at `02:00:00:00:00:40`", then data. Show the same lines in the learner's own 1.4 capture. The switch learns: a frame arrives on port 2 from MAC X, so it records X on port 2; until it knows a MAC it sends to every port. Switch learning is sourced [S76]: the switch learns the source MAC of each frame it receives, ages entries out (give no figure) and floods a frame for an unknown address; the source describes the Linux bridge, and the lab's switch behaves the same way. `arp -a` on Windows and macOS, `ip neigh` on Linux; the lab generates the output.
 - Diagram: MermaidDiagram sequence diagram: laptop to all (request), friend to laptop (reply), laptop to friend (data). Claim: only the request is a broadcast.
 - Interactive: `net-lab-arp-switch` (`[netlab: hosts, switch]`). PREDICT first: "Your ARP table is empty and you send one packet to `192.168.1.40`. Who receives the first frame?" (everyone on the segment). Then step the request, reply and the switch table.
 - Assessment: one PREDICT, one QUIZ (after the reply, does the switch send the next frame to every port or one?). Near miss: ARP works only on one network (a remote destination is module 4); an ARP request for an address nobody owns gets no answer (1.4's `192.168.1.99`).
@@ -79,15 +79,15 @@ Core 385 minutes. Slow path 486 minutes (3.9 slow path 75).
 - Assessment: one PREDICT, one QUIZ (smallest prefix for 31 hosts: `/26`). Near miss: counting devices without the two reserved addresses; placing the smallest block first and wasting space.
 
 ### 3.6 Overlaps: the bug you find later (Learn, 30 min)
-- Hook: your lab container is `172.17.0.3`, because Docker took `172.17.0.0/16`. What happens if your office network is `172.17.5.0/24`? Claim: valid CIDR blocks either nest or stay apart, so two ranges overlap exactly when one contains the other's start; an overlap shows up late, when two networks must talk.
-- Worked example: `172.17.0.0/16` is numbers 2,886,795,264 to 2,886,860,799; `172.17.5.0/24` is 2,886,796,544 to 2,886,796,799, inside it. From inside Docker, the office range looks local. Docker's default pools start at `172.17.0.0/16`, run through `172.17` to `172.31`, and include `192.168.0.0/16`; they can be changed in `daemon.json` [S46]. On the test host the default bridge showed `172.17.0.0/16` (dossier 5.5); the docs do not state it, so check a container's own address at G3. AWS does not allow peering of VPCs with matching or overlapping CIDR blocks [S47].
+- Hook: on the test machine Docker used `172.17.0.0/16` for its default network, so a container there was `172.17.0.3`; check yours with `docker network inspect bridge`. What happens if your office network is `172.17.5.0/24`? Claim: valid CIDR blocks either nest or stay apart, so two ranges overlap exactly when one contains the other's start; an overlap shows up late, when two networks must talk.
+- Worked example: `172.17.0.0/16` is numbers 2,886,795,264 to 2,886,860,799; `172.17.5.0/24` is 2,886,796,544 to 2,886,796,799, inside it. From inside Docker, the office range looks local. Docker's default pools start at `172.17.0.0/16`, run through `172.17` to `172.31`, and include `192.168.0.0/16`; they can be changed in `daemon.json` [S46]. On the test machine the default bridge showed `172.17.0.0/16` (dossier 5.5); the docs do not state it, so the chapter words it as an observation and sends the learner to `docker network inspect bridge` to check their own. AWS does not allow peering of VPCs with matching or overlapping CIDR blocks [S47].
 - Diagram: MermaidDiagram flowchart with nested subgraphs: `172.17.5.0/24` inside `172.17.0.0/16`. Claim: nested means overlapping.
 - Interactive: `net-addr-overlap` (`[addr: overlap]`). PREDICT first: "Which pair overlaps: `10.0.0.0/16` and `10.1.0.0/16`; `10.0.0.0/8` and `10.1.0.0/16`; `192.168.1.0/25` and `192.168.1.128/25`?" (the second). Then ranges on one number line.
 - Assessment: one PREDICT, one QUIZ (home `192.168.1.0/24` and a VPN `192.168.1.0/24`: what breaks?). Near miss: treating adjacent blocks as overlapping; forgetting that `192.168.0.0/16` contains every `192.168.x.0/24`.
 
 ### 3.7 Code: subnet calculator, part 1 (Code, 40 min)
 - Exercise: one `codeexercise` with four exports. `network(cidr: string): string`, `broadcast(cidr: string): string`, `size(cidr: string): number` (total addresses, 2^(32 minus n)), `contains(cidr: string, ip: string): boolean`. Signatures are proposals. Input: `"a.b.c.d/n"`, `n` an integer 0 to 32 with no leading zeros; the address part may have host bits set (the result is normalised). Bad address or prefix throws an `Error` starting `invalid`. Results are unsigned 32-bit (`>>> 0`).
-- Edges: `/0` has size 4,294,967,296, network `0.0.0.0`, broadcast `255.255.255.255`; `/32` has size 1 and network and broadcast equal the address; `/31` has size 2 (course convention). Trap: `-1 << 32` is `-1` and `1 << 32` is `1` in JavaScript (checked by script), so `/0` needs its own branch.
+- Edges: `/0` has size 4,294,967,296, network `0.0.0.0`, broadcast `255.255.255.255`; `/32` has size 1 and network and broadcast equal the address; `/31` has size 2 and no directed broadcast [S70]; `broadcast()` returns the higher address by the exercise's stated convention, and the chapter says so. Trap: `-1 << 32` is `-1` and `1 << 32` is `1` in JavaScript (checked by script), so `/0` needs its own branch.
 - Test list: `network("192.168.1.23/24")` is `192.168.1.0`; `network("10.20.143.7/20")` is `10.20.128.0`; its broadcast is `10.20.143.255`; its size is 4096; `192.168.1.4/31` gives `192.168.1.4`, `192.168.1.5`, 2; a `/32` gives itself and 1; `/0` as above; `network("128.0.0.1/1")` is `128.0.0.0` (unsigned); `broadcast("255.255.255.255/32")` stays `255.255.255.255`; `contains("10.20.128.0/20", ...)` true for `10.20.143.7` and `10.20.143.255`, false for `10.20.144.0` and `10.20.127.255`; a `/32` contains only itself; `/0` contains `255.255.255.255`; throws on `/33`, `/-1`, `/24.5`, no slash, `1.2.3.256/24`.
 - Hints: "build the mask once from the prefix"; "network is address AND mask, broadcast is network OR the inverted mask"; "finish each result with `>>> 0`". Starter imports the learner's 2.5 helpers or the reference helper.
 - Diagram: MermaidDiagram flowchart: prefix to mask, then the four results. Claim: all four functions share one mask. Assessment: PREDICT (what `1 << 32` prints) and CODE. Near miss: negative results for addresses above `127.255.255.255`.
@@ -112,7 +112,7 @@ Core 385 minutes. Slow path 486 minutes (3.9 slow path 75).
 - Assessment: lab checks plus one QUIZ (smallest prefix for 90 devices with 20% growth). Near miss: no growth margin; a block that starts off its boundary; two groups sharing a boundary.
 
 ### 3.11 Subnets and neighbours (Check, 15 min)
-- Five QUIZ fences in `3.11-subnets-and-neighbours-quiz.md`: network address of `10.20.143.7/20`; predict who hears the first frame when an ARP table is empty; spot the overlapping pair among Docker, office and VPN ranges; two from module 2 (the number for an address; classify `172.32.0.5`). Written in the style of the drills; no teaching text. Every option gets one reason.
+- Five QUIZ fences in `3.11-subnets-and-neighbours-quiz.md`, quiz-only with no canvas: network address of `10.20.143.7/20`; predict who hears the first frame when an ARP table is empty; spot the overlapping pair among Docker, office and VPN ranges; two from module 2 (the number for an address; classify `172.32.0.5`). Written as plain quiz questions in the drill style; no teaching text. Every option gets one reason.
 
 ### 3.12 Defend your plan (Gate, 15 min)
 - Evidence: the 3.10 plan defended against a fourth lab. Expected shape of a strong answer: a fourth lab of 40 devices needs a `/26`; the plan leaves an aligned free `/26` (in the reference, `10.30.3.128/26`) so nothing is renumbered; if no aligned `/26` were free the learner would say which block they would shrink and why. Gate branches: none.
@@ -123,18 +123,20 @@ Rules as in module 1.
 
 | Ch | Top-level components | Tags (est.) | Assessments | Prose floor |
 |---|---|---|---|---|
-| 3.1 | LearningObjectives, MermaidDiagram, Callout, GlossaryTerm | 6 | PREDICT, QUIZ | 1,200 |
+| 3.1 | LearningObjectives, MermaidDiagram, Callout, GlossaryTerm | 6 | PREDICT, QUIZ | 700 |
 | 3.2 | MermaidDiagram, InteractiveCanvas, BigWordAlert (netmask), GlossaryTerm, Callout | 8 | PREDICT, QUIZ | 1,200 |
 | 3.3 | MermaidDiagram, InteractiveCanvas, BigWordAlert (ARP), GlossaryTerm, Callout | 8 | PREDICT, QUIZ | 1,200 |
 | 3.4 | MermaidDiagram, InteractiveCanvas, ComparePanel, GlossaryTerm | 8 | PREDICT, QUIZ | 1,200 |
 | 3.5 | MermaidDiagram, InteractiveCanvas, BigWordAlert (subnet boundary), GlossaryTerm, Callout | 7 | PREDICT, QUIZ | 1,200 |
 | 3.6 | MermaidDiagram, InteractiveCanvas, GlossaryTerm, Callout | 6 | PREDICT, QUIZ | 1,200 |
-| 3.7 | MermaidDiagram, Callout, GlossaryTerm | 5 | PREDICT, CODE | 1,200 |
-| 3.8 | MermaidDiagram, GlossaryTerm | 3 | CODE, QUIZ | 1,200 |
+| 3.7 | MermaidDiagram, Callout, GlossaryTerm | 5 | PREDICT, CODE | 700 |
+| 3.8 | MermaidDiagram, GlossaryTerm | 3 | CODE, QUIZ | 700 |
 | 3.9 | Steps, MermaidDiagram, Callout, InteractiveCanvas, GlossaryTerm, BigWordAlert (route) | 16 | PREDICT, QUIZ | 1,200 |
-| 3.10 | MermaidDiagram, InteractiveCanvas, LearningLog, Callout, GlossaryTerm | 6 | QUIZ | 1,200 |
+| 3.10 | MermaidDiagram, InteractiveCanvas, LearningLog, Callout, GlossaryTerm | 6 | QUIZ | 700 |
 | 3.11 | none | 0 | QUIZ x5 | quiz only |
 | 3.12 | Checklist, LearningLog, ChapterRecap | 3 | OPEN_QUESTION | 700 |
+
+Prose floors follow roadmap v3.1: Learn and Build chapters at least 1,200 prose words; Read, Code and Lab chapters and Gates at least 700. The 700 floor is a proposed course exception that waits for the sponsor's G2C decision; if it is rejected, the Read chapter is re-timed to 15 to 20 minutes. Check chapters are quiz-only.
 
 `LearningObjectives` in 3.1, `ChapterRecap` in 3.12. Diagram plan: ten Mermaid diagrams (3.1 to 3.10); every Learn chapter has one and the module requirement is met. No MustRead needed; one `InterestingRead` is optional (3.6, Docker's address pools [S46]). One drill set per `[addr]` canvas is the graded unassisted evidence for 3.2 and 3.5 (O3).
 
@@ -143,11 +145,11 @@ Rules as in module 1.
 | Slug (proposed) | Renderer | Chapter | Claim | Stated limit | Fallback if not built |
 |---|---|---|---|---|---|
 | `net-addr-mask-and` | `[addr]` mask-and + drill | 3.2 | AND with the mask gives the network, host bits set give the broadcast | IPv4, contiguous masks only | Static worked bit table; drills become quiz questions (decision 3) |
-| `net-lab-arp-switch` | `[netlab]` host, switch (slice 1) | 3.3 | A host broadcasts to find a neighbour's MAC; a switch learns from frames it sees | One segment; no ARP ageing shown | Scripted `[sequence]` of four actors (laptop, switch, friend, third host) with a prediction before each step |
+| `net-lab-arp-switch` | `[netlab]` host, switch (slice 1) | 3.3 | A host broadcasts to find a neighbour's MAC; a switch learns from frames it sees | One segment; no ARP ageing shown | Scripted `[sequence]` of four actors (laptop, switch, friend, third host) with a prediction before the key steps only, within the chapter's budget of 3 assessments |
 | `net-lab-flat-vs-split` | `[netlab]` host, switch, router, filter (slice 1) | 3.4 | Splitting shrinks who hears a broadcast; a rule at the router limits access | The router is a box that joins networks; no routing tables yet | Same `[sequence]` fallback plus a ComparePanel |
 | `net-addr-split` | `[addr]` split + drill | 3.5 | Pieces start on their own boundary; misaligned cuts are refused | Largest-first host counts; no VLSM tooling beyond this | Static table of the 100, 50, 20 example; drills become quiz questions |
 | `net-addr-overlap` | `[addr]` overlap | 3.6 | Valid blocks nest or stay apart; overlap means nested | IPv4 ranges on one line; no routing consequence modelled | Static number line plus quiz |
-| `net-replay-wrong-mask` | `[replay]` | 3.9 | Two computers can disagree about "local" | Recorded run from the reference solution | `[sequence]` of two actors with a Predict before each step |
+| `net-replay-wrong-mask` | `[replay]` | 3.9 | Two computers can disagree about "local" | Recorded run from the reference solution | `[sequence]` of two actors with a Predict before the key steps only, within the chapter's budget of 3 assessments |
 | `net-lab-plan-school` | `[netlab]` plan mode (slice 1) | 3.10 | A plan fits sizes, alignment and growth without overlap | Fit and overlap checks only; no traffic | Graded lab blocked; roadmap fallback is a diagnosis graded as a quiz. Offering `net-addr-split` as ungraded practice is a proposal |
 
 The netlab chapters need slice 1 before they are written (decision 2). The `[addr]` library is the 2.5, 3.7 and 3.8 reference solution (roadmap).
@@ -163,14 +165,19 @@ Gate 3.12 (15 minutes, review within three days, learners carry on). Evidence: t
 ## Risks
 
 - Likeliest stalls: 3.2 (AND with a non-octet mask such as `/20`; the 1.4 "first three numbers" shortcut breaks); 3.5 (alignment); 3.7 (signed numbers and the `/0` shift). Mitigation: all three start from a worked `/20` or `/23` and a PREDICT; the drills are unassisted so the weak step shows; the 3.7 PREDICT on `1 << 32` and the helper unlock. This is week 1's heaviest stretch (11.8 hours for modules 1 to 3): watch for fatigue at 3.7 and 3.8.
-- Platform: 3.3, 3.4 and 3.10 need netlab slice 1; if late, 3.3 and 3.4 switch to scripted `[sequence]` step-throughs and 3.10 is blocked.
-- Accuracy traps from the dossier: contiguous masks only [S7]; broadcast is derived, not cited; ARP ageing is left to the implementer [S22] (give no number); `/31` and `/32` conventions are not in the dossier; Docker's `172.17.0.0/16` is observed on the test host, not stated in the docs [S46]; do not promise "Destination Host Unreachable" (not seen, dossier 5.7); `ip route get` error text and any macOS output are untested; peering rule is AWS-specific [S47].
-- Prose floor: 3.1 at 10 minutes and 3.12 at 15 minutes must still hold 1,200 and 700 words; keep tasks to the single command in 3.1 and the one answer in 3.12.
+- Platform: 3.3, 3.4 and 3.10 need netlab slice 1; if late, 3.3 and 3.4 switch to scripted `[sequence]` step-throughs with predictions before the key steps only, and 3.10 is blocked.
+- Accuracy traps from the dossier: contiguous masks only [S7]; broadcast is derived, not cited; ARP ageing is left to the implementer [S22] (give no number); `/31` is sourced [S70] and `/32` as one address is derived; Docker's `172.17.0.0/16` is observed on the test machine, not stated in the docs [S46], so word it as an observation; do not promise "Destination Host Unreachable" (not seen, dossier 5.7); `ip route get` error text and any macOS output are untested; peering rule is AWS-specific [S47].
+- Prose floor: 3.1 (Read) and 3.12 (Gate) hold 700 words each, a proposed course exception; keep tasks to the single command in 3.1 and the one answer in 3.12.
 
-## Roadmap issues
+## Resolved in roadmap v3.1
 
-1. 3.2 and 3.7 require defined answers for `/31`, but the dossier has no source for `/31` behaviour (RFC 3021). The brief states the course convention (two addresses, both usable, point to point) and marks the source as missing.
-2. 3.3 asks the learner to say how a switch learns MAC addresses, but the dossier has no source for it. The brief teaches it as the lab switch's behaviour; add a source or accept that.
-3. 3.6's hook states that Docker took `172.17.0.0/16` as fact; the dossier says the docs do not state it and it was observed on one host. The brief softens the wording and asks for a check at G3.
-4. 3.1 (10 minutes) and 3.12 (15 minutes) must hold the 1,200 and 700 word floors; Code (3.7, 3.8) and Lab (3.10) chapters are not named in the brief's floor rule, and the audit applies 1,200 to them, which this brief follows.
-5. 3.10 says "say in three sentences why each size" but names no place for the sentences, and the roadmap has no fallback that keeps plan mode graded. The brief puts the sentences in a LearningLog and offers an ungraded stand-in. The 3.10 and 3.12 numbers are proposals; the roadmap gives none.
+1. `/31` had no source: resolved. `/31` is sourced [S70] (two addresses, point to point, no directed broadcast).
+2. Switch MAC learning had no source: resolved. It is sourced [S76].
+3. The Docker `172.17.0.0/16` hook: resolved. Worded as "on the test machine Docker used ...; check yours with `docker network inspect bridge`" (observed in dossier 5.5).
+4. Word floors for 3.1, the Code chapters and the Lab: resolved by the proposed course exception. Read, Code and Lab chapters and Gates use 700 prose words; Learn and Build use 1,200 (decision log, 2026-10-25, pending the sponsor's G2C decision).
+
+## Still open
+
+- 3.10 names no place for the "three sentences" and the roadmap has no fallback that keeps plan mode graded. This brief puts the sentences in a LearningLog and offers an ungraded stand-in; the 3.10 and 3.12 numbers are proposals.
+- Verify at G3 (untested): the `ip route get` error text for 3.9; whether `phone` sends an ARP reply in 3.9; the macOS hex mask output in 3.1.
+- The 700-word floor for Read, Code and Lab chapters and Gates awaits the sponsor's G2C decision.

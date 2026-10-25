@@ -4,7 +4,7 @@ course: networking
 module: 08-capstone
 version: 1
 owner: curriculum-architect
-roadmap_version: 3
+roadmap_version: 3.1
 roadmap_confirmed: true
 ---
 
@@ -34,7 +34,7 @@ Concepts, by the identifiers in `timeline.yaml`:
 
 Artifacts:
 
-- The learner's own scripts from challenge 2 (router), challenge 4 (home router) and challenge 5 (DHCP and DNS) in their `networking-challenges` repository. They are the starting point for challenge 6.
+- The learner's own scripts from challenge 2 (router), challenge 4 (home router) and challenge 5 (DHCP and DNS) in their `networking-challenges` repository. They are the starting point for challenge 6: part 1 (8.2) starts from challenges 2 and 4, part 3 (8.4) from challenge 5.
 - `toolkit/restore.sh N.P`. `restore.sh 4.2` and `restore.sh 5.1` rebuild earlier work; `restore.sh 6.1`, `6.2` and `6.3` rebuild the end of capstone parts 1 to 3 (tested for every capstone part before publish, roadmap).
 - A clean lab: every script tears down what it built before it starts, so a rerun after a mistake is safe. Scripts run with `bash script.sh` and stop with a plain message on Windows line endings.
 - Netlab slice 3 for 8.1 (fallback in "Canvases").
@@ -58,7 +58,7 @@ Address plan. Addresses marked "dossier" were run; the rest are proposed and che
 - The forwarded port: `198.51.100.2:8080` to `192.168.1.20:80`. Dossier 5.7 tested forwarding across a provider router.
 - Default TTL is 64 [S28]; each router lowers it by at least one [S30].
 
-Capstone fault matrix (published to learners as a menu of symptoms and finders; the seed draws three, the learner does not know which). Commands use proposed namespace and interface names (`<out>` is the home router's outside interface). Every symptom is marked tested (dossier section) or "verify at G3".
+Capstone fault matrix (published to learners as a menu of symptoms and finders; the seed draws three, and the draw stays hidden until the write-up). Commands use proposed namespace and interface names (`<out>` is the home router's outside interface). Every symptom is marked tested (dossier section) or "verify at G3".
 
 | ID | Fault | Injection command | Symptom the learner sees | Command that finds it | Not combined with |
 |---|---|---|---|---|---|
@@ -70,34 +70,34 @@ Capstone fault matrix (published to learners as a menu of symptoms and finders; 
 | F6 | DHCP pool too small for a new device | Restart dnsmasq with `192.168.1.100,192.168.1.101`, fill it with `home1` and `home2`, then add `home3` | `udhcpc -n -q -t 3 -T 1` in `home3` ends after about 3 seconds with no address (the no-server behaviour, dossier 5.6; exhausted pool verify at G3) | `ip -n home3 addr`, `tcpdump -n port 67 or port 68` (DISCOVER, no OFFER), the lease file | F4 |
 | F7 | Guest isolation rule missing | Delete the guest-to-home drop rule from the `forward` chain by handle | Nothing visibly breaks; the test that must fail now passes: `guest1` reaches `192.168.1.20` (rule present is dossier 5.6; rule absent verify at G3) | the guest-to-home test, `nft list chain ip filter forward` | F1, F2 |
 
-How the seed works: `bash break.sh SEED` hashes the seed to three distinct faults and redraws until no pair is in the "Not combined with" column. The reasons are that F2, F3 and F5 break the same home-to-server path and hide each other; F1 and F7 are masked when the web server or the forward path is already broken; F4 and F6 cannot both be seen from a device that has no lease. `--list` shows the draw, for the mentor. The seed goes in the write-up so a mentor can reproduce the run.
+How the seed works: `bash break.sh SEED` hashes the seed to three distinct faults and redraws until no pair is in the "Not combined with" column. The reasons are that F2, F3 and F5 break the same home-to-server path and hide each other; F1 and F7 are masked when the web server or the forward path is already broken; F4 and F6 cannot both be seen from a device that has no lease. `--list` shows the draw to the mentor; the learner sees it only at the write-up. The seed goes in the write-up so a mentor can reproduce the run.
 
 ## Chapters
 
 | # | Chapter | Type | Min | Outcome | Requires | Introduces | Evidence |
 |---|---|---|---|---|---|---|---|
 | 8.1 | What really happens when you open a link | Learn | 30 | Step through every packet from the lease to the first byte: DNS, ARP, gateway, NAT, routes, TCP. The lab page is plain HTTP; a real browser adds TLS and often QUIC, which the system design course covers | dhcp, dns-resolution, napt, tcp, lpm, arp | full-journey | netlab check |
-| 8.2 | Capstone part 1: addresses and routes | Build | 60 | Starting from your own scripts from challenges 2, 4 and 5, build the home and guest subnets, the router, a provider router and a public web server; tests prove each path | ip-forwarding, address-plan, full-journey | capstone-network (reinforces lpm) | capstone part 1 tests |
+| 8.2 | Capstone part 1: addresses and routes | Build | 60 | Starting from your own scripts from challenges 2 and 4, build the home and guest subnets, the router, a provider router and a public web server; tests prove each path | ip-forwarding, address-plan, full-journey | capstone-network (reinforces lpm) | capstone part 1 tests |
 | 8.3 | Capstone part 2: NAT, forwarding and isolation | Build | 45 | Add masquerade, one forwarded port and the guest rule; tests prove what must work and what must not | capstone-network, nft-dnat-filter | none (reinforces nft-masquerade) | capstone part 2 tests |
-| 8.4 | Capstone part 3: DHCP and DNS | Build | 45 | Leases and names for both subnets; tests prove both | capstone-network, dnsmasq | none (reinforces dhcp) | capstone part 3 tests |
+| 8.4 | Capstone part 3: DHCP and DNS | Build | 45 | Starting from your challenge 5 config, leases and names for both subnets; tests prove both | capstone-network, dnsmasq | none (reinforces dhcp) | capstone part 3 tests |
 | 8.5 | Capstone part 4: break it, fix it | Build | 60 | Run the fault script (seeded, from a published fault matrix); find each fault with commands and write what you saw | capstone-network, layered-diagnosis, diagnose-nat | fault-diagnosis | fault write-up |
-| 8.6 | Final check | Check | 20 | Questions from every module, before the demo | full-journey | none (reinforces subnet-calc, lpm, napt, dns-resolution) | final quiz |
+| 8.6 | Final check | Check | 20 | Five questions that each combine two or more modules, before the demo | full-journey | none (reinforces subnet-calc, lpm, napt, dns-resolution) | final quiz |
 | 8.7 | Demo and defence | Gate | 60 | Record a five-minute demo from the template and answer three mentor probes | fault-diagnosis, capstone-network | none (reinforces napt, conntrack) | recorded demo and probes |
 
 Total 320 core minutes. Slow path 438 (8.2: 90, 8.3: 70, 8.4: 70, 8.5: 90).
 
-The roadmap's "Problem first" column is filled only for 8.1. For the Build chapters the hook below is derived from the capstone's purpose.
+The roadmap's "Problem first" column is filled only for 8.1. The static home web server `homeweb` is accepted in roadmap v3.1 as the forwarded port's target and the "wrong mask" fault's device. For the Build chapters the hook below is derived from the capstone's purpose.
 
 ### 8.1 What really happens when you open a link (Learn, 30 min) `08.01-what-happens-when-you-open-a-link.md`
 - Hook (roadmap): you press Enter. What happens before the first byte of the page arrives?
 - Claim: opening a link is not one event but ten small steps in a fixed order, and each is something the learner has already built or measured. When one step breaks, the symptom names it.
 - Worked example, with capstone numbers: (1) lease: `home1` goes from no address to `192.168.1.101/24`, gateway and DNS `192.168.1.1`, one hour; (2) ARP for `192.168.1.1`; (3) DNS: `web.test` answers `203.0.113.80`; (4) `203.0.113.80` is outside `192.168.1.0/24`, so use the gateway; (5) SYN leaves with destination IP the server and destination MAC the router; (6) home router: forwarding on, longest prefix is the default route via `198.51.100.1`, TTL 64 to 63, source rewritten to `198.51.100.2` (port kept unless it clashes, dossier 5.6); (7) provider router: connected route, TTL 62; (8) server sees `198.51.100.2` and TTL 62, answers; (9) the reply returns through the router's mapping (read it with `conntrack -L`); (10) the handshake finishes, the GET is sent, the first byte arrives. TTL values are derived from [S28, S30], not captured. Plain HTTP only; TLS and QUIC belong to the system design course.
 - Diagram: MermaidDiagram flowchart of the ten steps, each labelled with the module that explained it. Claim: nothing here is new; it is the course in order. The netlab canvas shows packets; this shows where to look things up.
-- Interactive: `[netlab: all parts]`, step mode, one packet and one hop at a time, with the Inspector on. Predict first: at step 6, which of source IP, destination IP, destination MAC, TTL and source port change? Correct: source IP, destination MAC and TTL always; the source port only on a clash.
+- Interactive: `[netlab: every part the journey uses]`, step mode, one packet and one hop at a time, with the Inspector on. Predict first: at step 6, which of source IP, destination IP, destination MAC, TTL and source port change? Correct: source IP, destination MAC and TTL always; the source port only on a clash.
 - Assessment: one PREDICT, one QUIZ question (which step fails when the router's default route is removed; step 6, `Destination Net Unreachable`, dossier 5.7). Near miss: thinking the server's MAC appears in the learner's capture, or that DNS comes after the TCP connection.
 
 ### 8.2 Capstone part 1: addresses and routes (Build, 60 min) `08.02-capstone-addresses-routes.md`
-- Hook (derived): your scripts from challenges 2, 4 and 5 each built a piece. Join them into one network with its own address plan.
+- Hook (derived): your scripts from challenges 2 and 4 each built a piece. Join them into one network with its own address plan.
 - Claim: every link needs its own subnet, and the home router has three interfaces on three subnets. With routes alone, packets reach the server but replies cannot come back: that is why NAT exists.
 - Worked example: the address plan above; `ip route get 203.0.113.80` on `home1` (via `192.168.1.1`) and on `hrouter` (via `198.51.100.1`).
 - Diagram: MermaidDiagram topology of the capstone network with subnets and interface addresses. Claim: three subnets on the home router, a `/30` link to the provider, one public subnet. Later chapters reuse it and do not redraw it.
@@ -105,7 +105,7 @@ The roadmap's "Problem first" column is filled only for 8.1. For the Build chapt
 - Assessment: one PREDICT; the part's tests are the evidence. Near miss: forgetting the provider router's connected route to `198.51.100.0/30`, or forwarding left off.
 
 #### 8.2 build details
-- Challenge part: challenge 6, `challenges/challenge-6-capstone/part-1-addresses-and-routes/`. Support: open with hints (roadmap scaffolding table); the learner's earlier scripts are the starting point. The roadmap names challenge 5 scripts here but DHCP and DNS enter only in 8.4 (see "Roadmap issues").
+- Challenge part: challenge 6, `challenges/challenge-6-capstone/part-1-addresses-and-routes/`. Support: open with hints (roadmap scaffolding table); the learner's earlier scripts are the starting point. Part 1 starts from challenges 2 and 4; DHCP and DNS enter only in 8.4, which starts from the challenge 5 config.
 - Must pass: `home1` pings `192.168.1.1`; `guest1` pings `192.168.50.1`; `hrouter` pings `203.0.113.80` (the server sees `198.51.100.2`, dossier 5.7); `ip route get 203.0.113.80` picks the gateway on `home1` and on `hrouter`; `traceroute -n` from `hrouter` shows `198.51.100.1` then the server (the two-hop shape is dossier 5.5; the three-line capstone case verify at G3).
 - Must fail: `home1` ping to `203.0.113.80` gets no reply (no NAT yet; verify at G3).
 - Captured output to commit in `results.md`: `ip addr` and `ip route` for each router namespace; a `tcpdump -n` on the home router's outside interface during the failing ping, showing the private source leaving.
@@ -161,7 +161,7 @@ The roadmap's "Problem first" column is filled only for 8.1. For the Build chapt
 - Slow path: 90 minutes. Phone-only: the replay and the demonstration write-up.
 
 ### 8.6 Final check (Check, 20 min) `08.06-final-check-quiz.md`
-- Hook, claim: none (quiz only). Roadmap: questions from every module. The Check type allows three to five questions and seven modules come before this one, so each of five questions touches more than one module (see "Roadmap issues").
+- Hook, claim: none (quiz only; plain quiz fences, no canvas). Roadmap v3.1: five questions that each combine two or more modules. The Check type allows three to five questions and seven modules come before this one, so each of the five touches more than one module.
 - Questions: (1) modules 2 and 3: an office VPN uses `192.168.1.128/25`; does it overlap the home subnet; (2) modules 1 and 4: which fields change at a router (MAC, TTL) and which stay (IPs); (3) modules 5 and 6: two devices send from the same source port; what does the server see; (4) module 7: `dig` times out while `ping 203.0.113.80` works; which layer; (5) modules 4, 6 and 7: a new device has a lease and a gateway but cannot reach the server; which command first and why.
 - Near miss: option length and position balanced; no question answered by the longest option.
 
@@ -206,7 +206,7 @@ Defence probes (the mentor picks three), with what a good answer cites:
 
 ## Interactions
 
-Prose minimums: 8.1 to 8.5 at least 1,200 words; 8.7 at least 700; 8.6 quiz fences only.
+Prose minimums follow roadmap v3.1: 8.1 (Learn) and 8.2 to 8.5 (Build) at least 1,200 words; 8.7 (Gate) at least 700, a proposed course exception that waits for the sponsor's G2C decision; 8.6 quiz fences only.
 
 | Chapter | Top-level components | Assessments |
 |---|---|---|
@@ -226,8 +226,8 @@ Diagram plan: 8.1 ten-step map; 8.2 topology (reused by 8.3 to 8.5). The fault m
 
 | Slug | Renderer | Chapter | Claim | Stated limit | Fallback if not built |
 |---|---|---|---|---|---|
-| `net-full-journey` | `[netlab]` parts: Host, Switch, Router (two), Inspector, NAT, Home router (DHCP and DNS), DNS; step mode; slice 3 | 8.1 | The whole trip is ten small steps and each one is something already learned | One packet at a time; plain HTTP; no loss, TLS or QUIC; NAT follows Linux, other routers differ | Scripted `[sequence]` of the same packets (laptop, home router, provider router, server: four actors) with a prediction before each step, recorded as an exception; the brief plans three predictions (steps 4, 6, 9) to stay in budget |
-| `net-replay-capstone-1` to `net-replay-capstone-4` | `[replay]` | 8.2 to 8.5 | Predicting real recorded output lets phone readers practise each part | One reference run each; 8.5 uses a demonstration seed; no editing | `[sequence]` of two actors (learner, lab) with Predict blocks (budget conflict, see "Roadmap issues") |
+| `net-full-journey` | `[netlab]` parts: Host, Switch, Router (two), Inspector, NAT, Home router (DHCP and DNS), DNS; step mode; slice 3 | 8.1 | The whole trip is ten small steps and each one is something already learned | One packet at a time; plain HTTP; no loss, TLS or QUIC; NAT follows Linux, other routers differ | Scripted `[sequence]` of the same packets (laptop, home router, provider router, server: four actors) with predictions before the key steps only, recorded as an exception; the brief plans three predictions (steps 4, 6, 9) to stay within the chapter's budget of 3 assessments |
+| `net-replay-capstone-1` to `net-replay-capstone-4` | `[replay]` | 8.2 to 8.5 | Predicting real recorded output lets phone readers practise each part | One reference run each; 8.5 uses a demonstration seed; no editing | `[sequence]` of two actors (learner, lab) with Predict blocks before the key steps only, within the chapter's budget of 3 assessments |
 
 ## Gate
 
@@ -245,14 +245,17 @@ Checklist: all four test sets pass from a clean lab and tear down cleanly; `resu
 - Fault F5, F2 and F7 symptoms and the DNAT interaction with `forward` rules are reasoned from dossier 5.6 and 5.7, not run. Run every row of the matrix once at G3.
 - The unresolved macOS and WSL 2 runs (decision 1) apply here: the capstone has not been run on Docker Desktop for macOS or WSL 2 without Docker Desktop.
 
-## Roadmap issues
+## Resolved in roadmap v3.1
 
-Listed, not fixed:
+1. 8.2 starting from challenges 2, 4 and 5: resolved. Part 1 (8.2) starts from challenges 2 and 4, part 3 (8.4) from challenge 5.
+2. 8.6 "questions from every module": resolved. Five questions that each combine two or more modules.
+3. The "wrong mask" fault needing a static device: resolved. The static `homeweb` server is accepted as the forwarded port's target and the fault's device.
+4. The 8.1 netlab fallback breaking the assessment budget: resolved. Predictions go before the key steps only, within the chapter's budget of 3 assessments.
+5. The `[replay]` fallback breaking the budget (8.2 to 8.5): resolved the same way.
+6. "`netlab: all parts`": resolved. 8.1 uses every netlab part the journey uses (not the captive portal or the IPv6 view).
+7. Whether learners may see the fault finders: resolved. The fault menu is published; the seed's draw is hidden until the write-up.
 
-1. 8.2 says to start from the learner's own scripts "from challenges 2, 4 and 5", but DHCP and DNS (challenge 5) first appear in part 3 (8.4). This brief uses challenges 2 and 4 in part 1 and challenge 5 in part 3.
-2. 8.6 asks for "questions from every module" with a Check limit of three to five questions; seven modules come first. This brief combines modules inside five questions.
-3. The roadmap's "wrong mask on a static device" fault needs a static device, but the capstone network describes only leased devices. This brief adds a static home web server (`homeweb`), which is also the forwarded port's target. Confirm.
-4. The netlab fallback for 8.1 asks for a prediction before each step (ten steps), which breaks the budget of one Predict and three assessments per chapter. The roadmap marks it an exception; this brief plans three.
-5. The `[replay]` fallback asks for a Predict before each step, with no exception noted (affects 8.2 to 8.5).
-6. "`netlab: all parts`" for 8.1 cannot include the captive portal or the IPv6 view; this brief reads it as all parts the journey needs.
-7. The capstone says the fault matrix is "published" with injection, symptom and finder; the brief keeps the draw hidden (seed) and publishes the menu. Confirm that learners may see the finders.
+## Still open
+
+- Verify at G3 (untested): every row of the fault matrix (F1 to F7 symptoms and injection commands), `ip route get` output, one dnsmasq with two ranges versus two instances, `ss -ulnp`, the three-line capstone traceroute, and the guest's names while the drop rule blocks forwarding.
+- The provider-side addresses `198.51.100.1` and `203.0.113.1` and the namespace names are proposed, not run. Docker Desktop on macOS and WSL 2 without Docker Desktop have not run the capstone.

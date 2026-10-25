@@ -4,7 +4,7 @@ course: networking
 module: 01-your-laptop-on-a-network
 version: 1
 owner: curriculum-architect
-roadmap_version: 3
+roadmap_version: 3.1
 roadmap_confirmed: true
 ---
 
@@ -32,7 +32,7 @@ Equipment for 1.2 to 1.4: a laptop with 8 GB of memory for Docker Desktop (the r
 |---|---|---|---|---|---|---|---|
 | 1.1 | Which address is yours? | Read | 15 | Write down your computer's address, the IPv4 address a website sees, your DNS server and any IPv6 address; state the course question | terminal-basics | own-addresses | written numbers in the learning log |
 | 1.2 | Install the lab | Build | 40 | Start the download first, install the lab, pass the setup checker (five named failures, each with its fix), read the safety note | terminal-basics | lab-environment | setup checker passes |
-| 1.3 | Seven commands and your own numbers | Build | 25 | Use cd, ls, cat, nano, sudo, Ctrl+C and exit with a self-check; record your own numbers (the checker prints your mask as a prefix) | lab-environment | shell-commands (reinforces own-addresses) | challenge 0 results committed |
+| 1.3 | Seven commands and your own numbers | Build | 25 | Use cd, ls, cat, nano, Ctrl+C and exit with a self-check, and learn `sudo` for your own Linux or WSL 2 (in the lab you are root); paste your own numbers into `my-numbers.txt` and let the lab checker check them and print your mask as a prefix | lab-environment | shell-commands (reinforces own-addresses) | challenge 0 results committed |
 | 1.4 | Two computers inside your laptop | Build | 45 | Create two namespaces joined by a virtual cable, `ping` one from the other, capture it with `tcpdump -n -v` | shell-commands, git-basics | namespaces-veth, ping-icmp, read-capture | challenge 1 part 1 test and capture |
 | 1.5 | What one ping actually sent | Learn | 35 | Name the addresses, TTL and type in your ICMP echo, and the addresses, ports and TTL in a DNS query | read-capture | packet-fields (reinforces ping-icmp) | in-chapter quiz on fields |
 | 1.6 | Why does one packet carry three kinds of address? | Learn | 30 | Explain the three jobs (MAC, IP, port) and wrap and unwrap a packet | packet-fields | layers, mac-address | wrap and unwrap check |
@@ -53,7 +53,7 @@ Core 230 minutes. Slow path 340 minutes (Build slow paths 90, 40 and 70, plus a 
 - Challenge: challenge 0 part 1, `challenges/challenge-0-setup/part-1-checker/` (proposed name). Support: guided (every command typed one at a time, each line explained, expected output shown).
 - Hook: none in the roadmap (Build). Open with the cost: "Start the download now, read while it runs." Prose claim: the lab is a Linux machine inside your computer, and there are now two places to type commands (your computer and the lab), each labelled **On your computer** or **In the lab**.
 - Worked example: `docker run --rm --privileged` on the pinned `ubuntu:24.04`-based image (dossier 5.5, Docker Desktop for Windows, tested 2026-10-24); filesystem about 198 MB with all tools, base image 119 MB unpacked; first run about 40 seconds including `apt-get install`. The compressed download size is not measured: state no size until it is (roadmap: both sizes measured before publish). Safety note: `--privileged` gives the container all capabilities and host device access [S37]; the course uses it only for this image.
-- Five named failures (the roadmap names none; proposed, confirm at G3): `docker-not-running`; `no-privilege` (container started without `--privileged`, so `ip link add` fails [S37]; exact message untested); `crlf-line-endings` (the roadmap says the checker stops with a plain message); `wrong-image` (a tool is missing); `repo-not-visible` (bind-mount folder empty in the container; Windows bind-mount flow is tested in this challenge, roadmap).
+- Five named failures (the roadmap accepts the five this brief proposed; exact messages are verified at G3): `docker-not-running`; `no-privilege` (container started without `--privileged`, so `ip link add` fails [S37]; exact message untested); `crlf-line-endings` (the roadmap says the checker stops with a plain message); `wrong-image` (a tool is missing); `repo-not-visible` (bind-mount folder empty in the container; Windows bind-mount flow is tested in this challenge, roadmap).
 - Acceptance tests: must pass: the checker prints PASS for namespace create, veth create and every named tool, and exits 0. Must fail: the same checker in a container started without `--privileged` exits non-zero and prints the failure name `no-privilege` with its fix. Captured output to commit: `results.md` with the PASS lines, tool versions and image digest.
 - Hints: first nudge "read the first FAIL line, it names the check"; second "the README table maps each name to its fix"; third the command. If you are stuck: run the checker again (scripts are safe to rerun), then try `docker version` and `docker info` (untested, verify at G3).
 - Diagram: MermaidDiagram: your computer, Docker Desktop's Linux machine, the lab container, with a note that real-path commands run on your computer. One MustRead: Docker's Windows install requirements [S57], so the learner can answer "does my laptop meet them?".
@@ -61,11 +61,11 @@ Core 230 minutes. Slow path 340 minutes (Build slow paths 90, 40 and 70, plus a 
 
 ### 1.3 Seven commands and your own numbers (Build, 25 min, slow path 40)
 - Challenge: challenge 0 part 2, `part-2-your-numbers/` (proposed). Support: guided.
-- Hook: you can already read your numbers. The learner pastes them into a file and a script reads them back. Prose claim: a command line is a way to ask a machine questions; seven commands are enough for the whole course. Self-check passes when the files the learner makes with `cd`, `ls`, `cat` and `nano` exist and contain their text.
+- Hook: you can already read your numbers. The learner pastes them into a file and a script reads them back. Prose claim: a command line is a way to ask a machine questions; seven commands are enough for the whole course. `sudo` is taught for the learner's own Linux or WSL 2, where scripts run under it; in the lab the learner is already root and needs none, and the chapter says so. Self-check passes when the files the learner makes with `cd`, `ls`, `cat` and `nano` exist and contain their text.
 - Worked example: from 1.1, `192.168.1.23` with `255.255.255.0` is `/24`; macOS `ifconfig` prints `netmask 0xffffff00` (also `/24`; check on a Mac), and `0xfffff000` is `255.255.240.0`, which is `/20`. No arithmetic yet: the checker prints the prefix. `Ctrl+C` is practised on `ping 127.0.0.1`; `exit` leaves the lab.
 - Acceptance tests: must pass: `my-numbers.txt` with address, mask and gateway prints the prefix (`255.255.255.0` prints `/24`; `0xffffff00` prints `/24`) and exits 0. Must fail: a mask written with three numbers prints "mask needs four numbers" and exits non-zero. Captured output: `results.md` with the learner's own numbers and the prefix line. Hints: "copy the numbers from the command on your computer, not from the lab"; stuck diagnostic: `cat my-numbers.txt` shows what the checker read.
-- Diagram: MermaidDiagram: command on your computer, paste into `my-numbers.txt`, checker in the lab prints the prefix. Claim: your numbers live on your computer; the lab only reads what you paste. See Roadmap issues 1 and 2 (`sudo`, where the checker runs).
-- Interactive: `net-replay-own-numbers`. One QUIZ: for three commands, "On your computer or in the lab?" Near miss: typing `ipconfig` in the lab, or a Windows editor saving CRLF line endings.
+- Diagram: MermaidDiagram: command on your computer, paste into `my-numbers.txt`, checker in the lab prints the prefix. Claim: your numbers live on your computer; the lab only reads what you paste, and the lab checker is what checks them.
+- Interactive: `net-replay-own-numbers`. One QUIZ: for three commands, "On your computer or in the lab?" (one of the three is `sudo`: not needed in the lab). Near miss: typing `ipconfig` in the lab, or a Windows editor saving CRLF line endings.
 
 ### 1.4 Two computers inside your laptop (Build, 45 min, slow path 70)
 - Challenge: challenge 1 part 1, `challenges/challenge-1-two-computers/part-1-virtual-cable/` (proposed). Support: guided.
@@ -102,7 +102,7 @@ Counting rules from `audit-course.mjs`: a tag is any opening `<Component`; child
 
 | Ch | Top-level components | Tags (est.) | Assessments | Prose floor |
 |---|---|---|---|---|
-| 1.1 | LearningObjectives, Callout, MermaidDiagram, LearningLog, GlossaryTerm | 8 | PREDICT, QUIZ | 1,200 |
+| 1.1 | LearningObjectives, Callout, MermaidDiagram, LearningLog, GlossaryTerm | 8 | PREDICT, QUIZ | 700 |
 | 1.2 | Steps, MermaidDiagram, Callout, MustRead, InteractiveCanvas, GlossaryTerm | 17 | QUIZ | 1,200 |
 | 1.3 | Steps, MermaidDiagram, Callout, InteractiveCanvas, GlossaryTerm | 14 | QUIZ | 1,200 |
 | 1.4 | Steps, MermaidDiagram, Callout, InteractiveCanvas, GlossaryTerm, BigWordAlert (network namespace) | 17 | PREDICT, QUIZ | 1,200 |
@@ -110,6 +110,8 @@ Counting rules from `audit-course.mjs`: a tag is any opening `<Component`; child
 | 1.6 | MermaidDiagram, InteractiveCanvas, BigWordAlert (MAC address), GlossaryTerm, Callout | 7 | PREDICT, QUIZ | 1,200 |
 | 1.7 | none | 0 | QUIZ x5 | quiz only |
 | 1.8 | Checklist, LearningLog, ChapterRecap, Callout | 4 | OPEN_QUESTION | 700 |
+
+Prose floors follow roadmap v3.1: Learn and Build chapters at least 1,200 prose words; Read, Code and Lab chapters and Gates at least 700. The 700 floor is a proposed course exception that waits for the sponsor's G2C decision; if it is rejected, the Read chapter is re-timed to 15 to 20 minutes. Check chapters are quiz-only.
 
 `LearningObjectives` in 1.1, `ChapterRecap` in 1.8. Diagram plan: six Mermaid diagrams (1.1 to 1.6, none in the Check or Gate); the module's required diagram is covered many times over, and every Learn chapter has one. No InterestingRead or RealWorldEvent in this module; the one MustRead is in 1.2.
 
@@ -119,7 +121,7 @@ Counting rules from `audit-course.mjs`: a tag is any opening `<Component`; child
 |---|---|---|---|---|---|
 | `net-packet-inspect` | `[packet]` inspect | 1.5 | Every field in a packet is a number someone set, and the fields differ by protocol | Two captured packets only (ICMP echo, one DNS query); not a live capture | Annotated static captures with a quiz per field |
 | `net-packet-wrap` | `[packet]` wrap | 1.6 | One packet carries three addresses for three jobs, and each hop removes one layer | One packet, one direction, Ethernet only, no TCP behaviour | Same fallback |
-| `net-replay-setup-checker` | `[replay]` | 1.2 | The checker names the failure and its fix | Recorded run from the reference solution | `[sequence]` of two actors (learner, lab) with a Predict before each step |
+| `net-replay-setup-checker` | `[replay]` | 1.2 | The checker names the failure and its fix | Recorded run from the reference solution | `[sequence]` of two actors (learner, lab) with a Predict before the key steps only, within the chapter's budget of 3 assessments |
 | `net-replay-own-numbers` | `[replay]` | 1.3 | Your numbers live on your computer; the lab reads what you paste | Recorded run | Same fallback |
 | `net-replay-virtual-cable` | `[replay]` | 1.4 | One ping starts with ARP | Recorded run | Same fallback |
 
@@ -130,7 +132,7 @@ Do not write any slug into a chapter until it is registered. A chapter with a mi
 Gate 1.8 (25 minutes, review within three days, learners carry on). Evidence: the home network map with real numbers, three open questions, and challenge 0 results committed.
 - Checklist (verifiable in words): I wrote my address, mask, gateway, DNS server and the IPv4 address a website sees; I ran the setup checker and committed `results.md`; my two namespaces pinged and I committed the capture; I can say which field is TTL in my capture; I have three questions.
 - LearningLog: what surprised you about your own numbers; which of the three jobs (MAC, IP, port) you can already explain.
-- OPEN_QUESTION: "Draw or describe your home network with your own numbers. Say which address a website sees and which your computer uses, and write three questions you cannot answer yet." Answer may be written, a voice note or a labelled diagram (`minWords: 0` if a link-only answer is allowed, per the playbook). Model answer shows the shape, not the facts. See Roadmap issues 5.
+- OPEN_QUESTION: "Draw or describe your home network with your own numbers. Say which address a website sees and which your computer uses, and write three questions you cannot answer yet." Answer may be written, a voice note or a labelled diagram (`minWords: 0` if a link-only answer is allowed, per the playbook). Model answer shows the shape, not the facts. Until the platform has an image mode, a diagram answer is submitted as a link (`url`).
 - ChapterRecap: three to six points: two addresses for one device; the lab is a Linux machine inside your computer; one ping is ARP then echo; a packet has MAC, IP and port; two places to type commands.
 
 ## Risks
@@ -139,12 +141,19 @@ Gate 1.8 (25 minutes, review within three days, learners carry on). Evidence: th
 - Second stall: 1.3 and 1.4 "two places to type". Mitigation: every command block says **On your computer** or **In the lab**, the first lab prompt shows the side, and 1.3 quizzes the difference.
 - Third: the lab's `192.168.1.x` addresses look like the learner's real home addresses. Say in 1.4 that the lab is separate.
 - Accuracy traps from the dossier: the echo service is a third party and never graded [S52]; the Google IPv6 figure and the cellular CGN study are dated and must be re-checked [S33, S34]; `100.64.0.0/10` is "one sign, not proof" [S11]; do not use "5-tuple" (unverified); ephemeral port ranges differ (IANA vs Linux) [S27, S28]; never put a real public address in a lab, prose or quiz (decision 11, [S10]).
-- Prose floor: 1.1 has 15 minutes, which holds 1,200 words (about 6 minutes to read) plus a few commands; keep it to the commands in the roadmap's table.
+- Prose floor: 1.1 is a Read chapter with a 700-word floor (a proposed course exception), which leaves room in 15 minutes for the commands; keep it to the commands in the roadmap's table.
 
-## Roadmap issues
+## Resolved in roadmap v3.1
 
-1. 1.3 teaches `sudo`, but the pinned image package list (roadmap, dossier 5.2) has no `sudo` and the container runs as root. Decide: add `sudo` to the image, or teach `sudo` as "needed on your own Linux, not in the lab".
-2. 1.3 says "the checker prints your mask as a prefix" for the learner's real network, but the lab cannot see their real network (roadmap, Build environment) and a Windows host cannot run a bash checker. This brief assumes the learner pastes values into `my-numbers.txt` and the lab checker reads them. Confirm.
-3. 1.2 promises "five named failures" but names none. The five above are proposals.
-4. Check 1.7 and quiz-only rules: no earlier module exists to mix in, so 1.7 has five new questions.
-5. Gate answers may be a "labelled diagram", but `OPEN_QUESTION` has submission modes text, url, url_required, article and video_demo only. A diagram answer needs a link (`url` with `minWords: 0`) until the platform adds an image mode.
+1. `sudo`: resolved. It is taught for the learner's own Linux or WSL 2; in the lab the learner is root, so the image gets no `sudo` (decision log, 2026-10-25).
+2. Where the checker runs: resolved. The learner pastes host numbers into `my-numbers.txt` and the lab checker checks them and prints the prefix (decision log, 2026-10-25).
+3. Five named failures: resolved. The five this brief proposed are accepted (roadmap v3.1).
+4. Check 1.7 has no earlier module to mix in: resolved by keeping five questions about module 1 only (roadmap 1.7; no earlier module exists).
+5. Gate answers as a diagram: resolved. A diagram answer is submitted as a link (`url`) until the platform has an image mode (open decision 9).
+
+## Still open
+
+- Verify at G3 (untested): `curl` inside the lab (1.1), the exact `tcpdump -n -v` option set and TTL display (1.4), `tcpdump -e` for the broadcast MAC (1.6), the exact failure messages for the five named setup failures (1.2), and `docker version` and `docker info` as stuck diagnostics (1.2).
+- Not yet measured: the compressed image size and the Windows bind-mount flow (tested with challenge 0).
+- macOS commands (1.1, 1.3) are to be checked on a Mac before publish.
+- The 700-word floor for Read, Code and Lab chapters and Gates awaits the sponsor's G2C decision.

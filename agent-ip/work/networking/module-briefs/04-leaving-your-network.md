@@ -4,13 +4,13 @@ course: networking
 module: 04-leaving-your-network
 version: 1
 owner: curriculum-architect
-roadmap_version: 3
+roadmap_version: 3.1
 roadmap_confirmed: true
 ---
 
 # Module 04: Leaving your network: gateways and routes
 
-Source of truth: `02-curriculum-roadmap.md` v3, module 4. Core 335 min, slow path 425 min. Source IDs such as [S30] point to `01-research-dossier.md`.
+Source of truth: `02-curriculum-roadmap.md` v3.1, module 4. Core 335 min, slow path 425 min. Source IDs such as [S30] point to `01-research-dossier.md`.
 
 ## Outcome
 
@@ -57,10 +57,10 @@ Totals: 10 chapters: 2 Read (4.1, 4.5), 3 Learn (4.2 to 4.4), 1 Code, 1 Build, 1
 | 4.6 | Code: longest prefix match | Code | 40 | Implement a routing table lookup with a default route and a metric tie rule | lpm, js-bitops | none | graded code tests |
 | 4.7 | Build a router | Build | 75 | Two subnets and a router namespace: turn on forwarding, add routes, ping across (mid-point check: each side reaches its own router), capture the MAC change on both sides | default-gateway, lpm, namespaces-veth | ip-forwarding | challenge 2 tests and captures |
 | 4.8 | Lab: fix the broken office | Lab | 40 | Find three faults (a wrong mask, a wrong gateway, a missing return route) by running commands in the lab and reading their output, then fix them | lpm, ping-errors, ip-forwarding | diagnose-routing | graded lab checks |
-| 4.9 | Routing | Check | 15 | Choose routes and predict each hop's addresses for four situations; two questions from module 3 | lpm, ttl-icmp | none | quiz |
+| 4.9 | Routing | Check | 15 | Choose routes and predict each hop's addresses in three situations; two questions from module 3 | lpm, ttl-icmp | none | quiz |
 | 4.10 | Your traceroute, explained | Gate | 25 | Explain the hops you can; for each you cannot, write the question and what you would check | read-trace, ttl-icmp | none | trace explanation |
 
-Budgets for every chapter below: Learn, Read and Build at least 1,200 prose words; Gate at least 700; Check is quiz-only. Code and Lab have no floor in the instructions, so this brief plans at least 700 prose words for them (see Roadmap issues). At most 6 top-level components, 25 JSX tags (cap `GlossaryTerm` at 10 per chapter) and 3 assessment interactions. Every diagram has a text legend.
+Budgets for every chapter below: Learn and Build at least 1,200 prose words; Read, Code and Lab chapters and Gates at least 700 (a proposed course exception that waits for the sponsor's G2C decision; if it is rejected, the Read chapters are re-timed to 15 to 20 minutes); Check is quiz-only. At most 6 top-level components, 25 JSX tags (cap `GlossaryTerm` at 10 per chapter) and 3 assessment interactions. Every diagram has a text legend.
 
 ## Chapter blocks
 
@@ -79,11 +79,11 @@ Budgets for every chapter below: Learn, Read and Build at least 1,200 prose word
 - Assess: 1 `PREDICT`, 1 `QUIZ` (local versus remote destination, pick the destination MAC). Near miss: a real home router also rewrites the source IP (NAT); say this path has none and module 6 breaks the rule on purpose.
 
 **4.3 Routing tables and longest prefix match** (Learn; reinforces read-trace)
-- Hook: a router has routes for `10.0.0.0/8`, `10.1.0.0/16` and a default. A packet for `10.1.2.3` arrives. Which wins, and why not the first listed? Claim: the router picks the most specific matching route, so a longer prefix beats a shorter one regardless of order; the default (`0.0.0.0/0`) matches everything and loses to anything else [S30, S32].
+- Hook: a router at your provider could have routes for `10.0.0.0/8`, `10.1.0.0/16` and a default. A packet for `10.1.2.3` arrives. Which wins, and why not the first listed? Claim: the router picks the most specific matching route, so a longer prefix beats a shorter one regardless of order; the default (`0.0.0.0/0`) matches everything and loses to anything else [S30, S32].
 - Example: table `10.0.0.0/8 via 198.51.100.1`, `10.1.0.0/16 via 198.51.100.5`, `default via 198.51.100.9`, connected `192.168.1.0/24`. Destinations: `10.1.2.3` (the /16), `10.2.2.3` (the /8), `203.0.113.80` (default), `192.168.1.40` (connected), and a tie of two /16 rows with metrics 100 and 200 (lower wins).
 - Diagram: `MermaidDiagram` flowchart, destination to "all matching rows" to "longest prefix" to "lowest metric". Claim: order in the list is never the tie-breaker in the real world.
-- Interactive: `net-lab-route-choice`: edit the table, send packets to five destinations, see the chosen row. Predict first: for `10.1.2.3`, which row wins (first listed, the /16, the default)? `ip route get` output is a recorded sample.
-- Assess: 1 `PREDICT`, 1 `QUIZ` (a /32 host route versus a /24; equal prefixes with different metrics). Near miss: the hook says the router is "in your own trace", but a trace never shows a router's table; present it as a fictional composite router. "First listed wins a full tie" is the 4.6 exercise rule, not a router fact.
+- Interactive: `net-lab-route-choice`: edit the table, send packets to five destinations, see the chosen row. Predict first: for `10.1.2.3`, which row wins (first listed, the /16, the default)? The netlab generator now covers `ip route get`, so the output comes from the model's state (untested in the lab: verify at G3).
+- Assess: 1 `PREDICT`, 1 `QUIZ` (a /32 host route versus a /24; equal prefixes with different metrics). Near miss: a trace never shows a router's table, so the hook uses a plausible provider router and the chapter does not claim it is one the learner can see. "First listed wins a full tie" is the 4.6 exercise rule, not a router fact.
 
 **4.4 TTL, ICMP and traceroute** (Learn; reinforces read-trace)
 - Hook: routers do not tell anyone they forwarded your packet. So how does traceroute learn their addresses? Claim: each router lowers TTL by at least one and, at zero, drops the packet and (for unicast) sends ICMP Time Exceeded from its own address; traceroute sends probes with TTL 1, 2, 3 and reads those replies [S30, S29, S31].
@@ -104,7 +104,7 @@ Budgets for every chapter below: Learn, Read and Build at least 1,200 prose word
 
 **4.8 Lab: fix the broken office** (Lab; see Lab spec). Hook (derived): three complaints, one network. Claim: diagnose by walking the path, one question per hop, not by guessing.
 
-**4.9 Routing** (Check, 5 questions, one instrument). Q1: local versus remote, next-hop MAC. Q2: route choice with a metric tie and a connected route, then the next hop. Q3: a TTL 1 probe, whose address comes back. Together they cover the four situations. Q4 and Q5 from module 3: network address and same-subnet by hand; an ARP exchange. Near miss in the stems: no stem may repeat the 4.3 wording.
+**4.9 Routing** (Check, 5 questions, one instrument). Q1: local versus remote, next-hop MAC. Q2: route choice with a metric tie and a connected route, then the next hop. Q3: a TTL 1 probe, whose address comes back. Together they cover the three situations. Q4 and Q5 from module 3: network address and same-subnet by hand; an ARP exchange. Near miss in the stems: no stem may repeat the 4.3 wording.
 
 **4.10 Your traceroute, explained** (Gate; see Gate).
 
@@ -151,17 +151,17 @@ Mode fault, three independent faults, checks pass or fail. Commands the generato
 | 4.9 | 5 quiz fences | 5 (one instrument) |
 | 4.10 | Checklist, LearningLog, ChapterRecap, openquestion | 1 |
 
-Diagram plan: MermaidDiagram in 4.2, 4.3, 4.4, 4.5 (at least one per module, one per concept-heavy chapter). Module 3 questions in 4.9 are ordinary quiz fences, not `[addr: drill]` (see Roadmap issues).
+Diagram plan: MermaidDiagram in 4.2, 4.3, 4.4, 4.5 (at least one per module, one per concept-heavy chapter). Module 3 questions in 4.9 are ordinary quiz fences in the drill style, not `[addr: drill]`; no canvas in the Check chapter.
 
 ## Canvases
 
 | Slug | Chapter | Renderer | Claim | Stated limit | Fallback |
 |---|---|---|---|---|---|
-| `net-lab-mac-per-hop` | 4.2 | `[netlab]` hosts, switch, router, inspector; step mode; slice 1 | IPs stay, MACs change per link | Ethernet only (Wi-Fi frames differ), IPv4, two routers, no NAT | `[sequence]` laptop, home router, provider router, server, with a Predict before each step (exception) |
-| `net-lab-route-choice` | 4.3 | `[netlab]` router; explore; slice 1 | Most specific route wins, not the first | Static routes, one router, no routing protocols | `[sequence]` sender and router, table in the captions, Predict per destination |
+| `net-lab-mac-per-hop` | 4.2 | `[netlab]` hosts, switch, router, inspector; step mode; slice 1 | IPs stay, MACs change per link | Ethernet only (Wi-Fi frames differ), IPv4, two routers, no NAT | `[sequence]` laptop, home router, provider router, server, with a Predict before the key steps only, within the chapter's budget of 3 assessments (exception) |
+| `net-lab-route-choice` | 4.3 | `[netlab]` router; explore; slice 1 | Most specific route wins, not the first | Static routes, one router, no routing protocols | `[sequence]` sender and router, table in the captions, Predict before the key destinations, within the chapter's budget of 3 assessments |
 | `net-lab-ttl-probes` | 4.4 | `[netlab]` router, inspector; step; slice 1 | The router that kills the probe reports itself | No ICMP rate limits, one path, UDP-style probes | `[sequence]` laptop, R1, R2, server |
 | `net-lab-fix-office` | 4.8 | `[netlab]` host, switch, router, inspector; fault mode; slice 1 | Walk the path to find the broken hop | Fixed three-fault office | Blocked; recorded-output quiz |
-| `net-replay-router` | 4.7 | `[replay]` from the reference run | Predict each command's output, then see it | Recorded, not live | `[sequence]` learner and lab with Predict blocks |
+| `net-replay-router` | 4.7 | `[replay]` from the reference run | Predict each command's output, then see it | Recorded, not live | `[sequence]` learner and lab with Predict blocks before the key steps only, within the chapter's budget of 3 assessments |
 
 4.5 uses a static diagram only (no slug). The replay sits in a "phone-only path" section, so it does not follow a build that already proves the same thing for laptop learners.
 
@@ -180,10 +180,15 @@ Diagram plan: MermaidDiagram in 4.2, 4.3, 4.4, 4.5 (at least one per module, one
 - Accuracy traps (dossier "Care"): real-path commands run on the host, never in the lab (dossier 5.5); `ip route` man page does not say "longest prefix match", cite RFC 1812 [S30]; cite RFC 1812 for Time Exceeded, RFC 792 says "may"; IPv6 hop limit makes no error claim [S2]; `ip_forward` defaults to 0 [S28]; documentation ranges only for fictional public addresses [S10]; Facebook and Cloudflare incidents prove "DNS and routing depend on each other", not BGP teaching; the 4.5 diagram must not suggest a learner's router runs BGP.
 - Privacy: a trace shows the learner's provider path; tell them to scrub public hops before posting publicly.
 
-## Roadmap issues
+## Resolved in roadmap v3.1
 
-1. 4.3 hook says a router "in your own trace" has stated routes; a trace shows only hop addresses. Reword the hook; the brief treats it as a fictional router.
-2. The netlab command generator list (roadmap) omits `ip route get`, which 4.3's outcome needs (and `conntrack -L` for 6.2 and `ss` for 5.2 and 5.3). Until added, the brief shows recorded real output; `ip route get` is untested, verify at G3.
-3. 4.9 outcome totals six questions (four situations plus two from module 3) against the Check rule of three to five. The brief merges the situations into three questions and keeps the total at five.
-4. The roadmap reuses `[addr: drill]` in Checks for spaced practice, but the playbook bans canvases in quiz chapters. The brief uses plain quiz questions.
-5. Code and Lab chapters have no prose floor in the instructions; 700 words is a working assumption for the blueprint to confirm.
+1. The 4.3 hook and "your own trace": resolved. The hook uses a plausible provider router ("A router at your provider could have routes for ..."), not one visible in the trace.
+2. `ip route get` missing from the generator: resolved. The netlab generator now covers `ip route get`, `ss` and `conntrack -L`.
+3. 4.9 totalled six questions: resolved. 4.9 is three situations plus two questions from module 3, five in all.
+4. `[addr: drill]` in Checks: resolved. Check chapters are quiz-only and use plain quiz questions in the drill style.
+5. Prose floors for Code and Lab chapters: resolved by the proposed course exception (700 words for Read, Code and Lab chapters and Gates; 1,200 for Learn and Build), pending the sponsor's G2C decision.
+
+## Still open
+
+- Verify at G3 (untested): `ip route get` output from the lab generator (4.3); `tcpdump -e` and the TTL 64 then 63 display (4.7); the missing-return-route symptom as a ping result (4.8), before the generator is written.
+- The 700-word floor for Read, Code and Lab chapters and Gates awaits the sponsor's G2C decision.

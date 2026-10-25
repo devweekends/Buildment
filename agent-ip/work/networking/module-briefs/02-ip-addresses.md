@@ -4,7 +4,7 @@ course: networking
 module: 02-ip-addresses
 version: 1
 owner: curriculum-architect
-roadmap_version: 3
+roadmap_version: 3.1
 roadmap_confirmed: true
 ---
 
@@ -43,7 +43,7 @@ Core 210 minutes. Slow path 254 minutes (a quarter more on Read, Learn and Code)
 - Worked example: 2^32 = 4,294,967,296 addresses (derived, "4.3 billion"). IANA gives out /8 blocks, each 1/256 of the space; the last five were split equally among the five registries by a 2009 policy; IANA's pool emptied 3 February 2011 [S13]. APNIC took its final /8 on 15 April 2011 [S14]; ARIN reached zero on 24 September 2015, with a waiting list and transfers since [S16]; RIPE NCC ran out on 25 November 2019, with a waiting list giving eligible members one /24 [S15]. Care: RIPE's earlier "last /8" stage is unverified: leave it out.
 - Diagram: MermaidDiagram, a `timeline` of the four dates (flowchart left to right if the reader rejects `timeline`). Claim: the pool emptied region by region over eight years while the internet kept working.
 - Interactive: none (Read). The `RealWorldEvent` is the IANA exhaustion. PREDICT first: "In 2011 the free pool ran out. What happened to websites already using IPv4 addresses?" (nothing changed for them).
-- Assessment: one PREDICT, one QUIZ (a new provider in 2018 asks ARIN for addresses: what do they find? a waiting list or the transfer market [S16]). Near miss: the "stopped working" misconception. At 10 minutes the 1,200-word floor leaves no room for tasks (see Roadmap issues 4).
+- Assessment: one PREDICT, one QUIZ (a new provider in 2018 asks ARIN for addresses: what do they find? a waiting list or the transfer market [S16]). Near miss: the "stopped working" misconception. This is a Read chapter, so the floor is 700 prose words (a proposed course exception, see Interactions), which fits 10 minutes with the PREDICT and QUIZ.
 
 ### 2.2 An address is one 32-bit number (Learn, 35 min)
 - Hook: why is `192.168.1.256` not an address? Claim: each dotted part is one byte (8 bits, 0 to 255), so an address is 32 bits, which is one number from 0 to 4,294,967,295 [S1]; the dots are for people. 256 does not fit in 8 bits.
@@ -61,21 +61,21 @@ Core 210 minutes. Slow path 254 minutes (a quarter more on Read, Learn and Code)
 
 ### 2.4 Private, shared and special addresses (Learn, 40 min)
 - Hook: your laptop and millions of others are all `192.168.1.x` right now. Why is that allowed? Claim: some ranges are set aside for use inside networks and are never routed on the public internet, so many networks can reuse them; the price is that they mean nothing outside. Four kinds: public, private, shared, special.
-- Worked example (twelve addresses to sort): `192.168.1.23` private, `10.20.143.7` private, `172.17.0.3` private, `172.31.255.254` private, `172.32.0.1` public (private ends at `172.31.255.255`), `100.72.14.9` shared, `127.0.0.1` special, `169.254.12.7` special (what a Windows or macOS computer gives itself when DHCP fails [S12]), `203.0.113.45` special (documentation, a stand-in for a public address [S10]), `0.0.0.0` special, `192.169.1.1` public, `1.1.1.1` public (a real address, named in the Cloudflare incident [S50]; see Roadmap issues 3). Private blocks [S8], shared block [S11], special rows [S9] (registry updated 2025-10-09).
+- Worked example (twelve addresses to sort): `192.168.1.23` private, `10.20.143.7` private, `172.17.0.3` private, `172.31.255.254` private, `172.32.0.1` public (private ends at `172.31.255.255`), `100.72.14.9` shared, `127.0.0.1` special, `169.254.12.7` special (what a Windows or macOS computer gives itself when DHCP fails [S12]), `203.0.113.45` special (documentation, a stand-in for a public address [S10]), `0.0.0.0` special, `192.169.1.1` public, `1.1.1.1` public (a real address, named in the Cloudflare incident [S50], allowed as a real public address in classification by roadmap v3.1). Private blocks [S8], shared block [S11], special rows [S9] (registry updated 2025-10-09).
 - Diagram: MermaidDiagram flowchart as a decision list: in `10/8`, `172.16/12` or `192.168/16`? private; in `100.64/10`? shared; in a special row? special; otherwise public. Claim: classifying is a lookup against a short list.
-- Interactive: `net-addr-classify` (`[addr: classify]`) plus a three-step first look at NAT: laptop `192.168.1.23` to router to server `203.0.113.80`; the router rewrites the source to its outside address (address rewritten, port kept, dossier 5.6); the reply comes back. Labelled "full story in module 6". PREDICT first: "The server receives the packet. Which source address does it see?" Delivered as `TraceRequest` so the chapter keeps one canvas (see Roadmap issues 2). The visible Callout says documentation ranges stand in for real public addresses (decision 11).
+- Interactive: `net-addr-classify` (`[addr: classify]`) plus a three-step first look at NAT: laptop `192.168.1.23` to router to server `203.0.113.80`; the router rewrites the source to its outside address (address rewritten, port kept, dossier 5.6); the reply comes back. Labelled "full story in module 6". PREDICT first: "The server receives the packet. Which source address does it see?" Delivered as `TraceRequest` so the chapter keeps one canvas, `[addr: classify]`. The visible Callout says documentation ranges stand in for real public addresses (decision 11).
 - Assessment: one PREDICT, one QUIZ (a colleague sets `172.32.0.5` as "private": what is wrong). BigWordAlert on "private address". Near miss: `172.16/12` read as `/16`; `192.169` read as private; `100.64.0.0/10` treated as private.
 
 ### 2.5 Code: addresses as numbers (Code, 45 min)
 - Exercise: one `codeexercise` with three exports. `ipToNumber(ip: string): number` (0 to 4294967295), `numberToIp(n: number): string`, `classify(ip: string): "public" | "private" | "shared" | "special"`. Signatures are proposals: the roadmap gives only the one-line spec.
-- Input format: a dotted string with exactly four parts, each one to three digits, no leading zero unless the part is `0`, no spaces or signs, value 0 to 255. Invalid input throws an `Error` whose message starts `invalid address`. The prompt states the prefix list: private `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`; shared `100.64.0.0/10`; special `0.0.0.0/8`, `127.0.0.0/8`, `169.254.0.0/16`, `192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`, `198.18.0.0/15`, `240.0.0.0/4`; everything else public. The list is shorter than the full registry: say so. No test uses `224.0.0.0/4` (see Roadmap issues 3).
+- Input format: a dotted string with exactly four parts, each one to three digits, no leading zero unless the part is `0`, no spaces or signs, value 0 to 255. Invalid input throws an `Error` whose message starts `invalid address`. The prompt states the prefix list: private `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`; shared `100.64.0.0/10`; special `0.0.0.0/8`, `127.0.0.0/8`, `169.254.0.0/16`, `192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`, `198.18.0.0/15`, `240.0.0.0/4`; everything else public. The list is shorter than the full registry: say so. No test uses `224.0.0.0/4`, which is not among the dossier's registry rows.
 - Worked example: `255 << 24` prints `-16777216` in JavaScript; `(255 << 24) >>> 0` prints `4278190080` (checked by script). The chapter teaches `<<`, `|`, `>>>`, `& 255` and `>>> 0` first.
 - Test list: ipToNumber: `192.168.1.23` is 3232235799; `10.0.0.1` is 167772161; `0.0.0.0` is 0; `255.255.255.255` is 4294967295 (unsigned); `128.0.0.0` is 2147483648 (sign bit); throws on `192.168.1.256`, `1.2.3`, `1.2.3.4.5`, `01.2.3.4`, `1..3.4`, `1.2.3.-4`, `a.b.c.d`, empty string, a leading space. numberToIp: 3232235799, 0, 4294967295, 2147483648; five round trips; throws on -1, 4294967296, 1.5. classify: `172.16.0.0`, `172.31.255.255` private; `172.15.255.255`, `172.32.0.0` public; `100.64.0.0`, `100.127.255.255` shared; `100.128.0.0` public; `127.0.0.1`, `169.254.1.1`, `203.0.113.45`, `0.0.0.0`, `255.255.255.255`, `240.0.0.1`, `198.19.255.255` special; `192.169.1.1`, `1.1.1.1` public.
 - Hints: "shift the running total left by 8 before you add the next part"; "`>>> 0` turns a signed 32-bit result into an unsigned one"; "check each part against 0 to 255 before you build the number". A reference helper (`ipToNumber`) unlocks after three failed attempts so `classify` never depends on a failed step.
 - Diagram: MermaidDiagram flowchart: string, four parts, number, compared with ranges, class. Claim: convert once, then compare numbers. Assessment: one CODE and one PREDICT (what `255 << 24` prints), before the exercise. Near miss: a `classify` that checks string prefixes and calls `172.32.x.x` private.
 
 ### 2.6 IP addresses (Check, 15 min)
-- Five QUIZ fences in `2.6-ip-addresses-quiz.md`: three new (which number is `192.168.0.1`: 3232235521; size of a `/26`; is `172.32.0.5` private) and two from module 1 (which number in a capture line is the TTL; which of the two addresses a website replies to). Every option gets one reason; no teaching text.
+- Five QUIZ fences in `2.6-ip-addresses-quiz.md`, quiz-only with no canvas; the spaced practice is plain quiz questions in the drill style: three new (which number is `192.168.0.1`: 3232235521; size of a `/26`; is `172.32.0.5` private) and two from module 1 (which number in a capture line is the TTL; which of the two addresses a website replies to). Every option gets one reason; no teaching text.
 
 ### 2.7 Why your phone starts with 192.168 or 10 (Gate, 20 min)
 - Evidence: a written, voice or diagram explanation for a friend: why a phone's address starts with `192.168` or `10`, why that is allowed, and the question NAT must answer. Expected shape of a strong answer: the free pool ran out, private ranges are reused inside many networks and never routed publicly, so something must translate; the question is how a reply finds the right device when many share one outside address. Gate branches: none.
@@ -86,13 +86,15 @@ Rules as in module 1 (tags, free fences, one canvas, a diagram in every chapter 
 
 | Ch | Top-level components | Tags (est.) | Assessments | Prose floor |
 |---|---|---|---|---|
-| 2.1 | LearningObjectives, MermaidDiagram, RealWorldEvent, GlossaryTerm | 6 | PREDICT, QUIZ | 1,200 |
+| 2.1 | LearningObjectives, MermaidDiagram, RealWorldEvent, GlossaryTerm | 6 | PREDICT, QUIZ | 700 |
 | 2.2 | MermaidDiagram, InteractiveCanvas, BigWordAlert, GlossaryTerm, Callout | 7 | PREDICT, QUIZ | 1,200 |
 | 2.3 | MermaidDiagram, InteractiveCanvas, BigWordAlert (CIDR), GlossaryTerm, ComparePanel | 10 | PREDICT, QUIZ | 1,200 |
 | 2.4 | MermaidDiagram, InteractiveCanvas, TraceRequest, BigWordAlert, Callout, GlossaryTerm | 11 | PREDICT, QUIZ | 1,200 |
-| 2.5 | MermaidDiagram, Callout, GlossaryTerm | 5 | PREDICT, CODE | 1,200 |
+| 2.5 | MermaidDiagram, Callout, GlossaryTerm | 5 | PREDICT, CODE | 700 |
 | 2.6 | none | 0 | QUIZ x5 | quiz only |
 | 2.7 | Checklist, LearningLog, ChapterRecap | 3 | OPEN_QUESTION | 700 |
+
+Prose floors follow roadmap v3.1: Learn and Build chapters at least 1,200 prose words; Read, Code and Lab chapters and Gates at least 700. The 700 floor is a proposed course exception that waits for the sponsor's G2C decision; if it is rejected, the Read chapter is re-timed to 15 to 20 minutes. Check chapters are quiz-only.
 
 `LearningObjectives` in 2.1, `ChapterRecap` in 2.7. One RealWorldEvent (2.1); no MustRead needed. Diagram plan: five Mermaid diagrams, one in every chapter from 2.1 to 2.5; the module diagram requirement is met. Unassisted drills inside `net-addr-bits` and `net-addr-cidr` are the graded evidence for 2.2 and 2.3 (O3).
 
@@ -103,9 +105,8 @@ Rules as in module 1 (tags, free fences, one canvas, a diagram in every chapter 
 | `net-addr-bits` | `[addr]` bits + drill | 2.2 | An address is 32 bits and one number; flipping a bit changes both views | IPv4 only; no hex view | Static worked table; drills become ordinary quiz questions (decision 3) |
 | `net-addr-cidr` | `[addr]` allocate + prefix + drill | 2.3 | Classes waste addresses; CIDR sizes blocks to need and one block can stand for many | Five fixed organisations; counts addresses and routing entries only, no real routing | ComparePanel table of the 254,360 versus 3,768 result plus quiz questions |
 | `net-addr-classify` | `[addr]` classify | 2.4 | An address is public, private, shared or special by a list lookup | The stated prefix list, not the full registry; no multicast | Static decision list plus quiz questions |
-| `net-seq-nat-first-look` | `[sequence]` laptop, router, server | 2.4 | A router rewrites a packet's source address | Three steps; no input; port shown unchanged ("full story in module 6") | `TraceRequest` with three `TraceStep` and a Predict before it (the plan above) |
 
-The `[addr]` library is the reference solution of 2.5, 3.7 and 3.8 (roadmap), so the canvas and the tests cannot disagree. `[addr]` must be built before this module's chapters are written (decision 3). 2.4 has two registered pieces in the roadmap but the audit allows one canvas per chapter (Roadmap issues 2).
+The `[addr]` library is the reference solution of 2.5, 3.7 and 3.8 (roadmap), so the canvas and the tests cannot disagree. `[addr]` must be built before this module's chapters are written (decision 3). 2.4 keeps one canvas, `net-addr-classify`. The first look at NAT is a `TraceRequest` step-through with three `TraceStep` (laptop, router, server; port shown unchanged, "full story in module 6") and a Predict before it, not a second canvas.
 
 ## Gate
 
@@ -121,10 +122,14 @@ Gate 2.7 (20 minutes, review within three days, learners carry on). Evidence: th
 - Accuracy traps from the dossier: "ran out" is the free pool, not a failure [S15, S16]; `172.16/12` ends at `172.31.255.255`; Class D `224/4` is unverified (RFC 1112 not fetched) and the RIPE NCC 2012 "last /8" is unverified: use neither; the "right size" class B reasoning is derived, not quoted; subnetting masks are taught contiguous only [S7]; the documentation blocks are only three /24s [S10]; `100.64.0.0/10` is shared space, not private [S11]; port behaviour in the first look must match dossier 5.6 (address rewritten, port kept unless a clash).
 - Do not mention RIR waiting-list or transfer-market numbers beyond the sources.
 
-## Roadmap issues
+## Resolved in roadmap v3.1
 
-1. `[addr: drill]` is "reused in the checks" (roadmap), but Check chapters are quiz-only and canvases are never allowed in quiz chapters. This brief writes check questions in the drill's style as ordinary quiz fences.
-2. 2.4 lists `[addr: classify]` and `[sequence: laptop, router, server]`, two canvases, but `audit-course.mjs` allows one canvas per chapter. This brief keeps one canvas and uses `TraceRequest` for the NAT first look. Either relax the audit or choose one piece.
-3. 2.4 and 2.5 need at least one genuinely public address, but decision 11 allows only documentation ranges, which the registry classes as special. This brief uses `1.1.1.1` (named in a sourced incident, [S50]) once in the sort and the tests; confirm. Also `224.0.0.0/4` is not among the dossier's registry rows, so no sort or test uses it.
-4. Read chapters of 10 minutes (2.1) cannot hold the 1,200-word floor plus any task for second-language readers; the slow path (+25%) is the only buffer. Code chapters are not named in the brief's word-floor rule; the audit applies 1,200, which this brief follows.
-5. 2.5 is "one skill per exercise" with three functions; this brief treats it as one `codeexercise` with three exports and per-function tests, within the playbook's one-CODE-per-chapter budget. The roadmap gives no signatures; those above are proposals.
+1. `[addr: drill]` in Check chapters: resolved. Check chapters are quiz-only and use plain quiz questions in the drill style; `[addr: drill]` stays in Learn chapters 2.2, 2.3, 3.2 and 3.5 (decision log, 2026-10-25).
+2. Two canvases in 2.4: resolved. 2.4 keeps one canvas (`[addr: classify]`) and uses `TraceRequest` for the first look at NAT (decision log, 2026-10-25).
+3. A public address for classification: resolved. `1.1.1.1` [S50] may be used as a real public address in classification; fictional hosts still use documentation ranges (decision 11 refined).
+4. The 10-minute Read chapter and the word floor: resolved by the proposed course exception. Read, Code and Lab chapters and Gates use 700 prose words; Learn and Build use 1,200 (decision log, 2026-10-25, pending the sponsor's G2C decision).
+
+## Still open
+
+- 2.5 is treated as one `codeexercise` with three exports and per-function tests, within the one-CODE-per-chapter budget. The roadmap gives no signatures; those in 2.5 are proposals to confirm in the blueprint.
+- The 700-word floor for Read, Code and Lab chapters and Gates awaits the sponsor's G2C decision.

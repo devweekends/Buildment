@@ -4,13 +4,13 @@ course: networking
 module: 06-nat
 version: 1
 owner: curriculum-architect
-roadmap_version: 3
+roadmap_version: 3.1
 roadmap_confirmed: true
 ---
 
 # Module 06: NAT: how every device at home reaches the internet
 
-Source of truth: `02-curriculum-roadmap.md` v3, module 6. Core 400 min, slow path 519 min. Source IDs such as [S18] point to `01-research-dossier.md`. Execution tests are dossier 5.5 to 5.7.
+Source of truth: `02-curriculum-roadmap.md` v3.1, module 6. Core 400 min, slow path 519 min. Source IDs such as [S18] point to `01-research-dossier.md`. Execution tests are dossier 5.5 to 5.7.
 
 ## Outcome
 
@@ -53,7 +53,7 @@ Totals: 11 chapters: 1 Read (6.1), 4 Learn (6.2 to 6.5), 1 Code, 2 Build, 1 Lab,
 |---|---|---|---|---|---|---|---|
 | 6.1 | Fifteen devices, one public address | Read | 10 | See that a server receives the same source address from your phone and your laptop | nat-first-look, conversation-id | none | none (read) |
 | 6.2 | The NAT table | Learn | 40 | Predict the source after a Linux router: the address is always rewritten, and the port changes only when two devices would clash (other routers may differ); read the real table and the new port with `conntrack -L` | conversation-id, default-gateway | napt, conntrack | netlab check |
-| 6.3 | Why the internet cannot reach your laptop | Learn | 35 | Explain the two real reasons (the internet has no route to private ranges; an unsolicited packet has no mapping to translate) and that NAT is not a firewall (home routers add one); set up port forwarding; recognise it in `docker run -p 8080:80` | napt, lpm, listen-address | inbound, port-forwarding | netlab check |
+| 6.3 | Why the internet cannot reach your laptop | Learn | 35 | Explain the two real reasons (the internet has no route to private ranges; an unsolicited packet has no mapping to translate) and that NAT is not a firewall (a filter is a separate rule, which 6.8 builds); set up port forwarding; recognise the same idea in `docker run -p 8080:80`, which publishes a container port using NAT rules [S75] | napt, lpm, listen-address | inbound, port-forwarding | netlab check |
 | 6.4 | Carrier-grade NAT | Learn | 30 | Explain provider NAT and why it is common on mobile networks; treat `100.64.0.0/10` as one sign, not proof; with no router access or on a hotspot, use the private hops in your own trace instead | napt, address-kinds, read-trace | cgnat | netlab check |
 | 6.5 | NAT timeouts, keepalives and video calls | Learn | 35 | Explain why idle mappings expire (sourced examples: UDP at least two minutes in RFC 4787; 350 seconds on one cloud NAT gateway), what keepalives do, and that STUN helps calls through some NATs while others need a relay; see your own lab router's timers with `conntrack -L` | napt, udp | nat-timeouts | in-chapter quiz |
 | 6.6 | Code: a NAT table | Code | 45 | Translate outbound packets (keep the port unless taken, else the lowest free port from a stated range: the exercise's model, not the number a real capture shows), translate replies, drop unknown inbound packets, expire mappings using a `now` parameter | napt, js-basics | none | graded code tests |
@@ -63,7 +63,7 @@ Totals: 11 chapters: 1 Read (6.1), 4 Learn (6.2 to 6.5), 1 Code, 2 Build, 1 Lab,
 | 6.10 | NAT | Check | 15 | Predict addresses on both sides of one and two NATs, and whether the port changes; two questions from module 5 | napt, cgnat | none | quiz |
 | 6.11 | Answer the course question | Gate | 25 | Answer it with your own capture and `conntrack` output; branches if your own public address is IPv6 or shared | napt, conntrack | none | course question answered with own capture |
 
-Budgets for every chapter below: Learn, Read and Build at least 1,200 prose words; Gate at least 700; Check is quiz-only. Code and Lab have no floor in the instructions, so this brief plans at least 700 prose words (see Roadmap issues). At most 6 top-level components, 25 JSX tags (cap `GlossaryTerm` at 10) and 3 assessment interactions. Every diagram has a text legend. Fictional public addresses use only `192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`, with a visible note in 6.1 (decision 11).
+Budgets for every chapter below: Learn and Build at least 1,200 prose words; Read, Code and Lab chapters and Gates at least 700 (a proposed course exception that waits for the sponsor's G2C decision; if it is rejected, the Read chapter is re-timed to 15 to 20 minutes); Check is quiz-only. At most 6 top-level components, 25 JSX tags (cap `GlossaryTerm` at 10) and 3 assessment interactions. Every diagram has a text legend. Fictional public addresses use only `192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`, with a visible note in 6.1 (decision 11).
 
 ## Chapter blocks
 
@@ -79,14 +79,14 @@ Budgets for every chapter below: Learn, Read and Build at least 1,200 prose word
 - Example: laptop `192.168.1.23` and phone `192.168.1.24`, both from port 41000 to `203.0.113.80:8080`, router outside `203.0.113.1`. Laptop: source becomes `203.0.113.1:41000` (kept). Phone: `203.0.113.1:<new port>` (changed). Tested behaviour [dossier 5.6]: address rewritten, port kept; port rewritten only on a clash; `conntrack -L` shows both rows. The new port is chosen by the kernel (one run gave 37613); never print one as the answer.
 - Diagram: `MermaidDiagram` flowchart of one packet before and after the router with the table row. Claim: the row is what lets the reply find its device.
 - Interactive: `net-lab-nat-table`: watch the table fill, inspect each packet before and after. Predict first: both send from 41000; what does the server see (both change, only the second changes, neither changes)? (Only the second.)
-- Assess: 1 `PREDICT`, 1 `QUIZ` (two devices, different source ports: does anything change?). Near miss: "other routers may differ"; RFC 4787 says mapping must be endpoint-independent, but real routers vary and no measurement is sourced, so teach the requirement, not "all routers do this" [S18]. The lab's limits line says the same. `conntrack -L` is shown as recorded real output (see Roadmap issues).
+- Assess: 1 `PREDICT`, 1 `QUIZ` (two devices, different source ports: does anything change?). Near miss: "other routers may differ"; RFC 4787 says mapping must be endpoint-independent, but real routers vary and no measurement is sourced, so teach the requirement, not "all routers do this" [S18]. The lab's limits line says the same. The netlab generator covers `conntrack -L`, so the rows come from the model's state; the learner reads a real table in 6.7 (untested in the lab generator: verify at G3).
 
 **6.3 Why the internet cannot reach your laptop** (Learn; reinforces address-kinds)
-- Hook: a friend wants to open the website on your laptop at home and types your public address. What happens to their packet? Claim: two separate reasons stop it: the internet has no route to private ranges, and an unsolicited packet at the router has no mapping to translate; NAT alone is not a firewall, which is why a route plus a rule can open it.
+- Hook: a friend wants to open the website on your laptop at home and types your public address. What happens to their packet? Claim: two separate reasons stop it: the internet has no route to private ranges, and an unsolicited packet at the router has no mapping to translate; NAT is not a firewall, and a filter is a separate rule, which 6.8 builds.
 - Example: friend at `198.51.100.77` sends to `203.0.113.45:8080`. No row, no rule: the router answers refused (tested, dossier 5.6). If the outside had a route `192.168.1.0/24` via the router, a packet addressed straight to `192.168.1.23` gets through (tested, dossier 5.6), so masquerade is not a firewall. Add a forward `203.0.113.1:8080` to `192.168.1.23:80` (tested), then a filter.
 - Diagram: `MermaidDiagram` flowchart: inbound packet, "mapping or rule?", drop or rewrite. Claim: only an outbound packet or a forwarding rule creates the mapping.
 - Interactive: `net-lab-inbound-forward`: send an inbound packet with no mapping; give the outside a route and watch it pass; add a forwarding rule; add a filter. Predict first: a friend sends to your router's public address, no rule, no earlier outbound packet; what comes back (refused, silent timeout, your laptop's page)? (Refused.)
-- Assess: 1 `PREDICT`, 1 `QUIZ` (which of three setups lets the packet in). Near miss: a real home router usually adds its own firewall and may drop silently; the lab router has none, so it refuses. Both "home routers add one" and "Docker `-p` is a forwarding rule" lack a dossier source (the second only [S58]); source them before drafting.
+- Assess: 1 `PREDICT`, 1 `QUIZ` (which of three setups lets the packet in). Near miss: do not claim that home routers always add a firewall. The chapter says NAT is not a firewall and a filter is a separate rule built in 6.8; the lab router has no filter until the learner adds one, so an unforwarded port is refused. `docker run -p` publishes a port using NAT rules [S75] (the source names no rule type).
 
 **6.4 Carrier-grade NAT** (Learn)
 - Hook: your router's page says its outside address is `100.72.14.9`, but websites see `203.0.113.45`. Who is the second router? Claim: a provider can run NAT too, with `100.64.0.0/10` on the link to customers [S11, S19]; a packet can be translated twice; an address in that block is one sign, not proof.
@@ -108,14 +108,15 @@ Budgets for every chapter below: Learn, Read and Build at least 1,200 prose word
 
 **6.8 Build a home router, part 2: forwarding and a guest network** (Build; see Build spec). Hook (derived): your friend still cannot see the web server. Claim: a forward rule opens one port, an unforwarded port is refused, and a forward rule can keep a guest away from the home subnet.
 
-**6.9 Lab: reach the home server from outside** (Lab; see Lab spec). **6.10 NAT** (Check, 5 questions, one instrument). Q1: source address and port after one Linux NAT with a clash. Q2: addresses at each stage of two NATs. Q3: why an unsolicited inbound packet fails. Q4 and Q5 from module 5: match a reply to its socket; who can connect to a listening address. Near miss: no stem repeats the 6.2 wording.
+**6.9 Lab: reach the home server from outside** (Lab; see Lab spec). **6.10 NAT** (Check, 5 questions, one instrument, plain quiz fences with no canvas). Q1: source address and port after one Linux NAT with a clash. Q2: addresses at each stage of two NATs. Q3: why an unsolicited inbound packet fails. Q4 and Q5 from module 5: match a reply to its socket; who can connect to a listening address. Near miss: no stem repeats the 6.2 wording.
 
 ## Code spec: 6.6
 
 - Signature: `export function createNat({ publicIp, portRange, idleTimeout })` returns `{ outbound(packet, now), inbound(packet, now), table(now) }`. A packet is `{ protocol, srcIp, srcPort, dstIp, dstPort }`. Every call takes `now` (seconds).
-- `outbound`: if the source port is free on the public side, keep it; else use the lowest free port in `portRange` (tests use a stated range, for example `[50000, 50099]`). Reuse the row for the same conversation and refresh its time. Returns the translated packet. When no port is free it returns `"drop"` and leaves every existing row alone (rule from [S19]; not in the roadmap spec, confirm at review).
+- `outbound`: if the source port is free on the public side, keep it; else use the lowest free port in `portRange` (tests use a stated range, for example `[50000, 50099]`). Reuse the row for the same conversation and refresh its time. Returns the translated packet. When no port is free it returns `"drop"` and leaves every existing row alone (rule from [S19], now in the roadmap spec).
 - `inbound`: translate a reply to the inside address and port; an unknown packet returns the string `"drop"`.
 - `table(now)`: the live rows (expired ones removed).
+- Simplification, stated in the chapter: the exercise keeps the port unless it is taken, but Linux checks the whole conversation (outside address, port and destination) for a clash. A full range drops the new flow [S19].
 - Edge cases: expiry exactly at `idleTimeout`; a port freed by expiry is reusable; inbound to a known public port from a different remote endpoint returns `"drop"` (the exercise's model; real routers vary [S18]); two protocols on the same port number.
 - Tests: kept port; clash gives the lowest free port; reply maps back to the right device; unknown inbound drops; refresh on reuse; expiry then drop; freed port reused; pool exhaustion drops without eviction; wrong remote drops. Failure mode: the expiry boundary.
 - Hint ladder: (1) a row is keyed by inside address and port plus remote; (2) store `lastSeen`; (3) the lowest-port search. No helper dependency.
@@ -148,7 +149,7 @@ Budgets for every chapter below: Learn, Read and Build at least 1,200 prose word
 ## Lab spec: 6.9 Lab: reach the home server from outside
 
 Mode fault, three levels, checks pass or fail; commands `ping`, `ip route`, `ip neigh`, `traceroute`, plus the inspector and the NAT table panel.
-- Level 1: the roadmap says "one injected fault" without naming it. Proposed: the forward rule targets `192.168.1.32` instead of `.23`; found by pinging the target from the router. Then forward the port; check the outside reaches the server.
+- Level 1: the one injected fault is the brief's proposal, accepted in roadmap v3.1: the forward rule targets `192.168.1.32` instead of `.23`; found by pinging the target from the router. Then forward the port; check the outside reaches the server.
 - Level 2: two web servers both want port 80. Fix: forward `8080` and `8081` to each; one outside address plus one port names one destination.
 - Level 3: the provider adds carrier-grade NAT. Graded: pick why forwarding stops (no mapping exists at the provider NAT for inbound packets) and what still works (connections started from inside, so a relay as in 6.5). Tunnels and IPv6 are "later" notes, not graded.
 - Fallback if slice 2 is late: the lab is blocked; use diagnosis from recorded command output, graded as a quiz.
@@ -158,7 +159,7 @@ Mode fault, three levels, checks pass or fail; commands `ping`, `ip route`, `ip 
 | Ch | Planned top-level components (max 6) | Assessments (max 3) |
 |---|---|---|
 | 6.1 | LearningObjectives, InteractiveCanvas, predict, Callout (documentation-range note), Checklist | 1 |
-| 6.2 | MermaidDiagram, InteractiveCanvas, predict, quiz, BigWordAlert (NAT table), TerminalBlock (recorded `conntrack -L`) | 2 |
+| 6.2 | MermaidDiagram, InteractiveCanvas, predict, quiz, BigWordAlert (NAT table), TerminalBlock (`conntrack -L` sample) | 2 |
 | 6.3 | MermaidDiagram, InteractiveCanvas, predict, quiz, BigWordAlert (port forwarding), Callout (NAT is not a firewall) | 2 |
 | 6.4 | MermaidDiagram, InteractiveCanvas, predict, quiz, BigWordAlert (carrier-grade NAT), Callout (sign, not proof) | 2 |
 | 6.5 | MermaidDiagram, InteractiveCanvas (timeline), predict, quiz, MustRead (NAT gateway page), Callout (STUN box) | 2 |
@@ -174,13 +175,13 @@ Diagram plan: MermaidDiagram in 6.2 to 6.5 (at least one per module, one per con
 
 | Slug | Chapter | Renderer | Claim | Stated limit | Fallback |
 |---|---|---|---|---|---|
-| `net-lab-home-router-first-look` | 6.1 | `[netlab]` home router, host; explore; slice 2 | The server sees one address for many devices | Linux-style NAT only | `[sequence]` phone, laptop, router, server, Predict per step (exception) |
+| `net-lab-home-router-first-look` | 6.1 | `[netlab]` home router, host; explore; slice 2 | The server sees one address for many devices | Linux-style NAT only | `[sequence]` phone, laptop, router, server, Predict before the key steps only, within the chapter's budget of 3 assessments (exception) |
 | `net-lab-nat-table` | 6.2 | `[netlab]` home router, NAT, inspector; step; slice 2 | One row per conversation; port changes only on a clash | Linux masquerade; other routers differ (limits line) | `[sequence]` phone, laptop, router, server |
 | `net-lab-inbound-forward` | 6.3 | `[netlab]` home router, NAT, filter; step; slice 2 | Inbound needs a mapping or a rule; NAT is not a firewall | No router firewall modelled | `[sequence]` friend, router, laptop |
 | `net-lab-cgnat` | 6.4 | `[netlab]` home router, provider NAT, inspector; step; slice 2 | The packet is rewritten twice | One provider layer, no port limits shown | `[sequence]` laptop, home router, provider NAT, server |
-| `net-timeline-nat-idle` | 6.5 | `[timeline]` new model, needs the seconds-to-hours renderer change | A quiet mapping expires; keepalives reset it | Model timers (300 s, 120 s), not a real router's | Roadmap states none. Proposed: `[sequence]` laptop, router, server with a Predict (exception) |
+| `net-timeline-nat-idle` | 6.5 | `[timeline]` new model, needs the seconds-to-hours renderer change | A quiet mapping expires; keepalives reset it | Model timers (300 s, 120 s), not a real router's | A worked-example table of the mapping timeline plus a Predict (roadmap v3.1) |
 | `net-lab-reach-home-server` | 6.9 | `[netlab]` home router, provider NAT, fault; three levels; slice 2 | Forwarding works until a second NAT sits in front | Fixed scenario | Blocked; recorded-output quiz |
-| `net-replay-masquerade`, `net-replay-forward-guest` | 6.7, 6.8 | `[replay]` | Predict each command's output, then see it | Recorded, not live | `[sequence]` learner and lab with Predict blocks |
+| `net-replay-masquerade`, `net-replay-forward-guest` | 6.7, 6.8 | `[replay]` | Predict each command's output, then see it | Recorded, not live | `[sequence]` learner and lab with Predict blocks before the key steps only, within the chapter's budget of 3 assessments |
 
 ## Gate: 6.11 Answer the course question (25 min)
 
@@ -197,12 +198,16 @@ Diagram plan: MermaidDiagram in 6.2 to 6.5 (at least one per module, one per con
 - Third: carrying "NAT keeps the port" too far; the exercise (6.6) and the lab are simplified models.
 - Accuracy traps (dossier "Care"): NAT keeps the port unless there is a clash (Linux masquerade, tested), other routers differ [S18]; NAT is not a firewall (tested: a route alone let the server reach the laptop); in the lab an unforwarded port is refused, not a timeout; traceroute and `curl ifconfig.me` run on the host, never in the lab (dossier 5.5); `100.64.0.0/10` is one sign, not proof [S11]; CGN prevalence is dated evidence only [S34]; UDP idle timer at least two minutes, five recommended [S18], one gateway uses 350 s [S51], no TCP figure from [S19]; do not quote Linux conntrack defaults from memory; incident minute-level figures need reviewer approval (dossier open question 10); the 6.6 "taken" rule is the exercise's model.
 
-## Roadmap issues
+## Resolved in roadmap v3.1
 
-1. 6.5 needs a `[timeline]` renderer change (seconds to hours) and the roadmap gives no fallback if the model is unbuilt; the brief proposes one, marked as a proposal.
-2. 6.6 says the port is "taken" when in use. Real Linux clashes on the whole conversation (outside address, port and destination), and the dossier tested only the same-destination case. 6.2 and 6.6 must say the exercise simplifies. The roadmap does not say what happens when the range is full; the brief proposes drop (per [S19]).
-3. The netlab generator list omits `conntrack -L`, which 6.2 and 6.5 outcomes use; recorded real output stands in. The 6.5 timer column is untested.
-4. 6.3 outcome claims "home routers add one" (a firewall) and `docker run -p` is port forwarding; neither has a primary dossier source.
-5. 6.9 level 1's "one injected fault" is unspecified; the brief proposes one.
-6. 6.1 is 10 minutes with a 1,200-word floor; consider 15 minutes or a lower floor for short Reads.
-7. Code and Lab chapters have no prose floor in the instructions; 700 words is a working assumption.
+1. No fallback for the 6.5 `[timeline]` model: resolved. It falls back to a worked-example table plus a Predict.
+2. 6.6 "taken" and a full range: resolved. 6.6 states that it simplifies Linux's clash rule (Linux checks outside address, port and destination), and a full range drops the new flow [S19].
+3. `conntrack -L` missing from the generator: resolved. The generator covers `conntrack -L`, `ip route get`, `ss` and `curl`.
+4. "Home routers add a firewall" and `docker run -p`: resolved. The firewall claim is removed (NAT is not a firewall; a filter is a separate rule built in 6.8); `docker run -p` publishes a port using NAT rules [S75].
+5. 6.9 level 1's injected fault: resolved. The brief's proposed fault is accepted.
+6. 6.1 at 10 minutes and the prose floor for Read, Code and Lab: resolved by the proposed course exception (700 words; Learn and Build keep 1,200), pending the sponsor's G2C decision.
+
+## Still open
+
+- Verify at G3 (untested): the 6.5 timer column and the real `conntrack -L` timers; `curl --local-port 41000` for fixing a source port (6.7); the exact `nft` DNAT syntax (6.8); the guest-to-home block giving exit 28 (6.8); `conntrack -L` and `curl` output from the lab generator.
+- The 700-word floor for Read, Code and Lab chapters and Gates awaits the sponsor's G2C decision.

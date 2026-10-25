@@ -4,7 +4,7 @@ course: networking
 module: 07-dhcp-and-dns
 version: 1
 owner: curriculum-architect
-roadmap_version: 3
+roadmap_version: 3.1
 roadmap_confirmed: true
 ---
 
@@ -51,7 +51,7 @@ No new entry prerequisite. Chapters 7.1 to 7.5 do not need a laptop build; a pho
 | 7.4 | Caches, TTLs and DNS outages | Learn | 35 | Predict how long an old answer survives (DNS TTL, not the IP TTL from 4.4), and explain two sourced outages: Facebook 2021 (its DNS servers withdrew their route announcements, see 4.5) and AWS October 2025 (an empty DNS record) | dns-resolution, autonomous-systems | dns-ttl | in-chapter quiz |
 | 7.5 | Lab: debug "no internet" layer by layer | Lab | 40 | Diagnose six broken networks by choosing commands and reading their output, in order: link, address, gateway, a route to a public address, DNS, then a plain HTTP request. Behind a captive portal, `ping` to a public address fails while DNS often still answers; the HTTP request returning a login page is what tells it apart | dhcp, dns-resolution, diagnose-routing | layered-diagnosis (reinforces diagnose-nat) | graded lab checks |
 | 7.6 | DHCP and DNS on your router | Build | 70 | Run dnsmasq on your router namespace from a config with lines to fill: devices get leases (client with a short timeout), names resolve through a per-namespace resolver file, `dig` answers | dhcp, dns-resolution, nft-masquerade | dnsmasq | challenge 5 tests |
-| 7.7 | DHCP and DNS | Check | 15 | Order the steps from joining Wi-Fi to the first byte; diagnose three outputs; two questions from module 6 | dhcp, dns-ttl, layered-diagnosis | none (reinforces napt) | quiz |
+| 7.7 | DHCP and DNS | Check | 15 | Order the steps from joining Wi-Fi to the first byte; diagnose three outputs in one question; two questions from module 6 | dhcp, dns-ttl, layered-diagnosis | none (reinforces napt) | quiz |
 | 7.8 | A "no internet" runbook | Gate | 25 | A runbook for your family's Wi-Fi, one command per layer, with the commands for their own devices | layered-diagnosis | none (reinforces dhcp, dns-resolution) | runbook |
 
 Total 270 core minutes. Slow path 340 (7.6 is 100 minutes on the slow path; the others add a quarter).
@@ -83,7 +83,7 @@ The roadmap's "Problem first" column is filled only for Learn chapters. For 7.1,
 - Assessment: one PREDICT, one QUIZ question (what a CNAME is). Near miss: `dig +trace` makes the tool walk the tree itself, which a laptop never does; and `dig +trace` does not work in the lab (dossier 5.6), so the trace is recorded text, never a lab command. InterestingRead: Cloudflare 1.1.1.1, 14 July 2025 [S50], about why a resolver is one address; any minute-level figure waits for reviewer approval (dossier open question 10).
 
 ### 7.4 Caches, TTLs and DNS outages (Learn, 35 min) `07.04-dns-ttl-and-outages.md`
-- Hook (roadmap, with a wording issue, see "Roadmap issues"): on 4 October 2021 Facebook, Instagram and WhatsApp disappeared from the internet. How?
+- Hook (roadmap v3.1, following [S48]): on 4 October 2021 Facebook, Instagram and WhatsApp could not be found by anyone on the internet. What went missing?
 - Claim: a DNS answer is a copy with an expiry date, so changes and failures spread at the speed of TTLs; and a name is only as reachable as the route to the servers that answer for it.
 - Worked example: `shop.example.com` A record, TTL 3600, changed from `203.0.113.45` to `203.0.113.46` at 10:00. A resolver that cached it at 09:58 serves the old address until 10:58; one that cached at 09:50 until 10:50. Lowering the TTL to 60 helps only if done at least one old TTL (an hour) before the change. Zero means do not cache [S24]. Outages: Facebook [S48] (maintenance command took down backbone links; its DNS servers withdrew their route announcements; the world could not find the servers; see 4.5) and AWS [S49] (a race condition left an empty DNS record for `dynamodb.us-east-1.amazonaws.com`; started late on 19 October 2025, ended 20 October). Use no minute-level times until a reviewer approves them (dossier open question 10).
 - Diagram: MermaidDiagram flowchart: laptop, resolver, authoritative servers, and the route to them. Claim: a name lookup needs a route to the servers; when the announcements vanish the servers still exist but cannot be reached. The timeline canvas shows time, not dependency.
@@ -95,7 +95,7 @@ The roadmap's "Problem first" column is filled only for Learn chapters. For 7.1,
 - Claim: each check rules out everything before it, so the first failing check names the broken layer. Route and reachability are different questions: `ip route get` says whether a route exists; `ping` says whether packets arrive.
 - Worked example: the six networks, in check order (link, address, gateway, route to a public address, DNS, HTTP): (1) link down; (2) no address, pool empty (hypothetical); (3) wrong gateway `10.5.0.10`, ARP goes unanswered (dossier 5.7: silent loss, ARP requests unanswered); (4) router has no default route, `Destination Net Unreachable` from the router (dossier 5.7); (5) DNS server unreachable, `ping 203.0.113.45` works, `dig` times out; (6) captive portal: `ip route get` shows a route, `ping` is silent, `dig` still answers, `curl` returns a login page. Scenario 6 is a model, not a dossier test.
 - Diagram: MermaidDiagram flowchart of the six checks with the command at each and the output that sends you on or stops you. Claim as in the claim line.
-- Interactive: `[netlab: fault, DHCP, DNS]` in fault mode, graded. Learner commits to the first command before any output appears (the lab asks it per scenario; no PREDICT fence).
+- Interactive: `[netlab: fault, DHCP, DNS]` in fault mode, graded. The command-output generator covers `ip link`, `ip addr`, `ip route get`, `dig` and `curl`, so every check in the six scenarios has output (untested in the lab: verify at G3). Learner commits to the first command before any output appears (the lab asks it per scenario; no PREDICT fence).
 - Assessment: the lab's graded checks, no fences. Near miss: reading a failed `ping` as "no route"; scenario 6 punishes it. The lab's limits line says the portal is one typical behaviour, not every portal.
 
 ### 7.6 DHCP and DNS on your router (Build, 70 min) `07.06-build-dhcp-dns.md`
@@ -117,7 +117,7 @@ The roadmap's "Problem first" column is filled only for Learn chapters. For 7.1,
 
 ### 7.7 DHCP and DNS (Check, 15 min) `07.07-dhcp-and-dns-quiz.md`
 - Hook: none (quiz only). Claim: none; no new content.
-- Questions (four, one instrument): (1) order the steps from joining Wi-Fi to the first byte (lease, ARP for the router, DNS, gateway decision, SYN); (2) three outputs, one question: `ip addr` with no address, `ip route get` returning "Network is unreachable", `dig` timing out while `ping 203.0.113.45` works; name the layer for each; (3) module 6: two devices use source port 41000, what does the server see (address rewritten, port may change only on a clash) [dossier 5.6]; (4) module 6: connection to a closed port on a router's outside address, refused or timeout (refused) [dossier 5.6].
+- Questions (four, one instrument, total at most five; plain quiz fences with no canvas): (1) order the steps from joining Wi-Fi to the first byte (lease, ARP for the router, DNS, gateway decision, SYN); (2) three outputs, one question: `ip addr` with no address, `ip route get` returning "Network is unreachable", `dig` timing out while `ping 203.0.113.45` works; name the layer for each; (3) module 6: two devices use source port 41000, what does the server see (address rewritten, port may change only on a clash) [dossier 5.6]; (4) module 6: connection to a closed port on a router's outside address, refused or timeout (refused) [dossier 5.6].
 - Diagram, interactive: none. Near miss: a question answerable from option length or position. Balance both, so the ordering question cannot be solved by picking the longest option.
 
 ### 7.8 A "no internet" runbook (Gate, 25 min) `07.08-gate-no-internet-runbook.md`
@@ -129,7 +129,7 @@ The roadmap's "Problem first" column is filled only for Learn chapters. For 7.1,
 
 ## Interactions
 
-Prose minimums: Read, Learn and Build chapters 1,200 words; the gate 700. The architecture file names no minimum for a Lab; this brief treats 7.5 as a checkpoint (700) and writes a short framing and method section only. Check chapter 7.7 is quiz fences only.
+Prose minimums follow roadmap v3.1: Learn and Build chapters 1,200 words; Read (7.1), Lab (7.5) and the gate (7.8) 700. The 700 floor is a proposed course exception that waits for the sponsor's G2C decision; if it is rejected, the Read chapter is re-timed to 15 to 20 minutes. 7.5 writes a short framing and method section only. Check chapter 7.7 is quiz fences only.
 
 | Chapter | Top-level components | Assessments |
 |---|---|---|
@@ -155,11 +155,11 @@ Diagram plan: 7.2 lease state diagram; 7.3 delegation tree; 7.4 dependency flow 
 | Slug | Renderer | Chapter | Claim | Stated limit | Fallback if not built |
 |---|---|---|---|---|---|
 | `net-dhcp-four-messages` | `[sequence]` actors: phone, DHCP server | 7.2 | A device with no address can get one because the first message is a broadcast | No input; lease timers not drawn; one server, one link, no relay | Existing renderer, no fallback needed |
-| `net-dhcp-pool` | `[netlab]` parts: Host, Switch, DHCP server; explore mode; slice 3 | 7.2 | The pool is finite; when it is empty a new device gets nothing | Client failure behaviour per operating system is modelled, not captured; no renewals | Scripted `[sequence]` of the same messages with a "no address available" branch and a prediction before each step (degraded, recorded as an exception) |
+| `net-dhcp-pool` | `[netlab]` parts: Host, Switch, DHCP server; explore mode; slice 3 | 7.2 | The pool is finite; when it is empty a new device gets nothing | Client failure behaviour per operating system is modelled, not captured; no renewals | Scripted `[sequence]` of the same messages with a "no address available" branch and predictions before the key steps only, within the chapter's budget of 3 assessments (degraded, recorded as an exception) |
 | `net-dns-resolution` | `[sequence]` actors: resolver, root, TLD, authoritative | 7.3 | No server knows every name; a warm cache needs no upstream question | Two scripted runs only; no input; one A record, no DNSSEC | Existing renderer, no fallback needed |
-| `net-dns-ttl-spread` | `[timeline]` new model; renderer needs seconds, minutes and hours (today milliseconds only) | 7.4 | The old answer lives as long as the longest remaining TTL | Fixed model, no live DNS, no resolvers that ignore TTLs, no negative caching | Roadmap names none; see "Roadmap issues". Reuse the system design TTL canvas if it is built first |
+| `net-dns-ttl-spread` | `[timeline]` new model; renderer needs seconds, minutes and hours (today milliseconds only) | 7.4 | The old answer lives as long as the longest remaining TTL | Fixed model, no live DNS, no resolvers that ignore TTLs, no negative caching | A worked-example table plus a Predict (roadmap v3.1). Reuse the system design TTL canvas if it is built first |
 | `net-nointernet-fault` | `[netlab]` parts: Host, Switch, Router, Home router, DHCP server, DNS, Captive portal; fault mode; slice 3 | 7.5 | The first failing check names the broken layer | Output exists only for commands the generator supports; the portal is one typical behaviour | Graded labs are blocked; diagnose from recorded command output, graded as a quiz |
-| `net-replay-challenge-5` | `[replay]` | 7.6 | Predicting real recorded output is how phone readers practise the build | Recording of one reference run; no editing | A `[sequence]` of two actors (learner, lab) with a Predict block before each step (budget conflict, see "Roadmap issues") |
+| `net-replay-challenge-5` | `[replay]` | 7.6 | Predicting real recorded output is how phone readers practise the build | Recording of one reference run; no editing | A `[sequence]` of two actors (learner, lab) with Predict blocks before the key steps only, within the chapter's budget of 3 assessments |
 
 ## Gate
 
@@ -177,14 +177,18 @@ Checklist: challenge 5 test passes from a clean lab; `results.md` committed with
 - The Facebook and Cloudflare incidents involve route announcements (BGP), which the course does not teach; use them only to show that DNS depends on routing. AWS and Cloudflare minute-level figures need reviewer approval (dossier open question 10).
 - Captive portal behaviour has no source in the dossier. Say "a typical portal" and label the lab behaviour a model.
 
-## Roadmap issues
+## Resolved in roadmap v3.1
 
-Listed, not fixed:
+1. 7.4 hook wording: resolved. The hook is "could not be found by anyone on the internet. What went missing?", following [S48].
+2. No fallback for the 7.4 `[timeline]` model: resolved. It falls back to a worked-example table plus a Predict.
+3. Generator commands for 7.5: resolved. The generator covers `ip link`, `ip addr` and `curl`.
+4. 7.7 over the Check limit: resolved. The three outputs are one question and the total is at most five.
+5. The `[replay]` fallback breaking the assessment budget: resolved. Fallbacks predict before the key steps only, within the chapter's budget of 3 assessments.
+6. No prose floor for a Lab: resolved by the proposed course exception (700 for Read, Code and Lab chapters and Gates; 1,200 for Learn and Build), pending the sponsor's G2C decision.
 
-1. 7.1 lists five places to break (address, gateway, route, DNS, portal); 7.5 grades six ordered checks (it adds link). This brief teaches five in 7.1 and notes that "Connected" already covers the link, then starts 7.5 with the link check.
-2. 7.4 hook says the services disappeared "while their servers kept running". The dossier row for [S48] supports "the world could not find the servers", not that they were running. Writers will use the dossier wording until the roadmap is revised.
-3. 7.4's new `[timeline]` model has no stated fallback (decision 3 names one only for `[addr]`). This brief proposes a worked-example table plus a Predict, as an exception to confirm.
-4. 7.5 needs output for `ip link`, `ip addr` and `curl`, which the netlab generator's example command list (`ping`, `ip route`, `ip neigh`, `traceroute`, `dig`) does not name.
-5. 7.7 lists one ordering question, three outputs and two module 6 questions: six if each output is its own question, one over the Check limit of five. This brief reads "three outputs" as one question.
-6. The `[replay]` fallback asks for a Predict block before each step, which breaks the budget of one Predict and three assessments per chapter (affects 7.6).
-7. `02-course-architecture.md` gives no prose minimum for a Lab chapter. This brief uses 700 words (checkpoint).
+## Still open
+
+- 7.1 lists five places to break and 7.5 grades six ordered checks (it adds link). This brief teaches five in 7.1, notes that "Connected" already covers the link, and starts 7.5 with the link check.
+- Verify at G3 (untested): that `dnsmasq-base` provides the same binary and options; how `udhcpc` applies a lease; `ss -ulnp` as a stuck diagnostic; the `tcpdump` filter for ports 67 and 68; the NXDOMAIN or REFUSED status; `ip link`, `ip addr` and `curl` generator output; scenario 6 (captive portal) is a model, not a dossier test.
+- Source gaps: RFC 1035 and RFC 3596 for AAAA, CNAME and port 53, and the RFC text for the DHCP broadcast addresses, are not in the dossier.
+- The 700-word floor awaits the sponsor's G2C decision.

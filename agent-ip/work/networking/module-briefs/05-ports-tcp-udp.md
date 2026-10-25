@@ -4,13 +4,13 @@ course: networking
 module: 05-ports-tcp-udp
 version: 1
 owner: curriculum-architect
-roadmap_version: 3
+roadmap_version: 3.1
 roadmap_confirmed: true
 ---
 
 # Module 05: Ports, TCP and UDP: which app gets the packet
 
-Source of truth: `02-curriculum-roadmap.md` v3, module 5. Core 245 min, slow path 313 min. Source IDs such as [S25] point to `01-research-dossier.md`.
+Source of truth: `02-curriculum-roadmap.md` v3.1, module 5. Core 245 min, slow path 313 min. Source IDs such as [S25] point to `01-research-dossier.md`.
 
 ## Outcome
 
@@ -50,12 +50,12 @@ Totals: 8 chapters: 1 Read (5.1), 4 Learn (5.2 to 5.5), 1 Build, 1 Check, 1 Gate
 | 5.2 | Ports and sockets | Learn | 40 | Explain ports, well-known and ephemeral ranges (IANA's and Linux's differ), and the five numbers that name one conversation (protocol, two addresses, two ports) | packet-fields | ports, conversation-id | netlab check |
 | 5.3 | Why your phone cannot open localhost | Learn | 30 | Work through the chain: on the phone, `localhost` is the phone itself, so use the laptop's address; the server must listen on `0.0.0.0`, not `127.0.0.1`; the laptop's firewall and the Wi-Fi's client isolation can still block it. Read listening sockets with `ss -tlnp` or `netstat`. The lab shows the first two; the last two only show on a real network | ports, subnet-calc | listen-address | netlab check |
 | 5.4 | TCP: a conversation that survives loss | Learn | 40 | Explain the handshake, sequence and acknowledgement numbers, and retransmission | conversation-id | tcp | in-chapter quiz |
-| 5.5 | UDP: why DNS, games and calls skip the handshake | Learn | 30 | Choose TCP or UDP for an app by delay and what a lost packet costs; know DNS falls back to TCP for large answers | tcp | udp | in-chapter quiz |
+| 5.5 | UDP: why DNS, games and calls skip the handshake | Learn | 30 | Choose TCP or UDP for an app by delay and what a lost packet costs; know DNS also runs over TCP, and a client retries over TCP when a UDP answer is truncated [S71] | tcp | udp | in-chapter quiz |
 | 5.6 | Watch a conversation happen | Build | 60 | Run a server in one namespace, first on `127.0.0.1` then on `0.0.0.0`; connect from another; capture SYN, SYN-ACK, ACK; read both sides with `ss` | listen-address, tcp, namespaces-veth | none | challenge 3 tests and capture |
 | 5.7 | Ports and transport | Check | 15 | Match replies to sockets; pick TCP or UDP for three apps; two questions from module 4 | conversation-id, udp | none | quiz |
 | 5.8 | One line of your capture | Gate | 20 | Explain every number in one line of your capture and what it is for | conversation-id, tcp | none | capture line explained |
 
-Budgets for every chapter below: Learn, Read and Build at least 1,200 prose words; Gate at least 700; Check is quiz-only. At most 6 top-level components, 25 JSX tags (cap `GlossaryTerm` at 10 per chapter) and 3 assessment interactions. Every diagram has a text legend. Never write the name "5-tuple": the dossier marks it UNVERIFIED, so say "the five numbers".
+Budgets for every chapter below: Learn and Build at least 1,200 prose words; Read, Code and Lab chapters and Gates at least 700 (a proposed course exception that waits for the sponsor's G2C decision; if it is rejected, the Read chapters are re-timed to 15 to 20 minutes); Check is quiz-only. At most 6 top-level components, 25 JSX tags (cap `GlossaryTerm` at 10 per chapter) and 3 assessment interactions. Every diagram has a text legend. Never write the name "5-tuple": the dossier marks it UNVERIFIED, so say "the five numbers".
 
 ## Chapter blocks
 
@@ -78,7 +78,7 @@ Budgets for every chapter below: Learn, Read and Build at least 1,200 prose word
 - Example: laptop `192.168.1.23`, phone `192.168.1.57`, app on port 3000. Phone to `localhost:3000` reaches the phone's own loopback (`127.0.0.0/8` is never forwarded [S9]). Phone to `192.168.1.23:3000` with the app on `127.0.0.1`: refused (the kernel answers no one is listening there; same mechanism as dossier 5.6, loopback binding itself untested, verify at G3). Rebind to `0.0.0.0`: works. Then name the two real-network blockers.
 - Diagram: `MermaidDiagram` flowchart of the laptop with two listening choices and the phone's path to each. Claim: where a server listens decides who can connect before any firewall is involved.
 - Interactive: `net-lab-listen-address`: move a server between listening addresses and try from two devices. Predict first: the app listens on `127.0.0.1`; the phone opens `192.168.1.23:3000`; what happens (works, refused, no answer)? Model answer "refused", to be confirmed on the lab image at G3.
-- Assess: 1 `PREDICT`, 1 `QUIZ` (read a listening line and say who can connect). Near miss: the lab shows only the first two causes; firewall and client isolation are prose and a recorded note, stated plainly, with no figures. `ss -tlnp` output is recorded text, not generated (see Roadmap issues).
+- Assess: 1 `PREDICT`, 1 `QUIZ` (read a listening line and say who can connect). Near miss: the lab shows only the first two causes; firewall and client isolation are prose and a recorded note, stated plainly, with no figures. The netlab generator covers `ss`, so the output comes from the model's state (untested in the lab: verify at G3). Two hosts may share a direct link in the netlab, so the phone and laptop need no drawn switch.
 
 **5.4 TCP: a conversation that survives loss** (Learn; reinforces read-capture)
 - Hook: any network can lose a packet, yet a downloaded file is never missing a byte. Who fixes it? (Keep the roadmap's "Wi-Fi loses packets all the time" out of the text: no source, no rate.) Claim: TCP numbers the bytes and the receiver says which number it expects next; a missing acknowledgement makes the sender send that data again [S25].
@@ -89,14 +89,14 @@ Budgets for every chapter below: Learn, Read and Build at least 1,200 prose word
 
 **5.5 UDP: why DNS, games and calls skip the handshake** (Learn)
 - Hook: in a video call, a packet that arrives half a second late is useless. Would you wait for it? Claim: TCP gives every byte in order, so one loss holds back everything behind it; UDP gives each datagram once, with no promise, so an app chooses it when late data is worse than lost data [S26].
-- Example: model numbers, labelled illustrative: one audio packet every 20 ms; loss 0%, 5%, 20%; a TCP resend costs one extra round trip, so later packets wait. A file download picks TCP. DHCP uses UDP ports 67 and 68 [S23]. The real DNS query captured in 1.5 used UDP; state that DNS falls back to TCP for large answers only after a source is added.
+- Example: model numbers, labelled illustrative: one audio packet every 20 ms; loss 0%, 5%, 20%; a TCP resend costs one extra round trip, so later packets wait. A file download picks TCP. DHCP uses UDP ports 67 and 68 [S23]. The real DNS query captured in 1.5 used UDP; DNS implementations must support both UDP and TCP, and a truncated UDP answer (TC flag) makes the client retry over TCP [S71].
 - Diagram: `MermaidDiagram` flowchart (a decision tree): do you need every byte in order? is late data useless? Claim: choose by what a lost or late packet costs.
 - Interactive: `net-timeline-tcp-udp-loss`, a new `[timeline]` model: the same messages over TCP and UDP as loss goes up. Predict first: loss rises from 0% to 10%; whose delay grows (TCP's, UDP's, both)? (TCP's.)
 - Assess: 1 `PREDICT`, 1 `QUIZ` (pick TCP or UDP for a chat message, a game position, a file). Near miss: UDP is not "faster", it skips waiting; real browsers may use QUIC over UDP (system design course); do not teach it here.
 
 **5.6 Watch a conversation happen** (Build; see Build spec). Hook (derived): the handshake from 5.4 is words until you capture it. Claim: where the server listens decides whether the handshake even starts, and `tcpdump` and `ss` show the same conversation from two sides.
 
-**5.7 Ports and transport** (Check, 4 questions, one instrument). Q1: match three replies to their sockets. Q2: TCP or UDP for three apps, answered as one grouped choice. Q3 and Q4 from module 4: pick the route by longest prefix; whose address does a TTL 2 probe return. Near miss: no stem repeats the 5.2 wording.
+**5.7 Ports and transport** (Check, 4 questions, one instrument, plain quiz fences with no canvas). Q1: match three replies to their sockets. Q2: TCP or UDP for three apps, answered as one grouped choice. Q3 and Q4 from module 4: pick the route by longest prefix; whose address does a TTL 2 probe return. Near miss: no stem repeats the 5.2 wording.
 
 **5.8 One line of your capture** (Gate; see Gate).
 
@@ -119,7 +119,7 @@ Budgets for every chapter below: Learn, Read and Build at least 1,200 prose word
 |---|---|---|
 | 5.1 | LearningObjectives, TerminalBlock, Callout (run on your computer), Checklist | 0 |
 | 5.2 | MermaidDiagram, InteractiveCanvas, predict, quiz, BigWordAlert (socket), MustRead (RFC 6335, the port ranges section) | 2 |
-| 5.3 | MermaidDiagram, InteractiveCanvas, predict, quiz, TerminalBlock (recorded `ss -tlnp`), Callout (two causes the lab cannot show) | 2 |
+| 5.3 | MermaidDiagram, InteractiveCanvas, predict, quiz, TerminalBlock (`ss -tlnp` sample), Callout (two causes the lab cannot show) | 2 |
 | 5.4 | MermaidDiagram, InteractiveCanvas (sequence), predict, quiz, Callout | 2 |
 | 5.5 | MermaidDiagram, InteractiveCanvas (timeline), predict, quiz, Callout | 2 |
 | 5.6 | Steps, FileTree, TerminalBlock, Callout, InteractiveCanvas (replay, phone-only section), Checklist | 0 |
@@ -132,11 +132,11 @@ Diagram plan: MermaidDiagram in 5.2 to 5.5 (at least one per module, one per con
 
 | Slug | Chapter | Renderer | Claim | Stated limit | Fallback |
 |---|---|---|---|---|---|
-| `net-lab-sockets` | 5.2 | `[netlab]` host; explore; slice 1 | The five numbers pick one socket | One host, three apps; ports chosen by the model | `[sequence]` laptop and server, Predict per reply (exception) |
-| `net-lab-listen-address` | 5.3 | `[netlab]` host (two devices); explore; slice 1 | The listening address decides who can connect | Loopback versus all addresses only; no firewall, no client isolation (said on screen) | `[sequence]` laptop and phone, Predict per attempt |
+| `net-lab-sockets` | 5.2 | `[netlab]` host; explore; slice 1 | The five numbers pick one socket | One host, three apps; ports chosen by the model | `[sequence]` laptop and server, Predict before the key replies only, within the chapter's budget of 3 assessments (exception) |
+| `net-lab-listen-address` | 5.3 | `[netlab]` host (two devices); explore; slice 1 | The listening address decides who can connect | Loopback versus all addresses only; no firewall, no client isolation (said on screen) | `[sequence]` laptop and phone, Predict before the key attempts only, within the chapter's budget of 3 assessments |
 | `net-seq-tcp-loss` | 5.4 | `[sequence]` client, server (two actors, no input) | Acknowledgements tell the sender what to resend | One scripted loss, no windows, no congestion control, small illustrative numbers | none needed, the renderer exists |
-| `net-timeline-tcp-udp-loss` | 5.5 | `[timeline]` new small model, milliseconds (no renderer change) | One loss delays everything behind it on TCP, not on UDP | Model numbers (20 ms packets, one resend round trip), not measurements | Roadmap states none. Proposed: `[sequence]` of two actors showing both runs with a Predict (exception) |
-| `net-replay-conversation` | 5.6 | `[replay]` from the reference run | Predict each command's output, then see it | Recorded, not live | `[sequence]` learner and lab with Predict blocks |
+| `net-timeline-tcp-udp-loss` | 5.5 | `[timeline]` new small model, milliseconds (no renderer change) | One loss delays everything behind it on TCP, not on UDP | Model numbers (20 ms packets, one resend round trip), not measurements | A worked-example table of the TCP and UDP runs plus a Predict (roadmap v3.1) |
+| `net-replay-conversation` | 5.6 | `[replay]` from the reference run | Predict each command's output, then see it | Recorded, not live | `[sequence]` learner and lab with Predict blocks before the key steps only, within the chapter's budget of 3 assessments |
 
 ## Gate: 5.8 One line of your capture (20 min)
 
@@ -151,10 +151,16 @@ Diagram plan: MermaidDiagram in 5.2 to 5.5 (at least one per module, one per con
 - Second stall: 5.3, a learner thinks `0.0.0.0` is an address to browse to. Mitigation: show it only in the listening column.
 - Accuracy traps: "5-tuple" is UNVERIFIED, so use "the five numbers"; IANA's ephemeral range (49152 to 65535) and Linux's (32768 to 60999) differ [S27, S28], and no source gives Windows or macOS defaults; TCP sequence, acknowledgement and retransmission details are beyond what the dossier lists for [S25] (handshake, ports, socket pair), so add an RFC 9293 citation before drafting; UDP has no delivery guarantee [S26]; two tabs may share one connection, say "two connections"; no loss rate for Wi-Fi without a source; the macOS `netstat` output is unverified; the dossier's `ss` and `nc` behaviour is untested.
 
-## Roadmap issues
+## Resolved in roadmap v3.1
 
-1. 5.5's outcome says DNS falls back to TCP for large answers; the dossier has no source (RFC 1035 was not fetched). A source (for example RFC 1035 or RFC 7766) must be added before drafting.
-2. The roadmap's new `[timeline]` models (5.5, 6.5) give no fallback if unbuilt. The brief proposes one, marked as a proposal.
-3. 5.1 is 10 minutes with a 1,200-word floor and a command to run; slow readers (second language, phone) will overrun. Consider 15 minutes or a lower floor for short Reads.
-4. 5.2 and 5.3 list only the Host part, but 5.3 needs two devices joined; confirm the renderer joins two hosts without a drawn switch.
-5. The generator command list omits `ss` (5.3 and 5.6 use it); recorded output is used until it is added. `ss`, `nc` and loopback binding are untested.
+1. DNS over TCP had no source: resolved. DNS over TCP and the truncation retry are sourced [S71].
+2. No fallback for the `[timeline]` models: resolved. The 5.5 model falls back to a worked-example table plus a Predict.
+3. 5.1 at 10 minutes against a 1,200-word floor: resolved by the proposed course exception. Read chapters use 700 prose words (decision log, 2026-10-25, pending the sponsor's G2C decision).
+4. Two hosts joined without a drawn switch: resolved. Two hosts may share a direct link in the netlab.
+5. `ss` missing from the generator: resolved. The generator covers `ss`.
+
+## Still open
+
+- Verify at G3 (untested): `ss` output from the lab generator and on the lab image (5.3, 5.6), loopback binding refusing with exit 7 (5.3, 5.6), the bind syntax of the chosen server (`busybox httpd -p` or `nc -l`), and holding a connection open long enough to see `ESTAB` on both sides.
+- RFC 9293 is not yet in the dossier: add a citation before drafting sequence and acknowledgement numbers and retransmission (5.4).
+- The 700-word floor for Read, Code and Lab chapters and Gates awaits the sponsor's G2C decision.
