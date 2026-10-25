@@ -92,3 +92,9 @@
 ## 2026-10-26: G2C signed off; prose floors decided
 
 **Decision:** the sponsor signed off G2C ("I sign off G2C for the networking course, and I accept the 700-word prose floor for Read, Code and Lab chapters and gates. Continue to G3."). The course exception proposed on 2026-10-25 is now decided: Learn and Build chapters need at least 1,200 prose words; Read, Code and Lab chapters and gates need at least 700; Check chapters are quiz-only. `audit-course.mjs` still applies 1,200 to Read, Code and Lab chapters, so its findings for those types are expected and are listed in the course PR under this exception, until `proposals/2026-10-23-prose-minimums-by-course-type.md` is decided.
+
+## 2026-10-26: Follow agent-ip v0.5.3 (beats) from G3
+
+**Context:** merging `origin/main` brought agent-ip v0.5 to v0.5.3: Learn chapters are visual-first beats (`format: beats`, four to eight beats, 300 to 700 visible words, at least 900 with `GoDeeper` folds, at least one playable beat, a predict before the key beat, one or two quiz questions at the end, at most 40 JSX tags); Read chapters are one or two beats; and "never ask before you teach" (every question answerable from earlier chapters or everyday intuition).
+
+**Decision:** this course follows v0.5.3 from G3 on. Learn and Read chapters use the beats rules, which replace the 1,200-word Learn floor in the 2026-10-26 sign-off entry; Build chapters keep 1,200 prose words; Code and Lab chapters and gates keep the sponsor's 700; Check chapters stay quiz-only. Each "Problem first" hook stays as the chapter's opening line, and every predict is checked against "never ask before you teach" at G3. No outcome, module or chapter changes.
