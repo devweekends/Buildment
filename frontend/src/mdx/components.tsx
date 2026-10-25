@@ -1,6 +1,7 @@
 import type { MDXComponents } from "next-mdx-remote-client/rsc";
 import { QuizComponent } from "@/blocks/quiz/Component";
 import { PredictComponent } from "@/blocks/predict/Component";
+import { AiInterviewComponent } from "@/blocks/ai-interview/Component";
 import { OpenQuestionComponent } from "@/blocks/open-question/Component";
 import { CodeExerciseComponent } from "@/blocks/code/Component";
 import { StepsComponent } from "@/blocks/steps/Component";
@@ -18,6 +19,7 @@ import { RoadmapComponent } from "@/blocks/roadmap/Component";
 import { MermaidDiagram } from "@/components/learn/mermaid-diagram";
 import { Callout } from "@/components/learn/callout";
 import { FaqGroup, FaqItem } from "@/components/learn/faq-group";
+import { GoDeeper } from "@/components/learn/go-deeper";
 import { CheckpointIntro } from "@/components/learn/checkpoint-intro";
 import { BigWordAlert } from "@/components/learn/big-word-alert";
 import { InterestingRead } from "@/components/learn/interesting-read";
@@ -37,6 +39,7 @@ import {
   TraceStep,
 } from "@/components/learn/content-blocks";
 import { InteractiveCanvas } from "@buildment/learning-ui/canvas/InteractiveCanvas";
+import { Lab } from "@/lab/Lab";
 import { EcosystemGallery } from "@/components/learn/ecosystem-gallery";
 import { Checklist } from "@/components/learn/checklist";
 import { LearningLog } from "@/components/learn/learning-log";
@@ -55,6 +58,7 @@ const cellBorder = "border border-border";
 export const mdxComponents: MDXComponents = {
   Quiz: QuizComponent,
   Predict: PredictComponent,
+  AiInterview: AiInterviewComponent,
   OpenQuestion: OpenQuestionComponent,
   CodeExercise: CodeExerciseComponent,
   Steps: StepsComponent,
@@ -79,6 +83,7 @@ export const mdxComponents: MDXComponents = {
   Callout,
   FaqGroup,
   FaqItem,
+  GoDeeper,
   CheckpointIntro,
   BigWordAlert,
   InterestingRead,
@@ -97,6 +102,7 @@ export const mdxComponents: MDXComponents = {
   TraceRequest,
   TraceStep,
   InteractiveCanvas,
+  Lab,
   EcosystemGallery,
   h2: ({ children, ...props }: React.ComponentProps<"h2">) => {
     const text = typeof children === "string" ? children : undefined;

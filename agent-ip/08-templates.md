@@ -397,8 +397,8 @@ roadmap_confirmed: true
 ## Outcome
 <One observable sentence.>
 
-## Prose target
-<≥ 1,200 prose words for a concept/build chapter; ≥ 700 for a checkpoint/gate. List what the prose must cover: problem, mechanism, worked example, trade-offs, failure modes, debugging.>
+## Depth target
+<Learn chapter: list the four to eight beats, each with its visual (slug or diagram), the one thing the picture shows, and what goes in its GoDeeper fold; 300 to 700 visible words, at least 900 with folds. Build chapter: at least 1,200 prose words; checkpoint/gate at least 700. Either way, list what must be covered: problem, mechanism, worked example, trade-offs, failure modes, debugging.>
 
 ## Hook
 <The concrete problem or failure.>
@@ -773,7 +773,8 @@ script: agent-ip/scripts/audit-course.mjs
 |---|---|---|---|
 | Chapters | | — | |
 | Prose words | | — | |
-| Chapters below prose minimum | | 0 | |
+| Chapters below depth minimum (beats or prose) | | 0 | |
+| Learn chapters with a beat over 70 visible words | | 0 | |
 | Chapters above component budget | | 0 | |
 | Chapters above interaction budget | | 0 | |
 | Chapters missing a diagram | | 0 | |

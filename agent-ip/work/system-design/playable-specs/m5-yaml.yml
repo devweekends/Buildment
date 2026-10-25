@@ -1,0 +1,37 @@
+  - dir: 05-caching-and-cdns
+    title: "Caching and CDNs"
+    summary: "Make reads cheap without serving wrong data, and keep the database alive when a cache fails."
+    lessons:
+      - file: 05.01-set-the-scene.md
+        title: "Set the scene: the sale that melted the database"
+        goal: "See a cache expiry take a database down."
+      - file: 05.02-where-caches-live.md
+        title: "Where caches live"
+        goal: "Place caches from browser to database and add up the latency and database load along the path."
+      - file: 05.03-cache-patterns.md
+        title: "Cache patterns"
+        goal: "Compare cache-aside, read-through, write-through, write-back and write-around, including what each loses on a crash."
+      - file: 05.04-eviction-and-hit-rate.md
+        title: "Eviction and hit rate"
+        goal: "Explain LRU, LFU and TTL, working-set size, and why a small cache can still help."
+      - file: 05.05-cache-invalidation.md
+        title: "Cache invalidation"
+        goal: "Find the stale window for TTL, delete-on-write and versioned keys, including the delete-then-stale-set race."
+      - file: 05.06-stampedes-and-hot-keys.md
+        title: "Stampedes and hot keys"
+        goal: "Stop a thundering herd with request coalescing, a shared lease, stale-while-revalidate and random TTLs."
+      - file: 05.07-cdn-and-edge.md
+        title: "CDN and edge"
+        goal: "Use Cache-Control, origin shield, purge and signed URLs, and predict origin load from hit rate and TTL."
+      - file: 05.08-code-an-lru-cache-with-ttl.md
+        title: "Code: an LRU cache with TTL"
+        goal: "Implement an LRU cache with expiry and an injected clock, and pass the tests."
+      - file: 05.09-challenge-4-a-cache-in-front.md
+        title: "Challenge 4: a cache in front"
+        goal: "Put Valkey in front of a slow database with cache-aside, measure hit rate and stale reads against TTL, and reproduce and fix a stampede."
+      - file: 05.11-quiz.md
+        title: "Caching and CDNs"
+        goal: "Answer graded scenarios on cache placement, invalidation, stampedes, CDN headers and write patterns."
+      - file: 05.12-checklist.md
+        title: "Checklist and learning log"
+        goal: "Write a cache plan for a product page: what, where, TTL and invalidation, and link your challenge 4 results."

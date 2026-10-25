@@ -1,0 +1,34 @@
+  - dir: 17-observability-and-reliability-targets
+    title: "Observability and reliability targets"
+    summary: "See inside a running system with logs, metrics and traces, agree what reliable enough means with SLIs and SLOs, alert on error budget burn without waking people for noise, build dashboards with RED and USE, and run an incident that ends in a blameless postmortem."
+    lessons:
+      - file: 17.01-set-the-scene-it-is-slow-and-nobody-can-say-where.md
+        title: "Set the scene: it is slow, and nobody can say where"
+        goal: "See a delivery app slow down while the team has one CPU graph and a pile of log files, and meet the five tools this module adds."
+      - file: 17.02-logs-metrics-and-traces.md
+        title: "Logs, metrics and traces"
+        goal: "Say which question each signal answers, follow one slow order across three services with a trace, and see how a forgotten header splits a trace."
+      - file: 17.03-slis-slos-and-slas.md
+        title: "SLIs, SLOs and SLAs"
+        goal: "Write an SLI as good over valid requests, set an SLO with a target and a window, see the allowed bad minutes, and see what an SLA adds."
+      - file: 17.04-error-budgets-and-burn-rate-alerts.md
+        title: "Error budgets and burn-rate alerts"
+        goal: "Compute a burn rate, page with a long and a short window together, and decide what deserves a page and what only a ticket."
+      - file: 17.05-dashboards-that-help.md
+        title: "Dashboards that help"
+        goal: "Use RED for services and USE for resources, see why the same average hides a slow tail, and merge histograms instead of averaging percentiles."
+      - file: 17.06-incidents-and-postmortems.md
+        title: "Incidents and postmortems"
+        goal: "Run an incident in order, mitigate before hunting the cause, and write a blameless postmortem with actions that have owners."
+      - file: 17.07-code-sli-and-burn-rate.md
+        title: "Code: SLI and burn rate"
+        goal: "Implement computeSli, burnRate, errorBudgetLeft and shouldPage, and pass the scenario tests for blips, outages, slow leaks and empty windows."
+      - file: 17.08-challenge-16-observability.md
+        title: "Challenge 16: observability"
+        goal: "Add traces, metrics and logs to a three-service app, find the slow call, and replay a day of traffic through a naive alert and your burn-rate alert."
+      - file: 17.09-quiz.md
+        title: "Observability and reliability"
+        goal: "Answer graded scenarios on choosing a signal, counting an SLI, reading a burn-rate alert, deciding what to page and writing a postmortem."
+      - file: 17.10-checklist.md
+        title: "Checklist and learning log"
+        goal: "Write SLOs and a paging rule for your capstone idea, and link your challenge 16 results."

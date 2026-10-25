@@ -5,6 +5,7 @@
 export const MDX_COMPONENT_NAMES = [
   "Quiz",
   "Predict",
+  "AiInterview",
   "OpenQuestion",
   "CodeExercise",
   "Steps",
@@ -47,7 +48,9 @@ export const MDX_COMPONENT_NAMES = [
   "TraceRequest",
   "TraceStep",
   "InteractiveCanvas",
+  "Lab",
   "EcosystemGallery",
+  "GoDeeper",
 ] as const;
 
 export const mdxComponentAllowlist: ReadonlySet<string> = new Set(MDX_COMPONENT_NAMES);

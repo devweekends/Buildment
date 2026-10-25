@@ -1,0 +1,25 @@
+  - dir: 24-geospatial-search-and-ride-matching
+    title: "Geospatial search and ride matching"
+    summary: "Run the design loop on a ride service: estimate the location updates, searches and matches, cut the map into geohash, quadtree and hexagon cells, keep the latest driver places in memory, calm a hot box such as a stadium at night, and match riders to drivers with a claim so nobody gets two."
+    lessons:
+      - file: 24.01-set-the-scene-and-requirements.md
+        title: "Set the scene and requirements"
+        goal: "Turn a busy evening into location updates, searches and ride requests a second, and find the number that drives the design."
+      - file: 24.02-geohashes-quadtrees-and-hexagon-grids.md
+        title: "Geohashes, quadtrees and hexagon grids"
+        goal: "Find nearby points with cells, handle the cell edge by reading neighbours, split crowded cells, and compare squares, hexagons and S2."
+      - file: 24.03-location-updates-at-scale.md
+        title: "Location updates at scale"
+        goal: "Keep millions of location updates off the database with an in-memory map sharded by cell, and calm a hot cell."
+      - file: 24.04-matching-and-dispatch.md
+        title: "Matching and dispatch"
+        goal: "Offer rides to one driver at a time, rank by travel time, claim a driver so two riders cannot get one, and match riders together."
+      - file: 24.05-code-geohash-encode-and-neighbours.md
+        title: "Code: geohash encode and neighbours"
+        goal: "Implement geohashEncode, geohashBounds and geohashNeighbours and pass the tests."
+      - file: 24.07-quiz.md
+        title: "Geospatial search and ride matching"
+        goal: "Answer graded scenarios on update load, cell counts, hot cells, claims and a restarted map."
+      - file: 24.08-checklist.md
+        title: "Checklist and learning log"
+        goal: "Write a design for a same-day parcel courier with one defended trade-off."

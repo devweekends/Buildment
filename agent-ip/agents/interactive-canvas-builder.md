@@ -36,7 +36,7 @@ packages/learning-ui/src/canvas/<slug>/
 If the visualisation uses vector geometry, the renderer returns a React SVG component. Static SVG assets, if unavoidable, are sanitized, optimised, hosted locally, and rendered through the component.
 
 - The slug in `server/src/shared/canvas/slugs.ts` (then `pnpm --dir server sync-shared`) and a registry entry in `packages/learning-ui/src/canvas/registry.ts`.
-- A check on the preview page, `/workspace/canvases`, which lists every registered canvas.
+- A check on the preview page, `/workspace/canvases`, which lists every registered canvas, including `node agent-ip/scripts/canvas-text-qa.mjs --slug <slug>` reporting it clean (no label touching a line, shape or other label, at any state, in light and dark).
 - A completed canvas QA report with the technical validator (`08-templates.md` → Canvas QA report).
 - The four copy blocks for the chapter: What this shows, Try this, What changed, Limits of the model.
 
@@ -47,7 +47,7 @@ If the visualisation uses vector geometry, the renderer returns a React SVG comp
 3. **Test the model.** Cover the default, the minimum, the maximum, and at least one edge case. Test zero and maximum inputs for NaN, infinity, and broken layout.
 4. **Choose the renderer.** Use HTML/CSS for controls, layout, and text; inline SVG for charts, seat maps, timelines, token buckets, state machines, and other vector visuals; Canvas 2D only for very high element counts. Never build sliders, toggles, or buttons out of SVG shapes.
    For HLD, keep the fixed topology accurate while the visual state changes. Show which route, server, queue, or datastore is affected and pair it with a readable output, such as requests per server or backlog. Do not imply that DNS forwards application requests.
-5. **Build the UI.** Title → purpose → summary cards → visualisation → controls → explanation. Use the simplest control that fits each input. Every control has a label, value, and unit. Provide reset.
+5. **Build the UI as a beat visual** (`10-interactive-canvases.md` → Beat visuals). Use `BeatFrame`: the picture first and full width, numbers and the verdict inside it, at most two controls and one hint line under it, the limits in a small fold. The learner changes it by touching the picture. It moves while on screen when the idea moves, freezes while pressed, and has a reduced-motion final frame. For a story of actors exchanging messages, write data for the `scene` renderer instead of a new component.
 6. **Write the copy.** What this shows, Try this, What changed, Limits of the model. Describe the relationship, not the UI.
 7. **Make it accessible.** Keyboard reachable controls, accessible names, visible focus, text alternative or live summary for the visualisation, color not the only signal, `prefers-reduced-motion` respected.
 8. **Make it responsive.** Stack controls above the visualisation on mobile. Full-width sliders. Touch targets at least 44px. No horizontal scrolling.

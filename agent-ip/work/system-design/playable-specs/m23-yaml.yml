@@ -1,0 +1,25 @@
+  - dir: 23-search-typeahead-and-probabilistic-data-structures
+    title: "Search, typeahead and probabilistic data structures"
+    summary: "Run the design loop on a marketplace search box: estimate the load, build an inverted index and rank with rare words, shard it and live with refresh lag, serve suggestions with a trie that stores the best queries on each node, and use Bloom filters, count-min sketches and HyperLogLog to trade a little accuracy for a lot of memory."
+    lessons:
+      - file: 23.01-set-the-scene-and-requirements.md
+        title: "Set the scene and requirements"
+        goal: "Turn shoppers a day into searches, suggestion calls and index size, and find the numbers that shape the design."
+      - file: 23.02-inverted-indexes-and-ranking-basics.md
+        title: "Inverted indexes and ranking basics"
+        goal: "Explain how a search engine finds and orders products, and how the index is sharded and kept fresh."
+      - file: 23.03-typeahead.md
+        title: "Typeahead"
+        goal: "Serve prefixes within 100 ms with a trie that stores the best queries on each node, a cache for short prefixes and a plan for slow or stale suggestions."
+      - file: 23.04-bloom-filters-hyperloglog-and-count-min-sketch.md
+        title: "Bloom filters, HyperLogLog and count-min sketch"
+        goal: "Trade a little accuracy for a lot of memory: size a Bloom filter, count with a sketch, count different items with HyperLogLog, and know when not to."
+      - file: 23.05-code-a-bloom-filter-and-a-count-min-sketch.md
+        title: "Code: a Bloom filter and a count-min sketch"
+        goal: "Implement bloomSize, createBloomFilter, sketchSize and createCountMinSketch and pass the tests."
+      - file: 23.07-quiz.md
+        title: "Search and probabilistic structures"
+        goal: "Answer graded scenarios on query analysis, rare-word scoring, scatter-gather tails, fresh suggestions and approximate structures."
+      - file: 23.08-checklist.md
+        title: "Checklist and learning log"
+        goal: "Write a search and suggestion design for a job board with one defended trade-off."

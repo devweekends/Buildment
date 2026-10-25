@@ -158,8 +158,8 @@ The interaction playbook already treats components as a cost. The audit makes th
 
 **Rules derived:**
 
-- Prose is the lesson; components are checkpoints.
-- A chapter that fails the prose-depth audit is not ready, even if every component is present.
+- In a Learn chapter the picture leads, a few words explain it, and depth is folded (v0.5, after the architect's review of two text-heavy chapters on 2026-10-23: attention drops fast in long prose).
+- A chapter that fails the depth audit (beats for Learn, prose for Build and Gate) is not ready, even if every component is present.
 - Interactions are concentrated at checkpoints and decisions.
 - No component-only sections.
 

@@ -1,0 +1,31 @@
+  - dir: 14-distributed-transactions-and-exactly-once
+    title: "Distributed transactions and exactly-once"
+    summary: "Keep data correct across services without a single database: two-phase commit and why it blocks, sagas with compensations, the outbox pattern, and exactly-once as at-least-once plus idempotency."
+    lessons:
+      - file: 14.01-set-the-scene-paid-but-never-reserved.md
+        title: "Set the scene: paid but never reserved"
+        goal: "See a checkout charge a card and crash before it reserves the stock, and see the four tools this module uses."
+      - file: 14.02-two-phase-commit-and-why-it-blocks.md
+        title: "Two-phase commit and why it blocks"
+        goal: "Walk two-phase commit across two databases, explain why a prepared database cannot decide alone, and find where a coordinator crash blocks everyone."
+      - file: 14.03-sagas.md
+        title: "Sagas"
+        goal: "Break a cross-service order into local commits, run compensations newest first when a step fails, compare orchestration with choreography, and name what a saga gives up."
+      - file: 14.04-the-outbox-pattern-and-change-data-capture.md
+        title: "The outbox pattern and change data capture"
+        goal: "Replace a dual write with an outbox row saved in the same transaction, explain why the relay can publish twice, and compare polling with change data capture."
+      - file: 14.05-exactly-once-is-at-least-once-plus-idempotency.md
+        title: "Exactly-once is at-least-once plus idempotency"
+        goal: "Make a consumer safe to run twice by saving the message id in the same transaction as the work, and choose how long to remember ids."
+      - file: 14.06-code-idempotent-consumer-and-saga-runner.md
+        title: "Code: idempotent consumer and saga runner"
+        goal: "Implement a dedupe store with an expiry, a handler that runs once per message id, and a saga runner that compensates in reverse order and passes the tests."
+      - file: 14.07-challenge-13-an-order-saga.md
+        title: "Challenge 13: an order saga"
+        goal: "Crash an order service on PostgreSQL and fix it with an outbox, an idempotent consumer and a saga with compensations, then audit the database to prove no order is half done."
+      - file: 14.08-quiz.md
+        title: "Distributed transactions"
+        goal: "Answer graded scenarios on two-phase commit, saga undo order, the outbox, idempotent consumers and what exactly-once really means."
+      - file: 14.09-checklist.md
+        title: "Checklist and learning log"
+        goal: "Write a failure walk-through of a checkout saga, with the undo order, where the state lives and what stops a repeated step from doing harm, and link your challenge 13 results."

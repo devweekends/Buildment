@@ -138,9 +138,9 @@ credits the shared example; it must never present that product as the learner's 
 
 It checks, per chapter:
 
-- prose words (≥ 1,200 concept/build, ≥ 700 checkpoint/gate);
-- top-level components (≤ 6);
-- total JSX tags (≤ 25);
+- for Learn chapters (`format: beats`): four to eight beats, each opening with a visual, at most 70 visible words per beat, 300 to 700 visible words, and at least 900 words including `GoDeeper` folds;
+- for other chapters: prose words (at least 1,200 build, at least 700 checkpoint/gate) and top-level components (at most 6);
+- total JSX tags (at most 40 for Learn, 25 for others);
 - assessment interactions (≤ 3);
 - diagram coverage (≥ 1 per concept/build chapter; ≥ 1 per module);
 - list-heavy chapters.
@@ -340,7 +340,7 @@ Run these for every course a pull request touches, and list what you ran and wha
 
 - [ ] `pnpm --dir server content:validate:source --course <slug>` passes.
 - [ ] `pnpm --dir server content:audit --course <slug>` reports 0 errors; any warning is explained in the PR.
-- [ ] `pnpm --dir server content:import --course <slug>` succeeds against a local database.
+- [ ] The course loads into a scratch database. A course that has never been released uses `pnpm --dir server content:import --course <slug>`. A course with a release (`repositoryPublish: true` and a published release) is refused by `content:import`; load it through the repository publisher (`courses:publish`) instead, the same path production uses. The publisher needs the instructor from `courses/publishing.yaml` as a verified mentor or admin with ZIP import access in that database, and it publishes every opted-in course, so limit it to your course for a local run. Start from a fresh scratch database: one that already holds a `content:import` copy of the course can keep the old chapters next to the new ones.
 - [ ] A student click-through as a test learner (for example `mentee1@buildment.dev`) at 375px wide and at desktop width, in the light and dark themes. Every changed chapter loads without console errors.
 - [ ] Grading works: answer one quiz right and one wrong, then check the score, the explanations and the saved progress.
 - [ ] The PR says who re-answered the answer keys blind. If no person did, it asks a reviewer for a human key check (`05-assessment-and-motivation.md` → Answer-key check).
