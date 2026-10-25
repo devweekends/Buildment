@@ -20,3 +20,9 @@
 | 2026-10-25 | G2C | orchestrator | drafting model | roadmap v3.1, dossier S70 to S76, `tools/check_briefs.py` | detail fixes; briefs match the roadmap (76 of 76) |
 | 2026-10-25 | G2C | curriculum-architect | bulk model | `module-briefs/01` to `09` aligned to v3.1 | ready for sponsor review |
 | 2026-10-26 | G2C | sponsor | human | blueprint, project brief, skill graph, timeline, module briefs | signed off; G3 may start |
+| 2026-10-26 | G3 | interaction-designer, assessment-designer | bulk model | `interaction-map.yaml`, `assessment-plan.yaml`, briefs aligned to v0.5.3 | done; checker passes |
+| 2026-10-26 | G3 | orchestrator | drafting model | dossier 5.8 (fourth lab test), canvas spec | done |
+| 2026-10-26 | G3 | interactive-canvas-builder | bulk model | `net-m2-byte-bits`, `net-m2-address-bits`, `net-m2-address-drill` | built; 39 model tests; text QA clean light and dark |
+| 2026-10-26 | G3 | chapter-writer | bulk model | chapter 2.2 (beats) | drafted; audit clean |
+| 2026-10-26 | G3 | critic A, critic B | review models from other families (Gemini 3.8 Flash, GPT-OSS 120B) | `qa/g3-critique-A-round1.md`, `qa/g3-critique-B-round1.md`, `qa/g3-critique-A-round2.md` | round 2 average 4.41, no dimension below 4; remaining S2 fixed after round 2 |
+| 2026-10-26 | G3 | answer-key check | review model from another family (Gemini 3.8 Flash) | blind keys on chapter 2.2 | 3 of 3 matched, three times |
