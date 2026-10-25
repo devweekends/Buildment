@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { IntegrityQueue, countWords, expectedReadingMs, isFastAnswer, screenshotCombo } from "@/lib/integrity/signals";
+import { IntegrityQueue, LeaveCounter, countWords, expectedReadingMs, isFastAnswer, proctoredKeyAction, screenshotCombo } from "@/lib/integrity/signals";
+import { PROCTORED_RULE, countLeaveIncidents } from "@/shared/api/integrity";
 
 class MemoryStorage {
   data = new Map<string, string>();
@@ -91,5 +92,69 @@ describe("IntegrityQueue", () => {
     const storage = new MemoryStorage();
     storage.setItem("q", "{not json");
     expect(new IntegrityQueue("q", storage).size).toBe(0);
+  });
+});
+
+const press = (key: string, extra: Partial<{ ctrlKey: boolean; metaKey: boolean; altKey: boolean }> = {}) => ({
+  key,
+  metaKey: false,
+  shiftKey: false,
+  ...extra,
+});
+
+describe("proctoredKeyAction", () => {
+  it("stops printing", () => {
+    expect(proctoredKeyAction(press("p", { ctrlKey: true }))).toBe("PRINT_BLOCKED");
+    expect(proctoredKeyAction(press("P", { metaKey: true }))).toBe("PRINT_BLOCKED");
+  });
+
+  it("stops reload and back", () => {
+    expect(proctoredKeyAction(press("F5"))).toBe("NAVIGATION_BLOCKED");
+    expect(proctoredKeyAction(press("r", { ctrlKey: true }))).toBe("NAVIGATION_BLOCKED");
+    expect(proctoredKeyAction(press("ArrowLeft", { altKey: true }))).toBe("NAVIGATION_BLOCKED");
+    expect(proctoredKeyAction(press("[", { metaKey: true }))).toBe("NAVIGATION_BLOCKED");
+  });
+
+  it("leaves typing alone", () => {
+    expect(proctoredKeyAction(press("p"))).toBeNull();
+    expect(proctoredKeyAction(press("r"))).toBeNull();
+    expect(proctoredKeyAction(press("ArrowLeft"))).toBeNull();
+    expect(proctoredKeyAction(press("a", { ctrlKey: true }))).toBeNull();
+  });
+});
+
+describe("LeaveCounter", () => {
+  const at = (seconds: number) => 1_700_000_000_000 + seconds * 1000;
+
+  it("warns on the first two times the learner leaves and reaches the limit on the third", () => {
+    const counter = new LeaveCounter();
+    expect(counter.add(at(0))).toEqual({ leaves: 1, limitReached: false, warningsLeft: 2 });
+    expect(counter.add(at(60))).toEqual({ leaves: 2, limitReached: false, warningsLeft: 1 });
+    expect(counter.add(at(120))).toEqual({ leaves: 3, limitReached: true, warningsLeft: 0 });
+    expect(PROCTORED_RULE.limit).toBe(3);
+  });
+
+  it("counts blur, hidden and full screen exit from one Alt+Tab once", () => {
+    const counter = new LeaveCounter();
+    expect(counter.add(at(0))).not.toBeNull();
+    expect(counter.add(at(1))).toBeNull();
+    expect(counter.add(at(2))).toBeNull();
+    expect(counter.leaves).toBe(1);
+  });
+
+  it("starts from what the server knows after a reload or a new attempt", () => {
+    const counter = new LeaveCounter(2);
+    expect(counter.add(at(0))?.limitReached).toBe(true);
+    counter.reset(0);
+    expect(counter.leaves).toBe(0);
+    expect(counter.add(at(0))?.leaves).toBe(1);
+  });
+
+  it("agrees with the count the server makes from the stored events", () => {
+    const times = [0, 1, 2, 60, 61, 130];
+    const counter = new LeaveCounter();
+    for (const time of times) counter.add(at(time));
+    const stored = times.map((time) => ({ type: "TAB_HIDDEN" as const, at: at(time) }));
+    expect(counter.leaves).toBe(countLeaveIncidents(stored));
   });
 });

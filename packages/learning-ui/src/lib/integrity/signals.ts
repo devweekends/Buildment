@@ -1,4 +1,4 @@
-import { INTEGRITY_LIMITS, isIntegrityFlag, type IntegrityEventInput, type IntegrityEventType } from "../../shared/api/integrity";
+import { INTEGRITY_LIMITS, PROCTORED_RULE, isIntegrityFlag, type IntegrityEventInput, type IntegrityEventType } from "../../shared/api/integrity";
 
 // Pure pieces of the quiz integrity hook, kept free of the DOM so they can be
 // unit tested: key combos, the reading-time check and the offline-safe queue.
@@ -19,6 +19,62 @@ export function screenshotCombo(event: KeyLike): string | null {
     if (key === digit || event.code === `Digit${digit}`) return `Cmd+Shift+${digit}`;
   }
   return null;
+}
+
+type ProctorKey = KeyLike & { altKey?: boolean };
+
+/**
+ * What a key press does during a proctored quiz that the page must stop: printing, or
+ * reloading and going back. Null for every other key. Closing the tab cannot be stopped.
+ */
+export function proctoredKeyAction(event: ProctorKey): "PRINT_BLOCKED" | "NAVIGATION_BLOCKED" | null {
+  const key = event.key.toLowerCase();
+  const withCommand = Boolean(event.ctrlKey || event.metaKey);
+  if (withCommand && key === "p") return "PRINT_BLOCKED";
+  if (key === "f5" || (withCommand && key === "r")) return "NAVIGATION_BLOCKED";
+  if (event.altKey && key === "arrowleft") return "NAVIGATION_BLOCKED";
+  if (event.metaKey && (key === "[" || key === "arrowleft")) return "NAVIGATION_BLOCKED";
+  return null;
+}
+
+/**
+ * The browser's own count of how often the learner left the quiz screen, so the warning
+ * shows at once. It follows the same incident window as the server, which recounts from
+ * the stored events and has the final say (see countLeaveIncidents).
+ */
+export class LeaveCounter {
+  private count: number;
+  private incidentStart = Number.NEGATIVE_INFINITY;
+
+  constructor(initial = 0) {
+    this.count = initial;
+  }
+
+  get leaves(): number {
+    return this.count;
+  }
+
+  /** Starts over from what the server knows (a new attempt, or a reload). */
+  reset(initial: number): void {
+    this.count = initial;
+    this.incidentStart = Number.NEGATIVE_INFINITY;
+  }
+
+  /**
+   * Notes one leave at time `at` (ms). Returns the outcome when it starts a new incident,
+   * or null when it belongs to the incident before it (blur, hidden and full screen exit
+   * from one Alt+Tab).
+   */
+  add(at: number): { leaves: number; limitReached: boolean; warningsLeft: number } | null {
+    if (at - this.incidentStart < PROCTORED_RULE.incidentWindowSeconds * 1000) return null;
+    this.incidentStart = at;
+    this.count += 1;
+    return {
+      leaves: this.count,
+      limitReached: this.count >= PROCTORED_RULE.limit,
+      warningsLeft: Math.max(0, PROCTORED_RULE.limit - this.count),
+    };
+  }
 }
 
 /**

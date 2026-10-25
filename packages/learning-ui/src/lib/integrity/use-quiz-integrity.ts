@@ -2,13 +2,14 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
+  INTEGRITY_LEAVE_EVENTS,
   INTEGRITY_LIMITS,
   type IntegrityAttemptSession,
   type IntegrityCameraStatus,
   type IntegrityEventType,
   type IntegrityEventsResult,
 } from "../../shared/api/integrity";
-import { IntegrityQueue, countWords, fullscreenPromptAllowed, isFastAnswer, screenshotCombo } from "./signals";
+import { IntegrityQueue, LeaveCounter, countWords, fullscreenPromptAllowed, isFastAnswer, proctoredKeyAction, screenshotCombo } from "./signals";
 import { CameraSession } from "./camera-session";
 
 // Quiz integrity signals in the browser. Everything here is best effort and
@@ -36,7 +37,12 @@ const NOTICE_TEXT: Partial<Record<IntegrityEventType, string>> = {
   MOUSE_LEFT: "Your mouse left the quiz page.",
   SECOND_SCREEN: "A second screen is connected. Your mentor will see this.",
   FAST_ANSWER: "You answered very fast. Take your time to read each question.",
+  PRINT_BLOCKED: "Printing is turned off during this quiz.",
+  NAVIGATION_BLOCKED: "You cannot reload or go back during this quiz.",
 };
+
+/** What the learner is told after they left the quiz screen in a proctored quiz. */
+export type LeaveWarning = { leaves: number; warningsLeft: number };
 
 export type IntegrityNotice = { id: number; text: string };
 
@@ -115,6 +121,14 @@ export function useQuizIntegrity({
   const [dialog, setDialog] = useState<"intro" | "info" | null>(null);
   /** The server sends this chapter's questions only after Start; until then the reader shows none. */
   const [questionsShown, setQuestionsShown] = useState(false);
+  /** Proctored quizzes: times the learner left the quiz screen, the warning to show and whether the attempt is locked. */
+  const [leaves, setLeaves] = useState(0);
+  const [leaveWarning, setLeaveWarning] = useState<LeaveWarning | null>(null);
+  const [locked, setLocked] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [done, setDone] = useState(false);
+  /** Start was pressed and the server has not confirmed it yet. */
+  const [starting, setStarting] = useState(false);
 
   const queueRef = useRef<IntegrityQueue | null>(null);
   const attemptIdRef = useRef<string | null>(null);
@@ -136,6 +150,20 @@ export function useQuizIntegrity({
   const snapshotTimer = useRef<number | null>(null);
   const snapshotInterval = useRef<number | null>(null);
   const cameraStatusRef = useRef<IntegrityCameraStatus>("NOT_REQUESTED");
+  const armedRef = useRef(false);
+  const proctoredRef = useRef(false);
+  const leaveCounter = useRef(new LeaveCounter());
+  const limitFired = useRef(false);
+  const swallowPop = useRef(0);
+
+  // A proctored quiz is armed from Start until the attempt ends: that is when leaving counts.
+  const proctored = Boolean(session?.proctored);
+  const armed = proctored && questionsShown && !locked && enabled && !done;
+  // Listeners read these refs, so they always see the latest values without being re-attached.
+  useEffect(() => {
+    armedRef.current = armed;
+    proctoredRef.current = proctored;
+  });
 
   const hiddenKey = `buildment:integrity-hidden:${chapterId}`;
   const introKey = (attemptId: string) => `buildment:integrity-started:${attemptId}`;
@@ -159,6 +187,24 @@ export function useQuizIntegrity({
     const attemptId = attemptIdRef.current;
     setPendingFlags(attemptId && queueRef.current ? queueRef.current.pendingFlags(attemptId) : 0);
   }, []);
+
+  /** The attempt reached the leave limit (here or on the server): hand the answers in, once. */
+  const reachLimit = useCallback(() => {
+    if (limitFired.current) return;
+    limitFired.current = true;
+    // The reader sees `limitReached` and hands the answers in.
+    setLocked(true);
+    setLeaveWarning(null);
+  }, []);
+
+  /** Counts one leave locally so the warning shows at once; the server recounts and decides. */
+  const countLeave = useCallback((at: number) => {
+    const incident = leaveCounter.current.add(at);
+    if (!incident) return;
+    setLeaves(incident.leaves);
+    if (incident.limitReached) reachLimit();
+    else setLeaveWarning({ leaves: incident.leaves, warningsLeft: incident.warningsLeft });
+  }, [reachLimit]);
 
   const flush = useCallback(async (keepalive = false) => {
     const queue = queueRef.current;
@@ -186,6 +232,7 @@ export function useQuizIntegrity({
           const body = (await response.json().catch(() => null)) as { data?: IntegrityEventsResult } | null;
           queue.ack(ids);
           if (batch.attemptId === attemptIdRef.current && typeof body?.data?.flagCount === "number") setServerFlags(body.data.flagCount);
+          if (batch.attemptId === attemptIdRef.current && body?.data?.locked) reachLimit();
         } else if ([400, 403, 404].includes(response.status)) {
           queue.ack(ids); // The server will never take these; do not retry forever.
         } else {
@@ -197,7 +244,7 @@ export function useQuizIntegrity({
       if (!keepalive) flushing.current = false;
       refreshPending();
     }
-  }, [refreshPending]);
+  }, [reachLimit, refreshPending]);
 
   const record = useCallback(
     (type: IntegrityEventType, meta?: Record<string, string | number | boolean>, options: { at?: Date; attemptId?: string; quiet?: boolean } = {}) => {
@@ -205,16 +252,20 @@ export function useQuizIntegrity({
       const queue = queueRef.current;
       if (!queue || !attemptId) return;
       if (!options.attemptId && finishedRef.current) return;
+      const leaving = INTEGRITY_LEAVE_EVENTS.has(type);
+      // On a proctored quiz, leaving only counts between Start and the end of the attempt.
+      if (leaving && proctoredRef.current && !armedRef.current && !options.attemptId) return;
       const now = Date.now();
       const last = lastByType.current.get(type);
       if (last && now - last < REPEAT_MS && !options.at) return;
       lastByType.current.set(type, now);
       queue.add(attemptId, type, { blockId: blockRef.current, ...(meta ? { meta } : {}) }, options.at ?? new Date(now));
       refreshPending();
+      if (leaving && proctoredRef.current && armedRef.current) countLeave((options.at ?? new Date(now)).getTime());
       const text = NOTICE_TEXT[type];
       if (text && !options.quiet) showNotice(text);
     },
-    [refreshPending, showNotice],
+    [countLeave, refreshPending, showNotice],
   );
 
   // --- Opening the attempt ------------------------------------------------------------------
@@ -229,6 +280,13 @@ export function useQuizIntegrity({
     }
     fullscreenDismissals.current = 0;
     paceStart.current = Math.min(Date.parse(next.startedAt) || Date.now(), Date.now());
+    // Each attempt starts from what the server knows: a new proctored attempt waits for Start again.
+    leaveCounter.current.reset(next.leaves);
+    limitFired.current = false;
+    setLeaves(next.leaves);
+    setLocked(false);
+    setLeaveWarning(null);
+    setQuestionsShown(next.questionsShown);
     setSession(next);
     setServerFlags(next.flagCount);
     refreshPending();
@@ -245,6 +303,7 @@ export function useQuizIntegrity({
   useEffect(() => {
     if (!enabled) return;
     finishedRef.current = false;
+    setDone(false);
     cameraSessionRef.current?.reopen();
     queueRef.current ??= new IntegrityQueue(`buildment:integrity-queue:${chapterId}`, storage());
     let cancelled = false;
@@ -264,16 +323,18 @@ export function useQuizIntegrity({
         record("TAB_HIDDEN", { closed: true }, { at: new Date(stale.at), attemptId: stale.attemptId, quiet: true });
         writePending(hiddenKey, null);
       }
-      setQuestionsShown(next.questionsShown);
       let started = next.questionsShown;
       try {
-        started ||= storage()?.getItem(introKey(next.attemptId)) === "1";
+        // A proctored quiz asks for Start on every attempt; only the server says it was pressed.
+        if (!next.proctored) started ||= storage()?.getItem(introKey(next.attemptId)) === "1";
       } catch {
         // Storage is optional; the server already said whether Start was pressed.
       }
+      // The server already locked this attempt (the limit was reached before a reload): hand the answers in.
+      if (next.locked) reachLimit();
       cameraStatusRef.current = next.camera.status;
       setCameraStatus(next.camera.status);
-      if (!started) setDialog("intro");
+      if (!started && !next.locked) setDialog("intro");
       void flush();
     };
     void open();
@@ -439,15 +500,19 @@ export function useQuizIntegrity({
 
   /** Tells the server Start was pressed, retrying a few times on a weak connection. */
   const unlockQuestions = useCallback(async (attemptId: string) => {
+    setStarting(true);
     for (let tries = 0; tries < 4; tries += 1) {
       try {
-        await apiFetch(`/api/v1/integrity/attempts/${encodeURIComponent(attemptId)}/begin`, { method: "POST" });
-        setQuestionsShown(true);
+        const result = await apiFetch<{ questionsShown: boolean }>(`/api/v1/integrity/attempts/${encodeURIComponent(attemptId)}/begin`, { method: "POST" });
+        setStarting(false);
+        // A locked attempt stays locked: the server says no, and the quiz stays closed.
+        setQuestionsShown(result.questionsShown);
         return;
       } catch {
         await new Promise((resolve) => window.setTimeout(resolve, 1500 * (tries + 1)));
       }
     }
+    setStarting(false);
     showNotice("We could not start your quiz. Check your connection and press Start again.");
     setDialog("intro");
   }, [apiFetch, showNotice]);
@@ -488,7 +553,7 @@ export function useQuizIntegrity({
       if (document.visibilityState === "hidden") {
         blurStart.current = null;
         mouseOutStart.current = null;
-        if (attemptIdRef.current) writePending(hiddenKey, { attemptId: attemptIdRef.current, at: Date.now() });
+        if (attemptIdRef.current && (!proctoredRef.current || armedRef.current)) writePending(hiddenKey, { attemptId: attemptIdRef.current, at: Date.now() });
         void flush(true);
       } else {
         flagHiddenReturn();
@@ -524,6 +589,7 @@ export function useQuizIntegrity({
     };
 
     const onFullscreenChange = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement));
       if (document.fullscreenElement) {
         wasFullscreen.current = true;
         setFullscreenPrompt(false);
@@ -532,9 +598,12 @@ export function useQuizIntegrity({
       if (!wasFullscreen.current || finishedRef.current) return;
       wasFullscreen.current = false;
       record("FULLSCREEN_EXIT", undefined, { quiet: true });
-      if (fullscreenPromptAllowed({ supported: fullscreenSupported(), dismissals: fullscreenDismissals.current })) setFullscreenPrompt(true);
+      // A proctored quiz covers the page until full screen is back, so the soft reminder is not used there.
+      if (!proctoredRef.current && fullscreenPromptAllowed({ supported: fullscreenSupported(), dismissals: fullscreenDismissals.current })) setFullscreenPrompt(true);
     };
 
+    // A proctored quiz blocks these anywhere on the page, not only inside the quiz.
+    const blockTarget: EventTarget | null = proctoredRef.current ? document : root;
     const block = (type: IntegrityEventType) => (event: Event) => {
       if (finishedRef.current) return;
       event.preventDefault();
@@ -544,8 +613,9 @@ export function useQuizIntegrity({
     const onCopy = block("COPY_BLOCKED");
     const onPaste = block("PASTE_BLOCKED");
     const onContextMenu = block("CONTEXT_MENU_BLOCKED");
-    const onDrop = (event: DragEvent) => {
-      if (finishedRef.current || !event.dataTransfer?.types.includes("text/plain")) return;
+    const onDrop = (event: Event) => {
+      const drag = event as DragEvent;
+      if (finishedRef.current || !drag.dataTransfer?.types.includes("text/plain")) return;
       event.preventDefault();
       event.stopPropagation();
       record("PASTE_BLOCKED", { via: "drop" });
@@ -554,6 +624,32 @@ export function useQuizIntegrity({
     const onKey = (event: KeyboardEvent) => {
       const combo = screenshotCombo(event);
       if (combo) record("SCREENSHOT_KEY", { combo });
+      if (!armedRef.current || event.type !== "keydown") return;
+      const blocked = proctoredKeyAction(event);
+      if (!blocked) return;
+      event.preventDefault();
+      record(blocked, { via: "key" });
+    };
+    const onBeforePrint = () => {
+      if (armedRef.current) record("PRINT_BLOCKED", { via: "menu" });
+    };
+    // A page cannot stop the tab from closing, but the browser asks first.
+    const onBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (!armedRef.current) return;
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    // Back button: swallow the step back, return to the quiz, and note it.
+    const onPopState = (event: PopStateEvent) => {
+      if (!armedRef.current && swallowPop.current === 0) return;
+      event.stopImmediatePropagation();
+      if (swallowPop.current > 0) {
+        swallowPop.current -= 1;
+        return;
+      }
+      swallowPop.current = 1;
+      window.history.go(1);
+      record("NAVIGATION_BLOCKED", { via: "back" });
     };
 
     const finePointer = window.matchMedia?.("(pointer: fine)").matches ?? false;
@@ -590,6 +686,10 @@ export function useQuizIntegrity({
     wasFullscreen.current = Boolean(document.fullscreenElement);
     flagHiddenReturn();
 
+    setIsFullscreen(Boolean(document.fullscreenElement));
+    window.addEventListener("beforeprint", onBeforePrint);
+    window.addEventListener("beforeunload", onBeforeUnload);
+    window.addEventListener("popstate", onPopState, true);
     document.addEventListener("visibilitychange", onVisibility);
     window.addEventListener("pagehide", onPageHide);
     window.addEventListener("blur", onBlur);
@@ -597,11 +697,11 @@ export function useQuizIntegrity({
     document.addEventListener("fullscreenchange", onFullscreenChange);
     window.addEventListener("keydown", onKey, true);
     window.addEventListener("keyup", onKey, true);
-    root?.addEventListener("copy", onCopy, true);
-    root?.addEventListener("cut", onCopy, true);
-    root?.addEventListener("paste", onPaste, true);
-    root?.addEventListener("contextmenu", onContextMenu, true);
-    root?.addEventListener("drop", onDrop, true);
+    blockTarget?.addEventListener("copy", onCopy, true);
+    blockTarget?.addEventListener("cut", onCopy, true);
+    blockTarget?.addEventListener("paste", onPaste, true);
+    blockTarget?.addEventListener("contextmenu", onContextMenu, true);
+    blockTarget?.addEventListener("drop", onDrop, true);
     if (finePointer) {
       document.documentElement.addEventListener("mouseleave", onMouseLeave);
       document.documentElement.addEventListener("mouseenter", onMouseEnter);
@@ -612,6 +712,9 @@ export function useQuizIntegrity({
     window.addEventListener("online", onOnline);
 
     return () => {
+      window.removeEventListener("beforeprint", onBeforePrint);
+      window.removeEventListener("beforeunload", onBeforeUnload);
+      window.removeEventListener("popstate", onPopState, true);
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("pagehide", onPageHide);
       window.removeEventListener("blur", onBlur);
@@ -619,11 +722,11 @@ export function useQuizIntegrity({
       document.removeEventListener("fullscreenchange", onFullscreenChange);
       window.removeEventListener("keydown", onKey, true);
       window.removeEventListener("keyup", onKey, true);
-      root?.removeEventListener("copy", onCopy, true);
-      root?.removeEventListener("cut", onCopy, true);
-      root?.removeEventListener("paste", onPaste, true);
-      root?.removeEventListener("contextmenu", onContextMenu, true);
-      root?.removeEventListener("drop", onDrop, true);
+      blockTarget?.removeEventListener("copy", onCopy, true);
+      blockTarget?.removeEventListener("cut", onCopy, true);
+      blockTarget?.removeEventListener("paste", onPaste, true);
+      blockTarget?.removeEventListener("contextmenu", onContextMenu, true);
+      blockTarget?.removeEventListener("drop", onDrop, true);
       if (finePointer) {
         document.documentElement.removeEventListener("mouseleave", onMouseLeave);
         document.documentElement.removeEventListener("mouseenter", onMouseEnter);
@@ -670,7 +773,7 @@ export function useQuizIntegrity({
     const next = await openAttempt();
     if (!next || finishedRef.current) return;
     try {
-      storage()?.setItem(introKey(next.attemptId), "1");
+      if (!next.proctored) storage()?.setItem(introKey(next.attemptId), "1");
     } catch {
       // Harmless.
     }
@@ -683,6 +786,7 @@ export function useQuizIntegrity({
   const finish = useCallback(() => {
     if (finishedRef.current) return;
     finishedRef.current = true;
+    setDone(true);
     setFullscreenPrompt(false);
     writePending(hiddenKey, null);
     cameraSessionRef.current?.close();
@@ -695,6 +799,23 @@ export function useQuizIntegrity({
   useEffect(() => {
     if (!enabled) finish();
   }, [enabled, finish]);
+
+  // The page styles and the reader shell follow this: no printing, no text selection, no way out by shortcut.
+  useEffect(() => {
+    if (!armed) return;
+    document.documentElement.dataset.quizLock = "1";
+    window.dispatchEvent(new CustomEvent("buildment:quiz-lock", { detail: true }));
+    return () => {
+      delete document.documentElement.dataset.quizLock;
+      window.dispatchEvent(new CustomEvent("buildment:quiz-lock", { detail: false }));
+    };
+  }, [armed]);
+
+  /** Closes the warning and puts the learner back in full screen (a click is the gesture it needs). */
+  const acknowledgeLeave = useCallback(() => {
+    setLeaveWarning(null);
+    if (fullscreenSupported() && !document.fullscreenElement) requestQuizFullscreen();
+  }, []);
 
   const returnToFullscreen = useCallback(() => {
     setFullscreenPrompt(false);
@@ -729,6 +850,18 @@ export function useQuizIntegrity({
       dialog,
       /** False while a quiz chapter waits for Start. A finished quiz is never locked. */
       questionsShown: questionsShown || !enabled,
+      /** The strict kind of quiz: see PROCTORED_RULE. A normal quiz leaves all of this off. */
+      proctored,
+      /** Between Start and the end of the attempt, when leaving the quiz screen counts. */
+      armed,
+      leaves,
+      leaveWarning,
+      /** The learner left too many times (here, or the server says so): the reader must hand their answers in. */
+      limitReached: locked,
+      starting,
+      acknowledgeLeave,
+      /** Proctored and full screen is gone: the quiz stays covered until it is back. */
+      needsFullscreen: armed && fullscreenSupported() && !isFullscreen,
       openIntro: () => setDialog("intro"),
       openInfo: () => setDialog("info"),
       closeInfo: () => setDialog((current) => (current === "info" ? null : current)),
@@ -738,7 +871,7 @@ export function useQuizIntegrity({
       nextAttempt,
       finish,
     }),
-    [attachVideo, begin, cameraIssue, cameraStarting, cameraStatus, checkPace, declineCamera, dismissFullscreenPrompt, enabled, finish, fullscreenPrompt, dialog, nextAttempt, notice, pendingFlags, questionsShown, returnToFullscreen, serverFlags, session, startCamera, withoutFlags],
+    [starting, acknowledgeLeave, armed, isFullscreen, leaveWarning, leaves, locked, proctored, attachVideo, begin, cameraIssue, cameraStarting, cameraStatus, checkPace, declineCamera, dismissFullscreenPrompt, enabled, finish, fullscreenPrompt, dialog, nextAttempt, notice, pendingFlags, questionsShown, returnToFullscreen, serverFlags, session, startCamera, withoutFlags],
   );
 }
 
