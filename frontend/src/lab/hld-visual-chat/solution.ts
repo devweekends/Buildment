@@ -1,9 +1,9 @@
 import type { SolutionDef } from "../types";
 
-// The reference design recorded in spec.md: 11 of 11 checks at $2.12 an hour.
+// The reference design recorded in spec.md: 11 of 11 checks at $1.48 an hour.
 export const chatSolution: SolutionDef = {
   summary:
-    "Enough small gateways that losing one still leaves room, three chat servers in two zones, a cache that answers online-dot lookups with a message store sized to carry everything if the cache stops, and every alert held in a queue for three workers that clear a backlog in 75 seconds.",
+    "Enough small gateways that losing one still leaves room, three chat servers in two zones, a cache that answers online-dot lookups with a message store sized to carry everything if the cache stops, and a queue that holds the 400 alert jobs a second (1 request in 10) for two workers that clear a 15 minute backlog in 82 seconds.",
   board: {
     nodes: [
       { id: "client", kind: "client", x: 1, y: 0 },
@@ -12,7 +12,7 @@ export const chatSolution: SolutionDef = {
       { id: "cache", kind: "cache", x: 0, y: 3, props: { size: "memory-small", count: 1, hitRate: 0.9, azs: 2 } },
       { id: "store", kind: "nosql", x: 1, y: 3, props: { size: "memory-small", count: 2, azs: 2 } },
       { id: "q", kind: "queue", x: 2, y: 3 },
-      { id: "w", kind: "worker", x: 2, y: 4, props: { size: "compute-small", count: 3 } },
+      { id: "w", kind: "worker", x: 2, y: 4, props: { size: "compute-small", count: 2 } },
     ],
     edges: [
       { from: "client", to: "gw" },
@@ -45,14 +45,14 @@ export const chatSolution: SolutionDef = {
       without: "With one small node, a stopped cache puts all 4,000 requests a second on a node that carries 4,000, so it is 100% busy and p99 is 400 ms (target 120 ms). With both nodes in one zone, availability falls to 99.88%.",
     },
     q: {
-      why: "Every request leaves an alert job in the queue, and the queue holds each job until a worker sends it. The chat servers never wait for an alert, and no alert is lost while the workers are away. The queue is priced per message, so at $0.59 an hour it is the most expensive part.",
+      why: "About 1 request in 10 needs an alert (chapter 22.2), so 400 alert jobs a second reach the queue, and it holds each job until a worker sends it. The chat servers never wait for an alert, and no alert is lost while the workers are away. The queue is priced per message and costs $0.07 an hour.",
       checks: ["alert", "worker-dies"],
-      without: "With no queue there is nowhere for alerts to wait. The alert check fails, and in the 60 seconds the worker is down 240,000 alerts are lost.",
+      without: "With no queue there is nowhere for alerts to wait. The alert check fails, and every alert that arrives while the worker is down is lost.",
     },
     w: {
-      why: "Three workers take alert jobs from the queue and send them. They handle 7,200 a second, so after the 4,000 new alerts a second they have 3,200 a second to spare. The 240,000 alerts that wait during a 60 second outage clear in 75 seconds.",
+      why: "Two workers take alert jobs from the queue and send them. They handle 4,800 a second, so after the 400 new alerts a second they have 4,400 a second to spare. The 360,000 alerts that wait during a 15 minute outage clear in 82 seconds.",
       checks: ["alert", "worker-dies"],
-      without: "One worker handles 2,400 alerts a second while 4,000 arrive, so the waiting alerts never clear. Two workers have only 800 a second to spare and take 300 seconds, over the 120 second limit. A fourth worker passes but costs $2.24 an hour, over the $2.20 budget.",
+      without: "One worker handles 2,400 alerts a second and has 2,000 a second to spare, so the 360,000 waiting alerts take 180 seconds, over the 120 second limit. A third worker passes but costs $1.60 an hour, over the $1.55 budget.",
     },
   },
 };
