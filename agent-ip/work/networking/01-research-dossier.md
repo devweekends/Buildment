@@ -249,6 +249,23 @@ Still untested: Docker Desktop on macOS; WSL 2 without Docker Desktop; IPv6 forw
 | Capstone path: home `192.168.1.23` to home router (outside `198.51.100.2/30`) to provider router to server `203.0.113.80` | Works; the server sees `198.51.100.2`. Port forwarding `198.51.100.2:8080` to the home web server works from the server, across the provider router. |
 | Fault: the home router's default route removed | The home device gets `Destination Net Unreachable` from `192.168.1.1`; `curl` fails at once. |
 
+### 5.8 Fourth environment test, 2026-10-26 (G3 verifications)
+
+| Check | Result |
+|---|---|
+| Image tools | `nano` present after install; `sudo` absent; the learner is `root` in the lab. |
+| `ip route get` | `10.2.0.10 via 10.1.0.1 dev a0 src 10.1.0.10` on the host; `via 10.0.0.2 dev r1b` on the first router. |
+| Missing return route (A, router 1, router 2, B; router 2 has no route back) | A sees silent loss (2 sent, 0 received). Adding the return route fixes it. |
+| TTL after two routers | `tcpdump -v` on B shows `ttl 62` (64 minus 2). |
+| `tcpdump -e` | Shows the ARP request to `ff:ff:ff:ff:ff:ff` and the unicast reply. |
+| `traceroute -n` across two routers | Three lines: both routers, then the host. |
+| Listening addresses | A server on `127.0.0.1:8000` answers locally and refuses a remote client (curl exit 7); on `0.0.0.0:8001` both work. `ss -tlnp` shows both. `nc -l 127.0.0.1 9000` listens on loopback. |
+| `conntrack -L` timers | An unanswered UDP flow shows 29 seconds left; a closed TCP flow shows `TIME_WAIT` with 119. |
+| One dnsmasq, two DHCP ranges on two interfaces | Works when clients start about 3 seconds after dnsmasq and retry (`udhcpc -n -q -t 5 -T 2`). With a 1-second wait and `-t 3 -T 1`, the first runs got no lease. |
+| `busybox udhcpc` | Ubuntu's busybox ships no default hook script, so a lease is printed but not applied. A five-line hook script (`-s`) that sets the address, the default route and `/etc/netns/<ns>/resolv.conf` works. `dhclient` (`isc-dhcp-client`) applies the lease itself. |
+| Names through the leased resolver | Known name answered (`203.0.113.80`); an unknown name gives `status: REFUSED` (dnsmasq with `--no-resolv` and no upstream), not NXDOMAIN. |
+| DNS port blocked by an nft input rule | `dig` gets no answer; a new DHCP lease still works. |
+
 **Consequence for the course:** commands about the learner's real internet path (`traceroute`/`tracert`, `curl ifconfig.me`, the host's own addresses) run on the host, not in the lab container. The lab container is for networks the learner builds. Chapters 1.1, 4.1 and 6.4 say which side each command runs on.
 
 Not tested: Docker Desktop on macOS, native Linux, WSL 2 without Docker, and the narrower `--cap-add` alternative. The roadmap keeps `--privileged` as the default and asks for a macOS run before the blueprint is locked.
