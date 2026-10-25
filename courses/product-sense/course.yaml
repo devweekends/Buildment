@@ -3,7 +3,7 @@ title: "Product Sense for Engineers: UI, UX and Work People Remember"
 description: "Anyone can build an app in a weekend now, and most of those apps look the same. Learn the product sense that makes work stand out: start from the problem and the job, shape screens so the important thing is seen first, design the moments when things go wrong, build taste you can explain, remove the generic AI-made look, use AI design tools as opinions you check, and present your work in a demo and a case study people remember."
 projectGoal: "Redesign one of your own projects, or the provided Wasel print-shop app, from the generic look to work people remember: before and after screenshots, a critique log with a reason for every change, a case study page that passes a 10-second skim, and a 60 to 90 second demo. Then defend your changes with the AI interviewer or in writing."
 difficulty: Medium
-estimatedHours: 22
+estimatedHours: 26
 category: tech
 modules:
   - dir: 01-think-product-first
@@ -187,9 +187,12 @@ modules:
       - file: 07.05-quiz.md
         title: "Mixed review: which fix first?"
         goal: "Fresh graded cases from every module."
-      - file: 07.06-capstone-from-slop-to-remembered.md
-        title: "Capstone: from AI slop to remembered"
-        goal: "Redesign your project or Wasel: before and after, a critique log, a case study page and a 60 to 90 second demo."
-      - file: 07.07-checklist.md
+      - file: 07.06-capstone-part-1.md
+        title: "Capstone, part 1: before and after, and the critique log"
+        goal: "Redesign your project or Wasel: before and after screenshots of at least three screens and a critique log with a reason and a cost for every change."
+      - file: 07.07-capstone-part-2.md
+        title: "Capstone, part 2: the case study page and the demo"
+        goal: "Present the redesign: a case study page that passes a 10-second skim, one-click access with a fallback, and a 60 to 90 second demo that works with the sound off."
+      - file: 07.08-checklist.md
         title: "Course checklist and your defence"
         goal: "Final checks, and a defence of your changes with the AI interviewer or in writing."
