@@ -123,3 +123,9 @@ The recordings (`recordings/replay-*.txt`) are the only source for the `[replay]
 **Finding:** without a capture filter, a fresh veth first carries IPv6 chatter (router solicitations, multicast listener reports), so the README's `arp or icmp` filter is required; the chapter says why.
 
 **Still untested:** `lab/start.sh` and `start.ps1` themselves (the recordings used the same `docker run` flags directly), `winpty` in Git Bash, the line-endings guard on a real CRLF file, macOS.
+
+## 2026-10-26: Network lab slice 1 exists on feat/netlab (not merged)
+
+**Context:** the lab session built slice 1 on branch `feat/netlab` (worktree `C:\Users\Zeeshan\buildment-netlab`, local only, waiting for the sponsor's review). Spec to target: `NetLabSpec` in `frontend/src/lab/types.ts`, family `net`, mode `explore | fault | plan`; topology of devices (host, router, switch with interfaces, routes, sockets, forwarding, silent, filter rules) and links; fault labs carry reachability checks and plan labs a solution that the validator replays. Graded lab slugs keep the `net-lab-*` prefix; examples `net-lab-fix-office`, `net-lab-plan-school`, `net-explore-office`. Commands covered: `ip addr/link/route/route get/neigh`, `arp -a`, `ping`, `traceroute`, `ss -tlnp`, `curl` to an IP, `sysctl ip_forward`. Not yet built: beat mode (PG2), NAT, DHCP, DNS.
+
+**Decision:** module 1 needs none of it. Modules 3 and 4 write their graded labs (3.10, 4.8) against this spec once `feat/netlab` is merged; Learn chapters keep the `[sequence]` fallback until beat mode exists.
