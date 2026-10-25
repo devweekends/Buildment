@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { runChallenge } from "@/lab/challenge";
+import { hldVisualUrlShortener } from "@/lab/hld-visual-url-shortener/data";
 import { runTieredModel } from "@/lab/tiered-architecture";
 import type { Board, ChallengeDef } from "@/lab/types";
 import { validateChallenge } from "@/lab/types";
@@ -57,5 +59,21 @@ describe("traffic shares", () => {
     expect(validateChallenge({ ...base, shares: { queue: 0.1 } })).toEqual([]);
     expect(validateChallenge({ ...base, shares: { queue: 0 } })).toContain("share for queue must be above 0 and at most 1");
     expect(validateChallenge({ ...base, shares: { queue: 1.5 } })).toContain("share for queue must be above 0 and at most 1");
+  });
+});
+
+describe("the drain check with a share", () => {
+  it("counts only the shared jobs as lost when there is no queue", () => {
+    const spec = {
+      ...hldVisualUrlShortener,
+      challenge: { ...hldVisualUrlShortener.challenge!, inlineClicks: false, shares: { queue: 0.1 } },
+    };
+    const noQueue: Board = {
+      nodes: board.nodes.filter((n) => n.id !== "q" && n.id !== "w"),
+      edges: board.edges.filter((e) => e.to !== "q" && e.from !== "q"),
+    };
+    const check = runChallenge(spec, noQueue, 3000).checks.find((c) => c.id === "worker-dies")!;
+    expect(check.pass).toBe(false);
+    expect(check.measured).toBe("18,000 clicks lost in 60 s");
   });
 });
