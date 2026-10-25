@@ -111,7 +111,7 @@ export function QuizChapterSessionClient({
   const sectionRef = useRef<HTMLElement>(null);
   const integrity = useQuizIntegrity({
     chapterId,
-    enabled: total > 0 && !chapterComplete && !(isPerfectScore(initialScoreSummary) && individualActivityCount === 0),
+    enabled: (total > 0 || (locked && stepIds.length > 0)) && !chapterComplete && !(isPerfectScore(initialScoreSummary) && individualActivityCount === 0),
     rootRef: sectionRef,
     currentBlockId: stepIds[activeIndex] ?? null,
   });

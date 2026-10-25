@@ -2,6 +2,8 @@ import type { IntegrityTransport } from '@buildment/learning-ui/lib/integrity/us
 
 // The shared web hook uses this adapter so all desktop requests go through IPC.
 export const integrityTransport: IntegrityTransport = {
+  windowEvents: (listener) =>
+    window.buildment.onWindowState?.(listener) ?? (() => undefined),
   async apiFetch<T>(
     path: string,
     options: { method?: string; json?: unknown } = {},

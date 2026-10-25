@@ -85,6 +85,18 @@ function createWindow() {
       );
     },
   );
+  // A proctored quiz needs to know when the window itself loses focus or leaves full screen, which the
+  // page cannot always see (another app in front, the OS task switcher).
+  for (const [event, state] of [
+    ['blur', 'blur'],
+    ['focus', 'focus'],
+    ['minimize', 'minimize'],
+    ['leave-full-screen', 'leave-full-screen'],
+  ] as const) {
+    window.on(event as 'blur', () => {
+      if (!window.isDestroyed()) window.webContents.send('window:state', state);
+    });
+  }
   mainWindow.on('closed', () => {
     mainWindow = null;
   });

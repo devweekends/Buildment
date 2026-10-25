@@ -387,6 +387,40 @@ test('integrity bridge limits routes and snapshot uploads', async () => {
   assert.equal(uploads, 1);
 });
 
+test('integrity bridge passes Start, camera state and events for a proctored quiz', async () => {
+  const seen: string[] = [];
+  const client = createPreviewClient(
+    'http://localhost:4000',
+    async (url, init) => {
+      if (String(url).endsWith('/exchange'))
+        return Response.json({
+          success: true,
+          data: { session: { token: 'private' } },
+        });
+      seen.push(`${init?.method} ${new URL(String(url)).pathname}`);
+      return Response.json({ success: true, data: {} });
+    },
+  );
+  await client.exchange('c'.repeat(43), 'v'.repeat(43));
+  const base = '/api/v1/integrity/attempts/attempt-1';
+  for (const [route, method, body] of [
+    ['/api/v1/chapters/chapter-1/integrity', 'POST', undefined],
+    [`${base}/camera`, 'PUT', { status: 'ON' }],
+    [`${base}/begin`, 'POST', undefined],
+    [`${base}/events`, 'POST', { events: [] }],
+  ] as const) {
+    assert.equal((await client.integrityRequest(route, method, body)).ok, true);
+  }
+  assert.deepEqual(seen, [
+    'POST /api/v1/chapters/chapter-1/integrity',
+    `PUT ${base}/camera`,
+    `POST ${base}/begin`,
+    `POST ${base}/events`,
+  ]);
+  const refused = await client.integrityRequest(`${base}/begin`, 'GET');
+  assert.equal(!refused.ok && refused.code, 'INVALID_INPUT');
+});
+
 test('native parser keeps JavaScript inert and uses consistent reflection IDs', async () => {
   const { parseLesson } = await import('../src/learning/parse-lesson');
   const tree = parseLesson(

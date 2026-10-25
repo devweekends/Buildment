@@ -12,7 +12,10 @@ export type CatalogResult =
   | { ok: true; courses: Course[] }
   | { ok: false; message: string };
 export type EnrollmentResult = { lifecycle: 'ACTIVE' | 'PAYMENT_REQUIRED' };
+export type WindowState = 'blur' | 'focus' | 'leave-full-screen' | 'minimize';
 export interface DesktopAPI {
+  /** The window's own blur, focus, minimize and leave-full-screen, for a proctored quiz. Returns a stop function. */
+  onWindowState?(listener: (state: WindowState) => void): () => void;
   integrityRequest(
     path: string,
     method: string,

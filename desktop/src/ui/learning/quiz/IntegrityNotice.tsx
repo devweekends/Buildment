@@ -19,11 +19,25 @@ export function IntegrityNotice({ integrity }: { integrity: QuizIntegrity }) {
   const warning = integrity.leaveWarning;
   const cover = integrity.limitReached
     ? 'limit'
-    : warning
-      ? 'warning'
-      : integrity.needsFullscreen && integrity.dialog === null
-        ? 'fullscreen'
-        : null;
+    : integrity.cameraLost
+      ? 'camera'
+      : warning
+        ? 'warning'
+        : integrity.needsFullscreen && integrity.dialog === null
+          ? 'fullscreen'
+          : null;
+  const cameraHelp: Record<string, string> = {
+    denied:
+      'The camera is blocked. Allow it for Buildment in your system settings, then try again.',
+    muted: 'Your camera is switched off or covered. Turn it on and try again.',
+    'no-camera': 'We could not find a camera on this device.',
+    stopped: 'Your camera stopped.',
+    unsupported: 'This device cannot use a camera.',
+    error: 'The camera did not start.',
+  };
+  const issue = integrity.camera.issue
+    ? (cameraHelp[integrity.camera.issue] ?? cameraHelp.error)
+    : '';
   return (
     <div className="my-5 space-y-3">
       <div className="flex flex-wrap items-center gap-3">
@@ -60,23 +74,33 @@ export function IntegrityNotice({ integrity }: { integrity: QuizIntegrity }) {
         </div>
       )}
       {integrity.camera.status === 'ON' && (
-        <div className="flex items-center gap-3">
+        <div className="fixed bottom-3 right-3 z-[70] w-36">
           <video
             ref={integrity.camera.attachVideo}
             muted
             autoPlay
             playsInline
-            className="w-32 rounded-lg"
+            className="w-full rounded-lg border border-border shadow"
           />
-          <button
-            onClick={integrity.camera.turnOff}
-            className="text-sm underline"
-          >
-            Turn camera off
-          </button>
+          {integrity.camera.required ? (
+            <p className="mt-1 flex items-center gap-1.5 rounded bg-background/90 px-1.5 py-0.5 text-[11px] font-medium shadow-sm">
+              <span
+                className="size-2 shrink-0 rounded-full bg-red-600"
+                aria-hidden
+              />
+              Camera on · stays on this device
+            </p>
+          ) : (
+            <button
+              onClick={integrity.camera.turnOff}
+              className="mt-1 text-sm underline"
+            >
+              Turn camera off
+            </button>
+          )}
         </div>
       )}
-      {integrity.camera.issue && (
+      {integrity.camera.issue && !integrity.camera.required && (
         <p role="status" className="text-sm text-muted-foreground">
           {integrity.camera.issue}
         </p>
@@ -105,6 +129,10 @@ export function IntegrityNotice({ integrity }: { integrity: QuizIntegrity }) {
               answers are submitted as they are, and questions you did not
               answer count as wrong.
             </li>
+            <li>
+              Your camera has to be on and stay on. If it stops, the quiz is
+              covered until it is back, and that counts like leaving the screen.
+            </li>
             <li>Your mentor can see every note.</li>
           </ul>
         ) : (
@@ -122,6 +150,32 @@ export function IntegrityNotice({ integrity }: { integrity: QuizIntegrity }) {
             </p>
           </>
         )}
+        {integrity.camera.required && (
+          <div className="mt-5 rounded-xl bg-muted p-4">
+            <h3 className="font-semibold">Your camera</h3>
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6">
+              <li>The camera is checked on your device only.</li>
+              <li>Your video is not recorded, uploaded or stored.</li>
+              <li>
+                We save only a note with the time when you leave the quiz screen
+                or the camera stops.
+              </li>
+            </ul>
+            <p className="mt-2 text-xs leading-5 text-muted-foreground">
+              {integrity.faceCheckAvailable
+                ? 'This app can also tell if no face, or more than one face, is in view. That check runs on your device too, and only a note with the time is kept.'
+                : 'This device cannot check faces, so only the camera itself is checked.'}
+            </p>
+            {issue && (
+              <p
+                role="alert"
+                className="mt-3 rounded-lg border border-border bg-background p-3 text-sm"
+              >
+                {issue}
+              </p>
+            )}
+          </div>
+        )}
         {integrity.camera.enabled && (
           <div className="mt-5 rounded-xl bg-muted p-4">
             <h3 className="font-semibold">Camera photos are your choice</h3>
@@ -135,8 +189,21 @@ export function IntegrityNotice({ integrity }: { integrity: QuizIntegrity }) {
           </div>
         )}
         <div className="mt-6 flex flex-wrap justify-end gap-3">
+          {intro && integrity.camera.required && (
+            <button
+              disabled={integrity.camera.starting || integrity.starting}
+              onClick={() => void integrity.begin(true)}
+              className="rounded-lg bg-primary px-4 py-2 text-primary-foreground disabled:opacity-50"
+            >
+              {integrity.camera.starting || integrity.starting
+                ? 'Starting…'
+                : integrity.camera.issue
+                  ? 'Try the camera again'
+                  : 'Turn on camera and start'}
+            </button>
+          )}
           <button
-            hidden={intro && strict}
+            hidden={(intro && strict) || integrity.camera.required}
             onClick={close}
             className="rounded-lg border border-border px-4 py-2"
           >
@@ -146,20 +213,22 @@ export function IntegrityNotice({ integrity }: { integrity: QuizIntegrity }) {
                 : 'Start quiz'
               : 'Close'}
           </button>
-          {integrity.camera.enabled && integrity.camera.status !== 'ON' && (
-            <button
-              onClick={() => {
-                if (intro) integrity.begin(true);
-                else {
-                  void integrity.camera.start();
-                  integrity.closeInfo();
-                }
-              }}
-              className="rounded-lg bg-primary px-4 py-2 text-primary-foreground"
-            >
-              Turn on camera{intro ? ' and start' : ''}
-            </button>
-          )}
+          {integrity.camera.enabled &&
+            !integrity.camera.required &&
+            integrity.camera.status !== 'ON' && (
+              <button
+                onClick={() => {
+                  if (intro) integrity.begin(true);
+                  else {
+                    void integrity.camera.start();
+                    integrity.closeInfo();
+                  }
+                }}
+                className="rounded-lg bg-primary px-4 py-2 text-primary-foreground"
+              >
+                Turn on camera{intro ? ' and start' : ''}
+              </button>
+            )}
         </div>
       </dialog>
       {cover && (
@@ -185,6 +254,39 @@ export function IntegrityNotice({ integrity }: { integrity: QuizIntegrity }) {
                   Your answers so far are being submitted. Questions you did not
                   answer count as wrong. Please wait.
                 </p>
+              </>
+            )}
+            {cover === 'camera' && (
+              <>
+                <h2
+                  id="proctor-guard-title"
+                  className="mt-2 text-xl font-semibold"
+                >
+                  Your camera stopped
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                  The quiz is covered until your camera is on again. This counts
+                  like leaving the quiz screen, and your mentor can see it. Your
+                  video is not recorded.
+                </p>
+                {issue && (
+                  <p
+                    role="alert"
+                    className="mt-3 rounded-lg border border-border bg-background p-3 text-sm"
+                  >
+                    {issue}
+                  </p>
+                )}
+                <button
+                  autoFocus
+                  disabled={integrity.camera.starting}
+                  onClick={() => void integrity.camera.start()}
+                  className="mt-5 w-full rounded-lg bg-primary px-4 py-2 text-primary-foreground disabled:opacity-50"
+                >
+                  {integrity.camera.starting
+                    ? 'Starting camera…'
+                    : 'Turn camera on'}
+                </button>
               </>
             )}
             {cover === 'warning' && warning && (

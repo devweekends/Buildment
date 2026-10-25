@@ -2,6 +2,14 @@ import { contextBridge, ipcRenderer } from 'electron';
 import type { DesktopAPI } from './domain/catalog';
 
 const api: DesktopAPI = {
+  onWindowState: (listener) => {
+    const handler = (_event: unknown, state: Parameters<typeof listener>[0]) =>
+      listener(state);
+    ipcRenderer.on('window:state', handler);
+    return () => {
+      ipcRenderer.removeListener('window:state', handler);
+    };
+  },
   integrityRequest: (path, method, body) =>
     ipcRenderer.invoke('learning:integrity', path, method, body),
   learning: {

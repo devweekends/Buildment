@@ -76,6 +76,10 @@ export function createPreviewClient(
       const events =
         /^\/api\/v1\/integrity\/attempts\/[a-zA-Z0-9_-]+\/events$/.test(path) &&
         method === 'POST';
+      // Start on a proctored quiz: the questions are only sent after this.
+      const begin =
+        /^\/api\/v1\/integrity\/attempts\/[a-zA-Z0-9_-]+\/begin$/.test(path) &&
+        method === 'POST';
       const camera =
         /^\/api\/v1\/integrity\/attempts\/[a-zA-Z0-9_-]+\/camera$/.test(path) &&
         method === 'PUT';
@@ -83,7 +87,7 @@ export function createPreviewClient(
         /^\/api\/v1\/integrity\/attempts\/[a-zA-Z0-9_-]+\/snapshots$/.test(
           path,
         ) && method === 'POST';
-      if (!opening && !events && !camera && !snapshot)
+      if (!opening && !events && !begin && !camera && !snapshot)
         return {
           ok: false,
           code: 'INVALID_INPUT',

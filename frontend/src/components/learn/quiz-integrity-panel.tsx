@@ -24,11 +24,20 @@ const STRICT_RULES = [
   "The quiz opens in full screen and has to stay there.",
   "You cannot switch tabs or windows, copy, paste, print, right-click, reload or go back.",
   `If you leave the quiz screen, you get a warning. You have ${PROCTORED_RULE.warnings} warnings. The next time you leave, your answers are submitted as they are, and questions you did not answer count as wrong.`,
+  "Your camera has to be on and stay on. If it stops, the quiz is covered until it is back, and that counts like leaving the screen.",
   "Your mentor can see every note.",
+];
+
+// Said in plain words before Start: what the camera does and does not do.
+const CAMERA_PRIVACY = [
+  "The camera is checked on your device only.",
+  "Your video is not recorded, uploaded or stored.",
+  "We save only a note with the time when you leave the quiz screen or the camera stops.",
 ];
 
 const CAMERA_HELP: Record<string, string> = {
   denied: "Your browser blocked the camera. You can allow it for this site (the camera icon in the address bar) and try again.",
+  muted: "Your camera is switched off or covered. Turn it on and try again.",
   "no-camera": "We could not find a camera on this device.",
   stopped: "Your camera stopped.",
   unsupported: "This browser cannot use a camera.",
@@ -116,6 +125,30 @@ function IntegrityDialog({ integrity }: { integrity: QuizIntegrity }) {
               ) : null}
             </section>
 
+            {camera.required ? (
+              <section aria-labelledby="quiz-camera-privacy-title" className="rounded-xl border border-primary/25 bg-primary/5 p-4">
+                <h3 id="quiz-camera-privacy-title" className="flex items-center gap-2 text-sm font-semibold">
+                  <Camera className="size-4 text-primary" aria-hidden />
+                  Your camera
+                </h3>
+                <ul className="mt-2 grid gap-1.5 pl-5 text-sm leading-5 text-foreground/85 marker:text-muted-foreground">
+                  {CAMERA_PRIVACY.map((item) => <li key={item} className="list-disc">{item}</li>)}
+                </ul>
+                {intro ? (
+                  <p className="mt-3 text-xs leading-5 text-muted-foreground">
+                    {integrity.faceCheckAvailable
+                      ? "This browser can also tell if no face, or more than one face, is in view. That check runs on your device too, and only a note with the time is kept."
+                      : "This browser cannot check faces, so only the camera itself is checked."}
+                  </p>
+                ) : null}
+                {camera.issue ? (
+                  <p role="alert" className="mt-3 rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-sm leading-5 text-foreground">
+                    {CAMERA_HELP[camera.issue] ?? CAMERA_HELP.error}
+                  </p>
+                ) : null}
+              </section>
+            ) : null}
+
             {camera.enabled ? (
               <section aria-labelledby="quiz-camera-title" className="rounded-xl border border-primary/25 bg-primary/5 p-4">
                 <h3 id="quiz-camera-title" className="flex items-center gap-2 text-sm font-semibold">
@@ -138,7 +171,12 @@ function IntegrityDialog({ integrity }: { integrity: QuizIntegrity }) {
           <div className="shrink-0 border-t bg-card px-5 py-4 sm:px-6">
             <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
               {intro ? (
-                camera.enabled ? (
+                camera.required ? (
+                  <Button type="button" onClick={() => void integrity.begin(true)} disabled={camera.starting || integrity.starting} className="gap-1.5">
+                    <Camera className="size-4" aria-hidden />
+                    {camera.starting || integrity.starting ? "Starting…" : camera.issue ? "Try the camera again" : "Turn on camera and start"}
+                  </Button>
+                ) : camera.enabled ? (
                   <>
                     <Button type="button" variant="outline" onClick={() => integrity.begin(false)}>
                       Start without camera
@@ -180,18 +218,33 @@ function IntegrityDialog({ integrity }: { integrity: QuizIntegrity }) {
 }
 
 /** Kept mounted so the stream survives re-renders; tiny and visible while on, so the learner always knows. */
-function CameraPreview({ attach, visible }: { attach: (element: HTMLVideoElement | null) => void; visible: boolean }) {
+function CameraPreview({ attach, visible, proctored }: { attach: (element: HTMLVideoElement | null) => void; visible: boolean; proctored: boolean }) {
+  // On a proctored quiz the self-view is bigger and says plainly that the camera is on and where the video stays.
   return (
-    <video
-      ref={attach}
-      muted
-      playsInline
-      aria-hidden
+    <div
       className={cn(
-        "pointer-events-none fixed bottom-20 right-3 z-40 h-[54px] w-[72px] rounded-md border border-border bg-muted object-cover shadow-sm sm:bottom-4",
+        "pointer-events-none fixed bottom-20 right-3 z-[70] sm:bottom-4",
+        proctored ? "w-[132px]" : "w-[72px]",
         !visible && "hidden"
       )}
-    />
+    >
+      <video
+        ref={attach}
+        muted
+        playsInline
+        aria-hidden
+        className={cn(
+          "w-full rounded-md border border-border bg-muted object-cover shadow-sm",
+          proctored ? "h-[99px]" : "h-[54px]"
+        )}
+      />
+      {proctored ? (
+        <p className="mt-1 flex items-center gap-1.5 rounded-md bg-background/90 px-1.5 py-0.5 text-[11px] font-medium leading-4 text-foreground shadow-sm">
+          <span className="size-2 shrink-0 animate-pulse rounded-full bg-red-600 motion-reduce:animate-none" aria-hidden />
+          Camera on · stays on this device
+        </p>
+      ) : null}
+    </div>
   );
 }
 
@@ -203,9 +256,17 @@ function CameraPreview({ attach, visible }: { attach: (element: HTMLVideoElement
 function ProctorGuard({ integrity }: { integrity: QuizIntegrity }) {
   const action = useRef<HTMLButtonElement>(null);
   const warning = integrity.leaveWarning;
-  const variant = integrity.limitReached ? "limit" : warning ? "warning" : integrity.needsFullscreen && integrity.dialog === null ? "fullscreen" : null;
+  const variant = integrity.limitReached
+    ? "limit"
+    : integrity.cameraLost
+      ? "camera"
+      : warning
+        ? "warning"
+        : integrity.needsFullscreen && integrity.dialog === null
+          ? "fullscreen"
+          : null;
   useEffect(() => {
-    if (variant === "warning" || variant === "fullscreen") action.current?.focus();
+    if (variant === "warning" || variant === "fullscreen" || variant === "camera") action.current?.focus();
   }, [variant]);
   if (!variant) return null;
   return (
@@ -217,13 +278,29 @@ function ProctorGuard({ integrity }: { integrity: QuizIntegrity }) {
     >
       <div className="w-full max-w-md rounded-2xl border bg-card p-6 text-card-foreground shadow-2xl">
         <div className="flex items-center gap-2 text-primary">
-          {variant === "limit" ? <Lock className="size-4" aria-hidden /> : variant === "warning" ? <TriangleAlert className="size-4" aria-hidden /> : <Maximize className="size-4" aria-hidden />}
+          {variant === "limit" ? <Lock className="size-4" aria-hidden /> : variant === "warning" ? <TriangleAlert className="size-4" aria-hidden /> : variant === "camera" ? <CameraOff className="size-4" aria-hidden /> : <Maximize className="size-4" aria-hidden />}
           <p className="text-xs font-semibold uppercase tracking-wider">Proctored quiz</p>
         </div>
         {variant === "limit" ? (
           <>
             <h2 id="proctor-guard-title" className="mt-2 text-xl font-semibold tracking-tight">You left the quiz screen too many times</h2>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">Your answers so far are being submitted. Questions you did not answer count as wrong. Please wait.</p>
+          </>
+        ) : variant === "camera" ? (
+          <>
+            <h2 id="proctor-guard-title" className="mt-2 text-xl font-semibold tracking-tight">Your camera stopped</h2>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              The quiz is covered until your camera is on again. This counts like leaving the quiz screen, and your mentor can see it. Your video is not recorded.
+            </p>
+            {integrity.camera.issue ? (
+              <p role="alert" className="mt-3 rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-sm leading-5 text-foreground">
+                {CAMERA_HELP[integrity.camera.issue] ?? CAMERA_HELP.error}
+              </p>
+            ) : null}
+            <Button ref={action} type="button" className="mt-5 w-full gap-1.5" disabled={integrity.camera.starting} onClick={() => void integrity.camera.start()}>
+              <Camera className="size-4" aria-hidden />
+              {integrity.camera.starting ? "Starting camera…" : "Turn camera on"}
+            </Button>
           </>
         ) : variant === "warning" && warning ? (
           <>
@@ -262,7 +339,7 @@ export function QuizIntegrityPanel({ integrity }: { integrity: QuizIntegrity }) 
 
   return (
     <>
-      <CameraPreview attach={camera.attachVideo} visible={cameraOn} />
+      <CameraPreview attach={camera.attachVideo} visible={cameraOn} proctored={integrity.proctored} />
       {integrity.active ? (
         <div className="mt-3 space-y-2">
           <div className="flex flex-wrap items-center gap-2">
@@ -282,11 +359,14 @@ export function QuizIntegrityPanel({ integrity }: { integrity: QuizIntegrity }) 
                 Warnings used: {Math.min(integrity.leaves, PROCTORED_RULE.warnings)} of {PROCTORED_RULE.warnings}
               </span>
             ) : null}
-            {camera.enabled ? (
+            {camera.enabled || camera.required ? (
               <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
                 {cameraOn ? <Camera className="size-3.5" aria-hidden /> : <CameraOff className="size-3.5" aria-hidden />}
                 {camera.starting ? "Starting camera…" : cameraOn ? "Camera on" : "Camera off"}
               </span>
+            ) : null}
+            {integrity.proctored && integrity.armed && integrity.faceCheck ? (
+              <span className="text-xs text-muted-foreground">Face check on this device</span>
             ) : null}
           </div>
 
@@ -307,7 +387,7 @@ export function QuizIntegrityPanel({ integrity }: { integrity: QuizIntegrity }) 
             </div>
           ) : null}
 
-          {camera.enabled && camera.status === "UNAVAILABLE" ? (
+          {camera.enabled && !camera.required && camera.status === "UNAVAILABLE" ? (
             <div role="status" className="flex flex-wrap items-center gap-2 rounded-lg border bg-muted/50 px-3 py-2 text-sm">
               <CameraOff className="size-4 text-muted-foreground" aria-hidden />
               <span className="mr-auto text-muted-foreground">
