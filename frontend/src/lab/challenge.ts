@@ -137,7 +137,7 @@ function pathCheck(def: Extract<CheckDef, { type: "path" }>, board: Board): Chec
   if (missing !== undefined && def.inlineIfNo && !board.nodes.some((n) => roleOf(n.kind) === def.inlineIfNo)) {
     return {
       id: def.id, kind: def.kind, label: def.label, pass: true, scenario: "steady", target: def.target,
-      measured: `saved during the redirect (inline), no ${lower(roleLabel(def.inlineIfNo))}`,
+      measured: `saved during the request (inline), no ${lower(roleLabel(def.inlineIfNo))}`,
     };
   }
   const pass = missing === undefined;
@@ -208,31 +208,34 @@ function metricCheck(def: Extract<CheckDef, { type: "metric" }>, phases: Map<str
 function drainCheck(def: Extract<CheckDef, { type: "drain" }>, steady: PhaseReport, scenarioId: string, inlineClicks: boolean): CheckResult {
   const { board, result, load } = steady;
   const queue = board.nodes.find((n) => roleOf(n.kind) === "queue" && result.tiers.find((t) => t.id === n.id)?.reachable);
-  const target = `no clicks lost, all counted within ${def.maxDrainSeconds} s of the worker coming back`;
+  const items = def.items ?? "clicks";
+  const done = def.done ?? "counted";
+  const Items = items.charAt(0).toUpperCase() + items.slice(1);
+  const target = `no ${items} lost, all ${done} within ${def.maxDrainSeconds} s of the worker coming back`;
   const base = { id: def.id, kind: def.kind, label: def.label, scenario: scenarioId, target };
   if (!queue && inlineClicks && !board.nodes.some((n) => roleOf(n.kind) === "queue")) {
-    return { ...base, pass: true, measured: "no worker to lose: clicks are saved during the redirect (inline)" };
+    return { ...base, pass: true, measured: `no worker to lose: ${items} are saved during the request (inline)` };
   }
   if (!queue) {
     const lost = Math.round(load * def.outageSeconds);
-    return { ...base, pass: false, measured: `${lost.toLocaleString("en-US")} clicks lost in ${def.outageSeconds} s`, reason: "Clicks have nowhere to wait while the worker is down. Put a queue between the app server and the worker." };
+    return { ...base, pass: false, measured: `${lost.toLocaleString("en-US")} ${items} lost in ${def.outageSeconds} s`, reason: `${Items} have nowhere to wait while the worker is down. Put a queue between the app server and the worker.` };
   }
   const workers = board.edges.filter((e) => e.from === queue.id).map((e) => result.tiers.find((t) => t.id === e.to)).filter((t): t is TierLoad => !!t && roleOf(t.kind) === "worker");
   if (workers.length === 0) {
-    return { ...base, pass: false, measured: "clicks pile up and are never counted", reason: "The queue has no worker. Link the queue to a worker, and the worker to the database." };
+    return { ...base, pass: false, measured: `${items} pile up and are never ${done}`, reason: "The queue has no worker. Link the queue to a worker, and the worker to where it saves its work." };
   }
   const arriving = board.edges.filter((e) => e.to === queue.id).reduce((sum, e) => sum + (result.edgeFlows[`${e.from}>${e.to}`] ?? 0), 0);
   const capacity = workers.reduce((sum, w) => sum + w.capacity, 0);
   const spare = capacity - arriving;
   const backlog = Math.round(arriving * def.outageSeconds);
   if (spare <= 0) {
-    return { ...base, pass: false, measured: `${backlog.toLocaleString("en-US")} clicks waiting, never all counted`, reason: `Workers count ${perSec(capacity)} but clicks arrive at ${perSec(arriving)}: they can never catch up. Add workers or a bigger size.` };
+    return { ...base, pass: false, measured: `${backlog.toLocaleString("en-US")} ${items} waiting, never all ${done}`, reason: `Workers handle ${perSec(capacity)} but ${items} arrive at ${perSec(arriving)}: they can never catch up. Add workers or a bigger size.` };
   }
   const drain = Math.ceil(backlog / spare);
   const pass = drain <= def.maxDrainSeconds;
   return {
-    ...base, pass, measured: `${backlog.toLocaleString("en-US")} clicks waiting, all counted after ${drain} s`,
-    reason: pass ? undefined : `Workers have only ${perSec(spare)} to spare, so ${backlog.toLocaleString("en-US")} waiting clicks take ${drain} s. Add workers or a bigger size.`,
+    ...base, pass, measured: `${backlog.toLocaleString("en-US")} ${items} waiting, all ${done} after ${drain} s`,
+    reason: pass ? undefined : `Workers have only ${perSec(spare)} to spare, so ${backlog.toLocaleString("en-US")} waiting ${items} take ${drain} s. Add workers or a bigger size.`,
   };
 }
 

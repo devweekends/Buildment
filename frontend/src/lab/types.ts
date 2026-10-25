@@ -72,7 +72,15 @@ export type CheckDef =
   /** A measured check: one number from one scenario against a limit. */
   | (CheckBase & { type: "metric"; scenario: string; metric: CheckMetric; op: "<=" | ">="; value: number })
   /** Work queued while its consumer is down must be fully counted once it is back. */
-  | (CheckBase & { type: "drain"; outageSeconds: number; maxDrainSeconds: number });
+  | (CheckBase & {
+      type: "drain";
+      outageSeconds: number;
+      maxDrainSeconds: number;
+      /** What waits in the queue, plural: "clicks" (the default), "posts", "messages". */
+      items?: string;
+      /** What happens to each item once a worker takes it: "counted" (the default), "delivered", "saved". */
+      done?: string;
+    });
 
 export interface ChallengeDef {
   /** Requests a second at the busiest moment; every scenario runs at this load. */
