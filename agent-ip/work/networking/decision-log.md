@@ -108,3 +108,18 @@
 ## 2026-10-26: G3 signed off
 
 **Decision:** the sponsor signed off G3 ("I sign off G3 for the networking course. Start G4 with the module 1 chapters, keeping cost lean."). G4 starts with module 1. Challenge drafts live in `agent-ip/work/networking/challenges-template/` until the sponsor approves creating the `devweekends/networking-challenges` template repository.
+
+## 2026-10-26: Challenge template drafted and run in the lab
+
+**Decision:** the learner template (`challenges-template/`: lab image, toolkit, challenge 0 parts 1 and 2, challenge 1 parts 1 and 2) was built and run in the lab image on Docker Desktop for Windows. The image builds in about 40 seconds and is 207 MB. Every test passed, and all of these were recorded:
+- the setup checker's three outcomes: all passing, not privileged, and outside the lab;
+- the numbers checker with a dotted and a hex mask;
+- the cable, the README's exact capture step and the must-fail ping;
+- the wrong-mask behaviour (dossier 5.7);
+- a rerun after a previous run.
+
+The recordings (`recordings/replay-*.txt`) are the only source for the `[replay]` canvases.
+
+**Finding:** without a capture filter, a fresh veth first carries IPv6 chatter (router solicitations, multicast listener reports), so the README's `arp or icmp` filter is required; the chapter says why.
+
+**Still untested:** `lab/start.sh` and `start.ps1` themselves (the recordings used the same `docker run` flags directly), `winpty` in Git Bash, the line-endings guard on a real CRLF file, macOS.
