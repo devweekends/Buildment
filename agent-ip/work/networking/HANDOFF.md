@@ -1,6 +1,10 @@
 # Handoff: networking course
 
-Resumed 2026-10-25. Briefs reviewed and aligned to roadmap v3.1; G2C is with the sponsor for sign-off. The sections below describe the state at the 2026-10-24 pause; see the decision log and run log for 2026-10-25.
+**State on 2026-10-26:** G0 to G2C signed off by the sponsor. G3 is done and waiting for sponsor review. It covers the interaction map, the assessment plan, the canvas spec and QA for the `[addr]` bits and drill canvases, and sample chapter 2.2 after two cross-family critic rounds. The `net` lab family is with the lab session ("Lab components infrastructure and database design"): it builds slice 1 on its own branch, `feat/netlab`, and will send the spec type and slug format. Until then, chapters that need the lab use the `[sequence]` fallback.
+
+**Test setup:** D: is nearly full, so tests run on a C: copy. Run the scripts `sync-pkg.sh` and `sync-and-test.sh` in this session's scratchpad; they copy sources and run vitest on C:. Canvas text QA runs on a standalone page built with Vite from the C: copy (`qa-harness/`) and served on port 5199, using a copy of `canvas-text-qa.mjs` without the sign-in. Argon's quota is exhausted until about 2026-10-31; Gemini 3.8 Flash and GPT-OSS 120B worked as reviewers from other model families.
+
+The sections below describe the 2026-10-24 pause; see the decision log and run log for later entries.
 
 ## Where things are
 
