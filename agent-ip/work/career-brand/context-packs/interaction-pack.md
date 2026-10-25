@@ -40,3 +40,18 @@ Map every beat of every Learn and Read chapter (28 Learn, 9 Read) to the smalles
 ## Report
 
 Write the files, then report: the count of beats, playables by kind, new slugs (one line each), reused slugs, custom canvases if any, and any beat in the module briefs you changed and why. No git. Absolute paths.
+
+## Update: the three primitives are built
+
+They are in `packages/learning-ui/src/canvas/primitives/` (`phrase-fixer.tsx`, `budget-stack.tsx`, `slot-card.tsx`) with models in `models/`. Write your specs against these exact config types (read the model files for limits such as label lengths, which their `checkPhrase`, `checkStack` and `checkSlots` functions enforce):
+
+```ts
+type PhraseSegment = { id: string; text: string; weak?: { why: string; fix: string }; fineWhy?: string };
+type PhraseFixerConfig = { segments: PhraseSegment[]; cardLabel: string; checkableBefore: number; hint: string; endNote: string; prompt?: string; verdicts?: { found: string; skipped: string } };
+type StackBlock = { id: string; label: string; cost: number; kind: "proof" | "filler" | "context"; note?: string };
+type BudgetStackConfig = { blocks: StackBlock[]; budget: number; unit: string; budgetLabel: string; goal: number; hint: string; prompt?: string; verdicts?: { met: string; short: string } };
+type SlotChip = { id: string; text: string; slot: string | null; why: string };
+type SlotCardConfig = { cardTitle: string; slots: { id: string; label: string }[]; chips: SlotChip[]; assembled: string; claim?: string; hint: string; endNote: string; prompt?: string; verdicts?: { clean: string; one: string; many: string } };
+```
+
+Three example slugs already exist and belong to their chapters: `career-m1-first-look` (1.2, budget stack), `career-m3-claim-card` (3.2, slot card), `career-m6-empty-phrases` (6.4, phrase fixer). Use them in the map; you may revise their wording in a spec if the module brief needs it. Name every new slug `career-m<module>-<short-name>`.
