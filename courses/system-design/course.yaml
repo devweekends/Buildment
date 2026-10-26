@@ -934,7 +934,7 @@ modules:
         title: "Read your run: what each failure teaches"
         goal: "Read the four scenes as lessons, with the numbers a real Docker stack measured, and name the failure the board cannot show."
       - file: 30.04-quiz.md
-        title: "Quiz: the short-link service"
+        title: "The short-link service"
         goal: "Answer graded scenarios on a dead cache, a backlog, a shared Redis and inline counting."
       - file: 30.05-checklist.md
         title: "Checklist and learning log"
@@ -962,7 +962,7 @@ modules:
         title: "Reflect: explain it in your own words"
         goal: "Go back to your first guess and explain the difference in your own words with one number."
       - file: 31.07-quiz.md
-        title: "Quiz: the real short-link stack"
+        title: "The real short-link stack"
         goal: "Answer graded scenarios on a stopped copy, a stopped database, a stopped Redis and why the board is harsher."
       - file: 31.08-checklist.md
         title: "Checklist and learning log"
