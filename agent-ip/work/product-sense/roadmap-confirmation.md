@@ -23,16 +23,16 @@ agent-ip asks for at least two instructors. A single sponsor signature is record
 | 1 | Ages | Keep two tools per job and a paper path; chapters state each tool's age rule as checked on 2026-10-25 | Zeeshan |
 | 2 | Time | About 26 hours (1,582 minutes) over about five weeks, as in the roadmap | Zeeshan |
 | 3 | Public or private | Private submission accepted for the case study and the demo; posting in public is the fellow's choice | Zeeshan |
-| 4 | Field test from Gaza | Deferred to before publish: two fellows open the named design tools, GitHub Pages and a LinkedIn video upload on a phone | Zeeshan |
+| 4 | Field test from Gaza | After publish: two fellows open the named design tools, GitHub Pages and a LinkedIn video upload on a phone | Zeeshan |
 | 5 | Real products | GOV.UK is the only real product described; learners pick real products to study themselves | Zeeshan |
-| 6 | Arabic | Deferred to before publish: a native reader checks the Arabic in `product-m3-rtl-card` and `product-m2-arabic-size` | Zeeshan |
+| 6 | Arabic | Waived by the sponsor on 2026-10-26 ("just publish no need for arabic speaker") | Zeeshan |
 | 7 | Client work on free hosting | As written in 7.4: check the hosting terms for paid work | Zeeshan |
 | 8 | AI interviewer key | "any section where we need questions and followup answers relevant to user data then we will need them to use their own api key for now" (2026-10-26). The 7.8 AI defence uses the learner's own OpenRouter key; the written defence still completes the gate for anyone without a key, as the brief requires | Zeeshan |
 | 9 | Timing on phones | Deferred: time two Learn chapters, one practice and capstone part 1 with fellows after the first cohort starts | Zeeshan |
 
 ## Required changes
 
-None to chapters. The two deferred checks (decisions 4 and 6) and a human answer-key check are listed in the PR as before-publish actions.
+None to chapters. Published on the sponsor's instruction of 2026-10-26; the field test (decision 4) and a human answer-key check follow publication.
 
 ## Outcome
 

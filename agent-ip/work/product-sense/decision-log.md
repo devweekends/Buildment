@@ -30,6 +30,8 @@
 
 | 2026-10-26 | G2B signed by the sponsor alone: roadmap approved as written (about 26 hours) with the draft position on each open decision; decision 8 answered: questions and follow-ups about a learner's own work use the learner's own API key for now, and the written defence still completes 7.8 | Wait for two instructors; make the AI defence required | The sponsor wrote "instrctor sign of done" and "any section where we need questions and followup answers releabt to user data then we will need them to use their own api key for now". agent-ip asks for two instructors, so the single signature is an exception, as for course 14. The brief requires a written option for anyone without a key, so it stays. | Zeeshan (sponsor) |
 
+| 2026-10-26 | Publish now: `repositoryPublish: true`; the native Arabic reader check is waived; the Gaza field test of named tools becomes a post-publish check | Wait for both checks | The sponsor wrote "just publish no need for arabic speaker". The editorial audit stays required (it passes: needs work 0); `courses:check` validated the package. | Zeeshan (sponsor) |
+
 ## Risks
 
 | # | Risk | Mitigation |
