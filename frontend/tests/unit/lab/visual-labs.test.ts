@@ -1,16 +1,16 @@
 import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { runChallenge } from "@/lab/challenge";
-import { labRegistry } from "@/lab/registry";
-import type { HldLabSpec } from "@/lab/types";
-import { validateChallenge, validateLabSpec } from "@/lab/types";
+import { runChallenge } from "@buildment/learning-ui/labs/challenge";
+import { labRegistry } from "@buildment/learning-ui/labs/registry";
+import type { HldLabSpec } from "@buildment/learning-ui/labs/types";
+import { validateChallenge, validateLabSpec } from "@buildment/learning-ui/labs/types";
 
 // The bar every visual challenge meets, so a new case-study module cannot ship a
 // board that cannot be won, a reference design that does not pass, or a starting
 // board that already passes. Each lab's own test file covers its particular failures.
 
-const LAB_DIR = path.resolve(__dirname, "../../../src/lab");
+const LAB_DIR = path.resolve(__dirname, "../../../../packages/learning-ui/src/labs");
 
 const challenges = Object.values(labRegistry).filter(
   (spec): spec is HldLabSpec => spec.family === "hld" && Boolean(spec.challenge),
