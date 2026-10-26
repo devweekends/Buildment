@@ -139,3 +139,14 @@ One person per set-the-scene chapter, all fictional; mark once per scene. Number
 - Names already used in courses 13 and 14 (for example Yara, Ibrahim, Samer, Yazan, Nour, Shahd, Heba). Supporting characters stay unnamed ("her lead", "the shop owner", "a founder").
 - Any real company, founder, investor or real person's profile. Platforms (LinkedIn, GitHub, DEV, Medium, Google) may be named with "checked 2026-10".
 - The sponsor's own website, in any form.
+
+## Additions during revision 1 (2026-10-26)
+
+Facts defined by chapter writers and revisers, recorded here so later edits stay consistent.
+
+- **Areej's project plan hours (4.4, 4.5, 4.7):** appetite 30 hours. Recording stock and sales 12 hours, the low-stock warning inside that flow 6 hours, tests, README and demo data 5 hours: 23 of 30. Cuts: supplier orders 10 hours, a second shop 14 hours, a mobile app 20 hours; any one would push the plan past 30. Raqim Stock is a plan: her AI-use log, the bug she expects to find and her demo checklist are always described as planned.
+- **Areej's channel plan row 10 (8.3, 8.8):** a public forum thread about load testing, replacing a private message.
+- **Areej's second ten-second test (7.5, 7.7):** a different classmate, a phone and a ten-second timer remembered "Node.js and PostgreSQL", "makes slow things fast" and the report going from 4.6 seconds to under half a second; they asked what "p95" means, so she adds a few plain words after the first "p95".
+- **Areej's 3.8 written defence:** R2 is the strongest card and G1 the honest gap; R3 (invoice script) uses her timing sheet, 10 working days each side, 186 minus 7 gives 179 minutes; R7 (load test) uses the same k6 script at a constant 50 requests a second for 2 minutes on the same laptop.
+- **Waed's tracker bullet (6.1, 6.3, 6.4 and four canvases):** 90 missed delivery confirmations in the three months before (30 a month) and 18 in the three months after (6 a month), from the team tracker; in the same months the team began a short daily check of open shipments; her part is the tracker and the count, the team's part is filling it in daily and running the check.
+- **Names:** the module 8 gate fellow is Jawdat (renamed from Ghaith, who stays in 4.6).
