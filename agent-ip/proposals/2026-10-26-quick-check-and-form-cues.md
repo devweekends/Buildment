@@ -21,7 +21,7 @@ Option (a) keeps the reader's table of contents clean and needs a three-line cha
 **Proposed change.**
 
 - Add to Option-length hygiene: write all options in an item in the same grammatical shape; do not give wrong options absolute words the key lacks; vary which kind of option is right (sometimes "use the draft", not always "check the source").
-- Add a script, `scripts/cue-check.mjs`, next to `blind-keys.mjs`, that reports for a course: reason-clause, absolute-word and "check"-word shares in keys and in wrong options, the odd-one-out items where the key is the odd one, and the lone-punctuation items. A draft of the script is attached as `proposals/2026-10-26-cue-check.mjs` (the version the course 13 v2 build used); it moves to `scripts/` only if this proposal is accepted.
+- Add a script, `scripts/cue-check.mjs`, next to `blind-keys.mjs`, that reports for a course: reason-clause, absolute-word and "check"-word shares in keys and in wrong options, the odd-one-out items where the key is the odd one, and (to be added the same way) the items where the key is the only option with a comma or colon. A draft of the script is attached as `proposals/2026-10-26-cue-check.mjs` (the version the course 13 v2 build used); it moves to `scripts/` only if this proposal is accepted.
 - Add the cue report to `06-quality-gates.md` → Assessment validation and to the PR checklist, next to the length and position checks.
 
 ## Not proposed
