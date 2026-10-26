@@ -7,6 +7,12 @@ description: "Learn to work well in a team: give and receive feedback, disagree 
 projectGoal: "Lead a scripted feedback or conflict role-play in a cohort or mentor session, and submit a reflection on what you did and what you would change."
 difficulty: Beginner
 estimatedHours: 10
+narration:
+  # Listen-along audio, made by agent-ip/scripts/narrate/narrate.py. One chapter for now.
+  voice: af_heart
+  speed: 0.95
+  chapters:
+    - 01.02-roles-and-expectations
 category: soft-skills
 modules:
   - dir: 01-how-good-teams-work

@@ -16,6 +16,21 @@
 **Decision:** State the exact rule or workaround where each topic lives: `04-interactive-playbook.md` (predicts have exactly two options; quiz files end in `-quiz.md`), `10-interactive-canvases.md` (refresh the package copy; stage only real `sync-shared` changes), `06-quality-gates.md` (a new scratch database instead of a reset), `01-agent-system.md` (check a headless second family before relying on it, record any fallback) and `agents/critic.md` (hold technical claims in non-engineering courses to the same standard).
 
 **Platform impact:** Documentation only. No code, test or course content changes.
+## 2026-10-25: Visual lab module for challenges (proposal filed, IP unchanged)
+
+**Status:** Proposal in `proposals/2026-10-25-visual-lab-module.md`. No rule in `agent-ip/` was changed.
+
+**Problem:** The architect asked that each system design challenge have its board as its own module, with the palette on the left, settings in a dark drawer opened from a hover icon, and a Run that reports every functional and non-functional check and shows traffic, saturation and failures.
+
+**Decision:** Build the first such module (`30-visual-lab-design-a-url-shortener`) under today's rules and file the module shape as a proposal. The course content follows the existing gates: audit and beats audit with no flags, `type: mcq` quiz fences, a checklist with a learning log, "Further reading" pointers marked `{/* course-link: <slug> */}`, no em or en dashes. The module is appended after module 29 because chapter slugs are numbered by module order, so a module inserted in the middle would renumber published chapters.
+
+**Evidence:** 11 checks tuned against the model and compared with the code lab's measured results; 64 lab unit tests; structure audit strict with 0 errors; validator 269 of 269 OK.
+
+**Extension (same day):** the proposal now covers every course with labs: two modules per lab topic, "Visual lab: <topic>" and "Code lab: <topic>", a code lab module template, a "why this matters" prediction at the start and a reflect step at the end of each, and two quality gate checks. Still a proposal; the sidebar shows only module titles, so the prefix does the work until the platform has a module kind.
+
+**Second module (same day):** `31-code-lab-build-and-break-a-url-shortener` is the first code lab, built from the proposal's six-chapter template with the quiz and the checklist added as chapters 7 and 8. It is appended after module 30 for the same renumbering reason. No rule changed. The tasks chapter gives directions only; worked solutions stay in the public repository's `solutions/` folder and the module says so. Numbers in the module are copied from the repository's recorded results and were not re-measured for this change.
+
+**Files changed:** none in `agent-ip/` except this entry and the proposal.
 
 **Review:** Delivery lead and one additional reviewer pending.
 
