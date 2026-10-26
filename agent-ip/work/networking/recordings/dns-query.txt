@@ -1,0 +1,16 @@
+# Recorded 2026-10-26, same lab, dnsmasq on phone answering web.test with 203.0.113.80.
+# Commands (on phone): tcpdump -n -v -e -i eth0 'udp port 53' and tcpdump -n -XX ... -c 1; then on laptop: dig +short @192.168.1.20 web.test
+== dns -n -v -e
+20:08:27.686764 a2:bb:8c:3a:32:03 > da:dc:29:fd:5e:bf, ethertype IPv4 (0x0800), length 91: (tos 0x0, ttl 64, id 5744, offset 0, flags [none], proto UDP (17), length 77)
+    192.168.1.10.37028 > 192.168.1.20.53: 31431+ [1au] A? web.test. (49)
+20:08:27.687377 da:dc:29:fd:5e:bf > a2:bb:8c:3a:32:03, ethertype IPv4 (0x0800), length 95: (tos 0x0, ttl 64, id 10434, offset 0, flags [DF], proto UDP (17), length 81)
+    192.168.1.20.53 > 192.168.1.10.37028: 31431* 1/0/1 web.test. A 203.0.113.80 (53)
+
+== hex of dns query
+20:08:27.686761 IP 192.168.1.10.37028 > 192.168.1.20.53: 31431+ [1au] A? web.test. (49)
+	0x0000:  dadc 29fd 5ebf a2bb 8c3a 3203 0800 4500  ..).^....:2...E.
+	0x0010:  004d 1670 0000 4011 e0c1 c0a8 010a c0a8  .M.p..@.........
+	0x0020:  0114 90a4 0035 0039 83b9 7ac7 0120 0001  .....5.9..z.....
+	0x0030:  0000 0000 0001 0377 6562 0474 6573 7400  .......web.test.
+	0x0040:  0001 0001 0000 2904 d000 0000 0000 0c00  ......).........
+	0x0050:  0a00 0855 5628 7f97 eb30 de              ...UV(...0.
