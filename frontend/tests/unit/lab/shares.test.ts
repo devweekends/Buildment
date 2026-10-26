@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { runChallenge } from "@/lab/challenge";
-import { hldVisualUrlShortener } from "@/lab/hld-visual-url-shortener/data";
-import { runTieredModel } from "@/lab/tiered-architecture";
-import type { Board, ChallengeDef } from "@/lab/types";
-import { validateChallenge } from "@/lab/types";
+import { runChallenge } from "@buildment/learning-ui/labs/challenge";
+import { hldVisualUrlShortener } from "@buildment/learning-ui/labs/hld-visual-url-shortener/data";
+import { runTieredModel } from "@buildment/learning-ui/labs/tiered-architecture";
+import type { Board, ChallengeDef } from "@buildment/learning-ui/labs/types";
+import { validateChallenge } from "@buildment/learning-ui/labs/types";
 
 // A side job only some requests need (an alert, an index update) carries its share of
 // the stream, not all of it.
