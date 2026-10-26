@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 import type { LabSpec } from "./types";
 import { HldBoard } from "./HldBoard";
 import { getLabSpec } from "./registry";
+import { NetBoard } from "./net/NetBoard";
+import { PlanBoard } from "./net/PlanBoard";
 
 export function resolveLab(slug: unknown): { spec: LabSpec } | null {
   if (typeof slug !== "string") return null;
@@ -9,8 +11,10 @@ export function resolveLab(slug: unknown): { spec: LabSpec } | null {
   return spec ? { spec } : null;
 }
 
-export function labView(spec: LabSpec): "hld-board" | "db-placeholder" {
-  return spec.family === "hld" ? "hld-board" : "db-placeholder";
+export function labView(spec: LabSpec): "hld-board" | "net-board" | "net-plan" | "db-placeholder" {
+  if (spec.family === "hld") return "hld-board";
+  if (spec.family === "net") return spec.mode === "plan" ? "net-plan" : "net-board";
+  return "db-placeholder";
 }
 
 function LabFrame({ eyebrow, title, purpose, limits, children }: { eyebrow: string; title: string; purpose: string; limits: string; children: ReactNode }) {
@@ -38,8 +42,8 @@ export function Lab({ spec, slug }: { spec?: LabSpec | null; slug?: unknown }) {
   }
 
   return (
-    <LabFrame eyebrow={resolvedSpec.family === "hld" && resolvedSpec.challenge ? "Visual challenge" : "Explore"} title={resolvedSpec.title} purpose={resolvedSpec.purpose} limits={resolvedSpec.limits}>
-      {resolvedSpec.family === "hld" ? <HldBoard spec={resolvedSpec} /> : <p className="text-sm text-muted-foreground">The schema board loads in the full lab.</p>}
+    <LabFrame eyebrow={resolvedSpec.family === "hld" && resolvedSpec.challenge ? "Visual challenge" : resolvedSpec.family === "net" ? resolvedSpec.mode === "fault" ? "Fix it" : resolvedSpec.mode === "plan" ? "Plan it" : "Explore" : "Explore"} title={resolvedSpec.title} purpose={resolvedSpec.purpose} limits={resolvedSpec.limits}>
+      {resolvedSpec.family === "hld" ? <HldBoard spec={resolvedSpec} /> : resolvedSpec.family === "net" ? resolvedSpec.mode === "plan" && resolvedSpec.plan ? <PlanBoard plan={resolvedSpec.plan} solution={resolvedSpec.solution} /> : <NetBoard spec={resolvedSpec} /> : <p className="text-sm text-muted-foreground">The schema board loads in the full lab.</p>}
     </LabFrame>
   );
 }
