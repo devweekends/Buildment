@@ -30,3 +30,10 @@
 | 2026-10-26 | G4 | orchestrator, bulk model | drafting and bulk models | challenge template (lab image, challenges 0 and 1), real recordings | built and run in the lab; all tests pass |
 | 2026-10-26 | G4 | interactive-canvas-builder | bulk model | packet canvases (7), broadcast scene, replay canvases (3) | tests pass (canvas suite 3,005); text QA clean light and dark |
 | 2026-10-26 | G4 | chapter-writer | bulk model | module 1 chapters 1.1 to 1.8 | audit clean; blind keys 16 of 16 (Gemini 3.8 Flash); orchestrator fixes in 1.1 and 1.4 |
+
+## 2026-10-26 G5 review
+
+- Blind answer-key check (review model, same family as the drafting model): 143 of 144 keys matched. The one mismatch (1.3) needs context the chapter teaches (the lab runs as root); the key is right.
+- Three critic passes over modules 1 to 3, 4 to 6 and 7 to 9 (pedagogy, assessment, facts, slop), fixing S1 to S3 defects in place: S1 3, S2 12, S3 about 60. Audit "Needs work: 0", fence check clean, every chapter renders, every code exercise solution passes its tests.
+- Risk: the critics share a model family with the drafting model, so this review is less independent than the routing table asks. A cross-family review is still owed before the next major edit.
+- Open, labelled in the text: macOS commands unverified; the captive portal is a model; the 3.9 silence reason is not recorded.

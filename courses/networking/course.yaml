@@ -43,7 +43,7 @@ modules:
     lessons:
       - file: 02.01-4-3-billion-was-supposed-to-be-enough.md
         title: "4.3 billion was supposed to be enough"
-        goal: "See the four dates when the free pools of IPv4 addresses ran out, and learn what 'ran out' means: no unused address is left to give out, and every address already in use keeps working."
+        goal: "See the four dates when the free pools of IPv4 addresses ran out or reached their last block, and learn what 'ran out' means: no unused address is left to give out, and every address already in use keeps working."
       - file: 02.02-an-address-is-one-32-bit-number.md
         title: "An address is one 32-bit number"
         goal: "Turn bits on and off to see why one part of an IPv4 address stops at 255, read a byte by hand by subtracting place values, and see how four bytes make one 32-bit number."
