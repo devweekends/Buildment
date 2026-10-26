@@ -283,3 +283,7 @@
 **Platform impact:** None until accepted.
 
 **Review:** Delivery lead and IP owner pending.
+
+## 2026-10-26: one command for the pre-PR course checks
+
+The networking course merged with server import and structure failures because the pre-PR checks were manual and CI could not start. Added `agent-ip/scripts/course-check.mjs`, which runs the course audit, source validation, the strict structure audit and the code exercise grading in one command, picked from what the course contains. Proposal: `proposals/2026-10-26-course-check-one-command.md`. Run on system design, it found a published code exercise whose solution cannot pass in the grading sandbox (26.05 uses `URL`).
