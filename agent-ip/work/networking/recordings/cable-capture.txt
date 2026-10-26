@@ -1,0 +1,10 @@
+# Recorded 2026-10-26 in the course lab (ubuntu:24.04, Docker Desktop for Windows, --privileged).
+# Two namespaces joined by one veth: laptop 192.168.1.10/24, phone 192.168.1.20/24. MACs are the lab's random locally administered ones.
+# Command (on phone): tcpdump -n -v -e -i eth0 'arp or icmp'; then on laptop: ping -c 1 192.168.1.20
+20:08:20.632368 a2:bb:8c:3a:32:03 > ff:ff:ff:ff:ff:ff, ethertype ARP (0x0806), length 42: Ethernet (len 6), IPv4 (len 4), Request who-has 192.168.1.20 tell 192.168.1.10, length 28
+20:08:20.632400 da:dc:29:fd:5e:bf > a2:bb:8c:3a:32:03, ethertype ARP (0x0806), length 42: Ethernet (len 6), IPv4 (len 4), Reply 192.168.1.20 is-at da:dc:29:fd:5e:bf, length 28
+20:08:20.632402 a2:bb:8c:3a:32:03 > da:dc:29:fd:5e:bf, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 12923, offset 0, flags [DF], proto ICMP (1), length 84)
+    192.168.1.10 > 192.168.1.20: ICMP echo request, id 584, seq 1, length 64
+20:08:20.632932 da:dc:29:fd:5e:bf > a2:bb:8c:3a:32:03, ethertype IPv4 (0x0800), length 98: (tos 0x0, ttl 64, id 54500, offset 0, flags [none], proto ICMP (1), length 84)
+    192.168.1.20 > 192.168.1.10: ICMP echo reply, id 584, seq 1, length 64
+

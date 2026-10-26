@@ -195,6 +195,8 @@ The system is multi-provider and model-agnostic. The orchestrator reads a routin
 - **Log the model role and prompt version** for every artifact in the run log. Reproducibility matters when a chapter is revised six months later.
 - **Name models by role in committed files.** The routing table, run log, decision log and every other file committed under `work/` say "drafting model" or "review model", never a model or vendor name, and record whether the roles share a model family. The independence rules need the family relationship, not the product name.
 
+- **A headless second family needs a check before it is relied on.** A command-line agent run without a terminal waits for input until it times out unless stdin is closed (`< /dev/null`), and it can reach its usage limit in the middle of a pass. Send it a one-line prompt first, and when a pass falls back to the drafting family, record that in the routing table and the run log.
+
 If only one provider is available, the orchestrator must still run separate passes with different prompts and a human review before G5. It should record the reduced independence as a risk.
 
 ## Orchestrator loop
