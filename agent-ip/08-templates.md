@@ -54,6 +54,12 @@ At least five directions, each with a different primary user and hardest constra
 4.
 5.
 
+## Audio
+Does this course need listen-along audio, a Listen player on its chapters? Answer yes or no.
+If yes: which chapters (default: every Learn chapter, never quizzes), and any word the voice must
+say a special way, such as a product or tool name. If unsure, answer no: audio is optional and
+never replaces the written chapter.
+
 ## Constraints
 - Stack:
 - Budget:
