@@ -17,7 +17,7 @@ All checks ran on the final package in `courses/build-with-ai/` (85 chapters, 11
 | `content:validate:source --course build-with-ai` | 85 of 85 OK |
 | `content:audit --course build-with-ai` (structure) | 0 errors, 0 warnings |
 | `node agent-ip/scripts/audit-course.mjs courses/build-with-ai` | Needs work 0 (85 chapters, 104,689 prose words) |
-| Canvas tests `frontend/tests/unit/canvas` | 85 files, 2,955 tests pass (registry label fit included) |
+| Canvas tests `frontend/tests/unit/canvas` | 85 files, 2,955 tests pass before merging main; 91 files, 3,144 after (registry label fit included) |
 | Server course script tests `server/tests/scripts` | 8 files, 55 tests pass |
 | Frontend typecheck | clean |
 | `server/scripts/sync-shared.mjs --check` | in sync |
@@ -42,7 +42,7 @@ All checks ran on the final package in `courses/build-with-ai/` (85 chapters, 11
 
 ## Click-through
 
-- Scripted click-through as `mentee1@buildment.dev`: all 85 chapters at 375px and 1280px, light and dark (340 page loads). No canvas fallback, no missing title. Six transient horizontal-overflow readings at 375px did not reproduce on a settled page (re-probed twice per theme). One hydration warning on 7.2 (v1 slider chapter) in dark desktop, dev server only, not reproduced.
+- Scripted click-through as `mentee1@buildment.dev`: all 85 chapters at 375px and 1280px, light and dark (340 page loads), run again after merging main. No canvas fallback, no missing title. Six transient horizontal-overflow readings at 375px did not reproduce on a settled page (re-probed twice per theme). One hydration warning on 7.2 (v1 slider chapter) in dark desktop, dev server only, not reproduced.
 - Grading as `mentee2@buildment.dev` at 375px on quiz 1.9: question 1 answered right, question 2 wrong; the reader showed "Wrong answer", one explanation per option, a score of 2 of 5 and 3 to retry; after a reload the score and the retry state were saved.
 - Platform notes (not course defects): on quiz pages at 375px the mobile curriculum panel was open on load and covered the quiz until closed; outline buttons under beat pictures (Replay, Ask once) have low contrast in dark mode. Both belong to shared reader components.
 - Mentor keys in `modelAnswer` are stored as `sampleAnswer`, which the block sanitizer strips from the client (`server/src/shared/blocks/open-question/schema.ts`).
