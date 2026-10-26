@@ -133,3 +133,7 @@ The recordings (`recordings/replay-*.txt`) are the only source for the `[replay]
 ## 2026-10-26: Reusable canvases first
 
 **Decision:** at the sponsor's request that future courses be mostly Markdown, `agent-ip/proposals/2026-10-26-canvases-from-markdown.md` proposes a renderer catalog and a `canvas` fence. Until it is decided, every new networking canvas is a mode of the course's generic renderers (`addr`, `packet`, `replay`) with plain serialisable data and a schema, so it can become a fence later without new code.
+
+## 2026-10-26: TraceRequest actors for networking
+
+**Decision:** chapter 2.4 keeps `TraceStep` actors named `Laptop`, `Router` and `Server`. The platform's actor list (`Client`, `React`, `API`, `Server`, `DB`, `Worker`) is built for web request traces; mapping a router to `API` or `Worker` would mislabel it, while unknown names render correctly with the default style. Logged as a platform gap: networking traces need `Host`, `Router` and `Switch` actor styles.
