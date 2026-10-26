@@ -27,3 +27,6 @@
 | 2026-10-26 | G3 | critic A, critic B | review models from other families (Gemini 3.8 Flash, GPT-OSS 120B) | `qa/g3-critique-A-round1.md`, `qa/g3-critique-B-round1.md`, `qa/g3-critique-A-round2.md` | round 2 average 4.41, no dimension below 4; remaining S2 fixed after round 2 |
 | 2026-10-26 | G3 | answer-key check | review model from another family (Gemini 3.8 Flash) | blind keys on chapter 2.2 | 3 of 3 matched, three times |
 | 2026-10-26 | G3 | sponsor | human | interaction map, assessment plan, canvases, sample chapter 2.2 | signed off; G4 starts with module 1 |
+| 2026-10-26 | G4 | orchestrator, bulk model | drafting and bulk models | challenge template (lab image, challenges 0 and 1), real recordings | built and run in the lab; all tests pass |
+| 2026-10-26 | G4 | interactive-canvas-builder | bulk model | packet canvases (7), broadcast scene, replay canvases (3) | tests pass (canvas suite 3,005); text QA clean light and dark |
+| 2026-10-26 | G4 | chapter-writer | bulk model | module 1 chapters 1.1 to 1.8 | audit clean; blind keys 16 of 16 (Gemini 3.8 Flash); orchestrator fixes in 1.1 and 1.4 |
