@@ -137,3 +137,7 @@ The recordings (`recordings/replay-*.txt`) are the only source for the `[replay]
 ## 2026-10-26: TraceRequest actors for networking
 
 **Decision:** chapter 2.4 keeps `TraceStep` actors named `Laptop`, `Router` and `Server`. The platform's actor list (`Client`, `React`, `API`, `Server`, `DB`, `Worker`) is built for web request traces; mapping a router to `API` or `Worker` would mislabel it, while unknown names render correctly with the default style. Logged as a platform gap: networking traces need `Host`, `Router` and `Switch` actor styles.
+
+## 2026-10-26: Course repositories live with the instructor
+
+**Decision:** at the sponsor's direction ("whoever the instructor is, it kind of goes in their system"), the learner template and the reference solutions live in the instructor's GitHub, not in Buildment. For this course the instructor (`courses/publishing.yaml`) is the devweekends account, so the sponsor approved creating `devweekends/networking-challenges` (public, template). It was created on 2026-10-26 from `challenges-template/` with `tools/create-course-repo.sh`. The reference solutions will go to the private `devweekends/networking-reference`. Rule for future courses: `agent-ip/proposals/2026-10-26-course-repos-with-instructor.md`. From now on the template repository is the source of truth for challenge code; `challenges-template/` stays only until module drafts are pushed, then it is removed from Buildment.
