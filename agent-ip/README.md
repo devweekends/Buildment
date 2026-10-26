@@ -1,6 +1,6 @@
 # Agent IP — Course Factory
 
-**Status:** v0.5.3 (on top of v0.4.6, which records explicit publication exceptions), draft for team review (v0.4 adds interactive-first: `proposals/2026-10-23-interactive-first.md`; v0.5 adds visual-first Learn chapters in beats: `proposals/2026-10-23-visual-first-chapters.md`)
+**Status:** v0.5.4 (on top of v0.4.6, which records explicit publication exceptions), draft for team review (v0.4 adds interactive-first: `proposals/2026-10-23-interactive-first.md`; v0.5 adds visual-first Learn chapters in beats: `proposals/2026-10-23-visual-first-chapters.md`)
 **Owner:** Delivery lead (Sean) + course engineering
 **Applies to:** every course produced for the platform
 

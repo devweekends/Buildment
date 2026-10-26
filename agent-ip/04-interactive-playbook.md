@@ -115,6 +115,7 @@ Rules:
 - Three to five questions per quiz chapter. One quiz per concept cluster, not one per section.
 - **A quiz chapter holds activities only.** `content:validate:source` rejects lesson text, headings, recaps, checklists, learning logs and visual blocks there. Put instructions in the activity prompt and move teaching to a lesson.
 - **Title a quiz chapter by its topic, without a "Quiz:" prefix.** The reader adds "Quiz:" itself; a prefixed title shows "Quiz: Quiz: ...".
+- **Name the file `NN.MM-quiz.md`, a mixed review included.** `scripts/audit-course.mjs` and the importer recognise a quiz chapter only by that file name. A Check chapter with another name, such as `07.03-mixed-review.md`, gets the 700-word prose minimum and the three-interaction limit, so five quiz items fail the audit.
 - The `short` type in the `quiz` fence becomes an `OPEN_QUESTION` block, not a quiz. Use it only when the answer deserves human review.
 
 ### `PREDICT`
@@ -139,7 +140,7 @@ allowRetry: true
 
 Rules:
 
-- Exactly two or three options. The platform schema requires at least two.
+- Exactly two options. The block schema accepts more, but `content:audit` (`server/scripts/audit-course-structure.ts`) rejects any predict without exactly two.
 - One option must be defensible; the others must be plausible.
 - Option labels follow the same length rules as quiz options: the defensible option must not be the longest by default. See **Option-length hygiene** above.
 - The prompt must be specific to the current decision. Do not reuse a generic prompt.

@@ -1,5 +1,60 @@
 # Agent IP decision log
 
+## 2026-10-26: Ask the sponsor whether a course needs listen-along audio
+
+**Status:** Draft for delivery lead and reviewer sign-off under `09-review-and-governance.md`. Depends on devweekends/Buildment#80, which adds the narration script and player.
+
+**Problem:** Learners on phones or with weak eyesight and second-language readers can follow a chapter better when they can also hear it. The platform can now make that audio from a course's own text, but nothing in the IP asked whether a course wants it, so it would depend on someone remembering.
+
+**Decision:** The course brief has an Audio question the sponsor answers. On yes, the orchestrator adds the `narration:` block to `course.yaml` and makes the audio after G5, when the text is final, using `scripts/narrate/README.md`. Quiz, predict and open-question blocks are never read aloud. Audio is optional and never replaces the written chapter. No gate or score changes.
+
+**Files changed:** `08-templates.md` (brief template), `agents/orchestrator.md` (intake), `decision-log.md`.
+
+**Review:** Delivery lead pending.
+
+## 2026-10-26: Proposal: check answer cues beyond length and position
+
+**Status:** Proposal only; no rule changed. `proposals/2026-10-26-answer-cue-checks.md`.
+
+**Problem:** Course 18 (`product-sense`) passed the length and position checks, yet its MCQs carried reason clauses and absolute words mostly on wrong options (a no-knowledge strategy expected about 54%), and after a first fix nine of ten yes/no predicts were keyed No.
+
+**Decision:** Open a proposal to extend option-length hygiene to option form (same grammatical shape in every option; yes/no predict keys balanced), add an audit warning in a separate platform PR, and add both measures to the writer and critic roles. Log two follow-ups that are not rules: the shared sorter's small reason text, and four Windows scratch-copy pitfalls met during the build.
+
+**Evidence:** Critic A's rounds 1 and 2 on devweekends/Buildment#72; the measures before and after are in the proposal.
+## 2026-10-25: Lessons from building the founder interview course (IP v0.5.4)
+
+**Status:** Draft for delivery lead and reviewer sign-off under `09-review-and-governance.md`.
+
+**Problem:** Building course 14 (`founder-interviews`, PR #66) hit seven gaps the IP did not cover or stated wrongly.
+1. The playbook allowed two or three predict options, but the structure audit rejects anything but two; writers made eight three-option predicts that had to be cut.
+2. A mixed review named `07.03-mixed-review.md` failed the course audit, because quiz chapters are recognised only by the `-quiz.md` file name.
+3. Canvas tests ran against a stale copy of `@buildment/learning-ui` after `data.ts` edits, because the install kept the old copy.
+4. On Windows, `sync-shared` rewrote the line endings of about 80 generated files.
+5. `content:import` refused a re-import after the click-through enrolled a test learner, and resetting the scratch database needs the user's consent.
+6. The headless second-family agent hung on stdin and later reached its usage limit mid-run, so one critic pass fell back to the drafting family.
+7. A soft-skills course taught a wrong technical claim (idempotent retries prevent duplicate emails) that only the second-family critic caught.
+
+**Decision:** State the exact rule or workaround where each topic lives: `04-interactive-playbook.md` (predicts have exactly two options; quiz files end in `-quiz.md`), `10-interactive-canvases.md` (refresh the package copy; stage only real `sync-shared` changes), `06-quality-gates.md` (a new scratch database instead of a reset), `01-agent-system.md` (check a headless second family before relying on it, record any fallback) and `agents/critic.md` (hold technical claims in non-engineering courses to the same standard).
+
+**Platform impact:** Documentation only. No code, test or course content changes.
+## 2026-10-25: Visual lab module for challenges (proposal filed, IP unchanged)
+
+**Status:** Proposal in `proposals/2026-10-25-visual-lab-module.md`. No rule in `agent-ip/` was changed.
+
+**Problem:** The architect asked that each system design challenge have its board as its own module, with the palette on the left, settings in a dark drawer opened from a hover icon, and a Run that reports every functional and non-functional check and shows traffic, saturation and failures.
+
+**Decision:** Build the first such module (`30-visual-lab-design-a-url-shortener`) under today's rules and file the module shape as a proposal. The course content follows the existing gates: audit and beats audit with no flags, `type: mcq` quiz fences, a checklist with a learning log, "Further reading" pointers marked `{/* course-link: <slug> */}`, no em or en dashes. The module is appended after module 29 because chapter slugs are numbered by module order, so a module inserted in the middle would renumber published chapters.
+
+**Evidence:** 11 checks tuned against the model and compared with the code lab's measured results; 64 lab unit tests; structure audit strict with 0 errors; validator 269 of 269 OK.
+
+**Extension (same day):** the proposal now covers every course with labs: two modules per lab topic, "Visual lab: <topic>" and "Code lab: <topic>", a code lab module template, a "why this matters" prediction at the start and a reflect step at the end of each, and two quality gate checks. Still a proposal; the sidebar shows only module titles, so the prefix does the work until the platform has a module kind.
+
+**Second module (same day):** `31-code-lab-build-and-break-a-url-shortener` is the first code lab, built from the proposal's six-chapter template with the quiz and the checklist added as chapters 7 and 8. It is appended after module 30 for the same renumbering reason. No rule changed. The tasks chapter gives directions only; worked solutions stay in the public repository's `solutions/` folder and the module says so. Numbers in the module are copied from the repository's recorded results and were not re-measured for this change.
+
+**Files changed:** none in `agent-ip/` except this entry and the proposal.
+
+**Review:** Delivery lead and one additional reviewer pending.
+
 ## 2026-10-24: Load released courses into the scratch database through the repository publisher
 
 **Status:** Correction to the pre-PR checklist.
@@ -192,3 +247,47 @@
 **Platform impact:** Existing Mermaid and canvas slots support this instruction. Each new canvas still requires a coded and reviewed slug; the IP does not claim a generic authorable canvas editor exists.
 
 **Review:** Delivery lead and one additional reviewer pending. No published course structure changes in this IP update.
+
+## 2026-10-24: A lab board counts as a beat's opening visual
+
+**Status:** Applied in `scripts/audit-course.mjs`; delivery lead review pending.
+
+**Problem:** Lab chapters embed the component lab board as `<Lab slug="..." />`. The beats audit only accepted canvases and diagrams as the visual that opens a beat, so a beat that opens with the board the learner builds on was flagged as text-first.
+
+**Decision:** Add `Lab` to the audit's opening-visual tags. A lab board is the most playable visual a chapter can have. Every other beats rule (word limits, depth, beat count) is unchanged.
+
+**Platform impact:** None. `<Lab>` was already in the MDX allowlist and checked against `LAB_SLUGS` at publish.
+
+**Review:** Delivery lead pending. Used by system design chapters 2.5, 4.9 and 20.6.
+
+## 2026-10-26: Lessons from course 16 (career-brand), as a proposal
+
+**Status:** Proposal for delivery lead and reviewer sign-off: `proposals/2026-10-26-career-brand-lessons.md`. No rule changes until it is accepted.
+
+**Problem:** A headless second-family critic invented quotes when it read a large bundle with its own tools; revisions pushed predict keys past the length line; production words leaked into learner text; revisions broke canvas label limits that only a course-wide test caught.
+
+**Decision proposed:** Verbatim quotes checked by script for every critic defect, with chunked input for headless reviewers; a length and position re-check after each revision round; production words added to the forbidden patterns; one course-wide test that runs each primitive's data check over a course's slugs.
+
+**Platform impact:** None. One platform note: the structure audit's predict pattern misses Windows line endings.
+
+**Review:** Delivery lead and one additional reviewer pending.
+
+## 2026-10-26: Proposal on the closing quick check and a form-cue check
+
+**Status:** Proposed, not applied. Proposal: `proposals/2026-10-26-quick-check-and-form-cues.md`, with a draft script `proposals/2026-10-26-cue-check.mjs`.
+
+**Problem:** In the course 13 v2 build, the beats audit counted a closing "Quick check" section as a beat without a visual, and seven writers worked round it in three different ways. Separately, quiz keys passed the length and position checks but were guessable by grammar (reason clauses, absolute words, a lone "check the source" option).
+
+**Decision requested:** Choose how the closing quick check is written or audited, and add a form-cue check to the assessment validation.
+
+**Platform impact:** None until accepted.
+
+**Review:** Delivery lead and IP owner pending.
+
+## 2026-10-26: one command for the pre-PR course checks
+
+The networking course merged with server import and structure failures because the pre-PR checks were manual and CI could not start. Added `agent-ip/scripts/course-check.mjs`, which runs the course audit, source validation, the strict structure audit and the code exercise grading in one command, picked from what the course contains. Proposal: `proposals/2026-10-26-course-check-one-command.md`. Run on system design, it found a published code exercise whose solution cannot pass in the grading sandbox (26.05 uses `URL`).
+
+## 2026-10-26: task tiers, one packet runner, and a learning loop
+
+Proposed a tier table (judgment, bulk, mechanical, verify) with a quality floor, a runner that sends a work packet to any command-line model and waits out usage limits, and a per-tier defect log that moves task types up or down a tier between courses. Proposal: `proposals/2026-10-26-task-tiers-and-swarm-runner.md`.
