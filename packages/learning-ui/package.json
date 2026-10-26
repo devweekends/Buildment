@@ -12,6 +12,7 @@
     "./components/learn/learning-log": "./src/components/learn/learning-log.tsx",
     "./components/learn/*": "./src/components/learn/*",
     "./labs/Lab": "./src/labs/Lab.tsx",
+    "./labs/*": "./src/labs/*",
     "./labs/catalog": "./src/labs/catalog.ts",
     "./labs/types": "./src/labs/types.ts",
     "./labs/registry": "./src/labs/registry.ts",

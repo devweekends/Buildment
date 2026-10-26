@@ -4,8 +4,12 @@
 
 import type { ComponentKind, Role } from "./catalog";
 import { canConnect, isComponentKind } from "./catalog";
+import type { NetCheck } from "./net/checks";
+import type { NetTopology } from "./net/model";
+import type { PlanSpec } from "./net/plan";
+import { validateChecks, validatePlan, validateSolution as validateNetSolution, validateTopology } from "./net/validate";
 
-export type LabFamily = "hld" | "db";
+export type LabFamily = "hld" | "db" | "net";
 
 export interface BoardNode {
   id: string;
@@ -135,7 +139,51 @@ export interface DbLabSpec extends LabBase {
   query: string;
 }
 
-export type LabSpec = HldLabSpec | DbLabSpec;
+export interface NetSolutionStep {
+  device: string;
+  command: string;
+  why: string;
+}
+
+export interface NetSolution {
+  summary: string;
+  steps?: NetSolutionStep[];
+  blocks?: Record<string, { block: string; why: string }>;
+}
+
+export interface NetLabSpec extends LabBase {
+  family: "net";
+  mode: "explore" | "fault" | "plan";
+  topology?: NetTopology;
+  checks?: NetCheck[];
+  plan?: PlanSpec;
+  startDevice?: string;
+  tasks?: string[];
+  suggested?: string[];
+  solution?: NetSolution;
+}
+
+export type LabSpec = HldLabSpec | DbLabSpec | NetLabSpec;
+
+function validateNetLab(spec: NetLabSpec): string[] {
+  const problems: string[] = [];
+  if (spec.mode !== "explore" && !spec.solution) problems.push(`a ${spec.mode} lab needs a solution`);
+  if (spec.mode === "plan") {
+    if (!spec.plan) problems.push("a plan lab needs a plan");
+    else problems.push(...validatePlan(spec.plan));
+    if (spec.plan && spec.solution) problems.push(...validateNetSolution(spec.solution, { plan: spec.plan }));
+    return problems;
+  }
+  if (!spec.topology) return ["an explore or fault lab needs a topology"];
+  problems.push(...validateTopology(spec.topology));
+  if (spec.checks) problems.push(...validateChecks(spec.topology, spec.checks));
+  if (spec.mode === "fault" && !spec.checks?.length) problems.push("a fault lab needs checks");
+  if (spec.solution) problems.push(...validateNetSolution(spec.solution, { topology: spec.topology, checks: spec.checks }));
+  if (spec.startDevice && !spec.topology.devices.some((d) => d.id === spec.startDevice)) {
+    problems.push(`startDevice "${spec.startDevice}" is not a device`);
+  }
+  return problems;
+}
 
 function validateBoard(board: Board, allowed: ComponentKind[]): string[] {
   const problems: string[] = [];
@@ -222,6 +270,8 @@ export function validateLabSpec(spec: LabSpec): string[] {
     if (spec.startingBoard) problems.push(...validateBoard(spec.startingBoard, spec.allowedComponents));
     if (spec.challenge) problems.push(...validateChallenge(spec.challenge));
     if (spec.solution) problems.push(...validateSolution(spec));
+  } else if (spec.family === "net") {
+    problems.push(...validateNetLab(spec));
   } else {
     if (spec.startingDbml.trim().length === 0) problems.push("a db lab needs startingDbml");
     if (spec.query.trim().length === 0) problems.push("a db lab needs a query");
