@@ -407,6 +407,7 @@ test('integrity bridge passes Start, camera state and events for a proctored qui
     ['/api/v1/chapters/chapter-1/integrity', 'POST', undefined],
     [`${base}/camera`, 'PUT', { status: 'ON' }],
     [`${base}/begin`, 'POST', undefined],
+    [`${base}/heartbeat`, 'POST', undefined],
     [`${base}/events`, 'POST', { events: [] }],
   ] as const) {
     assert.equal((await client.integrityRequest(route, method, body)).ok, true);
@@ -415,6 +416,7 @@ test('integrity bridge passes Start, camera state and events for a proctored qui
     'POST /api/v1/chapters/chapter-1/integrity',
     `PUT ${base}/camera`,
     `POST ${base}/begin`,
+    `POST ${base}/heartbeat`,
     `POST ${base}/events`,
   ]);
   const refused = await client.integrityRequest(`${base}/begin`, 'GET');

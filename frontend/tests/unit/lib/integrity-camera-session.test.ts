@@ -169,3 +169,30 @@ describe("CameraSession losses", () => {
     expect(() => session.watchPermission({ query: async () => Promise.reject(new Error("no")) }, () => undefined)).not.toThrow();
   });
 });
+
+describe("CameraSession detection", () => {
+  it("says why there is no camera API (an insecure page, or an old browser)", async () => {
+    expect(await new CameraSession(null, { unavailable: "insecure" }).start(() => undefined)).toEqual({ status: "failed", reason: "insecure" });
+    expect(await new CameraSession(null).start(() => undefined)).toEqual({ status: "failed", reason: "unsupported" });
+  });
+
+  it("does not ask for the camera on a device that has none", async () => {
+    const getUserMedia = vi.fn(async () => fakeStream().stream);
+    const session = new CameraSession(getUserMedia, { hasCamera: async () => false });
+    expect(await session.start(() => undefined)).toEqual({ status: "failed", reason: "no-camera" });
+    expect(getUserMedia).not.toHaveBeenCalled();
+  });
+
+  it("still asks when listing devices fails, so the browser can say what is wrong", async () => {
+    const { stream } = fakeStream();
+    const session = new CameraSession(async () => stream, { hasCamera: async () => Promise.reject(new Error("blocked")) });
+    expect(await session.start(() => undefined)).toEqual({ status: "on", stream });
+  });
+
+  it("maps a refused permission to denied and a missing device to no-camera", async () => {
+    const refuse = (name: string) => new CameraSession(async () => Promise.reject(Object.assign(new Error(name), { name })));
+    expect(await refuse("NotAllowedError").start(() => undefined)).toEqual({ status: "failed", reason: "denied" });
+    expect(await refuse("NotFoundError").start(() => undefined)).toEqual({ status: "failed", reason: "no-camera" });
+    expect(await refuse("AbortError").start(() => undefined)).toEqual({ status: "failed", reason: "error" });
+  });
+});

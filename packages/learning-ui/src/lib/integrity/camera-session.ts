@@ -2,10 +2,10 @@
 // can be unit tested: a stream that arrives after the quiz ended or the page left
 // is stopped at once, and nothing keeps the camera light on by accident.
 
-export type CameraFailure = "denied" | "no-camera" | "unsupported" | "error";
+export type CameraFailure = "denied" | "no-camera" | "unsupported" | "insecure" | "error";
 
 /** Why a camera that was live is not any more. */
-export type CameraLoss = "stopped" | "muted" | "denied";
+export type CameraLoss = "stopped" | "muted" | "denied" | "frozen";
 
 /** A track that stays muted this long counts as lost (short mutes happen when a device wakes up). */
 const MUTED_GRACE_MS = 2_000;
@@ -41,7 +41,14 @@ export class CameraSession {
   private generation = 0;
   private closed = false;
 
-  constructor(private readonly getUserMedia: GetUserMedia | null) {}
+  /**
+   * `unavailable` says why there is no getUserMedia (an insecure page has none). `hasCamera` looks for a
+   * video device before asking, so a laptop without one gets a clear message instead of a vague error.
+   */
+  constructor(
+    private readonly getUserMedia: GetUserMedia | null,
+    private readonly options: { unavailable?: "unsupported" | "insecure"; hasCamera?: () => Promise<boolean> } = {},
+  ) {}
 
   get current(): MediaStream | null {
     return this.stream;
@@ -59,8 +66,17 @@ export class CameraSession {
    */
   async start(onLost: (reason: CameraLoss) => void, options: { onRestored?: () => void; mutedGraceMs?: number } = {}): Promise<CameraStartResult> {
     if (this.closed) return { status: "cancelled" };
-    if (!this.getUserMedia) return { status: "failed", reason: "unsupported" };
+    if (!this.getUserMedia) return { status: "failed", reason: this.options.unavailable ?? "unsupported" };
+    // Starting again replaces the stream for good: never keep two captures of one device alive.
     const generation = ++this.generation;
+    try {
+      if (this.options.hasCamera && !(await this.options.hasCamera())) {
+        return generation === this.generation && !this.closed ? { status: "failed", reason: "no-camera" } : { status: "cancelled" };
+      }
+    } catch {
+      // Listing devices can fail before permission; asking for the camera will say what is wrong.
+    }
+    if (generation !== this.generation || this.closed) return { status: "cancelled" };
     let stream: MediaStream;
     try {
       stream = await this.getUserMedia(CONSTRAINTS);

@@ -329,10 +329,15 @@ export function QuizChapterSessionClient({
   if (locked && stepIds.length > 0) {
     const opening = integrity.starting;
     const limit = integrity.limitReached;
+    // Same wrapper and header as the open quiz below, so the integrity panel (and the camera self-view in it)
+    // is not torn down and rebuilt when the questions arrive after Start.
     return (
+      <QuizSessionContext.Provider value={sessionValue}>
       <section ref={sectionRef} id="quiz-chapter-session" className="not-prose mb-10 scroll-mt-24" aria-label="Quiz session">
         <header className="mb-8 border-b border-border pb-6">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Quiz: {chapterTitle}</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            Quiz: {chapterTitle}
+          </h1>
           <p className="mt-3 text-sm font-medium text-muted-foreground">
             {stepIds.length} {stepIds.length === 1 ? "question" : "questions"}
           </p>
@@ -360,6 +365,7 @@ export function QuizChapterSessionClient({
           )}
         </div>
       </section>
+      </QuizSessionContext.Provider>
     );
   }
 

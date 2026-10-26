@@ -48,6 +48,8 @@ const NOTICE_TEXT: Partial<Record<IntegrityEventType, string>> = {
 /** How often a proctored quiz checks that the window still has focus, in case a blur event was missed. */
 const FOCUS_POLL_MS = 500;
 const FACE_CHECK_MS = 2_000;
+/** A live track whose picture has not moved for this long counts as a lost camera. */
+const FROZEN_MS = 6_000;
 
 type FaceDetectorLike = { detect(image: CanvasImageSource): Promise<unknown[]> };
 type FaceDetectorConstructor = new (options?: { fastMode?: boolean; maxDetectedFaces?: number }) => FaceDetectorLike;
@@ -93,6 +95,14 @@ function writePending(key: string, value: Pending | null) {
   } catch {
     // Storage is optional.
   }
+}
+
+/** Waits (briefly) until the page is really full screen and has settled, so nothing is armed mid-transition. */
+async function waitForFullscreen(): Promise<void> {
+  for (let waited = 0; waited < 2_000 && !document.fullscreenElement; waited += 100) {
+    await new Promise((resolve) => window.setTimeout(resolve, 100));
+  }
+  if (document.fullscreenElement) await new Promise((resolve) => window.setTimeout(resolve, 800));
 }
 
 function fullscreenSupported(): boolean {
@@ -184,6 +194,9 @@ export function useQuizIntegrity({
   /** The learner is away from the quiz right now (window blur, hidden tab, or a native blur). */
   const awayRef = useRef(false);
   const cameraRequiredRef = useRef(false);
+  const lostRef = useRef<(reason: CameraLoss) => void>(() => undefined);
+  const recoveries = useRef<number[]>([]);
+  const recovering = useRef(false);
 
   // A proctored quiz is armed from Start until the attempt ends: that is when leaving counts.
   const proctored = Boolean(session?.proctored);
@@ -411,6 +424,14 @@ export function useQuizIntegrity({
       typeof navigator !== "undefined" && navigator.mediaDevices?.getUserMedia
         ? (constraints) => navigator.mediaDevices.getUserMedia(constraints)
         : null,
+      {
+        // getUserMedia only exists on https or localhost: a LAN address gets a message that says so.
+        unavailable: typeof window !== "undefined" && window.isSecureContext === false ? "insecure" : "unsupported",
+        hasCamera: async () => {
+          const devices = await navigator.mediaDevices?.enumerateDevices?.();
+          return !devices || devices.some((device) => device.kind === "videoinput");
+        },
+      },
     );
     return cameraSessionRef.current;
   }, []);
@@ -505,11 +526,11 @@ export function useQuizIntegrity({
   }, [session?.camera.intervalSeconds, uploadSnapshot]);
 
   /** Turns the camera on. True when it is live and the server has been told (a proctored quiz needs both to start). */
-  const startCamera = useCallback(async (): Promise<boolean> => {
+  const startCamera = useCallback(async (options: { silent?: boolean } = {}): Promise<boolean> => {
     if (!(session?.camera.enabled || session?.camera.required) || finishedRef.current) return false;
-    setCameraStarting(true);
+    if (!options.silent) setCameraStarting(true);
     const result = await cameraSession().start(
-      (reason: CameraLoss) => cameraUnavailable(reason),
+      (reason: CameraLoss) => lostRef.current(reason),
       {
         onRestored: () => {
           // A muted camera came back by itself.
@@ -520,11 +541,12 @@ export function useQuizIntegrity({
         },
       },
     );
-    setCameraStarting(false);
+    if (!options.silent) setCameraStarting(false);
     // The quiz may have finished, or the page left, while the browser asked for permission.
     if (result.status === "cancelled" || finishedRef.current) return false;
     if (result.status === "failed") {
-      cameraUnavailable(result.reason);
+      // A silent restart that fails is handled by the caller as a real loss.
+      if (!options.silent) cameraUnavailable(result.reason);
       return false;
     }
     setCameraIssue(null);
@@ -534,13 +556,44 @@ export function useQuizIntegrity({
       void videoRef.current.play().catch(() => undefined);
     }
     setCamera("ON");
-    record("CAMERA_ON", undefined, { quiet: true });
+    if (!options.silent) record("CAMERA_ON", undefined, { quiet: true });
     // Taking the permission away while the quiz runs is a loss, even if the track lingers.
-    cameraSession().watchPermission(typeof navigator === "undefined" ? undefined : navigator.permissions, () => cameraUnavailable("denied"));
+    cameraSession().watchPermission(typeof navigator === "undefined" ? undefined : navigator.permissions, () => lostRef.current("denied"));
+    if (options.silent) return true;
     // Stills are an opt-in the course makes separately; the on-device check never uploads anything.
     if (session?.camera.enabled) scheduleSnapshots();
     return putCamera("ON");
   }, [cameraSession, cameraUnavailable, putCamera, record, scheduleSnapshots, session?.camera.enabled, session?.camera.required, setCamera]);
+
+  // The browser sometimes ends a camera track by itself for a moment (the device restarts when the window goes
+  // full screen, or the driver resets). That is not the learner's doing, so a lost camera gets up to three quiet
+  // restarts a minute before it counts as a loss. Taking the permission away or covering the lens still counts.
+  useEffect(() => {
+    lostRef.current = (reason: CameraLoss) => {
+      const recoverable = (reason === "stopped" || reason === "frozen") && cameraRequiredRef.current;
+      const now = Date.now();
+      recoveries.current = recoveries.current.filter((at) => now - at < 60_000);
+      if (!recoverable || recovering.current || recoveries.current.length >= 3) {
+        if (!recovering.current) cameraUnavailable(reason);
+        return;
+      }
+      recoveries.current.push(now);
+      recovering.current = true;
+      void (async () => {
+        let revived = false;
+        try {
+          // The device can be busy for a moment while the window changes state: try again before giving up.
+          for (let attempt = 0; attempt < 3 && !revived && !finishedRef.current; attempt += 1) {
+            if (attempt > 0) await new Promise((resolve) => window.setTimeout(resolve, 1_000));
+            revived = await startCamera({ silent: true });
+          }
+        } finally {
+          recovering.current = false;
+        }
+        if (!revived && !finishedRef.current) cameraUnavailable(reason);
+      })();
+    };
+  });
 
   /** The learner said no, or turned the camera off: noted for the mentor, never a penalty. */
   const declineCamera = useCallback((reason: "declined" | "learner") => {
@@ -587,17 +640,21 @@ export function useQuizIntegrity({
   /** Closes the intro. `withCamera` is the learner's consent choice; saying no never blocks the quiz. */
   const begin = useCallback(async (withCamera: boolean) => {
     const attemptId = attemptIdRef.current;
-    // Full screen needs the click that called this, so ask before anything is awaited.
-    if (fullscreenSupported() && !document.fullscreenElement) requestQuizFullscreen();
     if (session?.camera.required) {
       // A proctored quiz does not start until the camera is live. If it is not, the dialog stays open
-      // with the reason and the learner can try again.
+      // with the reason and the learner can try again. The camera comes first: some browsers restart the
+      // capture device while the window goes full screen, and that must not be mistaken for a loss.
       setStarting(true);
       const live = await startCamera();
       if (!live) {
         setStarting(false);
         return;
       }
+    }
+    // Full screen needs the click that called this (it stays valid for a few seconds).
+    if (fullscreenSupported() && !document.fullscreenElement) {
+      requestQuizFullscreen();
+      if (session?.proctored) await waitForFullscreen();
     }
     if (attemptId && !session?.proctored) {
       try {
@@ -931,6 +988,54 @@ export function useQuizIntegrity({
   useEffect(() => {
     if (!enabled) finish();
   }, [enabled, finish]);
+
+  // The proof the server wants: while a proctored quiz runs, tell it every few seconds that the camera is live.
+  // It only sends it after looking at the track itself (live, not muted, frames moving), and it stops the
+  // moment that is no longer true, so a lapse hides the questions on the server too.
+  useEffect(() => {
+    if (!armed || !session?.camera.required || cameraStatus !== "ON") return;
+    const attemptId = session.attemptId;
+    const live = () => {
+      const track = cameraSessionRef.current?.current?.getVideoTracks()[0];
+      return Boolean(track && track.readyState === "live" && !track.muted);
+    };
+    const beat = () => {
+      if (!live() || document.visibilityState === "hidden") return;
+      void apiFetch(`/api/v1/integrity/attempts/${encodeURIComponent(attemptId)}/heartbeat`, { method: "POST" }).catch(() => undefined);
+    };
+    beat();
+    const timer = window.setInterval(beat, PROCTORED_RULE.cameraHeartbeatSeconds * 1000);
+    return () => window.clearInterval(timer);
+  }, [armed, cameraStatus, apiFetch, session?.attemptId, session?.camera.required]);
+
+  // Do not wait for the browser to say the camera ended: look at the track and the picture once a second.
+  // A device that is unplugged or frozen does not always send an event.
+  useEffect(() => {
+    if (!armed || !session?.camera.required || cameraStatus !== "ON") return;
+    let lastTime = -1;
+    let lastMoved = Date.now();
+    const timer = window.setInterval(() => {
+      const stream = cameraSessionRef.current?.current;
+      const track = stream?.getVideoTracks()[0];
+      if (!track || track.readyState !== "live") {
+        lostRef.current("stopped");
+        return;
+      }
+      const video = videoRef.current;
+      if (!video || video.paused || document.visibilityState === "hidden") {
+        lastMoved = Date.now();
+        return;
+      }
+      if (video.currentTime !== lastTime) {
+        lastTime = video.currentTime;
+        lastMoved = Date.now();
+      } else if (Date.now() - lastMoved > FROZEN_MS) {
+        lastMoved = Date.now();
+        lostRef.current("frozen");
+      }
+    }, 1_000);
+    return () => window.clearInterval(timer);
+  }, [armed, cameraStatus, session?.camera.required]);
 
   // A light face check, only where the browser has a native FaceDetector, and only on this device: the
   // frames are looked at and thrown away, and only a flag with a time is kept. Without it, this is skipped.

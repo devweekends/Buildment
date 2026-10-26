@@ -30,6 +30,9 @@ export function IntegrityNotice({ integrity }: { integrity: QuizIntegrity }) {
     denied:
       'The camera is blocked. Allow it for Buildment in your system settings, then try again.',
     muted: 'Your camera is switched off or covered. Turn it on and try again.',
+    frozen:
+      'Your camera stopped sending pictures. Unplug it and plug it in again, or close other apps that use the camera, then try again.',
+    insecure: 'The camera needs a secure connection.',
     'no-camera': 'We could not find a camera on this device.',
     stopped: 'Your camera stopped.',
     unsupported: 'This device cannot use a camera.',
@@ -149,6 +152,17 @@ export function IntegrityNotice({ integrity }: { integrity: QuizIntegrity }) {
               with Esc.
             </p>
           </>
+        )}
+        {intro && strict && integrity.leaves > 0 && (
+          <p
+            role="status"
+            className="mt-5 rounded-xl border border-border bg-muted p-3 text-sm"
+          >
+            This quiz page was reopened or left earlier. That counts as leaving
+            the quiz screen: warning{' '}
+            {Math.min(integrity.leaves, PROCTORED_RULE.warnings)} of{' '}
+            {PROCTORED_RULE.warnings}. Turn your camera on again to carry on.
+          </p>
         )}
         {integrity.camera.required && (
           <div className="mt-5 rounded-xl bg-muted p-4">

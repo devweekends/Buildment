@@ -38,7 +38,9 @@ const CAMERA_PRIVACY = [
 const CAMERA_HELP: Record<string, string> = {
   denied: "Your browser blocked the camera. You can allow it for this site (the camera icon in the address bar) and try again.",
   muted: "Your camera is switched off or covered. Turn it on and try again.",
-  "no-camera": "We could not find a camera on this device.",
+  frozen: "Your camera stopped sending pictures. Unplug it and plug it in again, or close other apps that use the camera, then try again.",
+  insecure: "The camera only works on a secure page. Open Buildment at its https address and try again.",
+  "no-camera": "We could not find a camera on this device. Plug one in, then try again.",
   stopped: "Your camera stopped.",
   unsupported: "This browser cannot use a camera.",
   error: "The camera did not start.",
@@ -125,6 +127,11 @@ function IntegrityDialog({ integrity }: { integrity: QuizIntegrity }) {
               ) : null}
             </section>
 
+            {intro && strict && integrity.leaves > 0 ? (
+              <p role="status" className="rounded-xl border border-destructive/40 bg-destructive/10 p-3 text-sm leading-5">
+                This quiz page was reopened or left earlier. That counts as leaving the quiz screen: warning {Math.min(integrity.leaves, PROCTORED_RULE.warnings)} of {PROCTORED_RULE.warnings}. Turn your camera on again to carry on.
+              </p>
+            ) : null}
             {camera.required ? (
               <section aria-labelledby="quiz-camera-privacy-title" className="rounded-xl border border-primary/25 bg-primary/5 p-4">
                 <h3 id="quiz-camera-privacy-title" className="flex items-center gap-2 text-sm font-semibold">
