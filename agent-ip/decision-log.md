@@ -204,3 +204,16 @@
 **Platform impact:** None. `<Lab>` was already in the MDX allowlist and checked against `LAB_SLUGS` at publish.
 
 **Review:** Delivery lead pending. Used by system design chapters 2.5, 4.9 and 20.6.
+
+## 2026-10-26: Lessons from course 16 (career-brand), as a proposal
+
+**Status:** Proposal for delivery lead and reviewer sign-off: `proposals/2026-10-26-career-brand-lessons.md`. No rule changes until it is accepted.
+
+**Problem:** A headless second-family critic invented quotes when it read a large bundle with its own tools; revisions pushed predict keys past the length line; production words leaked into learner text; revisions broke canvas label limits that only a course-wide test caught.
+
+**Decision proposed:** Verbatim quotes checked by script for every critic defect, with chunked input for headless reviewers; a length and position re-check after each revision round; production words added to the forbidden patterns; one course-wide test that runs each primitive's data check over a course's slugs.
+
+**Platform impact:** None. One platform note: the structure audit's predict pattern misses Windows line endings.
+
+**Review:** Delivery lead and one additional reviewer pending.
+
