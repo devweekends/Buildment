@@ -283,3 +283,7 @@
 **Platform impact:** None until accepted.
 
 **Review:** Delivery lead and IP owner pending.
+
+## 2026-10-26: task tiers, one packet runner, and a learning loop
+
+Proposed a tier table (judgment, bulk, mechanical, verify) with a quality floor, a runner that sends a work packet to any command-line model and waits out usage limits, and a per-tier defect log that moves task types up or down a tier between courses. Proposal: `proposals/2026-10-26-task-tiers-and-swarm-runner.md`.
