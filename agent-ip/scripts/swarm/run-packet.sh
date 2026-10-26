@@ -29,7 +29,7 @@ log() { echo "$(date '+%F %T') $*" >> "$LOG"; }
 wait_limit() {
   local line when now h m
   now=$(date +%s)
-  line="$(grep -oiE 'try again at [^.]*[0-9]{1,2}:[0-9]{2} ?(AM|PM)?' "$1" | tail -1 | sed -E 's/^try again at //I; s/([0-9])(st|nd|rd|th)//')"
+  line="$(grep -oiE 'try again at [^.]*[0-9]{1,2}:[0-9]{2} ?(AM|PM)?' "$1" | tail -1 | sed -E 's/^try again at //I; s/([0-9])(st|nd|rd|th)/\1/')"
   if [ -n "$line" ]; then
     when=$(date -d "$line" +%s 2>/dev/null || echo 0)
     [ "$when" -gt 0 ] && [ "$when" -le "$now" ] && when=$((when + 86400))
