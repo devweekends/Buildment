@@ -272,3 +272,14 @@
 
 **Review:** Delivery lead and one additional reviewer pending.
 
+## 2026-10-26: Proposal on the closing quick check and a form-cue check
+
+**Status:** Proposed, not applied. Proposal: `proposals/2026-10-26-quick-check-and-form-cues.md`, with a draft script `proposals/2026-10-26-cue-check.mjs`.
+
+**Problem:** In the course 13 v2 build, the beats audit counted a closing "Quick check" section as a beat without a visual, and seven writers worked round it in three different ways. Separately, quiz keys passed the length and position checks but were guessable by grammar (reason clauses, absolute words, a lone "check the source" option).
+
+**Decision requested:** Choose how the closing quick check is written or audited, and add a form-cue check to the assessment validation.
+
+**Platform impact:** None until accepted.
+
+**Review:** Delivery lead and IP owner pending.
