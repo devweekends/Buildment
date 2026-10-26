@@ -1,0 +1,25 @@
+---
+artifact: routing
+course: founder-interviews
+version: 1
+---
+
+# Model routing for this run. Two model families are available: the drafting
+# family (main session and its subagents) and a second, independent family run
+# headless through a local command-line agent. The second family runs the blind
+# answer-key check and critic B, so those checks do not share the drafters'
+# blind spots. Critic A is a separate, smaller agent from the drafting family
+# with no writer rationale (recorded as risk R1). A human key check and human
+# review are still required before publishing. In round 1 the second family
+# reached its usage limit after the blind key check, so critic B ran on the
+# drafting family (see the run log).
+orchestrator: drafting model (main session)
+research: drafting model, separate agent with web search
+curriculum_architect: drafting model (main session)
+interaction_designer: drafting model (main session)
+interactive_canvas_builder: chapter writers (data and spec on existing renderers); registration and tests by the orchestrator
+chapter_writers: smaller drafting-family model, parallel agents split by module
+critic_a: smaller drafting-family model, separate agent, no writer rationale (pedagogy, assessment, canvas)
+critic_b: planned on the second model family; round 1 ran on the smaller drafting-family model, separate agent, no writer rationale (slop, continuity, accuracy against the dossier, tone, second-language readability), because the second family hit its usage limit; the second family returns for later key checks when available
+blind_key_check: second model family, keyless batches only
+technical_validator: scripts and tests (validate:source, content:audit, audit-course.mjs, canvas tests, import, click-through)
