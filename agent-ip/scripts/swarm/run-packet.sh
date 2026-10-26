@@ -24,21 +24,30 @@ done
 LOG="$DIR/run.log"
 log() { echo "$(date '+%F %T') $*" >> "$LOG"; }
 
-# A usage-limit message names the time to try again; wait until two minutes after it.
+# A usage-limit message names when to try again: "try again at 6:12 PM", "try again at Oct 27th, 2026 4:36 AM"
+# or "resets in 99h30m". Wait until two minutes after it. Returns 1 when the log has no such message.
 wait_limit() {
-  local t when now
-  t="$(grep -oiE 'try again at [0-9]{1,2}:[0-9]{2} ?(AM|PM)?|resets? in [0-9]+h ?[0-9]*m?' "$1" | tail -1)"
-  [ -n "$t" ] || return 1
+  local line when now h m
   now=$(date +%s)
-  if [[ "$t" =~ [Tt]ry ]]; then
-    when=$(date -d "$(sed -E 's/try again at //I' <<< "$t")" +%s 2>/dev/null || echo "$now")
-    [ "$when" -le "$now" ] && when=$((when + 86400))
+  line="$(grep -oiE 'try again at [^.]*[0-9]{1,2}:[0-9]{2} ?(AM|PM)?' "$1" | tail -1 | sed -E 's/^try again at //I; s/([0-9])(st|nd|rd|th)//')"
+  if [ -n "$line" ]; then
+    when=$(date -d "$line" +%s 2>/dev/null || echo 0)
+    [ "$when" -gt 0 ] && [ "$when" -le "$now" ] && when=$((when + 86400))
   else
-    local h m; h=$(grep -oE '[0-9]+h' <<< "$t" | tr -d h); m=$(grep -oE '[0-9]+m' <<< "$t" | tr -d m)
+    line="$(grep -oiE 'resets? in [0-9]+h ?[0-9]*m?' "$1" | tail -1)"
+    [ -n "$line" ] || return 1
+    h=$(grep -oE '[0-9]+h' <<< "$line" | tr -d h); m=$(grep -oE '[0-9]+m' <<< "$line" | tr -d m)
     when=$((now + ${h:-0} * 3600 + ${m:-0} * 60))
   fi
+  # A time we could not read: try again in an hour rather than give up.
+  [ "$when" -gt 0 ] || when=$((now + 3600))
   log "usage limit, waiting until $(date -d @$((when + 120)) '+%F %T')"
   while [ "$(date +%s)" -lt $((when + 120)) ]; do sleep 60; done
+}
+
+# A login problem shows as an error line from the tool, not as words in the work it read.
+login_expired() {
+  grep -E '^(ERROR|Error|error)' "$1" | grep -qiE '401|unauthori[sz]ed|not logged in|log ?in again|token (has )?expired|re-?authenticate'
 }
 
 run_once() {   # prompt logfile
@@ -58,7 +67,10 @@ while [ ! -s "$DIR/$DONE" ] && [ "$tries" -lt "$TRIES" ]; do
   log "start $CLI ${MODEL:-default} try $tries"
   run_once "$prompt" "$lf"; rc=$?
   log "end try $tries rc=$rc"
-  wait_limit "$lf" || { [ "$rc" -ne 0 ] && [ ! -s "$DIR/$DONE" ] && grep -qiE 'auth|401|login' "$lf" && { log "STOPPED: the $CLI login needs renewing"; exit 3; }; }
+  if ! wait_limit "$lf" && [ "$rc" -ne 0 ] && [ ! -s "$DIR/$DONE" ] && login_expired "$lf"; then
+    log "STOPPED: the $CLI login needs renewing"
+    exit 3
+  fi
 done
 if [ -s "$DIR/$DONE" ]; then log "DONE $DONE"; exit 0; fi
 log "GAVE UP after $tries tries"; exit 1
