@@ -1,5 +1,17 @@
 # Agent IP decision log
 
+## 2026-10-26: Ask the sponsor whether a course needs listen-along audio
+
+**Status:** Draft for delivery lead and reviewer sign-off under `09-review-and-governance.md`. Depends on devweekends/Buildment#80, which adds the narration script and player.
+
+**Problem:** Learners on phones or with weak eyesight and second-language readers can follow a chapter better when they can also hear it. The platform can now make that audio from a course's own text, but nothing in the IP asked whether a course wants it, so it would depend on someone remembering.
+
+**Decision:** The course brief has an Audio question the sponsor answers. On yes, the orchestrator adds the `narration:` block to `course.yaml` and makes the audio after G5, when the text is final, using `scripts/narrate/README.md`. Quiz, predict and open-question blocks are never read aloud. Audio is optional and never replaces the written chapter. No gate or score changes.
+
+**Files changed:** `08-templates.md` (brief template), `agents/orchestrator.md` (intake), `decision-log.md`.
+
+**Review:** Delivery lead pending.
+
 ## 2026-10-26: Proposal: check answer cues beyond length and position
 
 **Status:** Proposal only; no rule changed. `proposals/2026-10-26-answer-cue-checks.md`.
