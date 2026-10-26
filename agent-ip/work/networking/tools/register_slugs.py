@@ -24,12 +24,17 @@ for folder in sorted(CANVAS.glob("net-*")):
     if not data.is_file():
         continue
     slug = folder.name
-    m = re.search(r"export const (\w+)\s*:\s*CustomCanvasSpec|export const (\w+)\s*=", data.read_text(encoding="utf8"))
-    if not m:
-        continue
     if f'"{slug}":' in registry:
         continue
-    found.append((slug, m.group(1) or m.group(2)))
+    src = data.read_text(encoding="utf8")
+    # Prefer the export named after the slug (net-m3-arp-table -> netM3ArpTable); data files may export helpers too.
+    expected = re.sub(r"-([a-z0-9])", lambda g: g.group(1).upper(), slug)
+    if re.search(rf"export const {expected}\b", src):
+        found.append((slug, expected))
+        continue
+    m = re.search(r"export const (\w+)\s*:\s*\w*Spec\b|export const (\w+)\s*=", src)
+    if m:
+        found.append((slug, m.group(1) or m.group(2)))
 
 if "--check" in sys.argv:
     for s, n in found:
