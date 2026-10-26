@@ -36,7 +36,7 @@ Register and look: card register, `BeatFrame`, `DotGrid`, `VerdictBanner`, `SvgN
 
 - **The picture:** the topology at the top, the packet chips riding on the highlighted link, and below that the visible table or tables, with changed cells marked "changed" in words and in tone. The step caption and the verdict banner sit inside the picture.
 - **Controls:** at most two outside the picture, **Next** and **Start over**.
-- **Moving packets:** a step with a `packet` animates the chips along the link, 400 to 700 ms and paused off screen. With reduced motion, the chips appear at once.
+- **Moving packets:** a step with a `packet` animates the chips along the link over about 1.4 s (slowed from 0.55 s after learner feedback, 2026-10-26), paused off screen. With reduced motion, the chips appear at once.
 - **A `pick` step is playable:** the learner taps an option card, sees whether it was right and why, then the step plays. At most two `pick` steps per slug, inside the chapter's assessment budget. This makes each slug the "playable beat" the IP requires.
 - **Text alternative:** a polite live region announces the caption, the packet fields and the changed rows of each step.
 - **Validation and failure:** a zod schema validates the data, and the tests run it over every slug. Invalid data renders the platform's quiet fallback, not a crash.
