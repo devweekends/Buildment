@@ -1,0 +1,1035 @@
+---
+artifact: timeline
+course: networking
+version: 1
+roadmap_version: 3
+roadmap_confirmed: true
+budget_core_hours: 42
+budget_slow_path_hours: 54
+hours_per_week: 12
+---
+
+weeks:
+  - week: 1
+    hours: 11.8
+    modules: [1, 2, 3]
+    ends_at: "3.8"
+    demo: "two namespaces pinging with a capture, the learner's own numbers, and a working subnet calculator (code 3.7, 3.8)"
+  - week: 2
+    hours: 11.8
+    modules: [3, 4, 5, 6]
+    ends_at: "6.1"
+    demo: "a router built from namespaces (challenge 2), the fixed office lab, and a captured handshake (challenge 3)"
+  - week: 3
+    hours: 11.5
+    modules: [6, 7, 8]
+    ends_at: "8.1"
+    demo: "a home router with NAT, port forwarding and a guest network (challenge 4), and DHCP and DNS on it (challenge 5)"
+  - week: 4
+    hours: 6.8
+    modules: [8, 9]
+    ends_at: "9.5"
+    demo: "the capstone network with its tests, the fault write-up, the recorded demo, and IPv6 read on the learner's own phone"
+
+chapters:
+  - id: "1.1"
+    title: "Which address is yours?"
+    type: Read
+    estimate_hours: 0.25
+    reading: 0.2
+    build: 0.0
+    verify: 0.0
+    reflect: 0.03
+    buffer: 0.03
+    requires: ["terminal-basics"]
+    introduces: ["own-addresses"]
+    reinforces: []
+    evidence: "written numbers in the learning log"
+  - id: "1.2"
+    title: "Install the lab"
+    type: Build
+    estimate_hours: 0.67
+    slow_path_hours: 1.5
+    reading: 0.1
+    build: 0.33
+    verify: 0.13
+    reflect: 0.03
+    buffer: 0.07
+    requires: ["terminal-basics"]
+    introduces: ["lab-environment"]
+    reinforces: []
+    evidence: "setup checker passes"
+  - id: "1.3"
+    title: "Seven commands and your own numbers"
+    type: Build
+    estimate_hours: 0.42
+    slow_path_hours: 0.67
+    reading: 0.06
+    build: 0.21
+    verify: 0.08
+    reflect: 0.02
+    buffer: 0.04
+    requires: ["lab-environment"]
+    introduces: ["shell-commands"]
+    reinforces: ["own-addresses"]
+    evidence: "challenge 0 results committed"
+  - id: "1.4"
+    title: "Two computers inside your laptop"
+    type: Build
+    estimate_hours: 0.75
+    slow_path_hours: 1.17
+    reading: 0.11
+    build: 0.38
+    verify: 0.15
+    reflect: 0.04
+    buffer: 0.08
+    requires: ["shell-commands", "git-basics"]
+    introduces: ["namespaces-veth", "ping-icmp", "read-capture"]
+    reinforces: []
+    evidence: "challenge 1 part 1 test and capture"
+  - id: "1.5"
+    title: "What one ping actually sent"
+    type: Learn
+    estimate_hours: 0.58
+    reading: 0.26
+    build: 0.18
+    verify: 0.06
+    reflect: 0.03
+    buffer: 0.06
+    requires: ["read-capture"]
+    introduces: ["packet-fields"]
+    reinforces: ["ping-icmp"]
+    evidence: "in-chapter quiz on fields"
+  - id: "1.6"
+    title: "Why does one packet carry three kinds of address?"
+    type: Learn
+    estimate_hours: 0.5
+    reading: 0.23
+    build: 0.15
+    verify: 0.05
+    reflect: 0.03
+    buffer: 0.05
+    requires: ["packet-fields"]
+    introduces: ["layers", "mac-address"]
+    reinforces: []
+    evidence: "wrap and unwrap check"
+  - id: "1.7"
+    title: "Your laptop on a network"
+    type: Check
+    estimate_hours: 0.25
+    reading: 0.0
+    build: 0.0
+    verify: 0.23
+    reflect: 0.03
+    buffer: 0.0
+    requires: ["layers"]
+    introduces: []
+    reinforces: ["own-addresses", "packet-fields"]
+    evidence: "quiz"
+  - id: "1.8"
+    title: "Your home network on one page"
+    type: Gate
+    estimate_hours: 0.42
+    reading: 0.0
+    build: 0.0
+    verify: 0.08
+    reflect: 0.29
+    buffer: 0.04
+    requires: ["own-addresses", "layers"]
+    introduces: []
+    reinforces: ["own-addresses"]
+    evidence: "home network map"
+  - id: "2.1"
+    title: "4.3 billion was supposed to be enough"
+    type: Read
+    estimate_hours: 0.17
+    reading: 0.13
+    build: 0.0
+    verify: 0.0
+    reflect: 0.02
+    buffer: 0.02
+    requires: ["own-addresses"]
+    introduces: ["exhaustion"]
+    reinforces: []
+    evidence: "none (read)"
+  - id: "2.2"
+    title: "An address is one 32-bit number"
+    type: Learn
+    estimate_hours: 0.58
+    reading: 0.26
+    build: 0.18
+    verify: 0.06
+    reflect: 0.03
+    buffer: 0.06
+    requires: ["exhaustion"]
+    introduces: ["ip-as-number"]
+    reinforces: []
+    evidence: "unassisted drills"
+  - id: "2.3"
+    title: "From classes to CIDR"
+    type: Learn
+    estimate_hours: 0.75
+    reading: 0.34
+    build: 0.22
+    verify: 0.08
+    reflect: 0.04
+    buffer: 0.08
+    requires: ["ip-as-number"]
+    introduces: ["classful", "cidr", "aggregation"]
+    reinforces: ["exhaustion"]
+    evidence: "unassisted drills"
+  - id: "2.4"
+    title: "Private, shared and special addresses"
+    type: Learn
+    estimate_hours: 0.67
+    reading: 0.3
+    build: 0.2
+    verify: 0.07
+    reflect: 0.03
+    buffer: 0.07
+    requires: ["cidr"]
+    introduces: ["address-kinds", "nat-first-look"]
+    reinforces: ["own-addresses"]
+    evidence: "classification check"
+  - id: "2.5"
+    title: "Code: addresses as numbers"
+    type: Code
+    estimate_hours: 0.75
+    reading: 0.11
+    build: 0.41
+    verify: 0.15
+    reflect: 0.0
+    buffer: 0.08
+    requires: ["ip-as-number", "address-kinds", "js-basics"]
+    introduces: ["js-bitops"]
+    reinforces: []
+    evidence: "graded code tests"
+  - id: "2.6"
+    title: "IP addresses"
+    type: Check
+    estimate_hours: 0.25
+    reading: 0.0
+    build: 0.0
+    verify: 0.23
+    reflect: 0.03
+    buffer: 0.0
+    requires: ["address-kinds"]
+    introduces: []
+    reinforces: ["ip-as-number", "cidr", "packet-fields"]
+    evidence: "quiz"
+  - id: "2.7"
+    title: "Why your phone starts with 192.168 or 10"
+    type: Gate
+    estimate_hours: 0.33
+    reading: 0.0
+    build: 0.0
+    verify: 0.07
+    reflect: 0.23
+    buffer: 0.03
+    requires: ["address-kinds", "nat-first-look"]
+    introduces: []
+    reinforces: ["exhaustion"]
+    evidence: "explanation for a friend"
+  - id: "3.1"
+    title: "Two masks, two networks"
+    type: Read
+    estimate_hours: 0.17
+    reading: 0.13
+    build: 0.0
+    verify: 0.0
+    reflect: 0.02
+    buffer: 0.02
+    requires: ["cidr", "own-addresses"]
+    introduces: ["netmask"]
+    reinforces: []
+    evidence: "own mask recorded"
+  - id: "3.2"
+    title: "Network part and host part"
+    type: Learn
+    estimate_hours: 0.67
+    reading: 0.3
+    build: 0.2
+    verify: 0.07
+    reflect: 0.03
+    buffer: 0.07
+    requires: ["netmask", "ip-as-number"]
+    introduces: ["subnet-calc"]
+    reinforces: ["cidr"]
+    evidence: "unassisted drills"
+  - id: "3.3"
+    title: "Neighbours: MAC addresses and ARP"
+    type: Learn
+    estimate_hours: 0.58
+    reading: 0.26
+    build: 0.18
+    verify: 0.06
+    reflect: 0.03
+    buffer: 0.06
+    requires: ["subnet-calc", "mac-address"]
+    introduces: ["arp", "switch-learning"]
+    reinforces: ["read-capture"]
+    evidence: "ARP prediction check"
+  - id: "3.4"
+    title: "Why split a network"
+    type: Learn
+    estimate_hours: 0.58
+    reading: 0.26
+    build: 0.18
+    verify: 0.06
+    reflect: 0.03
+    buffer: 0.06
+    requires: ["arp", "subnet-calc"]
+    introduces: ["why-split"]
+    reinforces: []
+    evidence: "netlab check"
+  - id: "3.5"
+    title: "Cutting a block into subnets"
+    type: Learn
+    estimate_hours: 0.67
+    reading: 0.3
+    build: 0.2
+    verify: 0.07
+    reflect: 0.03
+    buffer: 0.07
+    requires: ["subnet-calc"]
+    introduces: ["vlsm-split"]
+    reinforces: ["cidr"]
+    evidence: "unassisted drills"
+  - id: "3.6"
+    title: "Overlaps: the bug you find later"
+    type: Learn
+    estimate_hours: 0.5
+    reading: 0.23
+    build: 0.15
+    verify: 0.05
+    reflect: 0.03
+    buffer: 0.05
+    requires: ["vlsm-split", "address-kinds"]
+    introduces: ["overlap"]
+    reinforces: []
+    evidence: "overlap check"
+  - id: "3.7"
+    title: "Code: subnet calculator, part 1"
+    type: Code
+    estimate_hours: 0.67
+    reading: 0.1
+    build: 0.37
+    verify: 0.13
+    reflect: 0.0
+    buffer: 0.07
+    requires: ["subnet-calc", "js-bitops"]
+    introduces: []
+    reinforces: ["subnet-calc"]
+    evidence: "graded code tests"
+  - id: "3.8"
+    title: "Code: subnet calculator, part 2"
+    type: Code
+    estimate_hours: 0.58
+    reading: 0.09
+    build: 0.32
+    verify: 0.12
+    reflect: 0.0
+    buffer: 0.06
+    requires: ["vlsm-split", "overlap", "js-bitops"]
+    introduces: []
+    reinforces: ["vlsm-split"]
+    evidence: "graded code tests"
+  - id: "3.9"
+    title: "Same cable, wrong mask"
+    type: Build
+    estimate_hours: 0.83
+    slow_path_hours: 1.25
+    reading: 0.12
+    build: 0.42
+    verify: 0.17
+    reflect: 0.04
+    buffer: 0.08
+    requires: ["namespaces-veth", "arp", "subnet-calc"]
+    introduces: ["route-idea", "ping-errors"]
+    reinforces: ["read-capture"]
+    evidence: "challenge 1 part 2 test and capture"
+  - id: "3.10"
+    title: "Lab: plan the school network"
+    type: Lab
+    estimate_hours: 0.67
+    reading: 0.1
+    build: 0.33
+    verify: 0.13
+    reflect: 0.03
+    buffer: 0.07
+    requires: ["vlsm-split", "overlap", "why-split"]
+    introduces: ["address-plan"]
+    reinforces: []
+    evidence: "graded lab checks"
+  - id: "3.11"
+    title: "Subnets and neighbours"
+    type: Check
+    estimate_hours: 0.25
+    reading: 0.0
+    build: 0.0
+    verify: 0.23
+    reflect: 0.03
+    buffer: 0.0
+    requires: ["subnet-calc", "arp"]
+    introduces: []
+    reinforces: ["cidr", "address-kinds"]
+    evidence: "quiz"
+  - id: "3.12"
+    title: "Defend your plan"
+    type: Gate
+    estimate_hours: 0.25
+    reading: 0.0
+    build: 0.0
+    verify: 0.05
+    reflect: 0.17
+    buffer: 0.03
+    requires: ["address-plan"]
+    introduces: []
+    reinforces: ["vlsm-split"]
+    evidence: "defended plan"
+  - id: "4.1"
+    title: "A dozen hops to a website"
+    type: Read
+    estimate_hours: 0.25
+    reading: 0.2
+    build: 0.0
+    verify: 0.0
+    reflect: 0.03
+    buffer: 0.03
+    requires: ["own-addresses"]
+    introduces: ["read-trace"]
+    reinforces: ["address-kinds"]
+    evidence: "own trace annotated"
+  - id: "4.2"
+    title: "The default gateway"
+    type: Learn
+    estimate_hours: 0.58
+    reading: 0.26
+    build: 0.18
+    verify: 0.06
+    reflect: 0.03
+    buffer: 0.06
+    requires: ["arp", "route-idea"]
+    introduces: ["default-gateway", "mac-per-hop"]
+    reinforces: ["subnet-calc"]
+    evidence: "netlab check"
+  - id: "4.3"
+    title: "Routing tables and longest prefix match"
+    type: Learn
+    estimate_hours: 0.67
+    reading: 0.3
+    build: 0.2
+    verify: 0.07
+    reflect: 0.03
+    buffer: 0.07
+    requires: ["default-gateway", "cidr"]
+    introduces: ["lpm"]
+    reinforces: ["read-trace"]
+    evidence: "netlab check"
+  - id: "4.4"
+    title: "TTL, ICMP and traceroute"
+    type: Learn
+    estimate_hours: 0.58
+    reading: 0.26
+    build: 0.18
+    verify: 0.06
+    reflect: 0.03
+    buffer: 0.06
+    requires: ["lpm", "ping-icmp"]
+    introduces: ["ttl-icmp"]
+    reinforces: ["read-trace"]
+    evidence: "netlab check"
+  - id: "4.5"
+    title: "Networks of networks"
+    type: Read
+    estimate_hours: 0.25
+    reading: 0.2
+    build: 0.0
+    verify: 0.0
+    reflect: 0.03
+    buffer: 0.03
+    requires: ["lpm"]
+    introduces: ["autonomous-systems"]
+    reinforces: []
+    evidence: "none (read)"
+  - id: "4.6"
+    title: "Code: longest prefix match"
+    type: Code
+    estimate_hours: 0.67
+    reading: 0.1
+    build: 0.37
+    verify: 0.13
+    reflect: 0.0
+    buffer: 0.07
+    requires: ["lpm", "js-bitops"]
+    introduces: []
+    reinforces: ["lpm"]
+    evidence: "graded code tests"
+  - id: "4.7"
+    title: "Build a router"
+    type: Build
+    estimate_hours: 1.25
+    slow_path_hours: 1.83
+    reading: 0.19
+    build: 0.62
+    verify: 0.25
+    reflect: 0.06
+    buffer: 0.12
+    requires: ["default-gateway", "lpm", "namespaces-veth"]
+    introduces: ["ip-forwarding"]
+    reinforces: ["mac-per-hop", "read-capture"]
+    evidence: "challenge 2 tests and captures"
+  - id: "4.8"
+    title: "Lab: fix the broken office"
+    type: Lab
+    estimate_hours: 0.67
+    reading: 0.1
+    build: 0.33
+    verify: 0.13
+    reflect: 0.03
+    buffer: 0.07
+    requires: ["lpm", "ping-errors", "ip-forwarding"]
+    introduces: ["diagnose-routing"]
+    reinforces: ["subnet-calc"]
+    evidence: "graded lab checks"
+  - id: "4.9"
+    title: "Routing"
+    type: Check
+    estimate_hours: 0.25
+    reading: 0.0
+    build: 0.0
+    verify: 0.23
+    reflect: 0.03
+    buffer: 0.0
+    requires: ["lpm", "ttl-icmp"]
+    introduces: []
+    reinforces: ["arp", "vlsm-split"]
+    evidence: "quiz"
+  - id: "4.10"
+    title: "Your traceroute, explained"
+    type: Gate
+    estimate_hours: 0.42
+    reading: 0.0
+    build: 0.0
+    verify: 0.08
+    reflect: 0.29
+    buffer: 0.04
+    requires: ["read-trace", "ttl-icmp"]
+    introduces: []
+    reinforces: ["lpm"]
+    evidence: "trace explanation"
+  - id: "5.1"
+    title: "One address, forty conversations"
+    type: Read
+    estimate_hours: 0.17
+    reading: 0.13
+    build: 0.0
+    verify: 0.0
+    reflect: 0.02
+    buffer: 0.02
+    requires: ["own-addresses"]
+    introduces: []
+    reinforces: []
+    evidence: "own conversation list"
+  - id: "5.2"
+    title: "Ports and sockets"
+    type: Learn
+    estimate_hours: 0.67
+    reading: 0.3
+    build: 0.2
+    verify: 0.07
+    reflect: 0.03
+    buffer: 0.07
+    requires: ["packet-fields"]
+    introduces: ["ports", "conversation-id"]
+    reinforces: []
+    evidence: "netlab check"
+  - id: "5.3"
+    title: "Why your phone cannot open localhost"
+    type: Learn
+    estimate_hours: 0.5
+    reading: 0.23
+    build: 0.15
+    verify: 0.05
+    reflect: 0.03
+    buffer: 0.05
+    requires: ["ports", "subnet-calc"]
+    introduces: ["listen-address"]
+    reinforces: []
+    evidence: "netlab check"
+  - id: "5.4"
+    title: "TCP: a conversation that survives loss"
+    type: Learn
+    estimate_hours: 0.67
+    reading: 0.3
+    build: 0.2
+    verify: 0.07
+    reflect: 0.03
+    buffer: 0.07
+    requires: ["conversation-id"]
+    introduces: ["tcp"]
+    reinforces: ["read-capture"]
+    evidence: "in-chapter quiz"
+  - id: "5.5"
+    title: "UDP: why DNS, games and calls skip the handshake"
+    type: Learn
+    estimate_hours: 0.5
+    reading: 0.23
+    build: 0.15
+    verify: 0.05
+    reflect: 0.03
+    buffer: 0.05
+    requires: ["tcp"]
+    introduces: ["udp"]
+    reinforces: []
+    evidence: "in-chapter quiz"
+  - id: "5.6"
+    title: "Watch a conversation happen"
+    type: Build
+    estimate_hours: 1.0
+    slow_path_hours: 1.5
+    reading: 0.15
+    build: 0.5
+    verify: 0.2
+    reflect: 0.05
+    buffer: 0.1
+    requires: ["listen-address", "tcp", "namespaces-veth"]
+    introduces: []
+    reinforces: ["read-capture"]
+    evidence: "challenge 3 tests and capture"
+  - id: "5.7"
+    title: "Ports and transport"
+    type: Check
+    estimate_hours: 0.25
+    reading: 0.0
+    build: 0.0
+    verify: 0.23
+    reflect: 0.03
+    buffer: 0.0
+    requires: ["conversation-id", "udp"]
+    introduces: []
+    reinforces: ["lpm"]
+    evidence: "quiz"
+  - id: "5.8"
+    title: "One line of your capture"
+    type: Gate
+    estimate_hours: 0.33
+    reading: 0.0
+    build: 0.0
+    verify: 0.07
+    reflect: 0.23
+    buffer: 0.03
+    requires: ["conversation-id", "tcp"]
+    introduces: []
+    reinforces: ["read-capture"]
+    evidence: "capture line explained"
+  - id: "6.1"
+    title: "Fifteen devices, one public address"
+    type: Read
+    estimate_hours: 0.17
+    reading: 0.13
+    build: 0.0
+    verify: 0.0
+    reflect: 0.02
+    buffer: 0.02
+    requires: ["nat-first-look", "conversation-id"]
+    introduces: []
+    reinforces: ["nat-first-look"]
+    evidence: "none (read)"
+  - id: "6.2"
+    title: "The NAT table"
+    type: Learn
+    estimate_hours: 0.67
+    reading: 0.3
+    build: 0.2
+    verify: 0.07
+    reflect: 0.03
+    buffer: 0.07
+    requires: ["conversation-id", "default-gateway"]
+    introduces: ["napt", "conntrack"]
+    reinforces: ["nat-first-look"]
+    evidence: "netlab check"
+  - id: "6.3"
+    title: "Why the internet cannot reach your laptop"
+    type: Learn
+    estimate_hours: 0.58
+    reading: 0.26
+    build: 0.18
+    verify: 0.06
+    reflect: 0.03
+    buffer: 0.06
+    requires: ["napt", "lpm", "listen-address"]
+    introduces: ["inbound", "port-forwarding"]
+    reinforces: ["address-kinds"]
+    evidence: "netlab check"
+  - id: "6.4"
+    title: "Carrier-grade NAT"
+    type: Learn
+    estimate_hours: 0.5
+    reading: 0.23
+    build: 0.15
+    verify: 0.05
+    reflect: 0.03
+    buffer: 0.05
+    requires: ["napt", "address-kinds", "read-trace"]
+    introduces: ["cgnat"]
+    reinforces: []
+    evidence: "netlab check"
+  - id: "6.5"
+    title: "NAT timeouts, keepalives and video calls"
+    type: Learn
+    estimate_hours: 0.58
+    reading: 0.26
+    build: 0.18
+    verify: 0.06
+    reflect: 0.03
+    buffer: 0.06
+    requires: ["napt", "udp"]
+    introduces: ["nat-timeouts"]
+    reinforces: []
+    evidence: "in-chapter quiz"
+  - id: "6.6"
+    title: "Code: a NAT table"
+    type: Code
+    estimate_hours: 0.75
+    reading: 0.11
+    build: 0.41
+    verify: 0.15
+    reflect: 0.0
+    buffer: 0.08
+    requires: ["napt", "js-basics"]
+    introduces: []
+    reinforces: ["napt"]
+    evidence: "graded code tests"
+  - id: "6.7"
+    title: "Build a home router, part 1: masquerade"
+    type: Build
+    estimate_hours: 1.25
+    slow_path_hours: 1.83
+    reading: 0.19
+    build: 0.62
+    verify: 0.25
+    reflect: 0.06
+    buffer: 0.12
+    requires: ["napt", "ip-forwarding"]
+    introduces: ["nft-masquerade"]
+    reinforces: ["conntrack", "read-capture"]
+    evidence: "challenge 4 part 1 tests and captures"
+  - id: "6.8"
+    title: "Build a home router, part 2: forwarding and a guest network"
+    type: Build
+    estimate_hours: 0.83
+    slow_path_hours: 1.25
+    reading: 0.12
+    build: 0.42
+    verify: 0.17
+    reflect: 0.04
+    buffer: 0.08
+    requires: ["nft-masquerade", "port-forwarding", "why-split"]
+    introduces: ["nft-dnat-filter"]
+    reinforces: ["inbound"]
+    evidence: "challenge 4 part 2 tests"
+  - id: "6.9"
+    title: "Lab: reach the home server from outside"
+    type: Lab
+    estimate_hours: 0.67
+    reading: 0.1
+    build: 0.33
+    verify: 0.13
+    reflect: 0.03
+    buffer: 0.07
+    requires: ["port-forwarding", "cgnat", "diagnose-routing"]
+    introduces: ["diagnose-nat"]
+    reinforces: ["inbound"]
+    evidence: "graded lab checks"
+  - id: "6.10"
+    title: "NAT"
+    type: Check
+    estimate_hours: 0.25
+    reading: 0.0
+    build: 0.0
+    verify: 0.23
+    reflect: 0.03
+    buffer: 0.0
+    requires: ["napt", "cgnat"]
+    introduces: []
+    reinforces: ["tcp"]
+    evidence: "quiz"
+  - id: "6.11"
+    title: "Answer the course question"
+    type: Gate
+    estimate_hours: 0.42
+    reading: 0.0
+    build: 0.0
+    verify: 0.08
+    reflect: 0.29
+    buffer: 0.04
+    requires: ["napt", "conntrack"]
+    introduces: []
+    reinforces: ["own-addresses"]
+    evidence: "course question answered with own capture"
+  - id: "7.1"
+    title: "Connected, no internet"
+    type: Read
+    estimate_hours: 0.17
+    reading: 0.13
+    build: 0.0
+    verify: 0.0
+    reflect: 0.02
+    buffer: 0.02
+    requires: ["default-gateway"]
+    introduces: []
+    reinforces: []
+    evidence: "none (read)"
+  - id: "7.2"
+    title: "DHCP: how your phone got an address in a second"
+    type: Learn
+    estimate_hours: 0.58
+    reading: 0.26
+    build: 0.18
+    verify: 0.06
+    reflect: 0.03
+    buffer: 0.06
+    requires: ["udp", "mac-address", "address-kinds"]
+    introduces: ["dhcp"]
+    reinforces: ["netmask"]
+    evidence: "netlab check"
+  - id: "7.3"
+    title: "DNS: from a name to an address"
+    type: Learn
+    estimate_hours: 0.67
+    reading: 0.3
+    build: 0.2
+    verify: 0.07
+    reflect: 0.03
+    buffer: 0.07
+    requires: ["udp"]
+    introduces: ["dns-resolution"]
+    reinforces: []
+    evidence: "in-chapter quiz"
+  - id: "7.4"
+    title: "Caches, TTLs and DNS outages"
+    type: Learn
+    estimate_hours: 0.58
+    reading: 0.26
+    build: 0.18
+    verify: 0.06
+    reflect: 0.03
+    buffer: 0.06
+    requires: ["dns-resolution", "autonomous-systems"]
+    introduces: ["dns-ttl"]
+    reinforces: []
+    evidence: "in-chapter quiz"
+  - id: "7.5"
+    title: "Lab: debug \"no internet\" layer by layer"
+    type: Lab
+    estimate_hours: 0.67
+    reading: 0.1
+    build: 0.33
+    verify: 0.13
+    reflect: 0.03
+    buffer: 0.07
+    requires: ["dhcp", "dns-resolution", "diagnose-routing"]
+    introduces: ["layered-diagnosis"]
+    reinforces: ["diagnose-nat"]
+    evidence: "graded lab checks"
+  - id: "7.6"
+    title: "DHCP and DNS on your router"
+    type: Build
+    estimate_hours: 1.17
+    slow_path_hours: 1.67
+    reading: 0.18
+    build: 0.58
+    verify: 0.23
+    reflect: 0.06
+    buffer: 0.12
+    requires: ["dhcp", "dns-resolution", "nft-masquerade"]
+    introduces: ["dnsmasq"]
+    reinforces: []
+    evidence: "challenge 5 tests"
+  - id: "7.7"
+    title: "DHCP and DNS"
+    type: Check
+    estimate_hours: 0.25
+    reading: 0.0
+    build: 0.0
+    verify: 0.23
+    reflect: 0.03
+    buffer: 0.0
+    requires: ["dhcp", "dns-ttl", "layered-diagnosis"]
+    introduces: []
+    reinforces: ["napt"]
+    evidence: "quiz"
+  - id: "7.8"
+    title: "A \"no internet\" runbook"
+    type: Gate
+    estimate_hours: 0.42
+    reading: 0.0
+    build: 0.0
+    verify: 0.08
+    reflect: 0.29
+    buffer: 0.04
+    requires: ["layered-diagnosis"]
+    introduces: []
+    reinforces: ["dhcp", "dns-resolution"]
+    evidence: "runbook"
+  - id: "8.1"
+    title: "What really happens when you open a link"
+    type: Learn
+    estimate_hours: 0.5
+    reading: 0.23
+    build: 0.15
+    verify: 0.05
+    reflect: 0.03
+    buffer: 0.05
+    requires: ["dhcp", "dns-resolution", "napt", "tcp", "lpm", "arp"]
+    introduces: ["full-journey"]
+    reinforces: []
+    evidence: "netlab check"
+  - id: "8.2"
+    title: "Capstone part 1: addresses and routes"
+    type: Build
+    estimate_hours: 1.0
+    slow_path_hours: 1.5
+    reading: 0.15
+    build: 0.5
+    verify: 0.2
+    reflect: 0.05
+    buffer: 0.1
+    requires: ["ip-forwarding", "address-plan", "full-journey"]
+    introduces: ["capstone-network"]
+    reinforces: ["lpm"]
+    evidence: "capstone part 1 tests"
+  - id: "8.3"
+    title: "Capstone part 2: NAT, forwarding and isolation"
+    type: Build
+    estimate_hours: 0.75
+    slow_path_hours: 1.17
+    reading: 0.11
+    build: 0.38
+    verify: 0.15
+    reflect: 0.04
+    buffer: 0.08
+    requires: ["capstone-network", "nft-dnat-filter"]
+    introduces: []
+    reinforces: ["nft-masquerade"]
+    evidence: "capstone part 2 tests"
+  - id: "8.4"
+    title: "Capstone part 3: DHCP and DNS"
+    type: Build
+    estimate_hours: 0.75
+    slow_path_hours: 1.17
+    reading: 0.11
+    build: 0.38
+    verify: 0.15
+    reflect: 0.04
+    buffer: 0.08
+    requires: ["capstone-network", "dnsmasq"]
+    introduces: []
+    reinforces: ["dhcp"]
+    evidence: "capstone part 3 tests"
+  - id: "8.5"
+    title: "Capstone part 4: break it, fix it"
+    type: Build
+    estimate_hours: 1.0
+    slow_path_hours: 1.5
+    reading: 0.15
+    build: 0.5
+    verify: 0.2
+    reflect: 0.05
+    buffer: 0.1
+    requires: ["capstone-network", "layered-diagnosis", "diagnose-nat"]
+    introduces: ["fault-diagnosis"]
+    reinforces: []
+    evidence: "fault write-up"
+  - id: "8.6"
+    title: "Final check"
+    type: Check
+    estimate_hours: 0.33
+    reading: 0.0
+    build: 0.0
+    verify: 0.3
+    reflect: 0.03
+    buffer: 0.0
+    requires: ["full-journey"]
+    introduces: []
+    reinforces: ["subnet-calc", "lpm", "napt", "dns-resolution"]
+    evidence: "final quiz"
+  - id: "8.7"
+    title: "Demo and defence"
+    type: Gate
+    estimate_hours: 1.0
+    reading: 0.0
+    build: 0.0
+    verify: 0.2
+    reflect: 0.7
+    buffer: 0.1
+    requires: ["fault-diagnosis", "capstone-network"]
+    introduces: []
+    reinforces: ["napt", "conntrack"]
+    evidence: "recorded demo and probes"
+  - id: "9.1"
+    title: "The address you did not know you had"
+    type: Read
+    estimate_hours: 0.17
+    reading: 0.13
+    build: 0.0
+    verify: 0.0
+    reflect: 0.02
+    buffer: 0.02
+    requires: ["own-addresses"]
+    introduces: []
+    reinforces: []
+    evidence: "own IPv6 addresses recorded"
+  - id: "9.2"
+    title: "Reading IPv6 addresses"
+    type: Learn
+    estimate_hours: 0.58
+    reading: 0.26
+    build: 0.18
+    verify: 0.06
+    reflect: 0.03
+    buffer: 0.06
+    requires: ["ip-as-number", "cidr"]
+    introduces: ["ipv6-format"]
+    reinforces: []
+    evidence: "in-chapter v6 exercise and quiz"
+  - id: "9.3"
+    title: "A network without NAT"
+    type: Learn
+    estimate_hours: 0.58
+    reading: 0.26
+    build: 0.18
+    verify: 0.06
+    reflect: 0.03
+    buffer: 0.06
+    requires: ["ipv6-format", "napt", "inbound"]
+    introduces: ["ipv6-no-nat"]
+    reinforces: []
+    evidence: "netlab check"
+  - id: "9.4"
+    title: "IPv6"
+    type: Check
+    estimate_hours: 0.25
+    reading: 0.0
+    build: 0.0
+    verify: 0.23
+    reflect: 0.03
+    buffer: 0.0
+    requires: ["ipv6-format", "ipv6-no-nat"]
+    introduces: []
+    reinforces: []
+    evidence: "quiz"
+  - id: "9.5"
+    title: "Why IPv4 is still here"
+    type: Gate
+    estimate_hours: 0.33
+    reading: 0.0
+    build: 0.0
+    verify: 0.07
+    reflect: 0.23
+    buffer: 0.03
+    requires: ["ipv6-no-nat"]
+    introduces: []
+    reinforces: ["exhaustion", "cgnat"]
+    evidence: "short answer"

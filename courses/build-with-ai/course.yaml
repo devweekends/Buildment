@@ -1,152 +1,403 @@
 slug: build-with-ai
 title: "Learn and Build with AI: An Enabler, Not a Replacement"
-description: "AI will not do your career for you, and it will not take it away. Learn to use AI tools as an enabler: see what AI does not know and which calls stay yours, learn a topic deeply from several angles with AI, turn sources into audio you can learn from on the go, run small daily labs and post them to GitHub, plan a strong project over six months that you fully understand, and share your progress honestly."
-projectGoal: "Build the start of a strong project you understand: a six-month plan with a weekly learning plan, a GitHub lab log with at least ten daily labs, structured notes in your own words, and one honest public write-up. Or work from a provided case. Then walk a mentor through it in five minutes and explain one part without notes."
+description: "AI will not do your career for you, and it will not take it away. Replace fear with what the evidence really shows, then learn to use AI tools as an enabler: see what AI does not know and which calls stay yours, learn deeply with AI, run small daily labs, slow down to research a decision with two assistants and primary sources, see why AI gives the common answer and how your context changes the right one, plan a strong project over six months, grow fast with a team, use an AI toolbelt to show and ship your work, share it in your own voice, and decide where a person must lead."
+projectGoal: "Build the start of a strong project you understand: a six-month plan with a weekly learning plan, a GitHub lab log, structured notes in your own words and one honest public write-up, then carry out the first 30 days as an AI advantage plan with one decision researched with two assistants and primary sources, a shipped demo and one published piece of content. Or work from a provided case. Then defend it with the AI interviewer or in writing, and walk a mentor through it in five minutes."
 difficulty: Beginner
-estimatedHours: 22
+estimatedHours: 44
 category: tech
 modules:
-  - dir: 01-ai-as-an-enabler
+  - key: enabler
+    dir: 01-ai-as-an-enabler
     title: "AI as an enabler, not a replacement"
-    summary: "Look past the two loud stories about AI. See what an AI tool does not know, which calls a person must make and own, and why the scarce skill is now building a strong project you understand."
+    summary: "Look past the two loud stories about AI. Read AI claims for what they are, see what labour data and studies really show, and why fewer people doing more work is the measured pattern. See what an AI tool does not know, which calls a person must make and own, and why the scarce skill is building a strong project you understand."
     lessons:
-      - file: 01.01-set-the-scene.md
+      - key: enabler-set-the-scene
+        file: 01.01-set-the-scene.md
         title: "Set the scene"
         goal: "Introduce the course through three fellows: one who hands everything to AI, one who refuses it, and one who uses it as an enabler."
-      - file: 01.02-what-ai-does-not-know.md
+      - key: enabler-why-ai-looks-bigger
+        file: 01.02-why-ai-looks-bigger.md
+        title: "Why AI looks bigger than it is"
+        goal: "Tell a prediction, a vendor claim and an independent measurement apart, and see why fluent answers and polished demos make AI look more capable than it is."
+      - key: enabler-what-the-data-shows
+        file: 01.03-what-the-data-shows.md
+        title: "What the data shows"
+        goal: "State what labour data and studies show about AI and jobs, including real harm to entry-level hiring in some fields, with the limits of each source."
+      - key: enabler-what-ai-does-not-know
+        file: 01.04-what-ai-does-not-know.md
         title: "What AI does not know"
         goal: "Name what an AI tool is missing in a task: your context, your data, local and recent facts, and the obvious things nobody wrote down."
-      - file: 01.03-you-make-the-call.md
+      - key: enabler-you-make-the-call
+        file: 01.05-you-make-the-call.md
         title: "You make the call"
         goal: "Separate what AI can propose from what a person must decide, check and own."
-      - file: 01.04-help-or-harm.md
+      - key: enabler-help-or-harm
+        file: 01.06-help-or-harm.md
         title: "AI can help or harm your learning"
         goal: "Explain what studies found: AI that hands out answers can weaken learning, and AI that makes you think can help."
-      - file: 01.05-plenty-of-ai-few-strong-projects.md
+      - key: enabler-fewer-people-more-work
+        file: 01.07-fewer-people-more-work.md
+        title: "Fewer people, more work"
+        goal: "Explain why fewer people doing more work fits the evidence better than AI replacing engineers, and name the habits that make you one of the people a smaller team keeps."
+      - key: enabler-plenty-of-ai-few-strong-projects
+        file: 01.08-plenty-of-ai-few-strong-projects.md
         title: "Plenty of AI, few strong projects"
         goal: "Explain why building fast is no longer rare, and why a project you understand and can defend is."
-      - file: 01.06-checklist.md
+      - key: enabler-quiz
+        file: 01.09-quiz.md
+        title: "Fear and the evidence"
+        goal: "Graded scenarios on reading AI claims, labour evidence and its limits, and the habits a smaller team keeps."
+      - key: enabler-checklist
+        file: 01.10-checklist.md
         title: "Checklist and learning log"
         goal: "Gate: one task split into what AI can help with and the calls that stay yours."
-  - dir: 02-your-ai-toolkit
+  - key: toolkit
+    dir: 02-your-ai-toolkit
     title: "Your AI toolkit and its rules"
     summary: "Pick AI tools by the job they do, check their free access and terms yourself, keep your work in files you own, and decide what you never paste or upload."
     lessons:
-      - file: 02.01-set-the-scene.md
+      - key: toolkit-set-the-scene
+        file: 02.01-set-the-scene.md
         title: "Set the scene"
         goal: "Introduce the toolkit through a fellow who lost a month of work when a free tool changed, and a freelancer who pasted a client's data."
-      - file: 02.02-before-you-paste.md
+      - key: toolkit-before-you-paste
+        file: 02.02-before-you-paste.md
         title: "Before you paste: privacy and checking"
         goal: "Decide what never goes into an AI tool, find its training setting, and check AI output before you use it."
-      - file: 02.03-jobs-not-tools.md
+      - key: toolkit-jobs-not-tools
+        file: 02.03-jobs-not-tools.md
         title: "Jobs, not tools"
         goal: "Match a task to the kind of tool that does that job, with two examples for each, and check that a tool opens for you, at your age, on your device."
-      - file: 02.04-habits-that-outlast-tools.md
+      - key: toolkit-habits-that-outlast-tools
+        file: 02.04-habits-that-outlast-tools.md
         title: "Habits that outlast any tool"
         goal: "Keep work in files you own, save what worked, and have a fallback for when a tool is down, blocked, renamed or out of free use."
-      - file: 02.05-quiz.md
+      - key: toolkit-quiz
+        file: 02.05-quiz.md
         title: "Your AI toolkit"
         goal: "Graded scenarios on choosing tools, owning your work, privacy and checking AI output."
-      - file: 02.06-checklist.md
+      - key: toolkit-checklist
+        file: 02.06-checklist.md
         title: "Checklist and learning log"
         goal: "Gate: your own toolkit page with two tools for each job, checked and dated, a fallback, where your work is saved, and your privacy rules."
-  - dir: 03-learn-deeply-with-ai
+  - key: learn-deeply
+    dir: 03-learn-deeply-with-ai
     title: "Learn deeply with AI"
     summary: "Stop mistaking a clear AI explanation for learning. Test yourself, attack a topic from five angles, make the AI quiz you on a schedule, learn from sources by listening first and reading after, and keep notes you can use months later."
     lessons:
-      - file: 03.01-set-the-scene.md
+      - key: learn-deeply-set-the-scene
+        file: 03.01-set-the-scene.md
         title: "Set the scene"
         goal: "Introduce deep learning through a fellow who understood every AI explanation and still failed the test."
-      - file: 03.02-the-fluency-trap.md
+      - key: learn-deeply-the-fluency-trap
+        file: 03.02-the-fluency-trap.md
         title: "The fluency trap"
         goal: "Explain why reading a clear explanation feels like learning, and use recall from memory to find the gaps."
-      - file: 03.03-one-topic-five-angles.md
+      - key: learn-deeply-one-topic-five-angles
+        file: 03.03-one-topic-five-angles.md
         title: "One topic, five angles"
         goal: "Learn one topic five ways with AI: a plain explanation, a picture, a worked example, a failure case, and building or teaching it."
-      - file: 03.04-make-the-ai-quiz-you.md
+      - key: learn-deeply-make-the-ai-quiz-you
+        file: 03.04-make-the-ai-quiz-you.md
         title: "Make the AI quiz you"
         goal: "Ask an AI to question you instead of telling you, mix two topics in one practice, and space your reviews over days."
-      - file: 03.05-listen-then-read.md
+      - key: learn-deeply-listen-then-read
+        file: 03.05-listen-then-read.md
         title: "Listen to meet it, read to learn it"
         goal: "Turn trusted sources into an audio overview to listen to while you walk or wait, then read the sources and check what the audio got wrong."
-      - file: 03.06-notes-you-own.md
+      - key: learn-deeply-notes-you-own
+        file: 03.06-notes-you-own.md
         title: "Notes you own, in your own words"
         goal: "Keep structured notes in files you own: one notebook per project, a section per area, a page per topic, written in your own words."
-      - file: 03.07-quiz.md
+      - key: learn-deeply-quiz
+        file: 03.07-quiz.md
         title: "Learning with AI"
         goal: "Graded scenarios on recall, angles, AI tutoring, spacing, sources and notes, including AI output to check."
-      - file: 03.08-checklist.md
+      - key: learn-deeply-checklist
+        file: 03.08-checklist.md
         title: "Checklist and learning log"
         goal: "Gate: one topic learned from five angles, with a recall test and a notes page."
-  - dir: 04-daily-labs
+  - key: daily-labs
+    dir: 04-daily-labs
     title: "Daily labs"
     summary: "Study a little, build something small, watch it run, break one part on purpose, and write it down. Plan each lab with an AI chat, keep the scope yours, and post the log to GitHub."
     lessons:
-      - file: 04.01-set-the-scene.md
+      - key: daily-labs-set-the-scene
+        file: 04.01-set-the-scene.md
         title: "Set the scene"
         goal: "Introduce daily labs through two fellows learning system design: one who only watched videos, and one who ran a small lab every day."
-      - file: 04.02-the-shape-of-a-daily-lab.md
+      - key: daily-labs-the-shape-of-a-daily-lab
+        file: 04.02-the-shape-of-a-daily-lab.md
         title: "The shape of a daily lab"
         goal: "Plan a lab in four parts that fits about 30 to 45 minutes: study, build, break, write."
-      - file: 04.03-plan-a-lab-with-ai.md
+      - key: daily-labs-plan-a-lab-with-ai
+        file: 04.03-plan-a-lab-with-ai.md
         title: "Plan a lab with an AI chat"
         goal: "Ask an AI chat for a structured lab plan, cut it to size, and check every command and package before you run or install it."
-      - file: 04.04-watch-it-run-then-break-it.md
+      - key: daily-labs-watch-it-run-then-break-it
+        file: 04.04-watch-it-run-then-break-it.md
         title: "Watch it run, then break it"
         goal: "Predict what happens when one part of a small URL shortener stops, then stop it and explain the result."
-      - file: 04.05-the-lab-log-on-github.md
+      - key: daily-labs-the-lab-log-on-github
+        file: 04.05-the-lab-log-on-github.md
         title: "The lab log on GitHub"
         goal: "Keep a lab log in a GitHub repository: one entry per day, clear commit messages, a check before every push, and what AI helped with."
-      - file: 04.06-quiz.md
+      - key: daily-labs-quiz
+        file: 04.06-quiz.md
         title: "Daily labs"
         goal: "Graded scenarios on lab scope, AI lab plans, breaking things on purpose and lab logs."
-      - file: 04.07-checklist.md
+      - key: daily-labs-checklist
+        file: 04.07-checklist.md
         title: "Checklist and learning log"
         goal: "Gate: lab day 1 planned, run and logged on GitHub, or the provided lab log reviewed."
-  - dir: 05-a-project-worth-six-months
+  - key: slow-down
+    dir: 05-slow-down-to-understand
+    title: "Slow down to understand"
+    summary: "A fast AI answer is a draft, not a decision. Research before you ask, put the same question to two assistants, treat disagreement as the place to check and agreement as not proof, read the primary page, and ask what was left out."
+    lessons:
+      - key: slow-down-set-the-scene
+        file: 05.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce slowing down through a team decision made on one fast AI answer, and what it cost."
+      - key: slow-down-research-before-you-ask
+        file: 05.02-research-before-you-ask.md
+        title: "Research before you ask"
+        goal: "Read the primary page and gather your own context before you ask an AI assistant, and see how the answer changes."
+      - key: slow-down-two-assistants-then-the-whole-picture
+        file: 05.03-two-assistants-then-the-whole-picture.md
+        title: "Two assistants, then the whole picture"
+        goal: "Compare two assistants' answers, check where they disagree, remember that agreement is not proof, and ask what was left out."
+      - key: slow-down-practice-research-one-decision
+        file: 05.04-practice-research-one-decision.md
+        title: "Practice: research one decision"
+        goal: "Research one real decision with two assistants and primary pages, and write a one-page decision record, or work on the provided case."
+      - key: slow-down-quiz
+        file: 05.05-quiz.md
+        title: "Slowing down to understand"
+        goal: "Graded scenarios on researching first, comparing assistants and checking claims, including AI output to check."
+      - key: slow-down-checklist
+        file: 05.06-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: your decision record, with what changed between the first answer and the researched one."
+  - key: context
+    dir: 06-context-changes-the-answer
+    title: "Context changes the right answer"
+    summary: "An AI assistant tends to give the common first answer, because models pick likely words and the common option fills what they learned from. Change the answer by giving context, and see it on four real cases: the fastest database, a time series database, a cache and the Outbox pattern."
+    lessons:
+      - key: context-set-the-scene
+        file: 06.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce context through two teams that ask the same question, get the same answer, and need different ones."
+      - key: context-why-you-get-the-common-answer
+        file: 06.02-why-you-get-the-common-answer.md
+        title: "Why you get the common answer"
+        goal: "Explain why an AI assistant tends to give the most common option, and why the fix is to change the question and the context, not a setting."
+      - key: context-the-fastest-database-depends
+        file: 06.03-the-fastest-database-depends.md
+        title: "The fastest database depends"
+        goal: "Show how the workload, the kind of work, the number of cores and the budget change which database is fastest for you."
+      - key: context-two-defaults-worth-questioning
+        file: 06.04-two-defaults-worth-questioning.md
+        title: "Two defaults worth questioning"
+        goal: "Decide when Prometheus or VictoriaMetrics fits a metrics job, and when Redis or Valkey fits a cache, from the context and the primary pages."
+      - key: context-the-outbox-pattern
+        file: 06.05-the-outbox-pattern.md
+        title: "The Outbox pattern: when it pays"
+        goal: "Decide when sending events to Kafka needs the Outbox pattern and when it does not, and what it costs."
+      - key: context-practice-question-a-default
+        file: 06.06-practice-question-a-default.md
+        title: "Practice: question a default"
+        goal: "Take one default answer for your project, give context, compare answers, read the primary pages, and write a table of when each option wins, or work on the provided case."
+      - key: context-quiz
+        file: 06.07-quiz.md
+        title: "Context and defaults"
+        goal: "Graded scenarios on common answers, context and the four cases, including AI output to check."
+      - key: context-checklist
+        file: 06.08-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: your table of when each option wins, with the context that changed the answer."
+  - key: six-month
+    dir: 07-a-project-worth-six-months
     title: "A project worth six months"
     summary: "Strong projects still take months, because most of the time goes into learning. Plan six months one area at a time, ask AI what to learn and check it, slow down for trade-offs, and learn from open-source projects within their licences."
     lessons:
-      - file: 05.01-set-the-scene.md
+      - key: six-month-set-the-scene
+        file: 07.01-set-the-scene.md
         title: "Set the scene"
         goal: "Introduce the six-month project through a fellow whose weekend app could not survive one interview question."
-      - file: 05.02-why-strong-projects-take-months.md
+      - key: six-month-why-strong-projects-take-months
+        file: 07.02-why-strong-projects-take-months.md
         title: "Why strong projects still take months"
         goal: "Work out how many hours a six-month plan gives, and why a large share of them goes to learning."
-      - file: 05.03-a-weekly-plan.md
+      - key: six-month-a-weekly-plan
+        file: 07.03-a-weekly-plan.md
         title: "A weekly plan, one area at a time"
         goal: "Plan the weeks so each one adds one new area, with videos, books and articles an AI suggested and you checked exist."
-      - file: 05.04-slow-down-for-trade-offs.md
+      - key: six-month-slow-down-for-trade-offs
+        file: 07.04-slow-down-for-trade-offs.md
         title: "Slow down for trade-offs"
         goal: "Compare two options for a real project decision, and explain any AI-written part before you keep it."
-      - file: 05.05-learn-from-open-source.md
+      - key: six-month-learn-from-open-source
+        file: 07.05-learn-from-open-source.md
         title: "Learn from open source"
         goal: "Find an open-source project worth studying, read it in a set order, and reuse code only within its licence and with credit."
-      - file: 05.06-quiz.md
+      - key: six-month-quiz
+        file: 07.06-quiz.md
         title: "Planning a strong project"
         goal: "Graded scenarios on hours, weekly areas, checking AI-suggested resources, trade-offs and licences."
-      - file: 05.07-checklist.md
+      - key: six-month-checklist
+        file: 07.07-checklist.md
         title: "Checklist and learning log"
         goal: "Gate: the first month of your six-month plan, week by week."
-  - dir: 06-share-the-work
-    title: "Share the work honestly, and capstone"
-    summary: "Turn a week of progress into an honest write-up, adapt it for more than one platform, say what AI helped with, then bring the whole course together in the capstone."
+  - key: grow
+    dir: 08-grow-fast-go-deep
+    title: "Grow fast, go deep"
+    summary: "Learn and adopt new tools quickly without skipping understanding, build public work that shows your thinking, go deep on a team project of a few months, and keep the team habits that build trust when AI is part of the work."
     lessons:
-      - file: 06.01-set-the-scene.md
+      - key: grow-set-the-scene
+        file: 08.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce growing fast through two fellows after a year: one with forty tutorial repositories, one with a deep team project."
+      - key: grow-learn-adopt-research-fast
+        file: 08.02-learn-adopt-research-fast.md
+        title: "Learn, adopt and research fast"
+        goal: "Adopt a new tool or topic in days: read the docs first, run a tiny lab, explain it back, then use it in your project."
+      - key: grow-build-more-to-show
+        file: 08.03-build-more-to-show.md
+        title: "Build more to show"
+        goal: "Plan small products, series and repositories that show your thinking, not noise."
+      - key: grow-go-deep-with-a-team
+        file: 08.04-go-deep-with-a-team.md
+        title: "Go deep with a team"
+        goal: "Plan a time-boxed collaborative project of a few months, check a program's rules, and explain and edit every AI-assisted contribution."
+      - key: grow-habits-that-build-trust
+        file: 08.05-habits-that-build-trust.md
+        title: "Habits that build trust in a team"
+        goal: "Use code review, written updates and asking for help to build trust in a team that works with AI."
+      - key: grow-quiz
+        file: 08.06-quiz.md
+        title: "Growing fast"
+        goal: "Graded scenarios on adopting tools, public work, team projects and trust, including AI output to check."
+      - key: grow-checklist
+        file: 08.07-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: a plan for public work and one team project, with the program's AI rule read."
+  - key: toolbelt
+    dir: 09-the-ai-toolbelt
+    title: "The AI toolbelt for showing and shipping"
+    summary: "Use AI tools to show and ship your work: visuals and demos, short lessons on demand, narration in your own voice with consent, CLIs and connectors with the least access, and critique of your own work that you test before you act on it."
+    lessons:
+      - key: toolbelt-set-the-scene
+        file: 09.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce the toolbelt through a good project nobody understood from a one-line README, and the same project with a picture and a demo."
+      - key: toolbelt-visuals-and-demos
+        file: 09.02-visuals-and-demos.md
+        title: "Visuals and demos with AI"
+        goal: "Pick a kind of tool for a diagram, a screen design or a short video, with a free path and a fallback."
+      - key: toolbelt-short-lessons-on-demand
+        file: 09.03-short-lessons-on-demand.md
+        title: "Short lessons on demand"
+        goal: "Ask an AI assistant for a short lesson with a plan, a quiz and sources, then check one claim against a source."
+      - key: toolbelt-your-voice-your-consent
+        file: 09.04-your-voice-your-consent.md
+        title: "Your voice, your consent"
+        goal: "Narrate in your own voice, clone only your own voice with consent and a label, and know how voice clones are used in scams."
+      - key: toolbelt-clis-and-connectors
+        file: 09.05-clis-and-connectors.md
+        title: "CLIs and connectors, read-only first"
+        goal: "Use the GitHub CLI and a cloud cost view with the least access, watch for instructions hidden in issues, and never paste secrets."
+      - key: toolbelt-let-ai-critique-your-work
+        file: 09.06-let-ai-critique-your-work.md
+        title: "Let AI critique your work"
+        goal: "Ask for critique against a rubric, then test, accept or reject each point yourself."
+      - key: toolbelt-practice-a-demo-kit
+        file: 09.07-practice-a-demo-kit.md
+        title: "Practice: a demo kit"
+        goal: "Make one visual, one short lesson or README section, and one GitHub CLI workflow for your project, or work on the provided case."
+      - key: toolbelt-quiz
+        file: 09.08-quiz.md
+        title: "The AI toolbelt"
+        goal: "Graded scenarios on visuals, short lessons, voice, CLIs and critique, including AI output to check."
+      - key: toolbelt-checklist
+        file: 09.09-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: your demo kit, with what you checked and the critique you accepted and rejected."
+  - key: share
+    dir: 10-share-the-work-the-human-way
+    title: "Share the work, the human way"
+    summary: "Turn a week of progress into an honest write-up, say when AI helped, make content people find useful, show that the work and the words are yours, and build a commit history in real steps with no fake activity."
+    lessons:
+      - key: share-set-the-scene
+        file: 10.01-set-the-scene.md
         title: "Set the scene"
         goal: "Introduce sharing the work through a fellow whose quiet GitHub repository nobody saw, and one whose post was mostly AI."
-      - file: 06.02-from-commits-to-an-article.md
+      - key: share-from-commits-to-an-article
+        file: 10.02-from-commits-to-an-article.md
         title: "From a week of commits to an article"
         goal: "Turn a week of lab logs into a short article in your own voice, then adapt it for two other platforms."
-      - file: 06.03-say-when-ai-helped.md
+      - key: share-say-when-ai-helped
+        file: 10.03-say-when-ai-helped.md
         title: "Say when AI helped"
         goal: "Write an honest line about how AI helped, and know the rules of the places you post to and work for."
-      - file: 06.04-quiz.md
+      - key: share-content-people-find-useful
+        file: 10.04-content-people-find-useful.md
+        title: "Content people find useful"
+        goal: "Make content that helps people, see how much of reach is luck, and why fake engagement is a bad trade."
+      - key: share-ai-help-without-the-ai-look
+        file: 10.05-ai-help-without-the-ai-look.md
+        title: "AI help without the AI look"
+        goal: "Show authorship with real stories, checked facts and drafts, and know that AI detectors wrongly flag second-language writers."
+      - key: share-keep-it-human
+        file: 10.06-keep-it-human.md
+        title: "Keep it human: commits and proof"
+        goal: "Build a commit history in real, meaningful steps, and never fake activity, stars or metrics."
+      - key: share-practice-one-post-from-your-commits
+        file: 10.07-practice-one-post-from-your-commits.md
+        title: "Practice: one post from your own commits"
+        goal: "Draft a post from your real commits and notes with AI as an editor, and keep the evidence that it is yours, or work on the provided case."
+      - key: share-quiz
+        file: 10.08-quiz.md
+        title: "Sharing the human way"
+        goal: "Graded scenarios on useful content, authorship, commit history and fake activity, including AI output to check."
+      - key: share-checklist
+        file: 10.09-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: your post, its source commits and notes, and its AI-use line."
+  - key: humans
+    dir: 11-where-humans-still-win
+    title: "Where humans still win, and capstone"
+    summary: "Decide where a person must lead, own the result when AI was used, and know when not to use AI. Then bring the whole course together: the capstone with its first 30 days carried out, a short defence and the course gate."
+    lessons:
+      - key: humans-set-the-scene
+        file: 11.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce where humans still win through an AI-made mistake that reached a customer, and the person who answered for it."
+      - key: humans-judgment-context-and-taste
+        file: 11.02-judgment-context-and-taste.md
+        title: "Judgment, context and taste"
+        goal: "Decide who leads each call: AI drafts and you decide, you lead and AI helps, or people only."
+      - key: humans-ownership-trust-accountability
+        file: 11.03-ownership-trust-accountability.md
+        title: "Ownership, trust and accountability"
+        goal: "Explain why the person and the company still answer for the result when AI was used, and what owning a mistake looks like."
+      - key: humans-when-not-to-use-ai
+        file: 11.04-when-not-to-use-ai.md
+        title: "When not to use AI"
+        goal: "Use the stakes, your learning goal, private data and whether you can check the result to decide when not to use AI."
+      - key: humans-quiz
+        file: 11.05-quiz.md
         title: "Mixed review: which habit first?"
         goal: "Choose the right habit for fresh cases from every module."
-      - file: 06.05-capstone-your-project-start.md
+      - key: humans-capstone-your-project-start
+        file: 11.06-capstone-your-project-start.md
         title: "Capstone: the start of a strong project"
         goal: "Hand in a six-month plan, a weekly learning plan, a GitHub lab log with ten lab days, a notes page and an honest public write-up, or the provided case."
-      - file: 06.06-checklist.md
+      - key: humans-defend-your-work
+        file: 11.07-defend-your-work.md
+        title: "Defend your work"
+        goal: "Defend your project and one decision in a short interview with the AI interviewer on your own key, or in writing."
+      - key: humans-checklist
+        file: 11.08-checklist.md
         title: "Course checklist and your AI-as-enabler toolkit"
         goal: "Gate: final checks, your toolkit of habits, and a look back at your first gate."
