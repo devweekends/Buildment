@@ -1,0 +1,314 @@
+slug: one-percent-better
+title: "1% Better Every Day: Daily Islamic Habits"
+description: "Improve a little every day in the deeds that matter most, and in the whole of daily life. Use the 1% idea from Atomic Habits and the Sunnah's teaching that the most beloved deeds are the most consistent, even if small, to build habits one week at a time: the five prayers with the first takbir and the sunnah prayers, daily Quran with understanding, the morning, evening and after-prayer adhkar, Amana al-Rasul and Surah al-Mulk before sleep; the duas of ordinary moments, eating and drinking, purity and wudu; taqwa and a clean heart; guarding the tongue, eyes, ears and phone; character, rights, family, neighbours and guests; time, learning and halal provision; Jumu'ah, sadaqah and Ramadan. Keep a private tracker that guards against showing off, plan for missed days, and restart without shame. Every verse and hadith is referenced with its grading, and popular weak narrations are named and replaced with sound ones."
+projectGoal: "Build your own 13-week 1% plan: the order in which you will add your habits, one a week, each written as a cue and a smallest version tied to something you already do, with its source; a private tracker that counts days done; a weekly review rule; and a restart plan for hard days. Review the weeks you have run, or a provided case, and walk a mentor through it in five minutes."
+difficulty: Beginner
+estimatedHours: 30
+category: soft-skills
+modules:
+  - dir: 01-the-one-percent-way
+    title: "The 1% way"
+    summary: "See why small and steady beats big and short, in Atomic Habits and in the Sunnah. Add one new habit a week while you keep the others going, and keep your intention for Allah, with a private record and the idea shared instead of the score."
+    lessons:
+      - file: 01.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce the course through a developer who tried eleven Islamic habits at once, stopped after nine days, and then built a one-habit-a-week plan."
+      - file: 01.02-small-and-steady.md
+        title: "Small and steady"
+        goal: "Explain the 1% idea and why the most beloved deeds are the most consistent, even if small, and plan to add one habit a week while keeping the others."
+      - file: 01.03-intention-and-showing-off.md
+        title: "Intention, and the fear of showing off"
+        goal: "Keep a habit tracker for Allah alone: check the intention, keep the record private, share the idea rather than your score, and do not drop a good deed out of fear of showing off."
+      - file: 01.04-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: list your habits, choose your first one, and write your intention and privacy rule."
+  - dir: 02-prayer-with-the-first-takbir
+    title: "The five prayers with the first takbir"
+    summary: "Learn what the first takbir is and why praying in congregation from its start matters, catch it by leaving at the adhan rather than running, and give each of the five prayers its own cue and plan, starting with Fajr the night before."
+    lessons:
+      - file: 02.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce the prayer habits through a week in which the developer prays all five prayers but joins most of them late."
+      - file: 02.02-the-first-takbir.md
+        title: "The first takbir"
+        goal: "Explain what catching the first takbir means, what the sound sources say about congregation, and why it is caught at the adhan, with a version of the habit for women and anyone praying at home or at work."
+      - file: 02.03-a-plan-for-each-prayer.md
+        title: "A plan for each prayer"
+        goal: "Give each of the five prayers its own cue, obstacle and if-then plan, and plan Fajr from the night before."
+      - file: 02.04-inside-the-prayer.md
+        title: "Inside the prayer"
+        goal: "Add the small habits around and inside each prayer: answering the adhan and its dua, wudu with care, the twelve sunnah rak'ahs, and khushu, attention in the prayer."
+      - file: 02.05-quiz.md
+        title: "The five prayers"
+        goal: "Practice check on the first takbir, walking with calm, prayer at its time, and plans for each prayer."
+      - file: 02.06-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: a written plan for the one prayer you find hardest to join from the start."
+  - dir: 03-daily-quran
+    title: "Daily Quran"
+    summary: "Read a small, fixed portion of the Quran every day at a fixed time, grow it only when it feels easy, and know what to do when a day is missed."
+    lessons:
+      - file: 03.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce daily Quran through a mother who has read a page every morning for thirty years, and a son who reads mostly in Ramadan."
+      - file: 03.02-a-little-quran-every-day.md
+        title: "A little Quran every day"
+        goal: "Set a small daily portion at a fixed time and place, know the reward of the reader who stumbles, and grow the portion only when it feels easy."
+      - file: 03.03-when-a-day-is-missed.md
+        title: "When a day is missed"
+        goal: "Make up a missed portion as the Sunnah teaches, know that illness and travel do not erase a habit, and restart at the next cue without trying to catch up all at once."
+      - file: 03.04-understanding-tajweed-and-hifz.md
+        title: "Understanding, tajweed and hifz"
+        goal: "Add understanding one verse a day, tajweed one correction at a time with a teacher, and hifz with revision before new learning."
+      - file: 03.05-quiz.md
+        title: "Daily Quran"
+        goal: "Practice check on the daily portion, the struggling reader, growing a habit and missed days."
+      - file: 03.06-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: your Quran habit as a cue, a portion, a minimum and a make-up plan."
+  - dir: 04-morning-and-evening-adhkar
+    title: "Morning and evening adhkar"
+    summary: "Learn a small, sourced starter set of morning and evening adhkar, tie it to moments you already have, and grow it one item at a time."
+    lessons:
+      - file: 04.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce the morning and evening adhkar through a senior colleague who has said a few on two daily walks for twenty years."
+      - file: 04.02-what-to-say-morning-and-evening.md
+        title: "What to say, morning and evening"
+        goal: "Learn a sourced starter set of morning and evening adhkar, with their meanings and references, and why one set for both times is easier to keep."
+      - file: 04.03-making-adhkar-stick.md
+        title: "Making adhkar stick"
+        goal: "Tie the adhkar to a daily moment that needs no extra time, use a card until they are learned, and keep a minimum for busy days."
+      - file: 04.04-quiz.md
+        title: "Morning and evening adhkar"
+        goal: "Practice check on the starter set, its sources, its moments and its minimum."
+      - file: 04.05-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: your starter set, its two anchors and your plan for adding the next item."
+  - dir: 05-after-prayer-adhkar
+    title: "Adhkar after each prayer"
+    summary: "Stack the sourced adhkar after the prayer onto the salam, the strongest cue in your day, five times a day."
+    lessons:
+      - file: 05.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce the adhkar after the prayer through an old man who began with one short dua after one prayer, thirty years ago."
+      - file: 05.02-after-the-salam.md
+        title: "After the salam"
+        goal: "Learn the sourced adhkar after the prayer in one common order, and use the salam as the cue for a habit that takes about three minutes."
+      - file: 05.03-quiz.md
+        title: "Adhkar after each prayer"
+        goal: "Practice check on the adhkar after the prayer, their sources, and how to keep them when you must leave quickly."
+      - file: 05.04-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: your after-prayer adhkar plan, starting with one prayer and growing to five."
+  - dir: 06-before-sleep
+    title: "Before sleep: Amana al-Rasul and Surah al-Mulk"
+    summary: "Close the day with the last two verses of Surah al-Baqarah and Surah al-Mulk, with their sound sources, a bedtime routine that beats the phone, and al-Mulk learned by heart a few verses a week."
+    lessons:
+      - file: 06.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce the night recitations through a power cut that left the developer with a dead phone, two verses from memory and an early night."
+      - file: 06.02-amana-rasul-and-al-mulk.md
+        title: "Amana al-Rasul and Surah al-Mulk"
+        goal: "Know the meaning and the sound sources of the last two verses of al-Baqarah and of Surah al-Mulk, and tell a sound report from a weak one."
+      - file: 06.03-a-bedtime-routine-that-holds.md
+        title: "A bedtime routine that holds"
+        goal: "Build a bedtime routine after Isha that puts the phone away first, keeps a minimum for tired nights, and learns al-Mulk by heart a few verses a week."
+      - file: 06.04-the-night-routine.md
+        title: "The night routine"
+        goal: "Add the Sunnah steps before sleep, wudu, the right side and the sleep duas, and a one-minute muhasaba of the day."
+      - file: 06.05-quiz.md
+        title: "Before sleep"
+        goal: "Practice check on the two recitations, their sources, the bedtime routine and memorising."
+      - file: 06.06-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: your bedtime routine with its first step, its minimum and its link to Fajr."
+  - dir: 07-the-sunnah-of-ordinary-moments
+    title: "The Sunnah of ordinary moments"
+    summary: "Turn the ordinary moments of a day into remembrance: the short sourced duas for waking, the washroom, dressing, leaving home, the mosque and coming home; the Sunnah of eating and drinking; and the words between people: salam, the sneeze, the sick, durood and istighfar."
+    lessons:
+      - file: 07.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "After thirteen weeks of worship habits, Hamza notices that most of his day is not prayer or Quran but ordinary moments: waking, washing, dressing, eating, leaving and coming home. See how the Sunnah fills those moments, and how the rest of this course covers the whole of daily life."
+      - file: 07.02-from-waking-to-the-front-door.md
+        title: "From waking to the front door"
+        goal: "Waking, the washroom, dressing, leaving the house, entering the mosque and coming home each have a short sourced word from the Sunnah. Learn them one moment at a time, and let each moment be its own reminder."
+      - file: 07.03-eating-and-drinking.md
+        title: "Eating and drinking"
+        goal: "Every meal is a daily cue. Learn the sourced Sunnah of eating and drinking: Bismillah, the right hand, eating from in front of you, no complaining, moderation, drinking in breaths, and praise at the end. Build it at one table, as a family."
+      - file: 07.04-salam-sneezing-and-visiting-the-sick.md
+        title: "Salam, sneezing and visiting the sick"
+        goal: "Some Sunnah words are said between people: the salam, the reply to a sneeze, the dua for someone who is ill. Others, durood and istighfar, belong to every hour. Learn them with their sources, and the sound wording of 'dua is worship'."
+      - file: 07.05-quiz.md
+        title: "The Sunnah of ordinary moments"
+        goal: "Five short cases on the duas of daily moments, the Sunnah of eating and drinking, and the words between people. Each one has one best answer."
+      - file: 07.06-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate for module 7. Tick each box when it is true, answer the learning log, and submit a plan for the ordinary moments of your day: which moments, which words, in which order, with their sources."
+  - dir: 08-purity-wudu-and-the-body
+    title: "Purity: wudu and the body"
+    summary: "Purity is half of faith. Make wudu with care and little water, keep it through the day, meet anger with the sound Sunnah, and keep the body clean on a clear rhythm: a weekly bath, the fitrah within forty nights, miswak and clean clothes."
+    lessons:
+      - file: 08.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "A rushed Dhuhr at work shows Hamza that wudu is a habit of its own, and Musa's weekend shows how personal hygiene slips without a rhythm. See why purity is half of faith, and what this module teaches about wudu through the day and care of the body."
+      - file: 08.02-wudu-through-the-day.md
+        title: "Wudu through the day"
+        goal: "Make wudu with care and with little water, try to keep it through the day, renew it calmly when it breaks, and make it before sleep. Meet anger first by sitting and seeking refuge in Allah, the sound advice, rather than the popular weak one."
+      - file: 08.03-cleanliness-and-the-fitrah.md
+        title: "Cleanliness and the fitrah"
+        goal: "Personal hygiene in Islam has clear rhythms: daily care of the teeth, a bath at least once a week, the five practices of the fitrah within forty nights, clean and simple clothes, and the right side first. Give each a day and a cue."
+      - file: 08.04-quiz.md
+        title: "Purity: wudu and the body"
+        goal: "Five short cases on wudu through the day, anger, water, and the rhythm of personal hygiene. Each one has one best answer."
+      - file: 08.05-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate for module 8. Tick each box when it is true, answer the learning log, and submit your purity plan: daily wudu habits, your response to anger, and a weekly hygiene day."
+  - dir: 09-the-heart
+    title: "The heart: taqwa, ihsan and a clean heart"
+    summary: "The habits nobody sees: being the same person in private as in public, cleaning the heart of envy, pride and hatred, and living with Allah through gratitude, dua, tawbah and remembrance of the akhirah."
+    lessons:
+      - file: 09.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "An expense claim nobody would check, a colleague's promotion, and a late night alone with a phone show Hamza that the hardest habits are the ones nobody sees. See what taqwa, ihsan and a clean heart mean, and what this module teaches."
+      - file: 09.02-taqwa-and-ihsan.md
+        title: "Taqwa and ihsan"
+        goal: "Taqwa and ihsan are tested most when nobody is watching. Remember that Allah sees you, ask one question before private decisions, take practical means against private temptations, and follow a slip with tawbah and a good deed."
+      - file: 09.03-a-clean-heart.md
+        title: "A clean heart"
+        goal: "Envy, pride and hatred are sins nobody sees. Recognise them, and meet them with sourced actions: love for others what you love for yourself, make dua for the person you envy, refuse to belittle, accept the truth when it stings, and be glad at another's success."
+      - file: 09.04-gratitude-dua-and-the-akhirah.md
+        title: "Gratitude, dua and the akhirah"
+        goal: "A relationship with Allah lives in small daily words: Alhamdulillah for specific blessings, turning to Allah first in every need, quick istighfar and tawbah, and a brief daily remembrance of the akhirah that brings focus and hope."
+      - file: 09.05-quiz.md
+        title: "The heart"
+        goal: "Five short cases on taqwa and ihsan, envy and pride, gratitude, dua, tawbah and the akhirah. Each one has one best answer."
+      - file: 09.06-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate for module 9. Tick each box when it is true, answer the learning log, and submit your plan for the habits nobody sees: a reminder for private moments, actions for the heart, and four daily turnings to Allah."
+  - dir: 10-guarding-tongue-eyes-and-ears
+    title: "Guarding the tongue, eyes and ears"
+    summary: "Say good or be silent; avoid backbiting, tale-bearing, mockery and lies; lower the gaze and leave harmful talk; keep haya; and verify before forwarding, respect privacy and protect your time on the phone."
+    lessons:
+      - file: 10.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "One lunch break, one family group chat and one evening on the phone show how much of a day passes through the tongue, the eyes and the ears. See what the Sunnah says about guarding them, and what this module teaches."
+      - file: 10.02-the-tongue.md
+        title: "The tongue"
+        goal: "One rule covers all speech: say good or be silent. Learn to recognise backbiting, slander, tale-bearing, mockery, lies and harshness, with their sources, and prepare one short planned response for each moment they appear."
+      - file: 10.03-eyes-ears-and-haya.md
+        title: "Eyes, ears and haya"
+        goal: "The Quran commands lowering the gaze, and the Sunnah treats haya as a branch of faith. Learn to turn away after a sudden glance, leave talk that is harmful, not listen to backbiting, and keep haya as part of who you are."
+      - file: 10.04-mobile-and-internet.md
+        title: "Mobile and internet"
+        goal: "The phone joins every test of the tongue, the eyes and time into one device. Verify before forwarding, never pass on everything you hear, respect privacy, filter harmful content, and set limits so that your free time is not lost."
+      - file: 10.05-quiz.md
+        title: "Guarding the tongue, eyes and ears"
+        goal: "Five short cases on speech, the eyes and ears, haya and the phone. Each one has one best answer."
+      - file: 10.06-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate for module 10. Tick each box when it is true, answer the learning log, and submit your plan for the three gates: a planned response for the tongue, the eyes and ears, and the phone."
+  - dir: 11-character-with-people
+    title: "Character with people"
+    summary: "Good character in hard moments, the rights of others, friends and the limits of humour, and mercy to the weak and animals with the courage to stand for what is right."
+    lessons:
+      - file: 11.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "An unfair meeting, a borrowed charger, a cruel joke and a stray dog show Hamza and Musa that character is tested with people, every day. See what the Sunnah says about good character, and what this module teaches."
+      - file: 11.02-truth-thanks-forgiveness-and-anger.md
+        title: "Truth, thanks, forgiveness and anger"
+        goal: "Good character shows most in hard moments. Control anger first, then speak the truth calmly, apologise for your own part, forgive, and thank people by name. Each step has a sound source and a planned response."
+      - file: 11.03-rights-friends-and-humour.md
+        title: "Rights, friends and humour"
+        goal: "Every person has rights over us: their property, their honour, their feelings. Return what you borrow, take nothing without permission, seek pardon for wrongs today, keep humour true and kind, and choose friends who make you better."
+      - file: 11.04-mercy-and-courage.md
+        title: "Mercy and courage"
+        goal: "Mercy to the young, the old, the poor and animals, and the courage to say no to wrong and stand with the wronged, are two sides of the same character. Learn the sources, and safe, practical ways to act, including for young people."
+      - file: 11.05-quiz.md
+        title: "Character with people"
+        goal: "Five short cases on anger, forgiveness, thanks, rights, humour, friends, mercy and courage. Each one has one best answer."
+      - file: 11.06-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate for module 11. Tick each box when it is true, answer the learning log, and submit your character plan: a sequence for hard moments, a rights check, a humour rule, and a plan for mercy and courage."
+  - dir: 12-family-home-and-neighbours
+    title: "Family, home and neighbours"
+    summary: "Honour parents daily, keep ties of kinship, take responsibility at home, keep promises, and give neighbours and guests their rights; then write your home's golden rules."
+    lessons:
+      - file: 12.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "A long story from his mother, a pile of dishes, a neighbour he has not spoken to in months, and unexpected guests show Hamza that home is where character is tested most. See what the Quran and Sunnah say about parents, family, neighbours and guests, and what this module teaches."
+      - file: 12.02-parents-and-relatives.md
+        title: "Parents and relatives"
+        goal: "After Allah's rights, the Quran places parents. Honour them daily: listen fully, keep a lowered voice, help without being asked, make dua for them, living or passed away. Keep ties of kinship with a regular call or visit."
+      - file: 12.03-home-responsibility-neighbours-and-guests.md
+        title: "Home, responsibility, neighbours and guests"
+        goal: "Everyone in a home is responsible for something. The Prophet served his family at home, kept his promises and honoured neighbours and guests. Take your own space and share of the work, keep promises, own mistakes, and give neighbours and guests their rights."
+      - file: 12.04-quiz.md
+        title: "Family, home and neighbours"
+        goal: "Five short cases on parents, relatives, responsibility at home, neighbours and guests. Each one has one best answer."
+      - file: 12.05-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate for module 12. Tick each box when it is true, answer the learning log, and submit your family plan with your home's golden rules: a handful of short sentences, each tied to a source."
+  - dir: 13-discipline-learning-and-provision
+    title: "Discipline, time, learning and halal provision"
+    summary: "Time, knowledge and wealth will be asked about. Plan each day and do the hard task first, learn something every day and act on it, earn honestly and spend in the middle way."
+    lessons:
+      - file: 13.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "A free Saturday that disappears, an exam Musa leaves to the last night, and an uncle's shop where an easy profit waits all show that time, learning and money are trusts. See what the Sunnah says about them, and what this module teaches."
+      - file: 13.02-discipline-and-time.md
+        title: "Discipline and time"
+        goal: "Free time and health are blessings many people lose without noticing. Plan each day the night before, do the hard important task first, keep distractions out of reach during focused work, keep commitments, and leave room for rest."
+      - file: 13.03-learning.md
+        title: "Learning"
+        goal: "Seeking knowledge is a path to Paradise. Build a small daily learning habit: something new each day, a question asked, a few pages read, study on time, an honest 'I don't know', and one thing acted on each week."
+      - file: 13.04-halal-provision-and-money.md
+        title: "Halal provision and money"
+        goal: "What we earn, eat and spend is part of worship. Earn honestly: no hidden faults, full measure, no cheating. Spend with moderation, respect money given to you, keep a simple record, and set aside something for sadaqah."
+      - file: 13.05-quiz.md
+        title: "Discipline, learning and provision"
+        goal: "Five short cases on time, discipline, learning, halal earning and spending. Each one has one best answer."
+      - file: 13.06-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate for module 13. Tick each box when it is true, answer the learning log, and submit your plan for time, learning and money."
+  - dir: 14-weekly-and-seasonal-habits
+    title: "Weekly and seasonal habits"
+    summary: "The weekly and yearly rhythms: the Sunnahs of Jumu'ah, a small quiet sadaqah, and a Ramadan that leaves one habit permanently larger."
+    lessons:
+      - file: 14.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "A rushed Friday, a sadaqah box that stays empty, and a Ramadan that comes and goes show that some habits have a weekly or yearly rhythm. See the Sunnah of Jumu'ah, sadaqah and Ramadan, and what this module teaches."
+      - file: 14.02-jumuah.md
+        title: "Jumu'ah"
+        goal: "Friday is the weekly anchor of a Muslim's life. Its Sunnahs form one chain: ghusl, clean clothes and fragrance, going early, sitting without stepping over people, listening to the khutbah in silence, and much durood through the day."
+      - file: 14.03-sadaqah.md
+        title: "Sadaqah"
+        goal: "Charity does not decrease wealth. Build a small, fixed, regular sadaqah, given quietly, in money and in things you no longer need, and look for ways to ease someone's hardship. Know that zakat is a separate obligation with its own rules."
+      - file: 14.04-ramadan.md
+        title: "Ramadan"
+        goal: "Ramadan is a yearly season that strengthens every daily habit. Keep its Sunnahs, suhoor, fasting with faith, guarding the tongue and eyes, a prompt iftar with its words, taraweeh, and extra Quran and sadaqah, and plan one habit to keep after Eid."
+      - file: 14.05-quiz.md
+        title: "Weekly and seasonal habits"
+        goal: "Five short cases on Jumu'ah, sadaqah and Ramadan. Each one has one best answer."
+      - file: 14.06-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate for module 14. Tick each box when it is true, answer the learning log, and submit your weekly and seasonal plan: your Friday chain, your sadaqah habit, and your Ramadan plan with the one habit you will keep after Eid."
+  - dir: 15-your-thirteen-week-plan
+    title: "Tracking, restarting and your 13-week plan"
+    summary: "Track days done, not streaks, review once a week and change one thing, restart after hard weeks without shame, and bring the whole course together in your own 13-week 1% plan."
+    lessons:
+      - file: 15.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Bring the course together through the developer's hardest week, a week of illness and travel in week eight, and introduce the capstone."
+      - file: 15.02-a-tracker-that-helps.md
+        title: "A tracker that helps"
+        goal: "Track days done privately, review once a week, change one thing at a time, decide when to add the next habit, and restart after a slip with tawbah and a plan."
+      - file: 15.03-quiz.md
+        title: "Mixed review: what helps first?"
+        goal: "Practice check with fresh cases from every module: choose what helps first, and why."
+      - file: 15.04-capstone-your-thirteen-week-plan.md
+        title: "Capstone: your 13-week 1% plan"
+        goal: "Build and review a 13-week plan that adds one habit a week, with cues, minimums, sources, a private tracker, a weekly review rule and a restart plan."
+      - file: 15.05-checklist.md
+        title: "Course checklist and your habit toolkit"
+        goal: "Gate: final checks, your habit toolkit, a look back at the list you made in module 1, and your plan for the next 13 weeks."
