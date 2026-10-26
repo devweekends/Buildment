@@ -131,13 +131,14 @@ Writers may use the "Use" lines. "Care" lines are traps found while reading.
 - **ARP (RFC 826, Nov 1982).** Broadcast request carrying sender and target protocol address; the target replies directly; mappings are learned on demand; table aging is left to the implementer [S22]. Use.
 - **DHCP (RFC 2131).** DISCOVER, OFFER, REQUEST, ACK; a lease is for a fixed time; client uses UDP port 68, server port 67 [S23]. T1 defaults to 0.5 and T2 to 0.875 of the lease [S23]. Use.
 - **DNS.** Resolvers ask on behalf of programs; servers are authoritative for parts of the tree; recursive mode is optional and signalled by RD and RA bits; TTL is a 32-bit number of seconds that limits caching, zero prohibits caching [S24]. Use. Care: RFC 1034 is the concepts RFC; RFC 1035 (formats) was not fetched, so no wire-format claims.
+- **DNS record types and port (RFC 1035, RFC 3596).** Type A is "a host address" (IPv4) and CNAME is "the canonical name for an alias"; servers answer on UDP and TCP port 53 [S77]. AAAA "stores a single IPv6 address", type 28 [S78]. Use.
 - **UDP (RFC 768)** is a datagram service with no delivery guarantee; 16-bit ports; protocol number 17 [S26]. Use.
-- **TCP (RFC 9293).** Three-way handshake SYN, SYN-ACK, ACK; 16-bit ports; "a connection is defined by a pair of sockets" [S25]. Use.
+- **TCP (RFC 9293).** Three-way handshake SYN, SYN-ACK, ACK; 16-bit ports; "a connection is defined by a pair of sockets" [S25]. Use. "Every octet of data sent over a TCP connection has a sequence number", acknowledgment is cumulative, and the acknowledgment number is "the next sequence number the sender of the segment is expecting to receive" [S25]. Use.
 - **Port ranges (RFC 6335).** System 0 to 1023, User 1024 to 49151, Dynamic or ephemeral 49152 to 65535 [S27]. Linux default `ip_local_port_range` is 32768 to 60999 [S28]. Use both; teach that the OS range and the IANA range differ. Also `ip_forward` defaults to 0 and `ip_default_ttl` to 64 [S28]. Use: the router namespace must enable forwarding.
 
 ### 4.6 Forwarding and diagnosis
 - **TTL decrement.** Each router must decrement TTL by at least one; at zero it must discard the packet and (for unicast) must send ICMP Time Exceeded code 0 [S30]. RFC 792 defines Time Exceeded type 11 [S29]. Use. Care: RFC 792 says the gateway "may" notify; RFC 1812 is the router requirement. Cite RFC 1812.
-- **Longest prefix match.** "Routers must use the most specific matching route (the longest matching network prefix)" [S30]. Use. The `ip-route` man page defines `default` as 0/0 and `ip route get` as "equivalent to sending a packet along this path" [S32]. The man page does not use the words "longest prefix match".
+- **Longest prefix match.** "Routers must use the most specific matching route (the longest matching network prefix)" [S30]. Use. The `ip-route` man page defines `default` as 0/0 and `ip route get` as "equivalent to sending a packet along this path" [S32]. The man page does not use the words "longest prefix match". The same man page: the route's metric (preference) is "an arbitrary 32bit number, where routes with lower values are preferred" [S32]. Use, for rows that tie on prefix length.
 - **traceroute (Linux).** Default probes are UDP to ports starting at 33434; `-I` uses ICMP echo; `-T` uses TCP SYN to port 80 by default; TTL starts at 1 and rises; default max 30 hops [S31]. Use.
 - **IPv6 hop limit.** A router discards at zero; the RFC text we read does not say an error is sent [S2]. Care: do not claim IPv6 sends Time Exceeded from RFC 8200 alone.
 
@@ -342,14 +343,14 @@ All "Date checked" values are 2026-10-24 unless noted. Confidence: H, M, L.
 | S22 | ARP: 48-bit Ethernet address mapping, request and reply, Nov 1982 | https://www.rfc-editor.org/rfc/rfc826.txt | standard | 2026-10-24 | H |
 | S23 | DHCP messages, lease, ports 67 and 68, T1 0.5 and T2 0.875 | https://www.rfc-editor.org/rfc/rfc2131.txt | standard | 2026-10-24 | H |
 | S24 | DNS resolver, authority, recursion, TTL (zero prohibits caching) | https://www.rfc-editor.org/rfc/rfc1034.txt | standard | 2026-10-24 | H |
-| S25 | TCP three-way handshake, 16-bit ports, socket pair | https://www.rfc-editor.org/rfc/rfc9293.txt | standard | 2026-10-24 | H |
+| S25 | TCP three-way handshake, 16-bit ports, socket pair, sequence numbers per octet, cumulative acknowledgment | https://www.rfc-editor.org/rfc/rfc9293.txt | standard | 2026-10-24 | H |
 | S26 | UDP datagram service, 16-bit ports, protocol 17 | https://www.rfc-editor.org/rfc/rfc768.txt | standard | 2026-10-24 | H |
 | S27 | Port ranges 0 to 1023, 1024 to 49151, 49152 to 65535 | https://www.rfc-editor.org/rfc/rfc6335.txt | standard | 2026-10-24 | H |
 | S28 | Linux `ip_local_port_range` 32768 to 60999; `ip_forward` 0; `ip_default_ttl` 64 | https://www.kernel.org/doc/html/latest/networking/ip-sysctl.html | first-party | 2026-10-24 | H |
 | S29 | ICMP Time Exceeded type 11, code 0 | https://www.rfc-editor.org/rfc/rfc792.txt | standard | 2026-10-24 | H |
 | S30 | Router must decrement TTL, drop, send Time Exceeded; most specific route (RFC 1812 s2.2.5.2, 5.3.1, 5.2.7.3) | https://www.rfc-editor.org/rfc/rfc1812.txt | standard | 2026-10-24 | H |
 | S31 | traceroute default UDP from 33434; `-I`, `-T` (port 80); max 30 hops | https://man7.org/linux/man-pages/man8/traceroute.8.html | first-party | 2026-10-24 | H |
-| S32 | `ip route`: default is 0/0; `get` | https://man7.org/linux/man-pages/man8/ip-route.8.html | first-party | 2026-10-24 | H |
+| S32 | `ip route`: default is 0/0; `get`; metric, lower values preferred | https://man7.org/linux/man-pages/man8/ip-route.8.html | first-party | 2026-10-24 | H |
 | S33 | Google IPv6 reached 50.10% on 28 Mar 2026; 49.56% on 21 Jun 2025 | https://pulse.internetsociety.org/blog/18-years-later-ipv6-reaches-majority | secondary | 2026-10-24 | M |
 | S34 | CGN over 92% of cellular, 13.3% of non-cellular ASes; data 2014 to 2016 | https://ar5iv.labs.arxiv.org/html/1605.05606 (arXiv 1605.05606, IMC 2016) | primary research | 2026-10-24 | M (dated) |
 | S35 | WSL default NAT; mirrored mode needs Windows 11 22H2+; WSL 2 VM has own address | https://learn.microsoft.com/en-us/windows/wsl/networking | first-party | 2026-10-24 | H |
@@ -394,6 +395,8 @@ All "Date checked" values are 2026-10-24 unless noted. Confidence: H, M, L.
 | S74 | Dual stack: complete support for both IPv4 and IPv6 in hosts and routers (RFC 4213, October 2005) | https://www.rfc-editor.org/rfc/rfc4213.txt | standard | 2026-10-25 | H |
 | S75 | Docker `-p` publishes a container port on the host "using firewall rules to perform Network Address Translation (NAT)"; the page names no rule type | https://docs.docker.com/engine/network/port-publishing/ | first-party | 2026-10-25 | H |
 | S76 | The Linux bridge learns source MAC addresses of received frames into its forwarding database, ages entries out, and floods unicast frames for unknown addresses | https://docs.kernel.org/networking/bridge.html | first-party | 2026-10-25 | H |
+| S77 | DNS: type A host address, CNAME canonical name for an alias, UDP and TCP port 53 (RFC 1035, November 1987) | https://www.rfc-editor.org/rfc/rfc1035.txt | standard | 2026-10-26 | H |
+| S78 | AAAA record stores one IPv6 address, type 28 (RFC 3596, October 2003) | https://www.rfc-editor.org/rfc/rfc3596.txt | standard | 2026-10-26 | H |
 
 Claims kept as UNVERIFIED (not in any row above with H confidence): "5-tuple" as a named term; Class D 224/4 (RFC 1112); RIPE NCC 2012 last /8; current CGNAT share on mobile networks; Ubuntu 24.04 default iptables backend; `--cap-add` sufficiency for `ip netns` in Docker; Docker Desktop VM kernel nftables support; universe enabled in `ubuntu:24.04`; macOS `ifconfig` and `netstat -rn` behaviour; DHCP pool exhaustion incident; download size estimates (labelled ESTIMATE).
 
