@@ -247,7 +247,7 @@ modules:
         goal: "Gate: run the ten-second test on your new profile and compare it with your result from module 1."
   - key: module-08-writing-and-distribution
     dir: 08-writing-and-distribution
-    title: "Writing and distribution"
+    title: "Writing, distribution and your personal site"
     summary: "Write a post about your own work that a visitor can judge you by, publish it first on a page you own and share it in about ten places, and plan a small personal website that is clearly yours."
     lessons:
       - key: lesson-08-01-set-the-scene
@@ -276,7 +276,7 @@ modules:
         goal: "Write a website plan: pages, which case study and post go where, a free host with its check date, and what makes it yours."
       - key: lesson-08-07-quiz
         file: 08.07-quiz.md
-        title: "Writing and distribution"
+        title: "Writing, distribution and your personal site"
         goal: "Graded scenarios on posts about your work, plain language, canonical links, channels and personal websites."
       - key: lesson-08-08-checklist
         file: 08.08-checklist.md
