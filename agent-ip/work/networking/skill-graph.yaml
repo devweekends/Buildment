@@ -1,0 +1,507 @@
+---
+artifact: skill-graph
+course: networking
+version: 1
+roadmap_version: 3
+roadmap_confirmed: true
+generated_from: 02-curriculum-roadmap.md and the chapter declarations in the generator
+---
+
+nodes:
+  - id: terminal-basics
+    label: "Open a terminal, run a command, read its output"
+    type: entry
+  - id: js-basics
+    label: "JavaScript functions, arrays and numbers"
+    type: entry
+  - id: git-basics
+    label: "Git and GitHub: clone, commit, push"
+    type: entry
+  - id: own-addresses
+    label: "Your computer's address versus the address the world sees"
+    type: taught
+    introduced_in: "1.1"
+  - id: lab-environment
+    label: "The pinned lab container and the setup checker"
+    type: taught
+    introduced_in: "1.2"
+  - id: shell-commands
+    label: "cd, ls, cat, nano, sudo, Ctrl+C, exit"
+    type: taught
+    introduced_in: "1.3"
+  - id: namespaces-veth
+    label: "Network namespaces joined by a virtual cable"
+    type: taught
+    introduced_in: "1.4"
+  - id: ping-icmp
+    label: "ping and ICMP echo"
+    type: taught
+    introduced_in: "1.4"
+  - id: read-capture
+    label: "Reading tcpdump output"
+    type: taught
+    introduced_in: "1.4"
+  - id: packet-fields
+    label: "Header fields: addresses, ports, TTL, type"
+    type: taught
+    introduced_in: "1.5"
+  - id: layers
+    label: "Why a packet has layers: link, internet, app"
+    type: taught
+    introduced_in: "1.6"
+  - id: mac-address
+    label: "MAC addresses and the broadcast MAC"
+    type: taught
+    introduced_in: "1.6"
+  - id: exhaustion
+    label: "Why IPv4 addresses ran out"
+    type: taught
+    introduced_in: "2.1"
+  - id: ip-as-number
+    label: "An IPv4 address as one 32-bit number, in binary"
+    type: taught
+    introduced_in: "2.2"
+  - id: classful
+    label: "Classful addressing and why it failed"
+    type: taught
+    introduced_in: "2.3"
+  - id: cidr
+    label: "CIDR prefixes, block sizes and masks"
+    type: taught
+    introduced_in: "2.3"
+  - id: aggregation
+    label: "One CIDR block standing for many"
+    type: taught
+    introduced_in: "2.3"
+  - id: address-kinds
+    label: "Public, private, shared and special addresses"
+    type: taught
+    introduced_in: "2.4"
+  - id: nat-first-look
+    label: "A router rewrites the source address (first look)"
+    type: taught
+    introduced_in: "2.4"
+  - id: js-bitops
+    label: "JavaScript bit operators and unsigned results"
+    type: taught
+    introduced_in: "2.5"
+  - id: netmask
+    label: "What the mask decides"
+    type: taught
+    introduced_in: "3.1"
+  - id: subnet-calc
+    label: "Network address, broadcast, host range, same subnet"
+    type: taught
+    introduced_in: "3.2"
+  - id: arp
+    label: "ARP request and reply"
+    type: taught
+    introduced_in: "3.3"
+  - id: switch-learning
+    label: "How a switch learns where MACs live"
+    type: taught
+    introduced_in: "3.3"
+  - id: why-split
+    label: "Reasons to split a network"
+    type: taught
+    introduced_in: "3.4"
+  - id: vlsm-split
+    label: "Splitting a block by host counts on aligned boundaries"
+    type: taught
+    introduced_in: "3.5"
+  - id: overlap
+    label: "Overlapping ranges and what they break"
+    type: taught
+    introduced_in: "3.6"
+  - id: route-idea
+    label: "A route as a rule for where to send a packet"
+    type: taught
+    introduced_in: "3.9"
+  - id: ping-errors
+    label: "Network is unreachable versus silent loss"
+    type: taught
+    introduced_in: "3.9"
+  - id: address-plan
+    label: "Planning addresses for a real site"
+    type: taught
+    introduced_in: "3.10"
+  - id: read-trace
+    label: "Reading a traceroute"
+    type: taught
+    introduced_in: "4.1"
+  - id: default-gateway
+    label: "The default gateway and the next-hop MAC"
+    type: taught
+    introduced_in: "4.2"
+  - id: mac-per-hop
+    label: "MAC changes per hop, IP stays"
+    type: taught
+    introduced_in: "4.2"
+  - id: lpm
+    label: "Routing tables, longest prefix match and metrics"
+    type: taught
+    introduced_in: "4.3"
+  - id: ttl-icmp
+    label: "TTL, ICMP Time Exceeded and silent hops"
+    type: taught
+    introduced_in: "4.4"
+  - id: autonomous-systems
+    label: "Autonomous systems and route announcements"
+    type: taught
+    introduced_in: "4.5"
+  - id: ip-forwarding
+    label: "Turning a namespace into a router"
+    type: taught
+    introduced_in: "4.7"
+  - id: diagnose-routing
+    label: "Finding mask, gateway and route faults with commands"
+    type: taught
+    introduced_in: "4.8"
+  - id: ports
+    label: "Ports, well-known and ephemeral ranges"
+    type: taught
+    introduced_in: "5.2"
+  - id: conversation-id
+    label: "The five numbers that name a conversation"
+    type: taught
+    introduced_in: "5.2"
+  - id: listen-address
+    label: "Listening on 127.0.0.1 versus 0.0.0.0"
+    type: taught
+    introduced_in: "5.3"
+  - id: tcp
+    label: "TCP handshake, sequence numbers, retransmission"
+    type: taught
+    introduced_in: "5.4"
+  - id: udp
+    label: "UDP and when to choose it"
+    type: taught
+    introduced_in: "5.5"
+  - id: napt
+    label: "NAT table: address always, port on a clash"
+    type: taught
+    introduced_in: "6.2"
+  - id: conntrack
+    label: "Reading the real NAT table with conntrack"
+    type: taught
+    introduced_in: "6.2"
+  - id: inbound
+    label: "Why the internet cannot reach a home device; NAT is not a firewall"
+    type: taught
+    introduced_in: "6.3"
+  - id: port-forwarding
+    label: "Port forwarding (DNAT), docker run -p"
+    type: taught
+    introduced_in: "6.3"
+  - id: cgnat
+    label: "Carrier-grade NAT"
+    type: taught
+    introduced_in: "6.4"
+  - id: nat-timeouts
+    label: "Mapping timeouts, keepalives, STUN and relays"
+    type: taught
+    introduced_in: "6.5"
+  - id: nft-masquerade
+    label: "An nft masquerade rule"
+    type: taught
+    introduced_in: "6.7"
+  - id: nft-dnat-filter
+    label: "nft DNAT and a forward filter for isolation"
+    type: taught
+    introduced_in: "6.8"
+  - id: diagnose-nat
+    label: "Finding NAT and forwarding faults"
+    type: taught
+    introduced_in: "6.9"
+  - id: dhcp
+    label: "DHCP exchange, leases and failure behaviour"
+    type: taught
+    introduced_in: "7.2"
+  - id: dns-resolution
+    label: "Resolver, root, top-level and authoritative servers; records"
+    type: taught
+    introduced_in: "7.3"
+  - id: dns-ttl
+    label: "DNS caching, TTL and outages"
+    type: taught
+    introduced_in: "7.4"
+  - id: layered-diagnosis
+    label: "Diagnosing no internet layer by layer, captive portals"
+    type: taught
+    introduced_in: "7.5"
+  - id: dnsmasq
+    label: "dnsmasq for DHCP and DNS, per-namespace resolver files"
+    type: taught
+    introduced_in: "7.6"
+  - id: full-journey
+    label: "Every step from lease to first byte"
+    type: taught
+    introduced_in: "8.1"
+  - id: capstone-network
+    label: "A complete network with tests"
+    type: taught
+    introduced_in: "8.2"
+  - id: fault-diagnosis
+    label: "Finding injected faults and writing them up"
+    type: taught
+    introduced_in: "8.5"
+  - id: ipv6-format
+    label: "IPv6 addresses, short form, /64"
+    type: taught
+    introduced_in: "9.2"
+  - id: ipv6-no-nat
+    label: "Global addresses, SLAAC, firewall instead of NAT, dual stack"
+    type: taught
+    introduced_in: "9.3"
+
+edges:
+  - from: address-kinds
+    to: cgnat
+  - from: address-kinds
+    to: dhcp
+  - from: address-kinds
+    to: js-bitops
+  - from: address-kinds
+    to: overlap
+  - from: address-plan
+    to: capstone-network
+  - from: arp
+    to: default-gateway
+  - from: arp
+    to: full-journey
+  - from: arp
+    to: mac-per-hop
+  - from: arp
+    to: ping-errors
+  - from: arp
+    to: route-idea
+  - from: arp
+    to: why-split
+  - from: autonomous-systems
+    to: dns-ttl
+  - from: capstone-network
+    to: fault-diagnosis
+  - from: cgnat
+    to: diagnose-nat
+  - from: cidr
+    to: address-kinds
+  - from: cidr
+    to: ipv6-format
+  - from: cidr
+    to: lpm
+  - from: cidr
+    to: nat-first-look
+  - from: cidr
+    to: netmask
+  - from: conversation-id
+    to: conntrack
+  - from: conversation-id
+    to: napt
+  - from: conversation-id
+    to: tcp
+  - from: default-gateway
+    to: conntrack
+  - from: default-gateway
+    to: ip-forwarding
+  - from: default-gateway
+    to: lpm
+  - from: default-gateway
+    to: napt
+  - from: dhcp
+    to: dnsmasq
+  - from: dhcp
+    to: full-journey
+  - from: dhcp
+    to: layered-diagnosis
+  - from: diagnose-nat
+    to: fault-diagnosis
+  - from: diagnose-routing
+    to: diagnose-nat
+  - from: diagnose-routing
+    to: layered-diagnosis
+  - from: dns-resolution
+    to: dns-ttl
+  - from: dns-resolution
+    to: dnsmasq
+  - from: dns-resolution
+    to: full-journey
+  - from: dns-resolution
+    to: layered-diagnosis
+  - from: exhaustion
+    to: ip-as-number
+  - from: full-journey
+    to: capstone-network
+  - from: git-basics
+    to: namespaces-veth
+  - from: git-basics
+    to: ping-icmp
+  - from: git-basics
+    to: read-capture
+  - from: inbound
+    to: ipv6-no-nat
+  - from: ip-as-number
+    to: aggregation
+  - from: ip-as-number
+    to: cidr
+  - from: ip-as-number
+    to: classful
+  - from: ip-as-number
+    to: ipv6-format
+  - from: ip-as-number
+    to: js-bitops
+  - from: ip-as-number
+    to: subnet-calc
+  - from: ip-forwarding
+    to: capstone-network
+  - from: ip-forwarding
+    to: diagnose-routing
+  - from: ip-forwarding
+    to: nft-masquerade
+  - from: ipv6-format
+    to: ipv6-no-nat
+  - from: js-basics
+    to: js-bitops
+  - from: lab-environment
+    to: shell-commands
+  - from: layered-diagnosis
+    to: fault-diagnosis
+  - from: listen-address
+    to: inbound
+  - from: listen-address
+    to: port-forwarding
+  - from: lpm
+    to: autonomous-systems
+  - from: lpm
+    to: diagnose-routing
+  - from: lpm
+    to: full-journey
+  - from: lpm
+    to: inbound
+  - from: lpm
+    to: ip-forwarding
+  - from: lpm
+    to: port-forwarding
+  - from: lpm
+    to: ttl-icmp
+  - from: mac-address
+    to: arp
+  - from: mac-address
+    to: dhcp
+  - from: mac-address
+    to: switch-learning
+  - from: namespaces-veth
+    to: ip-forwarding
+  - from: namespaces-veth
+    to: ping-errors
+  - from: namespaces-veth
+    to: route-idea
+  - from: napt
+    to: cgnat
+  - from: napt
+    to: full-journey
+  - from: napt
+    to: inbound
+  - from: napt
+    to: ipv6-no-nat
+  - from: napt
+    to: nat-timeouts
+  - from: napt
+    to: nft-masquerade
+  - from: napt
+    to: port-forwarding
+  - from: netmask
+    to: subnet-calc
+  - from: nft-masquerade
+    to: dnsmasq
+  - from: nft-masquerade
+    to: nft-dnat-filter
+  - from: overlap
+    to: address-plan
+  - from: own-addresses
+    to: exhaustion
+  - from: own-addresses
+    to: netmask
+  - from: own-addresses
+    to: read-trace
+  - from: packet-fields
+    to: conversation-id
+  - from: packet-fields
+    to: layers
+  - from: packet-fields
+    to: mac-address
+  - from: packet-fields
+    to: ports
+  - from: ping-errors
+    to: diagnose-routing
+  - from: ping-icmp
+    to: ttl-icmp
+  - from: port-forwarding
+    to: diagnose-nat
+  - from: port-forwarding
+    to: nft-dnat-filter
+  - from: ports
+    to: listen-address
+  - from: read-capture
+    to: packet-fields
+  - from: read-trace
+    to: cgnat
+  - from: route-idea
+    to: default-gateway
+  - from: route-idea
+    to: mac-per-hop
+  - from: shell-commands
+    to: namespaces-veth
+  - from: shell-commands
+    to: ping-icmp
+  - from: shell-commands
+    to: read-capture
+  - from: subnet-calc
+    to: arp
+  - from: subnet-calc
+    to: listen-address
+  - from: subnet-calc
+    to: ping-errors
+  - from: subnet-calc
+    to: route-idea
+  - from: subnet-calc
+    to: switch-learning
+  - from: subnet-calc
+    to: vlsm-split
+  - from: subnet-calc
+    to: why-split
+  - from: tcp
+    to: full-journey
+  - from: tcp
+    to: udp
+  - from: terminal-basics
+    to: lab-environment
+  - from: terminal-basics
+    to: own-addresses
+  - from: udp
+    to: dhcp
+  - from: udp
+    to: dns-resolution
+  - from: udp
+    to: nat-timeouts
+  - from: vlsm-split
+    to: address-plan
+  - from: vlsm-split
+    to: overlap
+  - from: why-split
+    to: address-plan
+  - from: why-split
+    to: nft-dnat-filter
+
+diagnostic:
+  - question: "Open a terminal and print the files in this folder. What did you type?"
+    maps_to: terminal-basics
+    if_missing: "Repair: the shell part of 1.3 first, then 1.2."
+  - question: "What does [1, 2, 3].map(n => n * 2) return?"
+    maps_to: js-basics
+    if_missing: "Repair: a 30-minute JavaScript refresher before 2.5; Foundations learners may use the read-and-answer alternative."
+  - question: "What is 13 in binary?"
+    maps_to: ip-as-number
+    if_missing: "No repair needed: 2.2 teaches binary from zero. A learner who answers correctly may skip the first drill set."
+  - question: "Clone a repository and push one commit. Did it work?"
+    maps_to: git-basics
+    if_missing: "Repair: the Git steps in challenge 0 are shown in full."
