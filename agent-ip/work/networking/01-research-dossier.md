@@ -89,7 +89,7 @@ Writers may use the "Use" lines. "Care" lines are traps found while reading.
 - **IPv6 specials.** `::1` loopback, `::` unspecified, `fe80::/10` link-local, never forwarded off the link [S3]. Use.
 
 ### 4.2 Classes, CIDR, subnetting, private space
-- **RFC 791 defines classes A, B and C** by leading bits: A starts `0`, B `10`, C `110` [S1]. The ranges (0 to 127, 128 to 191, 192 to 223) follow from the bits; this is derived arithmetic. Class D and E: 240.0.0.0/4 is "reserved" per the registry (RFC 1112) [S9]; **224/4 as Class D is UNVERIFIED** (RFC 1112 not fetched).
+- **RFC 791 defines classes A, B and C** by leading bits: A starts `0`, B `10`, C `110` [S1]. The ranges (0 to 127, 128 to 191, 192 to 223) follow from the bits; this is derived arithmetic. Class D and E: 240.0.0.0/4 is "reserved" per the registry (RFC 1112) [S9]; 224/4 as Class D is confirmed in [S79].
 - **Class sizes.** 128 class A networks, 16,384 class B networks of 65,536 hosts, 2,097,152 class C networks of 254 hosts [S6]. Use.
 - **Why classes were replaced.** The ROAD group named three problems: exhaustion of the Class B space, routing table growth, and eventual exhaustion of the 32-bit space [S5, S6]. Class B was the first to run out because it was the "right size" for a mid-sized organisation (reasoning: 254 hosts too small, 65,536 too big; this reasoning is **UNVERIFIED** as a quote, derive it from the sizes in [S6]). Use.
 - **CIDR dates.** RFC 1519 is September 1993 [S5]; RFC 4632 obsoletes it [S6]. Use.
@@ -111,6 +111,7 @@ Writers may use the "Use" lines. "Care" lines are traps found while reading.
 
 - **Link-local 169.254/16.** Hosts self-assign when no DHCP is available; routers must not forward; hosts ARP for everything [S12]. Use as the "DHCP failed" symptom.
 - **Shared address space 100.64.0.0/10** is for CGN links on provider networks, with limits that RFC 1918 space does not have [S11]. Use. This is the tell for CGNAT.
+- **Multicast 224.0.0.0/4.** Host groups are class D addresses, high-order bits 1110, written 224.0.0.0 to 239.255.255.255 [S79]. Class E (1111) is reserved [S79]. Use: this block is none of public, private, shared or special in our classifier; say so. Care: the class D wording is RFC 1112 only; the IANA multicast registry was not fetched.
 - **Documentation ranges.** Confirmed: use 192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24 for fictional public addresses in text, canvases and quizzes [S10]. Care: that is only 3 x 256 addresses; plan the address budget of each lab.
 
 ### 4.3 Exhaustion dates
@@ -135,6 +136,11 @@ Writers may use the "Use" lines. "Care" lines are traps found while reading.
 - **UDP (RFC 768)** is a datagram service with no delivery guarantee; 16-bit ports; protocol number 17 [S26]. Use.
 - **TCP (RFC 9293).** Three-way handshake SYN, SYN-ACK, ACK; 16-bit ports; "a connection is defined by a pair of sockets" [S25]. Use. "Every octet of data sent over a TCP connection has a sequence number", acknowledgment is cumulative, and the acknowledgment number is "the next sequence number the sender of the segment is expecting to receive" [S25]. Use.
 - **Port ranges (RFC 6335).** System 0 to 1023, User 1024 to 49151, Dynamic or ephemeral 49152 to 65535 [S27]. Linux default `ip_local_port_range` is 32768 to 60999 [S28]. Use both; teach that the OS range and the IANA range differ. Also `ip_forward` defaults to 0 and `ip_default_ttl` to 64 [S28]. Use: the router namespace must enable forwarding.
+
+### 4.5b TCP loss recovery, closed ports and curl exit codes
+- **Fast retransmit (RFC 5681).** The sender "SHOULD use the fast retransmit algorithm" and, after receiving 3 duplicate ACKs, retransmits. A duplicate ACK is one whose acknowledgment number equals the greatest received, with data outstanding and no payload. Duplicate ACKs can also be caused by the network re-ordering segments, so one duplicate is not proof of loss. The other trigger is the retransmission timer expiring [S80]. Use.
+- **Closed port gets a reset.** "If the connection does not exist (CLOSED), then a reset is sent in response to any incoming segment except another reset" (RFC 9293 3.5.2) [S81]. So a SYN to a port nobody listens on, on a host that is up and reachable, is answered with RST. Care: a firewall that drops silently, or a missing route, gives no RST.
+- **curl exit code 7.** libcurl error CURLE_COULDNT_CONNECT (7) is "Failed to connect() to host or proxy" [S82]. It covers a refused connection and other connect failures such as no route; it is not only refusal. Say the message and the cause apart. Use.
 
 ### 4.6 Forwarding and diagnosis
 - **TTL decrement.** Each router must decrement TTL by at least one; at zero it must discard the packet and (for unicast) must send ICMP Time Exceeded code 0 [S30]. RFC 792 defines Time Exceeded type 11 [S29]. Use. Care: RFC 792 says the gateway "may" notify; RFC 1812 is the router requirement. Cite RFC 1812.
@@ -397,8 +403,12 @@ All "Date checked" values are 2026-10-24 unless noted. Confidence: H, M, L.
 | S76 | The Linux bridge learns source MAC addresses of received frames into its forwarding database, ages entries out, and floods unicast frames for unknown addresses | https://docs.kernel.org/networking/bridge.html | first-party | 2026-10-25 | H |
 | S77 | DNS: type A host address, CNAME canonical name for an alias, UDP and TCP port 53 (RFC 1035, November 1987) | https://www.rfc-editor.org/rfc/rfc1035.txt | standard | 2026-10-26 | H |
 | S78 | AAAA record stores one IPv6 address, type 28 (RFC 3596, October 2003) | https://www.rfc-editor.org/rfc/rfc3596.txt | standard | 2026-10-26 | H |
+| S79 | Class D host group addresses 224.0.0.0 to 239.255.255.255 (high bits 1110); class E reserved (RFC 1112, August 1989) | https://www.rfc-editor.org/rfc/rfc1112.txt | standard | 2026-10-27 | H |
+| S80 | Fast retransmit after 3 duplicate ACKs; duplicate ACKs can come from re-ordering; duplicate ACK definition (RFC 5681, September 2009) | https://www.rfc-editor.org/rfc/rfc5681.txt | standard | 2026-10-27 | H |
+| S81 | Closed connection: reset sent in response to any incoming segment except a reset (RFC 9293 3.5.2) | https://www.rfc-editor.org/rfc/rfc9293.txt | standard | 2026-10-27 | H |
+| S82 | CURLE_COULDNT_CONNECT (7): Failed to connect() to host or proxy | https://curl.se/libcurl/c/libcurl-errors.html | first-party | 2026-10-27 | H |
 
-Claims kept as UNVERIFIED (not in any row above with H confidence): "5-tuple" as a named term; Class D 224/4 (RFC 1112); RIPE NCC 2012 last /8; current CGNAT share on mobile networks; Ubuntu 24.04 default iptables backend; `--cap-add` sufficiency for `ip netns` in Docker; Docker Desktop VM kernel nftables support; universe enabled in `ubuntu:24.04`; macOS `ifconfig` and `netstat -rn` behaviour; DHCP pool exhaustion incident; download size estimates (labelled ESTIMATE).
+Claims kept as UNVERIFIED (not in any row above with H confidence): "5-tuple" as a named term; RIPE NCC 2012 last /8; current CGNAT share on mobile networks; Ubuntu 24.04 default iptables backend; `--cap-add` sufficiency for `ip netns` in Docker; Docker Desktop VM kernel nftables support; universe enabled in `ubuntu:24.04`; macOS `ifconfig` and `netstat -rn` behaviour; DHCP pool exhaustion incident; download size estimates (labelled ESTIMATE).
 
 ## 10. Open questions
 
