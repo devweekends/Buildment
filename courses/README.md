@@ -61,6 +61,11 @@ the normal quality bar for future courses.
 opted in: its roadmap sign-off (G2B) and human review are still pending. It
 passes source validation, the strict structure audit and the editorial audit.
 
+`one-percent-better` (1% Better Every Day: Daily Islamic Habits) is in review and is not
+opted in: its roadmap sign-off, a qualified Islamic scholar's review of every chapter and
+human review are still pending. It passes source validation, the strict structure audit and
+the editorial audit. Its sources are recorded in `agent-ip/work/one-percent-better/research.md`.
+
 `system-design` is published as a five-hour, two-topic lab, with six lessons.
 Its catalog title and description say that the full curriculum is still in
 progress. The marketplace package targets `multi-vendor-marketplace`;
