@@ -55,6 +55,7 @@ Run one or more lenses per pass. At G3 and G5, at least two lenses must be run b
 - Does the MDX compile and render?
 - Is the link live and matching the claim?
 - Is the security advice correct?
+- In a course that is not about engineering but uses technical examples (a soft-skills or interview course), are the technical claims held to the same standard? For example, idempotent retries do not by themselves prevent a duplicate email: a crash after sending and before recording it can send it twice.
 
 ### Continuity
 

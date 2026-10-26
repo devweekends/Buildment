@@ -1,5 +1,21 @@
 # Agent IP decision log
 
+## 2026-10-25: Lessons from building the founder interview course (IP v0.5.4)
+
+**Status:** Draft for delivery lead and reviewer sign-off under `09-review-and-governance.md`.
+
+**Problem:** Building course 14 (`founder-interviews`, PR #66) hit seven gaps the IP did not cover or stated wrongly.
+1. The playbook allowed two or three predict options, but the structure audit rejects anything but two; writers made eight three-option predicts that had to be cut.
+2. A mixed review named `07.03-mixed-review.md` failed the course audit, because quiz chapters are recognised only by the `-quiz.md` file name.
+3. Canvas tests ran against a stale copy of `@buildment/learning-ui` after `data.ts` edits, because the install kept the old copy.
+4. On Windows, `sync-shared` rewrote the line endings of about 80 generated files.
+5. `content:import` refused a re-import after the click-through enrolled a test learner, and resetting the scratch database needs the user's consent.
+6. The headless second-family agent hung on stdin and later reached its usage limit mid-run, so one critic pass fell back to the drafting family.
+7. A soft-skills course taught a wrong technical claim (idempotent retries prevent duplicate emails) that only the second-family critic caught.
+
+**Decision:** State the exact rule or workaround where each topic lives: `04-interactive-playbook.md` (predicts have exactly two options; quiz files end in `-quiz.md`), `10-interactive-canvases.md` (refresh the package copy; stage only real `sync-shared` changes), `06-quality-gates.md` (a new scratch database instead of a reset), `01-agent-system.md` (check a headless second family before relying on it, record any fallback) and `agents/critic.md` (hold technical claims in non-engineering courses to the same standard).
+
+**Platform impact:** Documentation only. No code, test or course content changes.
 ## 2026-10-25: Visual lab module for challenges (proposal filed, IP unchanged)
 
 **Status:** Proposal in `proposals/2026-10-25-visual-lab-module.md`. No rule in `agent-ip/` was changed.
