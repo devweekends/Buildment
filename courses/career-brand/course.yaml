@@ -1,0 +1,313 @@
+slug: career-brand
+title: "Your Career Brand: Resume, LinkedIn, Personal Site and Proof of Work"
+description: "Build your resume, your LinkedIn profile, a personal site with case studies and a blog, and the career arc document they all come from. Founders and hiring managers have more applications than time, and fluent writing is now cheap, so what they trust is work they can check. You build the kit piece by piece, evidence first: a career arc document, a proof-of-work inventory with numbers you can source, one strong project plan for the AI era, a showcase a stranger can open, a resume with owned bullets, a LinkedIn profile you use well, a case study, a post with a plan for sharing it, and a plan for your personal site (putting it live is encouraged). Practise with the AI interviewer on your own key, or with a written exercise that completes the same step."
+projectGoal: "Finish a career kit a mentor can review in under 30 minutes: a career arc document, a proof-of-work inventory and claim ledger, one project plan that passes the idea filter, a resume and a LinkedIn profile where every number has a source you can name, one case study, one blog post with a plan for about ten channels, and a personal site plan with the case study and the post on it. Then defend it in a full AI interview or a recorded five-minute walkthrough, where a mentor picks any line and you show where its number came from."
+difficulty: Medium
+estimatedHours: 30
+category: soft-skills
+modules:
+  - key: module-01-what-a-reader-sees-first
+    dir: 01-what-a-reader-sees-first
+    title: "What a reader sees first"
+    summary: "See your current resume and profile the way a busy founder or hiring manager does. Learn what employers who publish their hiring say they look for, why a fluent AI-made paragraph now says little, and measure where your own kit stands today."
+    lessons:
+      - key: lesson-01-01-set-the-scene
+        file: 01.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce the course through a backend engineer who sent sixty applications and heard nothing, and see what a founder saw on the first screen of his kit."
+      - key: lesson-01-02-the-first-look-is-short
+        file: 01.02-the-first-look-is-short.md
+        title: "The first look is short"
+        goal: "Arrange your material so the strongest proof is seen first, one link away, without relying on the six-second myth."
+      - key: lesson-01-03-what-they-look-for
+        file: 01.03-what-they-look-for.md
+        title: "What founders and hiring managers look for"
+        goal: "Name the signals employers who publish their hiring describe: shipped work, awareness of impact, how you think and iterate, ownership and real tailoring, and where a certificate fits."
+      - key: lesson-01-04-when-writing-is-cheap
+        file: 01.04-when-writing-is-cheap.md
+        title: "When writing is cheap, proof counts"
+        goal: "Explain why a fluent AI-made paragraph says less than it used to, why AI detectors misjudge second-language English, and what only you can write."
+      - key: lesson-01-05-quiz
+        file: 01.05-quiz.md
+        title: "What a reader sees first"
+        goal: "Graded scenarios on the first look, what readers check, certificates and AI-made writing."
+      - key: lesson-01-06-checklist
+        file: 01.06-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: run the ten-second test on your current resume and profile, and take a baseline AI drill on three resume lines or answer the same questions in writing."
+  - key: module-02-your-career-arc-document
+    dir: 02-your-career-arc-document
+    title: "Your career arc document"
+    summary: "Before any resume, write the private document every later piece is drawn from: your values and pillars, what makes you different, your skills shown by examples, something human about you, and every role in detail with its proof."
+    lessons:
+      - key: lesson-02-01-set-the-scene
+        file: 02.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce the career arc through a product designer who was asked what she is best at, and how anyone would know, and could only list tools."
+      - key: lesson-02-02-values-pillars-and-what-makes-you-different
+        file: 02.02-values-pillars-and-what-makes-you-different.md
+        title: "Values, pillars and what makes you different"
+        goal: "Choose two or three pillars and your core values, and back each pillar with one piece of proof and one number a stranger could check."
+      - key: lesson-02-03-every-role-with-proof
+        file: 02.03-every-role-with-proof.md
+        title: "Every role, in detail, with proof"
+        goal: "Write each job, internship, freelance gig, study project and volunteer role as what you did, what the team did, the result and where the proof lives, and show hard, soft, leadership and initiative skills through examples."
+      - key: lesson-02-04-the-human-part-and-asking-others
+        file: 02.04-the-human-part-and-asking-others.md
+        title: "The human part, and asking others"
+        goal: "Add one interesting, true detail about you, ask three people for a time you did something well, and keep personality-type labels out of your kit."
+      - key: lesson-02-05-write-your-career-arc
+        file: 02.05-write-your-career-arc.md
+        title: "Write your career arc document"
+        goal: "Write your career arc document, or continue the provided fellow's, as the source an AI tool may later restructure but never add to."
+      - key: lesson-02-06-quiz
+        file: 02.06-quiz.md
+        title: "Your career arc"
+        goal: "Graded scenarios on pillars, proof, role detail and what belongs in a career arc document."
+      - key: lesson-02-07-checklist
+        file: 02.07-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: show one pillar with its two pieces of proof, and mark which parts of your arc stay private."
+  - key: module-03-honest-numbers-and-proof-of-work
+    dir: 03-honest-numbers-and-proof-of-work
+    title: "Honest numbers and proof of work"
+    summary: "Turn your work into claims a reader can check. Write each number as a claim card, find the proof for each kind of work, read dashboards you did not set up, measure a before and after yourself, and keep it all in a claim ledger."
+    lessons:
+      - key: lesson-03-01-set-the-scene
+        file: 03.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce honest numbers through a data engineer whose '70 percent faster pipeline' met three questions: 70 percent of what, over which days, and was it you?"
+      - key: lesson-03-02-from-a-number-to-a-claim-card
+        file: 03.02-from-a-number-to-a-claim-card.md
+        title: "From a number to a claim card"
+        goal: "Write a number as a claim card (metric, before, after, window, source, your share and what else changed), and see why 'helped grow the business 50 percent' fails every part."
+      - key: lesson-03-03-proof-for-each-kind-of-work
+        file: 03.03-proof-for-each-kind-of-work.md
+        title: "Proof for each kind of work"
+        goal: "Find the proof source for performance, cleanup, security, migration, automation, uptime and user work, and ask before you use an employer's data in public."
+      - key: lesson-03-04-reading-a-dashboard
+        file: 03.04-reading-a-dashboard.md
+        title: "Reading a dashboard you did not set up"
+        goal: "Answer six questions about any number on a dashboard, read p50, p95 and p99, and see why averages hide slow requests and uptime percentages hide minutes."
+      - key: lesson-03-05-measure-it-yourself
+        file: 03.05-measure-it-yourself.md
+        title: "Measure it yourself, before and after"
+        goal: "Plan a before-and-after measurement you control (same script, data and machine): a load test, a query plan pair, a median of five page audits, or time saved after upkeep, with a no-install path."
+      - key: lesson-03-06-build-your-claim-ledger
+        file: 03.06-build-your-claim-ledger.md
+        title: "Build your proof inventory and claim ledger"
+        goal: "Build your proof-of-work inventory and a claim ledger with at least three claim cards and one honest 'not measured, here is how I would', or work from the provided fellow's material."
+      - key: lesson-03-07-quiz
+        file: 03.07-quiz.md
+        title: "Honest numbers and proof of work"
+        goal: "Graded scenarios on claim cards, proof sources, percentiles, windows and before-and-after measurement."
+      - key: lesson-03-08-checklist
+        file: 03.08-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: take an AI drill on your top ledger rows that asks how each number was measured, or answer the same questions in writing."
+  - key: module-04-a-strong-project-in-the-ai-era
+    dir: 04-a-strong-project-in-the-ai-era
+    title: "A strong project in the AI era"
+    summary: "AI makes building faster, so a working app alone proves less. Learn what still counts, test ideas with a filter that favours real use or written depth over two-sided apps nobody uses, and plan one project with a time box and one number to move."
+    lessons:
+      - key: lesson-04-01-set-the-scene
+        file: 04.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce strong projects through a mobile developer who built a ride-sharing app in a weekend with AI and found no drivers, no riders and no answer to 'how does the matching work?'."
+      - key: lesson-04-02-when-building-is-fast
+        file: 04.02-when-building-is-fast.md
+        title: "When building is fast, what still counts"
+        goal: "Explain why studies of AI coding tools disagree, why speed is not understanding, and what still counts: a real user, a measured result, decisions with reasons and an AI-use log."
+      - key: lesson-04-03-the-idea-filter
+        file: 04.03-the-idea-filter.md
+        title: "The idea filter, and where open source fits"
+        goal: "Test an idea for real use on day one, a measurable result, depth you can write about and no need for two sides at once, and decide when an open source contribution is the better path."
+      - key: lesson-04-04-plan-it-with-a-time-box
+        file: 04.04-plan-it-with-a-time-box.md
+        title: "Plan it with a time box"
+        goal: "Shape a project around an appetite in weeks, one user, one core flow, one number to move and a first real user milestone."
+      - key: lesson-04-05-plan-your-project
+        file: 04.05-plan-your-project.md
+        title: "Plan your project"
+        goal: "Write a one-page project plan that passes the idea filter, with how the number will be measured, an AI-use log and what you will show, or work from the provided fellow's idea."
+      - key: lesson-04-06-quiz
+        file: 04.06-quiz.md
+        title: "A strong project in the AI era"
+        goal: "Graded scenarios on project evidence, the idea filter, two-sided ideas, open source and time boxes."
+      - key: lesson-04-07-checklist
+        file: 04.07-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: run your idea through the filter in writing and name your first real user."
+  - key: module-05-show-your-work-so-people-look
+    dir: 05-show-your-work-so-people-look
+    title: "Show your work so people look"
+    summary: "Nobody will clone and run your code. Ship a deployable unit with a README in reader order, let people in with one click or a safe demo account, plan a short demo of the core, and write a case study that still works when a free demo sleeps."
+    lessons:
+      - key: lesson-05-01-set-the-scene
+        file: 05.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce showcasing through a frontend developer whose founder never ran his code and whose demo took a minute to wake, then asked for a sign-up."
+      - key: lesson-05-02-nobody-will-run-your-code
+        file: 05.02-nobody-will-run-your-code.md
+        title: "Nobody will run your code"
+        goal: "Ship a deployable unit with a README in reader order, and keep links working in six months when free tiers sleep or expire."
+      - key: lesson-05-03-let-them-in-with-one-click
+        file: 05.03-let-them-in-with-one-click.md
+        title: "Let them in with one click"
+        goal: "Choose instant access, Sign in with Google with only name, email and profile, or a demo account that can do everything and is safe for a stranger."
+      - key: lesson-05-04-a-short-demo-of-the-core
+        file: 05.04-a-short-demo-of-the-core.md
+        title: "A short demo of the core"
+        goal: "Plan a 60 to 120 second demo that starts with the result, shows the core part, has captions and offers a screenshot first for weak connections."
+      - key: lesson-05-05-the-case-study
+        file: 05.05-the-case-study.md
+        title: "The case study: a postmortem for a success"
+        goal: "Structure a case study from a claim ledger row: the problem, the numbers before, what you did and what the team did, the numbers after, what you would change and where to see it."
+      - key: lesson-05-06-build-your-showcase
+        file: 05.06-build-your-showcase.md
+        title: "Build your showcase"
+        goal: "Write one case study, plan the showcase for one project (deployable unit, access, demo, base layer) and run the stranger test on a phone, or work from the provided fellow's material."
+      - key: lesson-05-07-quiz
+        file: 05.07-quiz.md
+        title: "Show your work so people look"
+        goal: "Graded scenarios on deployable units, READMEs, instant access, demo safety, short demos and case studies."
+      - key: lesson-05-08-checklist
+        file: 05.08-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: record your stranger test result, and take an AI drill on your case study or answer the same questions in writing."
+  - key: module-06-a-resume-that-reads-as-you
+    dir: 06-a-resume-that-reads-as-you
+    title: "A resume that reads as you"
+    summary: "Write the resume last, from your ledger. Put the strongest proof first in a plain file a program can read, write bullets with ownership and honest results, draft with AI from your own material and cut every empty sentence, then add links and tailor to one posting."
+    lessons:
+      - key: lesson-06-01-set-the-scene
+        file: 06.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce the resume through an operations coordinator whose 'responsible for' lines and AI-written summary read like every other application."
+      - key: lesson-06-02-strongest-proof-first
+        file: 06.02-strongest-proof-first.md
+        title: "Structure: strongest proof first"
+        goal: "Order a resume by strength of proof in a plain file that passes the paste test, and tell applicant tracking facts from myths."
+      - key: lesson-06-03-bullets-with-ownership
+        file: 06.03-bullets-with-ownership.md
+        title: "Bullets with ownership and honest results"
+        goal: "Turn a claim ledger row into a bullet: what you owned, the change with its before, after and window, how you did it, and your share."
+      - key: lesson-06-04-drafting-with-ai-and-the-empty-sentence-edit
+        file: 06.04-drafting-with-ai-and-the-empty-sentence-edit.md
+        title: "Drafting with AI, and the empty sentence edit"
+        goal: "Let AI restructure your own material, never invent it, then cut empty sentences: big claims with no number, unnamed experts and three adjectives where one fact would do."
+      - key: lesson-06-05-links-and-tailoring
+        file: 06.05-links-and-tailoring.md
+        title: "Links and tailoring"
+        goal: "Add two or three stable, labelled links tested on a phone, and tailor to one posting by changing what comes first, never by pasting its words."
+      - key: lesson-06-06-write-your-resume
+        file: 06.06-write-your-resume.md
+        title: "Write your resume from the ledger"
+        goal: "Write a resume where every line maps to a ledger row, the file passes the paste test, the links work on a phone, and one version is tailored to a real posting."
+      - key: lesson-06-07-quiz
+        file: 06.07-quiz.md
+        title: "A resume that reads as you"
+        goal: "Graded scenarios on resume order, plain files, applicant tracking myths, bullets, empty sentences and tailoring."
+      - key: lesson-06-08-checklist
+        file: 06.08-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: take an AI drill on your new resume and compare its flags with your baseline, or answer the same questions in writing."
+  - key: module-07-linkedin
+    dir: 07-linkedin
+    title: "LinkedIn: profile, posts, comments and outreach"
+    summary: "Rebuild your profile from your resume and ledger, field by field, with proof in Featured. Post about real work, comment so you add something, write outreach a busy person can answer, and grow slowly within LinkedIn's rules."
+    lessons:
+      - key: lesson-07-01-set-the-scene
+        file: 07.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce LinkedIn through a freelance developer with the headline 'Passionate developer', forty identical connection notes and a group that agreed to like each other's posts."
+      - key: lesson-07-02-your-profile-field-by-field
+        file: 07.02-your-profile-field-by-field.md
+        title: "Your profile, field by field"
+        goal: "Write a headline, About, Featured and Experience that put proof first, using the counter on your screen and the free paths LinkedIn describes (checked 2026-10)."
+      - key: lesson-07-03-posts-and-comments
+        file: 07.03-posts-and-comments.md
+        title: "Posts and comments that add something"
+        goal: "Tell what LinkedIn says about how posts spread from folklore, write a post about real work, and write a comment that adds one useful thing."
+      - key: lesson-07-04-outreach-and-honest-growth
+        file: 07.04-outreach-and-honest-growth.md
+        title: "Outreach and honest growth"
+        goal: "Write a short, specific outreach message, start with people you once knew, spend your few connection notes well, and keep a slow posting rhythm you measure over eight weeks."
+      - key: lesson-07-05-rebuild-your-profile
+        file: 07.05-rebuild-your-profile.md
+        title: "Rebuild your profile and plan four weeks"
+        goal: "Rebuild your profile from your resume and ledger, draft three outreach messages and five comments, and plan four weeks of posting, or work from the provided fellow's material."
+      - key: lesson-07-06-quiz
+        file: 07.06-quiz.md
+        title: "LinkedIn"
+        goal: "Graded scenarios on profile fields, Featured, comments, outreach, connection notes and LinkedIn's rules."
+      - key: lesson-07-07-checklist
+        file: 07.07-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: run the ten-second test on your new profile and compare it with your result from module 1."
+  - key: module-08-writing-and-distribution
+    dir: 08-writing-and-distribution
+    title: "Writing, distribution and your personal site"
+    summary: "Write a post about your own work that a visitor can judge you by, publish it first on a page you own and share it in about ten places, and plan a small personal website that is clearly yours."
+    lessons:
+      - key: lesson-08-01-set-the-scene
+        file: 08.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce writing and distribution through a DevOps engineer whose best post lived on one platform that changed its rules, and whose website looked like a template."
+      - key: lesson-08-02-a-post-about-your-own-work
+        file: 08.02-a-post-about-your-own-work.md
+        title: "A post about your own work"
+        goal: "Write a post about real work (the problem, what you tried, the numbers and what you would change) in plain words, and test it by asking someone to say it back."
+      - key: lesson-08-03-publish-once-share-in-ten-places
+        file: 08.03-publish-once-share-in-ten-places.md
+        title: "Publish once, share in about ten places"
+        goal: "Publish on your own page first, then share copies with a 'first published at' line and a canonical link where the platform supports one."
+      - key: lesson-08-04-a-website-that-is-clearly-yours
+        file: 08.04-a-website-that-is-clearly-yours.md
+        title: "A website that is clearly yours"
+        goal: "Plan a small, clean site on a free static host and make it yours with specifics: your numbers, screenshots, mistakes and dates."
+      - key: lesson-08-05-write-your-post
+        file: 08.05-write-your-post.md
+        title: "Write your post and publishing plan"
+        goal: "Write one post about your own work and a plan for about ten channels with the right link line for each, or work from the provided fellow's material."
+      - key: lesson-08-06-plan-your-website
+        file: 08.06-plan-your-website.md
+        title: "Plan your website"
+        goal: "Write a website plan: pages, which case study and post go where, a free host with its check date, and what makes it yours."
+      - key: lesson-08-07-quiz
+        file: 08.07-quiz.md
+        title: "Writing, distribution and your personal site"
+        goal: "Graded scenarios on posts about your work, plain language, canonical links, channels and personal websites."
+      - key: lesson-08-08-checklist
+        file: 08.08-checklist.md
+        title: "Checklist and learning log"
+        goal: "Gate: record the say-it-back test on your post, and link a published copy if you have one."
+  - key: module-09-capstone-your-kit-defended
+    dir: 09-capstone-your-kit-defended
+    title: "Capstone: your kit, defended"
+    summary: "Assemble the finished kit, check that every number has a source, and defend it in a full AI interview or a recorded walkthrough. Turn the feedback into the next thing to build or measure."
+    lessons:
+      - key: lesson-09-01-set-the-scene
+        file: 09.01-set-the-scene.md
+        title: "Set the scene"
+        goal: "Introduce the capstone through a QA engineer whose mentor picked one line of his kit and asked where its number came from, and read the capstone brief and rubric."
+      - key: lesson-09-02-from-feedback-to-your-next-step
+        file: 09.02-from-feedback-to-your-next-step.md
+        title: "From feedback to your next step"
+        goal: "Turn interviewer or mentor feedback into one change to the kit and one thing to build or measure next, and notice when the feedback is wrong."
+      - key: lesson-09-03-assemble-your-kit
+        file: 09.03-assemble-your-kit.md
+        title: "Assemble your kit"
+        goal: "Collect the eight kit parts, check that every number in the resume and profile maps to a ledger row, and mark what is published and what stays private."
+      - key: lesson-09-04-defend-your-kit
+        file: 09.04-defend-your-kit.md
+        title: "Defend your kit"
+        goal: "Defend your kit in a full AI interview on your resume and your best work, or in a recorded five-minute walkthrough, then fix one thing the feedback named."
+      - key: lesson-09-05-quiz
+        file: 09.05-quiz.md
+        title: "Mixed review"
+        goal: "Mixed graded scenarios from every module: find what is missing in a claim, a bullet, a profile, a showcase or a post."
+      - key: lesson-09-06-checklist
+        file: 09.06-checklist.md
+        title: "Course checklist and learning log"
+        goal: "Final checks: compare your capstone feedback or written answers with your module 1 baseline, and answer your mentor's follow-up questions."
