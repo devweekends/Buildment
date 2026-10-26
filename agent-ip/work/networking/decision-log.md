@@ -129,3 +129,7 @@ The recordings (`recordings/replay-*.txt`) are the only source for the `[replay]
 **Context:** the lab session built slice 1 on branch `feat/netlab` (worktree `C:\Users\Zeeshan\buildment-netlab`, local only, waiting for the sponsor's review). Spec to target: `NetLabSpec` in `frontend/src/lab/types.ts`, family `net`, mode `explore | fault | plan`; topology of devices (host, router, switch with interfaces, routes, sockets, forwarding, silent, filter rules) and links; fault labs carry reachability checks and plan labs a solution that the validator replays. Graded lab slugs keep the `net-lab-*` prefix; examples `net-lab-fix-office`, `net-lab-plan-school`, `net-explore-office`. Commands covered: `ip addr/link/route/route get/neigh`, `arp -a`, `ping`, `traceroute`, `ss -tlnp`, `curl` to an IP, `sysctl ip_forward`. Not yet built: beat mode (PG2), NAT, DHCP, DNS.
 
 **Decision:** module 1 needs none of it. Modules 3 and 4 write their graded labs (3.10, 4.8) against this spec once `feat/netlab` is merged; Learn chapters keep the `[sequence]` fallback until beat mode exists.
+
+## 2026-10-26: Reusable canvases first
+
+**Decision:** at the sponsor's request that future courses be mostly Markdown, `agent-ip/proposals/2026-10-26-canvases-from-markdown.md` proposes a renderer catalog and a `canvas` fence. Until it is decided, every new networking canvas is a mode of the course's generic renderers (`addr`, `packet`, `replay`) with plain serialisable data and a schema, so it can become a fence later without new code.
