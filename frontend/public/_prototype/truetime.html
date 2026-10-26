@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TrueTime prototype</title>
+<style>
+  :root {
+    --bg: #fbfaf8; --card: #ffffff; --ink: #1c1b19; --muted: #6b6760; --line: #e4e1db;
+    --accent: #2563eb; --accent-soft: #dbe7ff; --good: #059669; --good-soft: #d6f5e9;
+    --warn: #d97706; --warn-soft: #fdecc8; --bad: #dc2626; --bad-soft: #fde0de;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 18px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 32px 16px 120px; }
+  .kicker { font: 600 13px/1 ui-monospace, monospace; color: var(--muted); letter-spacing: .04em; }
+  h1 { font-size: 34px; line-height: 1.15; margin: 8px 0 28px; }
+  .beat { margin: 0 0 56px; }
+  .beat h2 { font-size: 22px; margin: 0 0 14px; }
+  figure { margin: 0; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.04); position: relative; }
+  svg { display: block; width: 100%; height: auto; touch-action: none; user-select: none; }
+  .text { margin: 14px 4px 0; }
+  .text p { margin: 0 0 8px; }
+  .hint { font-size: 14px; color: var(--muted); margin: 8px 6px 0; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .hint b { color: var(--ink); }
+  .bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 6px 4px 2px; }
+  button.pill { font: 600 15px/1 system-ui, sans-serif; border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px; padding: 12px 16px; min-height: 44px; cursor: pointer; }
+  button.pill[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button.pill:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  details { margin: 10px 4px 0; border-top: 1px dashed var(--line); padding-top: 8px; }
+  summary { cursor: pointer; font-size: 15px; font-weight: 600; color: var(--accent); }
+  details p { font-size: 16px; color: #3b3935; }
+  .lbl { font: 600 14px system-ui, sans-serif; fill: var(--ink); }
+  .sm { font: 500 12px system-ui, sans-serif; fill: var(--muted); }
+  .mono { font: 600 14px ui-monospace, monospace; fill: var(--ink); }
+  .big { font: 700 18px system-ui, sans-serif; }
+  .halo { paint-order: stroke; stroke: var(--card); stroke-width: 5px; stroke-linejoin: round; }
+  .handle { cursor: ew-resize; }
+  .drag { cursor: grab; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<main>
+  <div class="kicker">10.6 · PROTOTYPE · VISUAL FIRST</div>
+  <h1>TrueTime: when a timestamp is a range</h1>
+
+  <!-- Beat 1 -->
+  <section class="beat" id="b1">
+    <h2>Two writes, 1 ms apart</h2>
+    <figure><svg id="s1" viewBox="0 0 420 230" role="img" aria-label="Two servers stamp two writes one millisecond apart"></svg></figure>
+    <div class="text"><p>Server A stamps its write <b>.000</b>. Server B stamps its write <b>.001</b>.</p><p>So A came first. Or did it?</p></div>
+  </section>
+
+  <!-- Beat 2 -->
+  <section class="beat" id="b2">
+    <h2>Every clock is a little wrong</h2>
+    <figure>
+      <svg id="s2" viewBox="0 0 420 206" role="img" aria-label="A clock reading drawn as a band around the true time"></svg>
+      <div class="hint">Press and drag <b>sideways</b> on the picture to make the clock more or less sure.</div>
+    </figure>
+    <div class="text"><p>The black line is the real time. The dot is what the clock shows. They drift apart.</p><p>A careful clock does not lie about it: it says "now is somewhere in this band". The half-width of the band is called <b>epsilon</b>.</p></div>
+    <details><summary>Go deeper</summary><p>Google's TrueTime returns exactly this: <code>TT.now()</code> gives earliest and latest. Each machine syncs to GPS and atomic clock masters every 30 seconds; between syncs it assumes a worst-case drift, so epsilon grows like a sawtooth, from about 1 ms to 7 ms, and is about 4 ms most of the time (Spanner paper, OSDI 2012).</p></details>
+  </section>
+
+  <!-- Beat 3 -->
+  <section class="beat" id="b3">
+    <h2>If the bands overlap, nobody knows the order</h2>
+    <figure>
+      <svg id="s3" viewBox="0 0 420 200" role="img" aria-label="Two time bands that may overlap"></svg>
+      <div class="hint">Drag <b>B's band</b> left and right.</div>
+    </figure>
+    <div class="text"><p>Overlapping bands mean the clocks cannot prove which write came first.</p><p>Only a gap bigger than both bands together gives a sure answer.</p></div>
+  </section>
+
+  <!-- Beat 4 -->
+  <section class="beat" id="b4">
+    <h2>The bug: Bob sees a photo he should not</h2>
+    <figure>
+      <svg id="s4" viewBox="0 0 420 350" role="img" aria-label="Alice unfriends Bob, then posts a photo; Bob still sees it"></svg>
+      <div class="bar"><button class="pill" data-replay="4">Replay</button></div>
+    </figure>
+    <div class="text"><p>Alice unfriends Bob, sees "done", then posts a photo. Server A's clock runs fast and B's runs slow.</p><p>So the photo gets the <b>earlier</b> timestamp. A reader in between sees the photo and still sees Bob as a friend.</p></div>
+    <details><summary>Go deeper</summary><p>A snapshot read at time t returns every write stamped at or before t. Here s2 = 22.4 ms and s1 = 27.6 ms, so a snapshot at 25 ms includes the photo but not the unfriend. Alice and Bob are a made-up example.</p></details>
+  </section>
+
+  <!-- Beat 5 -->
+  <section class="beat" id="b5">
+    <h2>The fix: wait out the doubt</h2>
+    <figure>
+      <svg id="s5" viewBox="0 0 420 350" role="img" aria-label="Server A waits before saying done, so the photo gets a later timestamp"></svg>
+      <div class="bar">
+        <button class="pill" id="cw" aria-pressed="true">Commit wait: on</button>
+        <button class="pill" data-replay="5">Replay</button>
+      </div>
+      <div class="hint">Drag the <b>epsilon dial</b> on server A. Watch the wait shrink.</div>
+    </figure>
+    <div class="text"><p>Server A picks the top of its band as the timestamp, then waits until even the bottom of its band is past it. Only then does Alice see "done".</p><p>That wait is about <b>2 × epsilon</b>. Anything Alice does next is guaranteed a later timestamp.</p></div>
+    <details><summary>Go deeper</summary><p>This is Spanner's commit wait: <code>TT.after(s)</code> must be true before the commit becomes visible. Better clocks mean smaller epsilon, so every write waits less. The paper measured a wait of about 5 ms, and Spanner overlaps it with replication so users do not pay all of it on top.</p></details>
+  </section>
+</main>
+
+<script>
+const NS = "http://www.w3.org/2000/svg";
+const C = n => getComputedStyle(document.documentElement).getPropertyValue("--" + n).trim();
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+function el(tag, attrs = {}, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function text(parent, x, y, str, cls = "lbl", anchor = "middle", fill) {
+  const t = el("text", { x, y, class: cls + " halo", "text-anchor": anchor }, parent);
+  if (fill) t.style.fill = fill;
+  t.textContent = str;
+  return t;
+}
+const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+
+// Shared state: epsilon in ms, used by beats 2, 3 and 5.
+const state = { eps: 4 };
+const listeners = [];
+function setEps(v) { state.eps = clamp(Math.round(v * 2) / 2, 1, 10); listeners.forEach(f => f()); }
+
+// Run an animation loop only while the figure is on screen.
+function whenVisible(svg, frame) {
+  let raf = 0, last = 0, t0 = performance.now(), running = false;
+  const loop = now => { frame((now - t0) / 1000, now - last); last = now; raf = requestAnimationFrame(loop); };
+  new IntersectionObserver(([e]) => {
+    if (e.isIntersecting && !running) { running = true; last = performance.now(); raf = requestAnimationFrame(loop); }
+    if (!e.isIntersecting && running) { running = false; cancelAnimationFrame(raf); }
+  }, { threshold: 0.25 }).observe(svg);
+  if (reduce) frame(99, 16);
+  return { restart() { t0 = performance.now(); } };
+}
+
+// Make an SVG element draggable along x; cb gets the x in viewBox units.
+function dragX(svg, target, cb) {
+  const toX = ev => { const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY; return p.matrixTransform(svg.getScreenCTM().inverse()).x; };
+  let on = false;
+  target.addEventListener("pointerdown", ev => { on = true; target.setPointerCapture(ev.pointerId); cb(toX(ev)); ev.preventDefault(); });
+  target.addEventListener("pointermove", ev => { if (on) cb(toX(ev)); });
+  target.addEventListener("pointerup", () => { on = false; });
+  target.addEventListener("pointercancel", () => { on = false; });
+}
+
+/* ---------- Beat 1: two servers stamp two writes ---------- */
+(() => {
+  const s = document.getElementById("s1");
+  const box = (x, name) => {
+    const g = el("g", {}, s);
+    el("rect", { x: x - 70, y: 92, width: 140, height: 96, rx: 16, fill: C("card"), stroke: C("line"), "stroke-width": 2 }, g);
+    text(g, x, 118, name);
+    const clock = text(g, x, 150, "12:00:00.000", "mono");
+    const stamp = el("g", { opacity: 0 }, g);
+    el("rect", { x: x - 52, y: 160, width: 104, height: 22, rx: 11, fill: C("accent-soft") }, stamp);
+    const st = text(stamp, x, 176, "", "mono"); st.style.fontSize = "13px";
+    return { clock, stamp, st };
+  };
+  const A = box(110, "Server A"), B = box(310, "Server B");
+  const userA = el("circle", { r: 10, fill: C("accent") }, s), userB = el("circle", { r: 10, fill: C("accent") }, s);
+  text(s, 110, 30, "write 1", "sm"); text(s, 310, 30, "write 2", "sm");
+  whenVisible(s, t => {
+    const cyc = t % 5;
+    // Slow motion: 5 ms of clock time per second. Both writes land at 1.2 s,
+    // when A reads .000 and B (1 ms ahead) reads .001.
+    const ms = (994 + Math.floor(cyc * 5)) % 1000;
+    const fmt = v => (v >= 994 ? "11:59:59." : "12:00:00.") + String(v).padStart(3, "0");
+    A.clock.textContent = fmt(ms);
+    B.clock.textContent = fmt((ms + 1) % 1000);
+    const pa = clamp(cyc / 1.2, 0, 1), pb = pa;
+    userA.setAttribute("cx", 110); userA.setAttribute("cy", lerp(46, 110, ease(pa))); userA.setAttribute("opacity", pa < 1 ? 1 : 0);
+    userB.setAttribute("cx", 310); userB.setAttribute("cy", lerp(46, 110, ease(pb))); userB.setAttribute("opacity", pb < 1 ? 1 : 0);
+    A.stamp.setAttribute("opacity", pa >= 1 ? 1 : 0); A.st.textContent = "stamp .000";
+    B.stamp.setAttribute("opacity", pb >= 1 ? 1 : 0); B.st.textContent = "stamp .001";
+  });
+})();
+
+/* ---------- Beat 2: a clock reading is a band around true time ---------- */
+(() => {
+  const s = document.getElementById("s2");
+  const x0 = 24, x1 = 396, span = 30; // the axis shows 30 ms
+  const X = ms => x0 + (ms / span) * (x1 - x0);
+  el("line", { x1: x0, x2: x1, y1: 172, y2: 172, stroke: C("line"), "stroke-width": 2 }, s);
+  for (let m = 0; m <= span; m += 10) { el("line", { x1: X(m), x2: X(m), y1: 172, y2: 178, stroke: C("muted") }, s); text(s, X(m), 196, m + " ms", "sm"); }
+  const band = el("rect", { y: 86, height: 56, rx: 14, fill: C("accent-soft"), stroke: C("accent"), "stroke-width": 2 }, s);
+  const truth = el("line", { y1: 44, y2: 172, stroke: C("ink"), "stroke-width": 3 }, s);
+  const truthLbl = text(s, 0, 34, "real time", "lbl");
+  const dot = el("circle", { cy: 114, r: 10, fill: C("accent") }, s);
+  const dotLbl = text(s, 0, 162, "clock shows", "sm");
+  const edge = el("rect", { y: 78, width: 24, height: 72, rx: 9, fill: C("accent"), class: "handle", tabindex: 0, role: "slider", "aria-label": "Epsilon", "aria-valuemin": 1, "aria-valuemax": 10 }, s);
+  const epsLbl = text(s, 0, 120, "", "lbl big", "start", C("accent"));
+  let center = 0, frozen = null, clock = 0;
+  // Press anywhere on the picture: the motion freezes and epsilon follows
+  // the distance from the dot to your finger.
+  const toX = ev => { const p = s.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY; return p.matrixTransform(s.getScreenCTM().inverse()).x; };
+  const fromPointer = ev => setEps((Math.abs(toX(ev) - X(center)) / (x1 - x0)) * span);
+  s.addEventListener("pointerdown", ev => { frozen = clock; s.setPointerCapture(ev.pointerId); fromPointer(ev); });
+  s.addEventListener("pointermove", ev => { if (frozen !== null) fromPointer(ev); });
+  s.addEventListener("pointerup", () => { frozen = null; });
+  s.addEventListener("pointercancel", () => { frozen = null; });
+  s.style.cursor = "ew-resize";
+  edge.addEventListener("keydown", e => { if (e.key === "ArrowRight") setEps(state.eps + .5); if (e.key === "ArrowLeft") setEps(state.eps - .5); });
+  whenVisible(s, t => {
+    clock = t;
+    if (frozen !== null) t = frozen;
+    const now = 13 + 5 * Math.sin(t * 0.5);             // real time wanders across the axis
+    const err = state.eps * 0.85 * Math.sin(t * 1.1);   // the clock drifts, always inside epsilon
+    center = now + err;
+    const e = state.eps;
+    band.setAttribute("x", X(center - e)); band.setAttribute("width", X(center + e) - X(center - e));
+    truth.setAttribute("x1", X(now)); truth.setAttribute("x2", X(now)); truthLbl.setAttribute("x", X(now));
+    dot.setAttribute("cx", X(center)); dotLbl.setAttribute("x", X(center));
+    edge.setAttribute("x", X(center + e) - 12);
+    // Keep the epsilon label on the side of the handle that has room.
+    const right = X(center + e) + 20;
+    if (right < x1 - 90) { epsLbl.setAttribute("x", right); epsLbl.setAttribute("text-anchor", "start"); }
+    else { epsLbl.setAttribute("x", X(center - e) - 14); epsLbl.setAttribute("text-anchor", "end"); }
+    epsLbl.textContent = "ε = " + e + " ms";
+    edge.setAttribute("aria-valuenow", e);
+  });
+})();
+
+/* ---------- Beat 3: overlap means unknown order ---------- */
+(() => {
+  const s = document.getElementById("s3");
+  const x0 = 30, x1 = 390, span = 40;
+  const X = ms => x0 + (ms / span) * (x1 - x0);
+  const M = x => ((x - x0) / (x1 - x0)) * span;
+  el("line", { x1: x0, x2: x1, y1: 150, y2: 150, stroke: C("line"), "stroke-width": 2 }, s);
+  for (let m = 0; m <= span; m += 10) text(s, X(m), 172, m + " ms", "sm");
+  const a = 16; let b = 20;
+  const bandA = el("rect", { y: 58, height: 34, rx: 10, fill: C("accent-soft"), stroke: C("accent"), "stroke-width": 2 }, s);
+  const lblA = text(s, 0, 80, "A's write", "lbl");
+  const bandB = el("rect", { y: 100, height: 34, rx: 10, "stroke-width": 2, class: "drag", tabindex: 0, role: "slider", "aria-label": "Move B's write" }, s);
+  const lblB = text(s, 0, 122, "B's write", "lbl"); lblB.style.pointerEvents = "none";
+  const overlap = el("rect", { y: 54, height: 84, rx: 8, fill: C("warn-soft"), opacity: .7 }, s);
+  s.insertBefore(overlap, bandA);
+  const verdict = text(s, 210, 32, "", "lbl big");
+  dragX(s, bandB, x => { b = clamp(M(x), 2, 38); draw(); });
+  bandB.addEventListener("keydown", e => { if (e.key === "ArrowRight") { b = clamp(b + 1, 2, 38); draw(); } if (e.key === "ArrowLeft") { b = clamp(b - 1, 2, 38); draw(); } });
+  function draw() {
+    const e = state.eps;
+    bandA.setAttribute("x", X(a - e)); bandA.setAttribute("width", X(a + e) - X(a - e)); lblA.setAttribute("x", X(a));
+    bandB.setAttribute("x", X(b - e)); bandB.setAttribute("width", X(b + e) - X(b - e)); lblB.setAttribute("x", X(b));
+    const lo = Math.max(a - e, b - e), hi = Math.min(a + e, b + e);
+    const sure = hi < lo;
+    overlap.setAttribute("opacity", sure ? 0 : .8);
+    if (!sure) { overlap.setAttribute("x", X(lo)); overlap.setAttribute("width", X(hi) - X(lo)); }
+    bandB.setAttribute("fill", sure ? C("good-soft") : C("warn-soft"));
+    bandB.setAttribute("stroke", sure ? C("good") : C("warn"));
+    verdict.textContent = sure ? (b > a ? "A first, for sure" : "B first, for sure") : "Order unknown";
+    verdict.style.fill = sure ? C("good") : C("warn");
+  }
+  listeners.push(draw); draw();
+})();
+
+/* ---------- Beats 4 and 5: Alice, Bob and the photo ---------- */
+function story(svgId, opts) {
+  const s = document.getElementById(svgId);
+  const pos = { alice: [52, 104], A: [210, 84], B: [210, 172], bob: [368, 128] };
+  const actor = (key, name, sub) => {
+    const [x, y] = pos[key];
+    const g = el("g", {}, s);
+    const r = el("rect", { x: x - 46, y: y - 26, width: 92, height: 52, rx: 14, fill: C("card"), stroke: C("line"), "stroke-width": 2 }, g);
+    text(g, x, y - 2, name);
+    const st = text(g, x, y + 15, sub, "sm");
+    return { g, r, st };
+  };
+  const alice = actor("alice", "Alice", "phone");
+  const A = actor("A", "Server A", "clock fast");
+  const B = actor("B", "Server B", "clock slow");
+  const bob = actor("bob", "Bob", "reads feed");
+  // Timeline of timestamps (ms) under the scene.
+  const x0 = 30, x1 = 390, lo = 10, hi = 40;
+  const X = ms => x0 + ((ms - lo) / (hi - lo)) * (x1 - x0);
+  const AX = 306; // the timestamp axis
+  el("line", { x1: x0, x2: x1, y1: AX, y2: AX, stroke: C("line"), "stroke-width": 2 }, s);
+  for (let m = lo; m <= hi; m += 10) text(s, X(m), AX + 20, m + " ms", "sm");
+  text(s, x0, 236, "timestamps", "sm", "start");
+  const tagA = el("g", { opacity: 0 }, s), tagB = el("g", { opacity: 0 }, s), snap = el("g", { opacity: 0 }, s);
+  // s1 sits on the upper row and s2 on the lower row, so they never cover each other.
+  const mkTag = (g, color, soft, y) => { const r = el("rect", { y, width: 78, height: 24, rx: 12, fill: soft, stroke: color, "stroke-width": 2 }, g); const t = text(g, 0, y + 17, "", "mono"); t.style.fontSize = "12px"; const tick = el("line", { y1: y + 24, y2: AX, stroke: color, "stroke-width": 3 }, g); return { r, t, tick }; };
+  const TA = mkTag(tagA, C("accent"), C("accent-soft"), 244), TB = mkTag(tagB, C("accent"), C("accent-soft"), 274);
+  const snapLine = el("line", { y1: 228, y2: AX, stroke: C("ink"), "stroke-width": 2, "stroke-dasharray": "4 4" }, snap);
+  const snapTxt = text(snap, 0, 222, "Bob reads here", "sm");
+  const packet = el("g", { opacity: 0 }, s);
+  el("circle", { r: 11, fill: C("accent") }, packet);
+  const pktLbl = text(packet, 0, -16, "", "sm");
+  // Commit wait hourglass ring on server A.
+  const ring = el("circle", { cx: pos.A[0] + 58, cy: pos.A[1], r: 13, fill: "none", stroke: C("warn"), "stroke-width": 5, "stroke-dasharray": "0 100", transform: `rotate(-90 ${pos.A[0] + 58} ${pos.A[1]})`, opacity: 0 }, s);
+  const ringTxt = text(s, pos.A[0] + 58, pos.A[1] - 22, "", "sm", "middle", C("warn"));
+  const verdict = text(s, 210, 30, "", "lbl big");
+  const banner = el("rect", { x: pos.bob[0] - 50, y: pos.bob[1] - 30, width: 100, height: 60, rx: 16, fill: "none", "stroke-width": 4, opacity: 0 }, s);
+
+  // Optional epsilon dial on server A (beat 5): drag left and right.
+  let dialTxt = null;
+  if (opts.dial) {
+    const dial = el("g", { class: "handle", tabindex: 0, role: "slider", "aria-label": "Epsilon" }, s);
+    el("rect", { x: pos.A[0] - 46, y: pos.A[1] + 30, width: 92, height: 30, rx: 15, fill: C("accent"), }, dial);
+    dialTxt = text(dial, pos.A[0], pos.A[1] + 50, "", "lbl", "middle", "#fff"); dialTxt.classList.remove("halo");
+    let startX = null, startEps = 0;
+    dial.addEventListener("pointerdown", ev => { startX = ev.clientX; startEps = state.eps; dial.setPointerCapture(ev.pointerId); });
+    dial.addEventListener("pointermove", ev => { if (startX !== null) setEps(startEps + (ev.clientX - startX) / 18); });
+    dial.addEventListener("pointerup", () => { startX = null; });
+    dial.addEventListener("keydown", e => { if (e.key === "ArrowRight") setEps(state.eps + .5); if (e.key === "ArrowLeft") setEps(state.eps - .5); });
+    s.appendChild(packet);
+  }
+
+  const model = () => {
+    const e = state.eps, wait = opts.wait();
+    const t1 = 20, errA = 0.9 * e, errB = -0.9 * e;
+    const s1 = t1 + errA + e;
+    const done = wait ? t1 + 2 * e : t1;
+    const t2 = done + 2;
+    const s2 = t2 + errB + e;
+    const snapAt = (s1 + s2) / 2;
+    return { e, wait, s1, s2, done, snapAt, broken: s2 <= s1 };
+  };
+
+  // Scripted scenes, each [start, end] in seconds of the loop.
+  const fly = (from, to, p, label) => {
+    const [ax, ay] = pos[from], [bx, by] = pos[to];
+    packet.setAttribute("opacity", p > 0 && p < 1 ? 1 : 0);
+    packet.setAttribute("transform", `translate(${lerp(ax, bx, ease(p))},${lerp(ay, by, ease(p))})`);
+    pktLbl.textContent = label;
+  };
+  const anim = whenVisible(s, t => {
+    const m = model();
+    if (dialTxt) dialTxt.textContent = "ε " + m.e + " ms ⇆";
+    const waitSecs = m.wait ? 0.25 * 2 * m.e : 0; // slow-motion wait
+    const T = [0, 1.2, 1.2 + waitSecs, 2.4 + waitSecs, 3.6 + waitSecs, 4.6 + waitSecs, 7.5 + waitSecs];
+    const tt = reduce ? 99 : t % T[6];
+    // 1. Alice to A: unfriend Bob
+    if (tt < T[1]) fly("alice", "A", tt / T[1], "unfriend Bob");
+    // 2. A stamps and maybe waits
+    const stamped = tt >= T[1];
+    tagA.setAttribute("opacity", stamped ? 1 : 0);
+    TA.t.textContent = "s1 " + m.s1.toFixed(1);
+    TA.r.setAttribute("x", X(m.s1) - 39); TA.t.setAttribute("x", X(m.s1)); TA.tick.setAttribute("x1", X(m.s1)); TA.tick.setAttribute("x2", X(m.s1));
+    const waiting = m.wait && tt >= T[1] && tt < T[2];
+    ring.setAttribute("opacity", m.wait && tt >= T[1] ? 1 : 0);
+    const wp = waitSecs ? clamp((tt - T[1]) / waitSecs, 0, 1) : 1;
+    ring.setAttribute("stroke-dasharray", `${wp * 82} 100`);
+    ringTxt.textContent = m.wait ? (waiting ? "waiting " + (wp * 2 * m.e).toFixed(1) + " ms" : "waited " + 2 * m.e + " ms") : "";
+    ringTxt.setAttribute("opacity", m.wait && tt >= T[1] ? 1 : 0);
+    // 3. A tells Alice done
+    if (tt >= T[2] && tt < T[3]) fly("A", "alice", (tt - T[2]) / (T[3] - T[2]), "done");
+    // 4. Alice to B: post photo
+    if (tt >= T[3] && tt < T[4]) fly("alice", "B", (tt - T[3]) / (T[4] - T[3]), "post photo");
+    if (tt >= T[4] && tt < T[1] + 0 || tt >= T[4]) packet.setAttribute("opacity", tt < T[4] + 0.01 ? packet.getAttribute("opacity") : 0);
+    tagB.setAttribute("opacity", tt >= T[4] ? 1 : 0);
+    TB.t.textContent = "s2 " + m.s2.toFixed(1);
+    TB.r.setAttribute("x", X(m.s2) - 39); TB.t.setAttribute("x", X(m.s2)); TB.tick.setAttribute("x1", X(m.s2)); TB.tick.setAttribute("x2", X(m.s2));
+    const broken = m.broken;
+    TB.r.setAttribute("fill", tt >= T[5] ? (broken ? C("bad-soft") : C("good-soft")) : C("accent-soft"));
+    TB.r.setAttribute("stroke", tt >= T[5] ? (broken ? C("bad") : C("good")) : C("accent"));
+    // 5. Bob reads a snapshot between the two timestamps
+    const showSnap = tt >= T[5];
+    snap.setAttribute("opacity", showSnap && broken ? 1 : 0);
+    snapLine.setAttribute("x1", X(m.snapAt)); snapLine.setAttribute("x2", X(m.snapAt)); snapTxt.setAttribute("x", X(m.snapAt));
+    banner.setAttribute("opacity", showSnap ? 1 : 0);
+    banner.setAttribute("stroke", broken ? C("bad") : C("good"));
+    bob.st.textContent = showSnap ? (broken ? "sees the photo!" : "photo hidden") : "reads feed";
+    bob.st.style.fill = showSnap ? (broken ? C("bad") : C("good")) : C("muted");
+    verdict.textContent = showSnap ? (broken ? "Photo stamped before the unfriend" : "Order is safe: s1 < s2") : "";
+    verdict.style.fill = broken ? C("bad") : C("good");
+  });
+  return anim;
+}
+
+let commitWait = true;
+const anim4 = story("s4", { wait: () => false });
+const anim5 = story("s5", { wait: () => commitWait, dial: true });
+document.querySelectorAll("[data-replay]").forEach(b => b.addEventListener("click", () => (b.dataset.replay === "4" ? anim4 : anim5).restart()));
+const cw = document.getElementById("cw");
+cw.addEventListener("click", () => { commitWait = !commitWait; cw.setAttribute("aria-pressed", commitWait); cw.textContent = "Commit wait: " + (commitWait ? "on" : "off"); anim5.restart(); });
+</script>
+</body>
+</html>
