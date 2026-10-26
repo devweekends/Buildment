@@ -1,0 +1,275 @@
+slug: networking
+repositoryPublish: true
+repositoryEditorialAudit: advisory
+title: "Networking, Hands On: How Your Devices Really Reach the Internet"
+description: "Find out how your laptop, phone and home router really reach the internet. Read the real numbers on your own machine, play with interactive pieces where addresses, ports and TTL change hop by hop, write the core address and routing logic in graded code exercises, and build a working home network inside one Linux machine (subnets, a router, NAT, DHCP and DNS) that you then break on purpose and fix."
+projectGoal: "Build a small internet on one laptop from Linux network namespaces: two subnets, a home router with NAT and port forwarding, a guest network, DHCP and DNS, prove it with ping, curl, dig and tcpdump, then break it on purpose, fix it from evidence, and explain it in a five-minute demo."
+difficulty: Beginner
+estimatedHours: 42
+category: tech
+# Starter code: https://github.com/devweekends/networking-challenges (public template).
+modules:
+  - dir: 01-your-laptop-on-a-network
+    title: "Your laptop is already on a network"
+    summary: "See that your own devices already form a network with real numbers, set up the lab, build a first network in the first sitting, and only then explain what the capture showed."
+    lessons:
+      - file: 01.01-which-address-is-yours.md
+        title: "Which address is yours?"
+        goal: "Find your computer's address, mask, gateway and DNS server, and the address a website sees. Write all five down for the rest of the module."
+      - file: 01.02-install-the-lab.md
+        title: "Install the lab"
+        goal: "Start the Docker Desktop download first. Then start the lab, pass the setup checker, see it fail on purpose, and learn its five named failures."
+      - file: 01.03-seven-commands-and-your-own-numbers.md
+        title: "Seven commands and your own numbers"
+        goal: "Learn the seven shell commands the course needs. Paste your five numbers into a file, and let a checker in the lab read them back and print your mask as a prefix."
+      - file: 01.04-two-computers-inside-your-laptop.md
+        title: "Two computers inside your laptop"
+        goal: "Build two computers inside the lab and join them with a virtual cable. Ping one from the other, see a ping to nobody fail silently, and capture what crossed the cable."
+      - file: 01.05-what-one-ping-actually-sent.md
+        title: "What one ping actually sent"
+        goal: "Open the packets from your capture and from a real DNS query. Tap each field to see what it is, and see which fields change when you ping a different computer."
+      - file: 01.06-why-one-packet-carries-three-kinds-of-address.md
+        title: "Why does one packet carry three kinds of address?"
+        goal: "See why a packet carries a MAC address, an IP address and a port. Wrap a message in its three headers, and watch a router open only the outer one."
+      - file: 01.07-quiz.md
+        title: "Your laptop on a network"
+        goal: "Five questions on real outputs: which address a website sees, what a MAC address is, where a port is, what a router does to the TTL, and who ran a ping."
+      - file: 01.08-checklist.md
+        title: "Your home network on one page"
+        goal: "Gate for module 1. Tick each box when it is true and answer the learning log. Then hand in one page that maps your devices, router and provider and lists three open questions."
+  - dir: 02-ip-addresses
+    title: "IP addresses, and why we ran out"
+    summary: "An address as a number, why fixed classes failed and CIDR replaced them, why private ranges exist, and a first look at how a router rewrites addresses."
+    lessons:
+      - file: 02.01-4-3-billion-was-supposed-to-be-enough.md
+        title: "4.3 billion was supposed to be enough"
+        goal: "See the four dates when the free pools of IPv4 addresses ran out or reached their last block, and learn what 'ran out' means: no unused address is left to give out, and every address already in use keeps working."
+      - file: 02.02-an-address-is-one-32-bit-number.md
+        title: "An address is one 32-bit number"
+        goal: "Turn bits on and off to see why one part of an IPv4 address stops at 255, read a byte by hand by subtracting place values, and see how four bytes make one 32-bit number."
+      - file: 02.03-from-classes-to-cidr.md
+        title: "From classes to CIDR"
+        goal: "See why three fixed block sizes wasted addresses and filled routing tables. Hand blocks to five organisations by class and then by CIDR, drag the prefix length to see the size and the mask, and merge two blocks into one."
+      - file: 02.04-private-shared-and-special-addresses.md
+        title: "Private, shared and special addresses"
+        goal: "See why many homes can use the same address, sort twelve real addresses into public, private, shared and special, learn the edges that fool people, and watch a router change one packet's source address."
+      - file: 02.05-code-addresses-as-numbers.md
+        title: "Code: addresses as numbers"
+        goal: "Write ipToNumber, numberToIp and classify in JavaScript. Learn the shift, or and unsigned shift operators first, and the one trap with the top bit that turns 255.0.0.0 into a negative number."
+      - file: 02.06-quiz.md
+        title: "IP addresses"
+        goal: "Five questions: turn an address into a number, find the prefix for a size, tell a public address from a shared and a private one, and two from module 1 on the TTL and the address a website replies to."
+      - file: 02.07-checklist.md
+        title: "Why your phone starts with 192.168 or 10"
+        goal: "Gate for module 2. Tick each box when it is true and answer the learning log. Then explain to a friend why a phone's address starts with 192.168 or 10, why that is allowed, and what question a router must answer."
+  - dir: 03-local-network
+    title: "Your local network: subnets and neighbours"
+    summary: "The mask and the subnet arithmetic, how devices find each other on one network (MAC and ARP), why networks are split, how to plan addresses without overlaps."
+    lessons:
+      - file: 03.01-two-masks-two-networks.md
+        title: "Two masks, two networks"
+        goal: "Find your mask, recognise its three written forms, and record which network supplied it."
+      - file: 03.02-network-part-and-host-part.md
+        title: "Network part and host part"
+        goal: "Use the mask to find network, broadcast, host range, and whether a destination is local."
+      - file: 03.03-neighbours-mac-addresses-and-arp.md
+        title: "Neighbours: MAC addresses and ARP"
+        goal: "Follow a local ARP exchange, read a neighbour table, and distinguish it from a switch's MAC table."
+      - file: 03.04-why-split-a-network.md
+        title: "Why split a network"
+        goal: "Compare broadcast reach and access rules in a fictional school with 600 devices."
+      - file: 03.05-cutting-a-block-into-subnets.md
+        title: "Cutting a block into subnets"
+        goal: "Choose sizes for 100, 50, and 20 devices, then place each piece on its own boundary."
+      - file: 03.06-overlaps-the-bug-you-find-later.md
+        title: "Overlaps: the bug you find later"
+        goal: "Compare numeric ranges before joining home, container, office, VPN, and cloud networks."
+      - file: 03.07-code-subnet-calculator-part-1.md
+        title: "Code: subnet calculator, part 1"
+        goal: "Implement network, high endpoint, total size, and membership with strict validation and edge-prefix tests."
+      - file: 03.08-code-subnet-calculator-part-2.md
+        title: "Code: subnet calculator, part 2"
+        goal: "Write splitBlock to cut a parent block by host counts, largest first and on aligned starts, and overlaps to find every pair of ranges that share an address."
+      - file: 03.09-same-cable-wrong-mask.md
+        title: "Same cable, wrong mask"
+        goal: "Give two computers on one cable masks that disagree, ping both ways, and read two different failures: an error at once, and silence. Then ping an address nobody owns and watch the ARP requests go unanswered."
+      - file: 03.10-lab-plan-the-school-network.md
+        title: "Lab: plan the school network"
+        goal: "Fit three computer labs, staff, guest Wi-Fi and printers into one /22 with room to grow and no overlaps. Write your plan and three sentences for each size, then answer three graded questions on the fixed plan."
+      - file: 03.11-quiz.md
+        title: "Subnets and neighbours"
+        goal: "Five questions: find a network address by hand, say who hears the first frame when an ARP table is empty, spot the overlapping pair among four ranges, and two from module 2 on address numbers and kinds."
+      - file: 03.12-defend-your-plan.md
+        title: "Defend your plan"
+        goal: "Gate for module 3. Tick each box when it is true and answer the learning log. Then defend your 3.10 school plan against one change: a fourth computer lab of 40 devices arrives."
+  - dir: 04-leaving-your-network
+    title: "Leaving your network: gateways and routes"
+    summary: "The default gateway, routing tables, TTL and traceroute, and how the internet is many networks joined together; build a router."
+    lessons:
+      - file: 04.01-a-dozen-hops-to-a-website.md
+        title: "A dozen hops to a website"
+        goal: "Run a trace on your own computer, read it line by line, and mark each hop as private, public or unknown. A sample trace is here if yours shows only stars."
+      - file: 04.02-the-default-gateway.md
+        title: "The default gateway"
+        goal: "Follow one packet from your laptop to a far server. See that the destination MAC changes on every link while the IP addresses stay the same, and why a far site gets the router's MAC."
+      - file: 04.03-routing-tables-and-longest-prefix-match.md
+        title: "Routing tables and longest prefix match"
+        goal: "Pick the route for any destination: the longest prefix first, then the lower metric, with connected rows and the default included. Check your pick with ip route get."
+      - file: 04.04-ttl-icmp-and-traceroute.md
+        title: "TTL, ICMP and traceroute"
+        goal: "See how a packet's TTL counts down, how a router reports back when it reaches zero, how traceroute uses those reports to list the routers, and why some lines show * * *."
+      - file: 04.05-networks-of-networks.md
+        title: "Networks of networks"
+        goal: "See that the internet is many networks run by different organisations. Each one announces which address blocks it can reach, and when an announcement disappears, traffic to those addresses fails."
+      - file: 04.06-code-longest-prefix-match.md
+        title: "Code: longest prefix match"
+        goal: "Write the function lookup(routes, destination) in JavaScript. It picks the longest prefix, then the lower metric, and it handles the default route, connected routes and the /0 trap."
+      - file: 04.07-build-a-router.md
+        title: "Build a router"
+        goal: "Turn a computer with two plugs into a router between two networks. Switch forwarding on, add the routes both ways, ping across, and capture the MAC change on both sides of the router."
+      - file: 04.08-lab-fix-the-broken-office.md
+        title: "Lab: fix the broken office"
+        goal: "Find three faults in one office network: a wrong mask, a wrong gateway and a missing return route. Read the recorded command output, walk the path one question at a time, and choose the fix."
+      - file: 04.09-quiz.md
+        title: "Routing"
+        goal: "Five questions: the destination MAC for a local and a far packet, the row a router picks, whose address comes back for a TTL 1 probe, and two from module 3 on a network by hand and an ARP exchange."
+      - file: 04.10-checklist.md
+        title: "Your traceroute, explained"
+        goal: "Gate for module 4. Tick each box when it is true and answer the learning log. Then explain your own trace from 4.1: the hops you can explain, and a question and a check for each hop you cannot."
+  - dir: 05-ports-tcp-udp
+    title: "Ports, TCP and UDP: which app gets the packet"
+    summary: "Ports and sockets (NAT depends on them), listening addresses, TCP's handshake and reliability, and why some apps choose UDP."
+    lessons:
+      - file: 05.01-one-address-forty-conversations.md
+        title: "One address, forty conversations"
+        goal: "Your laptop has one address, but many apps talk at once. Run one command on your own computer, list your open conversations and read one line: an address and a port on each end, and a state."
+      - file: 05.02-ports-and-sockets.md
+        title: "Ports and sockets"
+        goal: "See how one laptop with one address keeps many conversations apart. Meet ports, the five numbers that name a conversation, and the two port ranges: IANA's and Linux's."
+      - file: 05.03-why-your-phone-cannot-open-localhost.md
+        title: "Why your phone cannot open localhost"
+        goal: "Your web app works at localhost:3000 on the laptop, but not on the phone. Follow the chain: localhost is the phone itself, so use the laptop's address; then the server must listen on 0.0.0.0, not 127.0.0.1."
+      - file: 05.04-tcp-a-conversation-that-survives-loss.md
+        title: "TCP: a conversation that survives loss"
+        goal: "A link can lose a packet, yet a file arrives whole. See how TCP opens a conversation with three packets, numbers every byte, names the next byte it expects, and sends lost bytes again."
+      - file: 05.05-udp-why-dns-games-and-calls-skip-the-handshake.md
+        title: "UDP: why DNS, games and calls skip the handshake"
+        goal: "Choose TCP or UDP by what a lost or late packet costs. Drag the loss rate and watch TCP make later packets wait while UDP moves on, then sort six apps and see why DNS uses both."
+      - file: 05.06-watch-a-conversation-happen.md
+        title: "Watch a conversation happen"
+        goal: "Run a web server in one lab computer, first on 127.0.0.1 and then on 0.0.0.0, and connect from another. Capture the three packets of the handshake and read the same conversation from both sides with ss."
+      - file: 05.07-ports-and-transport-quiz.md
+        title: "Ports and transport"
+        goal: "Four questions: match three replies to their sockets, pick TCP or UDP for three apps, and two from module 4 on the longest prefix and on the address a TTL 2 probe returns."
+      - file: 05.08-one-line-of-your-capture.md
+        title: "One line of your capture"
+        goal: "Gate for module 5. Tick each box when it is true and answer the learning log. Then explain every number in one line of your own handshake capture, and say what each number is for."
+  - dir: 06-nat
+    title: "NAT: how every device at home reaches the internet"
+    summary: "Answer the course question. The NAT table, why the internet cannot reach a home device, port forwarding, carrier-grade NAT, timeouts; build a home router."
+    lessons:
+      - file: 06.01-fifteen-devices-one-public-address.md
+        title: "Fifteen devices, one public address"
+        goal: "See that a website's server logs one source address for every device in a home, and meet the question this whole module answers."
+      - file: 06.02-the-nat-table.md
+        title: "The NAT table"
+        goal: "Watch a router rewrite the source address, keep one table row for each conversation, change a port only when two conversations clash, and read the real table with conntrack."
+      - file: 06.03-why-the-internet-cannot-reach-your-laptop.md
+        title: "Why the internet cannot reach your laptop"
+        goal: "See why a friend's packet cannot start a conversation with your laptop, learn that NAT is not a firewall, and open one port with a forwarding rule."
+      - file: 06.04-carrier-grade-nat.md
+        title: "Carrier-grade NAT"
+        goal: "Learn why a router's outside address can be a shared address, how a provider's own NAT rewrites your packets a second time, and how to look for the signs on your own connection."
+      - file: 06.05-nat-timeouts-keepalives-and-video-calls.md
+        title: "NAT timeouts, keepalives and video calls"
+        goal: "See why a NAT row expires after a quiet time, how keepalives keep it alive, and why video calls use a STUN server and sometimes a relay."
+      - file: 06.06-code-a-nat-table.md
+        title: "Code: a NAT table"
+        goal: "Write a NAT table in JavaScript: keep the source port unless it is taken, find the lowest free port otherwise, translate replies, drop unknown packets, and delete rows that sit idle."
+      - file: 06.07-build-a-home-router-part-1.md
+        title: "Build a home router, part 1: masquerade"
+        goal: "Put two devices behind a router, add one nft rule that hides them behind the router's outside address, read the router's real NAT table with conntrack, and make both devices send from the same port to see a clash."
+      - file: 06.08-build-a-home-router-part-2.md
+        title: "Build a home router, part 2: forwarding and a guest network"
+        goal: "Forward one port to a web server on your laptop and test it from the outside, see that an unforwarded port is refused and not left to time out, and add a guest network with one rule that keeps it away from your home devices."
+      - file: 06.09-lab-reach-the-home-server-from-outside.md
+        title: "Lab: reach the home server from outside"
+        goal: "Diagnose a home server that a friend cannot reach, in three levels: a forwarding rule with the wrong target, two web servers that both want port 80, and a provider that adds its own NAT."
+      - file: 06.10-quiz.md
+        title: "NAT"
+        goal: "Five questions: the source a server sees after one NAT with a clash, the addresses at each stage of two NATs, why an unsolicited packet fails, and two from module 5 on matching a reply to its socket and on who can connect to a listening address."
+      - file: 06.11-answer-the-course-question.md
+        title: "Answer the course question"
+        goal: "Gate for module 6. Tick each box when it is true and answer the learning log. Then answer the question of the whole course with your own capture and your own conntrack line."
+  - dir: 07-dhcp-and-dns
+    title: "Joining a network and finding names: DHCP and DNS"
+    summary: "How a device gets its settings, how names become addresses, why DNS changes are slow and DNS outages are loud, and a layer-by-layer way to diagnose."
+    lessons:
+      - file: 07.01-connected-no-internet.md
+        title: "Connected, no internet"
+        goal: "A phone says Connected and the browser says No internet. List the five places a web page can fail, in order, and see why the first one that fails names the problem."
+      - file: 07.02-dhcp-lease.md
+        title: "DHCP: how your phone got an address in a second"
+        goal: "Step through the four DHCP messages, read what a lease holds and how its timer works, watch a small pool run out, and see why a device with no lease looks different on Windows, macOS and the lab's Linux client."
+      - file: 07.03-dns-resolution.md
+        title: "DNS: from a name to an address"
+        goal: "See why no server knows every name, step through a lookup with an empty cache and a warm one, sort questions onto the root, top-level and authoritative servers, and read A, AAAA and CNAME records."
+      - file: 07.04-dns-ttl-and-outages.md
+        title: "Caches, TTLs and DNS outages"
+        goal: "Learn why an old DNS answer survives for a whole TTL, drag the times to see how long, compare short and long TTLs, and read two sourced outages: Facebook in 2021 and AWS in 2025."
+      - file: 07.05-lab-no-internet.md
+        title: "Lab: debug \"no internet\" layer by layer"
+        goal: "Learn the six checks in order, link, address, gateway, route out, DNS and a plain web request, read what each one shows, and use them to name the broken layer in three graded cases."
+      - file: 07.06-build-dhcp-dns.md
+        title: "DHCP and DNS on your router"
+        goal: "Fill four gaps in dnsmasq.conf and one in the script, run dnsmasq in your router, and watch the laptop and the phone get leases and a name. Capture one lease and commit your results."
+      - file: 07.07-dhcp-and-dns-quiz.md
+        title: "DHCP and DNS"
+        goal: "Four questions: put the steps from joining Wi-Fi to the first web packet in order, name the broken layer for three outputs, and two from module 6 on source ports and a closed port."
+      - file: 07.08-gate-no-internet-runbook.md
+        title: "A \"no internet\" runbook"
+        goal: "Gate for module 7. Tick each box when it is true and answer the learning log. Then write a runbook for your family's Wi-Fi: one command per layer, with a good output, a bad output and what the bad output means."
+  - dir: 08-capstone
+    title: "Capstone: a whole internet on one laptop"
+    summary: "Tie it together, build a complete network in checkpointed parts, break it and fix it, and explain it in a demo."
+    lessons:
+      - file: 08.01-what-happens-when-you-open-a-link.md
+        title: "What really happens when you open a link"
+        goal: "Follow one connection from the first lease to the first byte of the page. Step through DNS, ARP, the gateway, NAT, two routers and the TCP handshake, with the capstone network's real numbers."
+      - file: 08.02-capstone-addresses-routes.md
+        title: "Capstone part 1: addresses and routes"
+        goal: "Join your scripts from challenges 2 and 4 into one network with its own address plan: a home subnet, a guest subnet, a home router, a provider router and a public web server. Tests prove every path, and one path must fail."
+      - file: 08.03-capstone-nat-forwarding-isolation.md
+        title: "Capstone part 2: NAT, forwarding and isolation"
+        goal: "Add three jobs to the home router: masquerade, so the server sees one address; one forwarded port, so the outside can reach the home web server; and one filter rule, so the guest cannot reach home. Tests prove what must work and what must not."
+      - file: 08.04-capstone-dhcp-dns.md
+        title: "Capstone part 3: DHCP and DNS"
+        goal: "Starting from your challenge 5 config, give both subnets leases and names with one dnsmasq. Tests prove that three devices get leases, that names work from home and from the guest network, and that a stopped server leaves a new device with no address."
+      - file: 08.05-capstone-break-fix.md
+        title: "Capstone part 4: break it, fix it"
+        goal: "Run a seeded fault script that breaks your working network in three places. Find each fault with commands, working down the layers, fix one at a time, and write down what you saw."
+      - file: 08.06-final-check-quiz.md
+        title: "Final check"
+        goal: "Five questions that each join two or more modules, before the demo: an overlap between a VPN and a home subnet, the fields a router changes, two devices behind one address, a name that fails while a ping works, and the first command for a device with a lease that cannot reach the server."
+      - file: 08.07-gate-demo-defence.md
+        title: "Demo and defence"
+        goal: "Gate for the capstone. Tick each box when it is true and answer the learning log. Then record a five-minute demo from the template and answer three questions that a mentor picks, using your own captures."
+  - dir: 09-ipv6
+    title: "IPv6: enough addresses for everyone"
+    summary: "The long-term answer to running out, placed after the capstone so the IPv4 and NAT story stays whole: reading IPv6 addresses, and a network without NAT."
+    lessons:
+      - file: 09.01-the-address-you-did-not-know.md
+        title: "The address you did not know you had"
+        goal: "Find the IPv6 addresses on your own computer and phone, tell a link-local address from a global one, and learn that having no global address is normal on a network without IPv6."
+      - file: 09.02-reading-ipv6-addresses.md
+        title: "Reading IPv6 addresses"
+        goal: "Read a 128-bit IPv6 address as eight groups, expand and shorten it by the standard rules, tell an invalid form from a valid but non-standard one, and see why a normal subnet is a /64."
+      - file: 09.03-network-without-nat.md
+        title: "A network without NAT"
+        goal: "See a home network where every device has its own global address, compare what a server sees with and without NAT, learn that a filter and not NAT keeps strangers out, and meet SLAAC, temporary addresses and dual stack."
+      - file: 09.04-ipv6-quiz.md
+        title: "IPv6"
+        goal: "Five questions: shorten an IPv6 address, then predict what a server sees in four cases, with and without NAT, and with a filter in place."
+      - file: 09.05-gate-why-ipv4-is-still-here.md
+        title: "Why IPv4 is still here"
+        goal: "Gate for module 9. Tick each box when it is true and answer the learning log. Then explain to a friend one reason IPv6 helps and one reason IPv4 and NAT will last, each tied to a number."

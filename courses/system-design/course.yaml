@@ -5,7 +5,7 @@ title: "System Design, Hands On: Build It, Break It, Explain It"
 description: "Learn how real systems scale, stay correct and survive failure by playing with live simulations of each idea: push traffic up, kill the leader, cut the network, skew a clock. Write the core algorithms yourself in graded code exercises, build and break small systems in your own system-design-challenges repository, and pass architecture labs where you pick blocks and instance sizes to meet cost, latency and availability targets."
 projectGoal: "Design, build, measure and defend one system against stated cost, p99 latency and availability targets: a design document with estimates, a lab design that passes its targets, the core running in your repository with tests, one failure experiment with a chart, and a recorded defence."
 difficulty: Advanced
-estimatedHours: 191
+estimatedHours: 196
 category: tech
 # Modules are added here as they are written, in the order of
 # agent-ip/work/system-design/02-curriculum-roadmap.md.
@@ -132,7 +132,7 @@ modules:
         title: "Challenge 3: a load balancer"
         goal: "Build an L7 proxy with health checks, kill a backend and record the p99."
       - file: 04.09-lab-three-tiers-at-10000-requests-per-second.md
-        title: "Lab: three tiers at 10,000 requests a second"
+        title: "Lab: three layers for 10,000 requests a second (a three-tier design)"
         goal: "Size a load balancer, app tier and database for 10,000 requests a second within a budget, and survive losing a zone."
       - file: 04.10-quiz.md
         title: "Scaling out"
@@ -693,7 +693,7 @@ modules:
         title: "Code: base62 and a key range allocator"
         goal: "Implement encodeBase62, decodeBase62 and createRangeAllocator and pass the tests."
       - file: 20.06-lab-a-url-shortener-with-cache-aside.md
-        title: "Lab: a URL shortener with cache-aside"
+        title: "Lab: a short-link service that keeps answers in memory (cache-aside)"
         goal: "Put a cache in front of the links store and size its nodes and the database for 100,000 redirects a second within a budget."
       - file: 20.07-quiz.md
         title: "URL shortener"
@@ -920,3 +920,50 @@ modules:
       - file: 29.06-checklist.md
         title: "Checklist and learning log"
         goal: "Confirm the capstone is complete and compare your Daftar sketch from module 1 with how you would design it now."
+  - dir: 30-visual-lab-design-a-url-shortener
+    title: "Visual lab: design a short-link service (a URL shortener)"
+    summary: "Build a short-link service on the lab board from a load balancer, app servers, a cache, a database, a queue and a worker, then press Run: the board plays your design through peak traffic and three failures and lists every functional and non-functional check as pass or fail with the number it measured."
+    lessons:
+      - file: 30.01-set-the-scene-launch-week-and-the-checks.md
+        title: "Set the scene: launch week and the checks"
+        goal: "Split what a short-link service must do from how well it must do it, and see the eleven checks the board runs."
+      - file: 30.02-visual-lab-design-a-url-shortener.md
+        title: "Visual lab: design a short-link service (a URL shortener)"
+        goal: "Build the design on the board and fix it until all eleven checks pass inside the hourly budget."
+      - file: 30.03-read-your-run-what-each-failure-teaches.md
+        title: "Read your run: what each failure teaches"
+        goal: "Read the four scenes as lessons, with the numbers a real Docker stack measured, and name the failure the board cannot show."
+      - file: 30.04-quiz.md
+        title: "The short-link service"
+        goal: "Answer graded scenarios on a dead cache, a backlog, a shared Redis and inline counting."
+      - file: 30.05-checklist.md
+        title: "Checklist and learning log"
+        goal: "Defend one trade-off in your design and the failure it was built to survive."
+  - dir: 31-code-lab-build-and-break-a-url-shortener
+    title: "Code lab: build and break a URL shortener"
+    summary: "Run the same short-link service for real in Docker, change one thing at a time with a guess first, stop the cache, the database, a copy of the app and Redis, compare your numbers with measured ones and with the checks on the visual lab board, finish tasks of your own in the public repository, and explain what you found."
+    lessons:
+      - file: 31.01-set-the-scene-why-this-matters-and-what-you-will-do.md
+        title: "Set the scene: why this matters and what you will do"
+        goal: "Guess what happens to the wait when the cache is off, and see why a board alone is not enough."
+      - file: 31.02-set-up-and-run-the-stack.md
+        title: "Set up and run the stack"
+        goal: "Clone the public repository, start the stack with Docker, make a link, send traffic and read a healthy run."
+      - file: 31.03-your-turn-tasks.md
+        title: "Your turn: tasks"
+        goal: "Do the tasks in the repository with directions only, and name the check on the visual lab board that each one mirrors."
+      - file: 31.04-check-your-result-against-the-real-numbers.md
+        title: "Check your result against the real numbers"
+        goal: "Compare your numbers with the measured ones for speed, a dead copy, a dead cache, a dead database and lost clicks."
+      - file: 31.05-solutions-kept-apart-opened-on-purpose.md
+        title: "Solutions: kept apart, opened on purpose"
+        goal: "Know where the worked solutions live and how to use one after you have tried a task."
+      - file: 31.06-reflect-explain-it-in-your-own-words.md
+        title: "Reflect: explain it in your own words"
+        goal: "Go back to your first guess and explain the difference in your own words with one number."
+      - file: 31.07-quiz.md
+        title: "The real short-link stack"
+        goal: "Answer graded scenarios on a stopped copy, a stopped database, a stopped Redis and why the board is harsher."
+      - file: 31.08-checklist.md
+        title: "Checklist and learning log"
+        goal: "Write an incident report on one failure you caused, with a number, the board's view and a defended choice."
