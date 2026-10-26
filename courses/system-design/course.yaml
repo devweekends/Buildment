@@ -981,7 +981,7 @@ modules:
         title: "Read your run: what each failure teaches"
         goal: "Read the four scenes as lessons, with the numbers the board measured, and name the failures the board cannot show."
       - file: 32.04-quiz.md
-        title: "Quiz: the home feed"
+        title: "Home feed visual lab"
         goal: "Answer graded scenarios on a dead feed cache, a backlog, removing the queue, and the post from a huge account."
       - file: 32.05-checklist.md
         title: "Checklist and learning log"
@@ -1000,7 +1000,7 @@ modules:
         title: "Read your run: what each failure teaches"
         goal: "Read the four scenes as lessons, with the numbers the board measured, and name what the board cannot show."
       - file: 33.04-quiz.md
-        title: "Quiz: the chat service"
+        title: "Chat service visual lab"
         goal: "Answer graded scenarios on a lost gateway, a dead cache, a backlog and a reconnect storm."
       - file: 33.05-checklist.md
         title: "Checklist and learning log"
@@ -1019,7 +1019,7 @@ modules:
         title: "Read your run: what each failure teaches"
         goal: "Read the four scenes as lessons, see why a design that skips the queue looks almost free, and name the failures the board cannot show."
       - file: 34.04-quiz.md
-        title: "Quiz: the product search box"
+        title: "Product search visual lab"
         goal: "Answer graded scenarios on a cheap design that skips a job, a backlog, small versus big search nodes, and what an all-green board hides."
       - file: 34.05-checklist.md
         title: "Checklist and learning log"
@@ -1038,7 +1038,7 @@ modules:
         title: "Read your run: what each failure teaches"
         goal: "Read the four scenes as lessons, with the numbers the board measured, and name the failure the board cannot show."
       - file: 35.04-quiz.md
-        title: "Quiz: the ride service"
+        title: "Ride matching visual lab"
         goal: "Answer graded scenarios on a lost map node, a backlog, places in memory and a crowded box."
       - file: 35.05-checklist.md
         title: "Checklist and learning log"
@@ -1057,7 +1057,7 @@ modules:
         title: "Read your run: what each failure teaches"
         goal: "Read the four scenes as lessons, and name the failure the board cannot show: selling the same seat twice."
       - file: 36.04-quiz.md
-        title: "Quiz: the ticket drop"
+        title: "Ticket drop visual lab"
         goal: "Answer graded scenarios on the waiting room, a dead cache, a payment backlog and what a green board cannot show."
       - file: 36.05-checklist.md
         title: "Checklist and learning log"
@@ -1076,7 +1076,7 @@ modules:
         title: "Read your run: what each failure teaches"
         goal: "Read the four scenes as lessons, with the numbers the board measured, and name the failures the board cannot show."
       - file: 37.04-quiz.md
-        title: "Quiz: the web crawler"
+        title: "Web crawler visual lab"
         goal: "Answer graded scenarios on a dead seen-URL memory, a parser backlog, a lost fetcher and what the board cannot see."
       - file: 37.05-checklist.md
         title: "Checklist and learning log"
@@ -1095,7 +1095,7 @@ modules:
         title: "Read your run: what each failure teaches"
         goal: "Read the four scenes as lessons, see why the CDN hit rate is a measurement, and name what the board cannot show."
       - file: 38.04-quiz.md
-        title: "Quiz: the video platform"
+        title: "Video platform visual lab"
         goal: "Answer graded scenarios on a lost CDN, a backlog, a typed hit rate and what the board cannot see."
       - file: 38.05-checklist.md
         title: "Checklist and learning log"
