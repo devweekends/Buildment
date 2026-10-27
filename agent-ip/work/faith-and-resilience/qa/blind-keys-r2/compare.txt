@@ -1,3 +1,0 @@
-CHECK     06.03-good-work-little-and-often#1: matched at medium confidence. Six 45-minute sessions give 18 hours over 4 weeks and survive one bad day per week, beating the Friday plan if even one bad day hits a Friday (15 hours), though without the interactive schedule showing which days are bad, 4 untouched Fridays would total 20 hours.
-
-94 of 94 keys matched.

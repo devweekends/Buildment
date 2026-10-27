@@ -1,4 +1,0 @@
-CHECK     01.01-set-the-scene#1: matched at medium confidence. Focusing on today's actionable steps fits Islamic teaching on effort, though the details of Yasmin's week in the lesson text are not shown here.
-MISMATCH  01.02-what-only-allah-knows#1: key B, reviewer A (medium) Four of the five worries ask about unseen future outcomes only Allah knows, though option B could be argued if he takes a practical step for his cracked phone as well as his cousin's shop.
-
-93 of 94 keys matched.

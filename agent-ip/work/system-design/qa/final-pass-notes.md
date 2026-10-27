@@ -1,9 +1,0 @@
-- Challenge layout: memory rule says part-N subfolders each with README 101 + script + results + chart + test; 2.8 and 8.9 use one README per challenge. Decide and make all challenges consistent in the final pass.
-- Console shows duplicate React key errors ("west", "eu") from some canvas; find and fix in the final pass.
-- scene.test.ts can time out at 5 s under load when rendering every canvas; raise its timeout if it flakes.
-- Disk-full window (2026-10-24): rerun text QA and vitest for Module 11 (last two edits unverified) and Module 20 (QA never ran).
-- 26.4 links Bloom filters to 7.3 only; module 23 (23.4) now exists, add a link.
-- Remove writers' temporary scene tests frontend/tests/unit/canvas/zz-m18-scenes.test.ts and zz-m28-scenes.test.ts once their scenes are registered (scene.test.ts covers them).
-- Clear frontend/.next before the final checks: .next/dev/types/validator.ts is corrupted (breaks tsc).
-- Check sysdesign-m22-playables.test.ts "1.09 TB" vs "1.1 TB" expectation passes.
-- toolkit/chart.js: challenges 2 (3.8, grouped) and 6 (7.8, single-series) both add an incompatible barChart; make 7.8 reuse the grouped one and rerun its code.

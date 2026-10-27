@@ -1,4 +1,0 @@
-kokoro-onnx>=0.6,<1
-soundfile>=0.13
-imageio-ffmpeg>=0.6
-PyYAML>=6
