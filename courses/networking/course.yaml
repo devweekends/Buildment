@@ -2,16 +2,16 @@ slug: networking
 repositoryPublish: true
 repositoryEditorialAudit: advisory
 title: "Networking, Hands On: How Your Devices Really Reach the Internet"
-description: "Find out how your laptop, phone and home router really reach the internet. Read the real numbers on your own machine, play with interactive pieces where addresses, ports and TTL change hop by hop, write the core address and routing logic in graded code exercises, and build a working home network inside one Linux machine (subnets, a router, NAT, DHCP and DNS) that you then break on purpose and fix."
+description: "Find out how your laptop, phone and home router really reach the internet. Read the real numbers on your own machine, play with interactive pieces where addresses, ports and TTL change hop by hop, write the core address and routing logic in graded code exercises, and build a working home network inside one Linux machine (subnets, a router, NAT, DHCP and DNS) that you then break on purpose and fix. Part 2 shows how networks run by different companies reach each other with BGP, builds a WireGuard VPN, and teaches seven everyday network tools."
 projectGoal: "Build a small internet on one laptop from Linux network namespaces: two subnets, a home router with NAT and port forwarding, a guest network, DHCP and DNS, prove it with ping, curl, dig and tcpdump, then break it on purpose, fix it from evidence, and explain it in a five-minute demo."
 difficulty: Beginner
-estimatedHours: 42
+estimatedHours: 59
 category: tech
 # Starter code: https://github.com/devweekends/networking-challenges (public template).
 modules:
   - dir: 01-your-laptop-on-a-network
     title: "Your laptop is already on a network"
-    summary: "See that your own devices already form a network with real numbers, set up the lab, build a first network in the first sitting, and only then explain what the capture showed."
+    summary: "See that the learner's own devices already form a network with real numbers, set up the lab, build a first network in the first sitting, and only then explain what the capture showed."
     lessons:
       - file: 01.01-which-address-is-yours.md
         title: "Which address is yours?"
@@ -273,3 +273,108 @@ modules:
       - file: 09.05-checklist.md
         title: "Why IPv4 is still here"
         goal: "Gate for module 9. Tick each box when it is true and answer the learning log. Then explain to a friend one reason IPv6 helps and one reason IPv4 and NAT will last, each tied to a number."
+  - dir: 10-how-networks-reach-each-other
+    title: "How networks reach each other: autonomous systems and BGP"
+    summary: "Part 2. Look up the network behind any address, see how networks tell each other what they can reach with BGP and choose with their own rules, run three networks that talk BGP, and see how a wrong announcement sends traffic to the wrong place."
+    lessons:
+      - file: 10.01-set-the-scene-whose-network-is-each-hop.md
+        title: "Whose network is each hop?"
+        goal: "In 1.1 a website saw you at a public address. Look up which network that address is in, and whose routers the public hops of your trace from 4.1 belong to, with free tools that need no account. Learn why a hop's address is a good guess about its network, not proof."
+      - file: 10.02-what-an-autonomous-system-is.md
+        title: "What an autonomous system is"
+        goal: "In 4.5 you met networks A, B and C. Real ones have numbers. Learn what an autonomous system is, how AS numbers grew from 16 to 32 bits, which numbers are private or kept for examples, who hands them out, and the ten words this module uses."
+      - file: 10.03-bgp-how-networks-tell-each-other-what-they-can-reach.md
+        title: "BGP: how networks tell each other what they can reach"
+        goal: "A network gets a new address block. How do routers on the other side of the world learn it? Follow one BGP announcement from network to network over TCP port 179, read the AS path as it grows, see why a router refuses a path that already holds its own number, and see a withdrawal travel the same road."
+      - file: 10.04-who-carries-whose-traffic-customers-providers-and-peers.md
+        title: "Who carries whose traffic: customers, providers and peers"
+        goal: "Two networks are joined by a direct cable, yet traffic goes the long way round. Learn the three kinds of link between networks, which routes a network passes to which neighbour, and why it prefers a route through a customer, set as its own preference per neighbour before path length counts."
+      - file: 10.05-where-networks-meet-exchange-points-and-undersea-cables.md
+        title: "Where networks meet: exchange points and undersea cables"
+        goal: "Networks peer, but where do their cables actually meet? See what an internet exchange point is, look one up on PeeringDB, and learn what carries traffic between continents, with dated numbers and their caveats."
+      - file: 10.06-code-pick-the-best-route.md
+        title: "Code: pick the best route"
+        goal: "Write bestRoute in JavaScript: drop any route whose AS path holds your own number, keep the longest block that holds the destination, then the highest local preference from your policy, then the shortest AS path. Meet the trap that turns a local preference of 0 into 100."
+      - file: 10.07-build-three-networks-that-talk-bgp.md
+        title: "Build: three networks that talk BGP"
+        goal: "Run three namespaces as AS64496, AS64497 and AS64498 with BIRD, read every line of the config, announce a block, read the AS path in birdc, ping across with and without the right source address, then withdraw the block and watch the ping fail at once."
+      - file: 10.08-build-a-backup-link-and-your-own-preference.md
+        title: "Build: a backup link and your own preference"
+        goal: "Add a direct cable from r1 to r3 and watch it win on path length. Then write a one-line import filter that lowers its local preference, so it becomes the backup. Cut the main link, watch traffic move to the backup and back, and count the hops each time."
+      - file: 10.09-when-routes-go-wrong-hijacks-leaks-and-an-outage.md
+        title: "When routes go wrong: hijacks, leaks, and an outage you met in module 7"
+        goal: "On 24 February 2008, for about two hours, traffic to YouTube went to the wrong network. Nobody broke into YouTube. See how a more specific block from the wrong network won by longest prefix match, what a route leak is, what RPKI origin validation catches and what it misses, and the Facebook outage of 2021 as a withdrawal."
+      - file: 10.10-build-a-wrong-announcement-and-the-filter-that-stops-it.md
+        title: "Build: a wrong announcement and the filter that stops it"
+        goal: "In your own lab, let the wrong network announce a small piece of r1's block and watch traffic split by longest prefix match. Then write a two-line import filter that accepts the block only from its owner, and watch the wrong route move to BIRD's rejected list. This is the job RPKI does with signed records."
+      - file: 10.11-quiz.md
+        title: "Networks of networks"
+        goal: "Five questions: an AS number range, an AS path with a loop, the route bestRoute picks, whether RPKI origin validation stops a bad route, and one from 4.3 on longest prefix match."
+      - file: 10.12-checklist.md
+        title: "Your path, network by network"
+        goal: "Gate for module 10. Tick each box when it is true and answer the learning log. Then map your own trace from 4.1 (or the supplied one) to the networks it crossed, check on PeeringDB whether two of them meet at the same exchange point, answer one incident question, and ask one question of your own."
+  - dir: 11-vpns
+    title: "VPNs: your own private network over the internet"
+    summary: "Part 2. A tunnel is a packet inside a packet: build a WireGuard VPN between an office and a café, each behind NAT, and prove with captures what each network sees and what a VPN does not hide."
+    lessons:
+      - file: 11.01-set-the-scene-why-the-office-server-is-out-of-reach.md
+        title: "Why the office server is out of reach"
+        goal: "You sit in a café and type your team's test server, 10.20.0.5, into the browser. Nothing happens. See with module 6 why a private address in another building cannot be reached, list the adapters on your own computer, and see why two networks with the same range break a VPN."
+      - file: 11.02-a-tunnel-is-a-packet-inside-a-packet.md
+        title: "A tunnel is a packet inside a packet"
+        goal: "Read a recorded tunnel capture: the outer UDP packet between two public addresses, and the inner ping to 10.20.0.5. Work out the outer size by hand, 84 bytes in and 156 out, and see why a tunnel lowers the biggest packet that fits."
+      - file: 11.03-wireguard-keys-and-allowed-addresses.md
+        title: "WireGuard: keys and allowed addresses"
+        goal: "Two laptops, two keys, one setting called AllowedIPs. See what a key pair is and what someone can do with your public key, how WireGuard picks the peer for a packet by longest match, which incoming packets it drops, and why a route must still send the packet into wg0."
+      - file: 11.04-build-an-office-and-a-cafe-behind-nat.md
+        title: "Build: an office and a café, each behind NAT"
+        goal: "Build two private networks far apart, an office and a café, each behind its own NAT router, with the internet between them. Forward UDP 51820 at the office to a VPN box, and prove the forward works by breaking it on purpose and clearing the old NAT state with conntrack -F."
+      - file: 11.05-build-the-tunnel.md
+        title: "Build: the tunnel"
+        goal: "Generate two key pairs, bring up a WireGuard tunnel from the café laptop to the office VPN box, add the route into wg0 and the return route on the office server, and ping 10.20.0.5. Then capture both sides, check the 156-byte outer packet, and show that an inner packet from a source outside AllowedIPs is dropped."
+      - file: 11.06-build-full-tunnel-and-split-tunnel.md
+        title: "Build: full tunnel and split tunnel"
+        goal: "Send all of the laptop's traffic through the office: a default route into wg0, a /32 route that keeps the outer packets outside the tunnel, and a way back at the office. See the lab website switch from the café's address to the office's, find the name questions still going to the café in the clear, fix them, then split the tunnel so only office traffic goes inside."
+      - file: 11.07-what-a-vpn-hides-and-what-it-does-not.md
+        title: "What a VPN hides, and what it does not"
+        goal: "Start from your own 11.6 captures and say who sees what: the café, the far end of the tunnel, and the website. See why a VPN is not anonymity, how a VPN that covers only IPv4 can leak, and why a company VPN and a VPN app you pay for are different products."
+      - file: 11.08-quiz.md
+        title: "VPNs"
+        goal: "Five questions: the outer and inner addresses of one tunnel packet, an outer packet size, which peer gets a packet, what the café sees in a split tunnel, and one from 6.2 on the address and port a NAT router puts on a packet."
+      - file: 11.09-checklist.md
+        title: "Explain your tunnel"
+        goal: "Gate for module 11. Tick each box when it is true and answer the learning log. Then explain your own challenge 8 captures to a friend: the outer packet, the inner packet, what each network saw, and what changed with the split tunnel."
+  - dir: 12-toolbox
+    title: "Your network toolbox"
+    summary: "Part 2. One broken network, four hidden faults, seven tools: Wireshark, tcpdump, mtr, dig, nmap, iperf3 and curl, each opened by a real symptom and used on your own machine."
+    lessons:
+      - file: 12.01-set-the-scene-the-slow-broken-network.md
+        title: "The slow, broken network"
+        goal: "A friend says the internet is slow. Plant four hidden faults in one lab network with your own seed, spend ten minutes with only ping and traceroute, write a best guess for each complaint, and see which questions those two tools cannot answer."
+      - file: 12.02-wireshark-read-any-capture.md
+        title: "Wireshark: read any capture"
+        goal: "Your tcpdump captures are walls of text. Install Wireshark on your own computer, open a capture file the lab wrote into your repository, filter it with display filters, follow one TCP conversation, and tell a display filter from a capture filter."
+      - file: 12.03-tcpdump-capture-only-what-you-need.md
+        title: "tcpdump: capture only what you need"
+        goal: "A ten-minute capture holds tens of thousands of packets, and you need the DNS ones. Write capture filters by port, host and network, save a capture to a file and read it back, stop after a count, and make sure a file is finished before you open it."
+      - file: 12.04-mtr-traceroute-that-keeps-watching.md
+        title: "mtr: traceroute that keeps watching"
+        goal: "One report says hop 1 loses 20% of packets. Is hop 1 broken? Run mtr, read three cases from the lab (a clean path, real loss that goes on to the last hop, and a router that limits its own replies), find the lossy cable and clear fault 1."
+      - file: 12.05-dig-ask-dns-yourself.md
+        title: "dig: ask DNS yourself"
+        goal: "The site loads on your phone's mobile data but not on the campus Wi-Fi. Same name, so why? Ask a resolver you choose with dig, get the short answer, follow a real name down from the root with +trace, compare two resolvers, and clear fault 2."
+      - file: 12.06-nmap-which-doors-are-open.md
+        title: "nmap: which doors are open"
+        goal: "Your teammate says the port is open. Your app cannot connect. Who is right? Type the consent line first, scan the lab server with nmap, read open, closed and filtered, find the rule that drops the app's port, and clear fault 3."
+      - file: 12.07-iperf3-how-fast-is-this-path-really.md
+        title: "iperf3: how fast is this path really"
+        goal: "The link should carry 100 Mbit/s, and the file copy crawls. Where did the speed go? Measure throughput between two lab computers with iperf3, in both directions, read loss with UDP, find the speed limit on one interface, and tell fault 1 from fault 4 by their evidence."
+      - file: 12.08-curl-where-the-time-goes.md
+        title: "curl: where the time goes"
+        goal: "Your app takes two seconds to load. Is it DNS, the connection, or your server? Read a whole visit with curl -v, time its steps with curl -w (name lookup, connect, first byte, total), try it on your own deployed app, and compare with the browser's Network tab."
+      - file: 12.09-quiz.md
+        title: "Tools"
+        goal: "Five questions: match a symptom to a tool, read an mtr report with loss at one hop only, choose a capture filter over a display filter, explain an nmap state, and one from 7.4 on how long an old DNS answer survives."
+      - file: 12.10-checklist.md
+        title: "Your toolbox"
+        goal: "Gate for module 12. Hand in faults.md with all four faults and their evidence, then run the blind round: two faults planted at random with new numbers, found without the matrix. Add a one-page cheat sheet with one real output per tool, tick each box and answer the learning log."
