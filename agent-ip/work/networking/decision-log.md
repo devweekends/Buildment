@@ -149,3 +149,7 @@ The recordings (`recordings/replay-*.txt`) are the only source for the `[replay]
 ## 2026-10-28: No restore points yet
 
 **Decision:** roadmap v3.1 promised `toolkit/restore.sh N.P`, but the script was never built, and a blind review found five chapters (4.7, 6.7, 6.8, 8.2 to 8.4, 8.7) sending learners to it. The chapters now say what works today: rerun the part's own script (each one deletes what it built first), finish the earlier part first, or ask the mentor. Building restore points would put working builds of challenges 2, 4 and 6 in the public template, so it is left as a sponsor decision.
+
+## 2026-10-28: Restore points built
+
+**Decision:** the sponsor chose to build `toolkit/restore.sh` in the public template, accepting that it publishes the course's own builds of challenges 2, 4 and 6. Checkpoints 2.1, 4.1, 4.2, 6.1, 6.2 and 6.3 each rebuild the lab network from the end of that part and never change the learner's files; challenge 4 part 2 can start from the course's part 1 with `PART1=`, and the capstone parts can call the restore instead of the learner's earlier part. Each checkpoint was tested against its part's test in the lab image. Chapters 4.7, 6.7, 6.8 and 8.2 to 8.7 point to it as a last resort, and the capstone demo says when it was used.
