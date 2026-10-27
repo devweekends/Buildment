@@ -48,3 +48,13 @@ None requested.
 **Sign-off:** Zeeshan (architect, human sponsor), 2026-10-24.
 
 **Consequence:** G2B is complete under the sponsor exception. G2C may start from roadmap v3. The delivery lead's record is still open.
+
+## 2026-10-27: Addendum, modules 10 to 12 (Part 2)
+
+**Artifact:** `02b-roadmap-addendum-modules-10-12.md` v0.3, after two rounds of the pedagogy and technical critiques (`qa/g2a-addendum-critique-pedagogy.md`, `qa/g2a-addendum-critique-technical.md`; both "pass with changes" in round 2, no blockers, every round 2 major applied).
+
+**Sponsor direction (2026-10-27, in their words):** "fit them in wherever you think they seem best", "Like module and chapter, you can define", and "When done, can you please make it run so I can see it?"
+
+**Decision:** the sponsor delegated placement and structure, so the recommendations on open decisions 13 to 21 are taken as the sponsor's decisions under that delegation. The sponsor sees the result in the preview and may revise any of them; a revision reopens only the affected chapters.
+
+**Sign-off:** Zeeshan (architect, human sponsor), by delegation, 2026-10-27. G2C may start for modules 10 to 12.
