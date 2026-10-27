@@ -145,3 +145,7 @@ The recordings (`recordings/replay-*.txt`) are the only source for the `[replay]
 ## 2026-10-27: Part 2, modules 10 to 12
 
 **Decision:** at the sponsor's request, the course gains Part 2, "Beyond your home network": module 10 (autonomous systems and BGP), module 11 (VPNs with WireGuard) and module 12 (a toolbox of seven tools around one broken network), after IPv6. Part 2 earns its own badge and is not needed for the course certificate. BGP leaves the out-of-scope list at beginner depth. The lab image adds `bird2`, `wireguard-tools`, `mtr-tiny`, `iperf3`, `nmap` and `whois` (207 MB to 249 MB on disk). Roadmap: `02b-roadmap-addendum-modules-10-12.md`; sign-off by delegation in `roadmap-confirmation.md`.
+
+## 2026-10-28: No restore points yet
+
+**Decision:** roadmap v3.1 promised `toolkit/restore.sh N.P`, but the script was never built, and a blind review found five chapters (4.7, 6.7, 6.8, 8.2 to 8.4, 8.7) sending learners to it. The chapters now say what works today: rerun the part's own script (each one deletes what it built first), finish the earlier part first, or ask the mentor. Building restore points would put working builds of challenges 2, 4 and 6 in the public template, so it is left as a sponsor decision.
