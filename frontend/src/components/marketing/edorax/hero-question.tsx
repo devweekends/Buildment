@@ -23,7 +23,11 @@ export function HeroQuestion() {
   return (
     <div style={{ flex: "1 1 460px", minWidth: 0, display: "flex", flexDirection: "column", alignItems: "center" }}>
       <div style={{ width: "100%", maxWidth: "540px", display: "flex", alignItems: "flex-end", gap: "4px", paddingLeft: "12px", boxSizing: "border-box" }}>
-        <Dot mood={right ? "cheer" : "think"} size={132} />
+        <span className={s.bob}>
+          <span key={right ? "cheer" : "think"} className={right ? s.pop : undefined}>
+            <Dot mood={right ? "cheer" : "think"} size={132} />
+          </span>
+        </span>
         <div style={{ marginBottom: "26px", background: "#FFFFFF", border: "1px solid #DCE0F2", padding: "10px 14px", fontSize: "15px", lineHeight: 1.4, maxWidth: "260px" }}>
           {right ? "You got it." : "Take a guess. No account needed for this one."}
         </div>

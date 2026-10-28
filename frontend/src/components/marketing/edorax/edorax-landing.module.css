@@ -13,6 +13,94 @@
   border-color: #2434E0 !important;
 }
 
+/* A little motion: Dot breathes, wins pop, panels fade in, bars grow. */
+.bob {
+  display: inline-block;
+  animation: bob 3.2s ease-in-out infinite;
+}
+
+.pop {
+  display: inline-block;
+  animation: pop 450ms ease-out;
+}
+
+.fadeIn {
+  animation: fadeIn 280ms ease-out both;
+}
+
+.grow {
+  transform-origin: bottom;
+  animation: grow 500ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.growX {
+  transform-origin: left;
+  animation: growX 500ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.packet {
+  cursor: grab;
+  outline: none;
+}
+
+.packet:focus-visible {
+  stroke: #2434E0;
+  stroke-width: 4;
+}
+
+.bar {
+  transform-origin: bottom;
+  transition: transform 600ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.reveal[data-armed="true"][data-shown="false"] .bar {
+  transform: scaleY(0);
+}
+
+.reveal > * > :nth-child(2) .bar { transition-delay: 100ms; }
+.reveal > * > :nth-child(3) .bar { transition-delay: 200ms; }
+.reveal > * > :nth-child(4) .bar { transition-delay: 300ms; }
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes pop {
+  0% { transform: scale(0.85); }
+  60% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes grow {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+@keyframes growX {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bob, .pop, .fadeIn, .grow, .growX {
+    animation: none;
+  }
+
+  .bar {
+    transition: none;
+  }
+
+  .reveal[data-armed="true"][data-shown="false"] .bar {
+    transform: none;
+  }
+}
+
 /* Tablets and phones: Dot's moods swipe instead of wrapping into uneven rows. */
 @media (max-width: 900px) {
   .railTab {
