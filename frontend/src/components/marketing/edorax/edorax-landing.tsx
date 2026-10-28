@@ -119,27 +119,27 @@ export function EdoraxLanding() {
             <div style={{ background: "#FFFFFF", border: "1px solid #DCE0F2", padding: "22px 18px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "10px" }}>
               <Dot mood="think" size={112} />
               <div style={{ fontWeight: "700", fontSize: "16px" }}>When you are stuck</div>
-              <div style={{ fontSize: "14px", lineHeight: "1.45", color: "#46507A" }}>&quot;Want a hint? Just a small one.&quot;</div>
+              <div style={{ fontSize: "14px", lineHeight: "1.45", color: "#46507A" }}>&quot;Need a hint?&quot;</div>
             </div>
             <div style={{ background: "#FFFFFF", border: "1px solid #DCE0F2", padding: "22px 18px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "10px" }}>
               <Dot mood="determined" size={112} />
               <div style={{ fontWeight: "700", fontSize: "16px" }}>When a quiz goes badly</div>
-              <div style={{ fontSize: "14px", lineHeight: "1.45", color: "#46507A" }}>&quot;Two ideas to look at again. Then try once more.&quot;</div>
+              <div style={{ fontSize: "14px", lineHeight: "1.45", color: "#46507A" }}>&quot;Let&apos;s look again!&quot;</div>
             </div>
             <div style={{ background: "#FFFFFF", border: "1px solid #DCE0F2", padding: "22px 18px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "10px" }}>
-              <Dot mood="wave" size={112} />
+              <Dot mood="miss" size={112} />
               <div style={{ fontWeight: "700", fontSize: "16px" }}>When you come back</div>
-              <div style={{ fontSize: "14px", lineHeight: "1.45", color: "#46507A" }}>&quot;I missed you! Five minutes and we&apos;re back in it.&quot;</div>
+              <div style={{ fontSize: "14px", lineHeight: "1.45", color: "#46507A" }}>&quot;You&apos;re back! I missed you!&quot;</div>
             </div>
             <div style={{ background: "#FFFFFF", border: "1px solid #DCE0F2", padding: "22px 18px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "10px" }}>
               <Dot mood="wink" size={112} />
               <div style={{ fontWeight: "700", fontSize: "16px" }}>When it finally clicks</div>
-              <div style={{ fontSize: "14px", lineHeight: "1.45", color: "#46507A" }}>&quot;That took a few tries. It will stick now.&quot;</div>
+              <div style={{ fontSize: "14px", lineHeight: "1.45", color: "#46507A" }}>&quot;You got it!&quot;</div>
             </div>
             <div style={{ background: "#FFFFFF", border: "1px solid #DCE0F2", padding: "22px 18px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", gap: "10px" }}>
               <Dot mood="cheer" size={112} />
               <div style={{ fontWeight: "700", fontSize: "16px" }}>When you finish</div>
-              <div style={{ fontSize: "14px", lineHeight: "1.45", color: "#46507A" }}>&quot;Lesson done. Next one is ready when you are.&quot;</div>
+              <div style={{ fontSize: "14px", lineHeight: "1.45", color: "#46507A" }}>&quot;Lesson done!&quot;</div>
             </div>
           </div>
           <div style={{ marginTop: "40px", background: "#FFFFFF", border: "1px solid #DCE0F2", padding: "28px", boxSizing: "border-box" }}>
