@@ -9,6 +9,9 @@ import { apiLimiter } from "./middlewares/rate-limit.js";
 import { errorHandler, notFoundHandler } from "./middlewares/error-handler.js";
 import routes from "./routes/index.js";
 import { NOTIFICATION_STREAM_PATH } from "./shared/api/notifications.js";
+import { handleGithubContentWebhook } from "./controllers/webhooks/github-content.js";
+
+export const GITHUB_CONTENT_WEBHOOK_PATH = "/api/v1/webhooks/github/content";
 
 /** Builds the Express app without listening, so tests can drive it with supertest. */
 export function createApp() {
@@ -38,6 +41,15 @@ export function createApp() {
     })
   );
 
+  // GitHub needs the raw body for HMAC verification; mount before express.json().
+  app.post(
+    GITHUB_CONTENT_WEBHOOK_PATH,
+    express.raw({ type: "*/*", limit: "5mb" }),
+    (req, res, next) => {
+      void handleGithubContentWebhook(req, res).catch(next);
+    }
+  );
+
   app.use(express.json({ limit: "1mb" }));
   app.use(cookieParser());
 
@@ -46,7 +58,12 @@ export function createApp() {
     app.use(
       pinoHttp({
         logger,
-        autoLogging: { ignore: (req) => req.url === "/health" || !!req.url?.startsWith(NOTIFICATION_STREAM_PATH) },
+        autoLogging: {
+          ignore: (req) =>
+            req.url === "/health" ||
+            !!req.url?.startsWith(NOTIFICATION_STREAM_PATH) ||
+            !!req.url?.startsWith(GITHUB_CONTENT_WEBHOOK_PATH),
+        },
       })
     );
   }

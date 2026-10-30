@@ -38,6 +38,28 @@ const schema = z.object({
 
   /** Shared secret an external scheduler presents to the jobs endpoints. */
   CRON_SECRET: optionalString,
+
+  /**
+   * GitHub webhook HMAC secret for Buildment-core push events that may sync courses.
+   * Must match the webhook Secret configured on the content repository.
+   */
+  CONTENT_WEBHOOK_SECRET: optionalString,
+  /**
+   * OpenSSH private deploy key (read-only) for cloning Buildment-core on one-off dynos.
+   * Prefer this over a personal access token.
+   */
+  CONTENT_GITHUB_SSH_KEY: optionalString,
+  /** When "true", the content one-off dyno runs courses:publish after courses:check. */
+  CONTENT_PUBLISH: z
+    .string()
+    .optional()
+    .transform((value) => value === "true"),
+  /** Heroku Platform API key used to start the content one-off dyno from the webhook. */
+  HEROKU_API_KEY: optionalString,
+  /** Heroku app name that should run the content one-off dyno (usually this app). */
+  HEROKU_APP_NAME: optionalString,
+  /** Optional branch/ref to clone from Buildment-core (default main). */
+  CONTENT_REPO_REF: optionalString,
   /** In-process scheduled jobs (study reminders, cleanup). Turn off when another replica or an external cron owns them. */
   JOBS_ENABLED: z
     .string()

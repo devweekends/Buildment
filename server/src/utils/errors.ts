@@ -76,6 +76,12 @@ export class TooManyRequestsError extends AppError {
   }
 }
 
+export class ServiceUnavailableError extends AppError {
+  constructor(message = "Service unavailable", code = "SERVICE_UNAVAILABLE") {
+    super(message, 503, code);
+  }
+}
+
 export class NotImplementedError extends AppError {
   constructor(message = "Not implemented") {
     super(message, 501, "NOT_IMPLEMENTED");
