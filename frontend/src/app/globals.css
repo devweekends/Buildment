@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "@buildment/learning-ui/course-theme.css";
+@import "../../node_modules/@buildment/learning-ui/course-theme.css";
 @source "../../node_modules/@buildment/learning-ui/src";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
