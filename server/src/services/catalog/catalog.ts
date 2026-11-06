@@ -19,6 +19,8 @@ const summarySelect = {
   priceCents: true,
   currency: true,
   mentor: { select: { name: true } },
+  ratingAverage: true,
+  ratingCount: true,
   _count: { select: { modules: { where: { archivedAt: null } }, chapters: { where: { archivedAt: null } } } },
 } as const;
 

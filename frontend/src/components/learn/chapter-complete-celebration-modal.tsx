@@ -1,11 +1,13 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, X } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Progress, ProgressLabel } from "@/components/ui/progress";
+import { StarRatingInput } from "@/components/learn/star-rating";
+import { saveCourseRatingAction } from "@/server/actions/course-rating";
 
 export function ChapterCompleteCelebrationModal({
   open,
@@ -16,6 +18,7 @@ export function ChapterCompleteCelebrationModal({
   courseTotal,
   nextHref,
   nextTitle,
+  courseSlug,
 }: {
   open: boolean;
   onClose: () => void;
@@ -26,11 +29,28 @@ export function ChapterCompleteCelebrationModal({
   courseTotal: number;
   nextHref?: string;
   nextTitle?: string;
+  /** Enables the one-time rating prompt when the course is complete. */
+  courseSlug?: string;
 }) {
+  const [rating, setRating] = useState(0);
+  const [review, setReview] = useState("");
+  const [ratingPending, setRatingPending] = useState(false);
+  const [ratingSaved, setRatingSaved] = useState(false);
+  const [ratingError, setRatingError] = useState<string | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const completed = Math.min(courseTotal, Math.max(0, courseCompleted));
   const percent = courseTotal > 0 ? Math.round((completed / courseTotal) * 100) : 0;
   const courseComplete = courseTotal > 0 && completed === courseTotal;
+
+  async function submitRating() {
+    if (!courseSlug || rating < 1) return;
+    setRatingPending(true);
+    setRatingError(null);
+    const res = await saveCourseRatingAction({ courseSlug, rating, review: review.trim() || null });
+    setRatingPending(false);
+    if (res.ok) setRatingSaved(true);
+    else setRatingError(res.error);
+  }
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -98,6 +118,43 @@ export function ChapterCompleteCelebrationModal({
             <p className="mt-2 text-xs text-muted-foreground">{percent}% complete</p>
           </div>
         ) : null}
+        {courseComplete && courseSlug ? (
+          <div className="mt-4 rounded-xl border border-border bg-muted/30 p-4">
+            {ratingSaved ? (
+              <p className="text-sm font-medium">Thanks for rating the course.</p>
+            ) : (
+              <>
+                <p className="text-sm font-semibold">How was the course?</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  Your rating helps other learners decide.
+                </p>
+                <div className="mt-2">
+                  <StarRatingInput value={rating} onChange={setRating} disabled={ratingPending} />
+                </div>
+                <textarea
+                  value={review}
+                  onChange={(event) => setReview(event.target.value)}
+                  rows={2}
+                  maxLength={1000}
+                  placeholder="Add a few words (optional)"
+                  className="mt-2 w-full resize-y rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring"
+                />
+                {ratingError ? <p className="mt-1 text-xs text-destructive">{ratingError}</p> : null}
+                <div className="mt-2 flex justify-end">
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={submitRating}
+                    disabled={rating < 1 || ratingPending}
+                  >
+                    {ratingPending ? "Saving…" : "Submit rating"}
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+        ) : null}
+
         <div className="mt-5 flex flex-col gap-2">
           {courseComplete ? (
             <Link href="/my-courses" className={buttonVariants({ className: "min-h-11" })}>View my courses <ArrowRight aria-hidden /></Link>

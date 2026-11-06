@@ -19,6 +19,7 @@ const MODAL_OPEN_DELAY_MS = 200;
 
 export function ChapterCompletionStrip(props: {
   chapterId: string;
+  courseSlug: string;
   nextLocked: boolean;
   chapterComplete: boolean;
   canMarkComplete: boolean;
@@ -39,6 +40,7 @@ type CelebrationPhase = "idle" | "burst" | "modal";
 
 function ChapterCompletionMoment({
   chapterId,
+  courseSlug,
   nextLocked,
   chapterComplete,
   canMarkComplete,
@@ -53,6 +55,7 @@ function ChapterCompletionMoment({
   streakMilestone = null,
 }: {
   chapterId: string;
+  courseSlug: string;
   nextLocked: boolean;
   chapterComplete: boolean;
   canMarkComplete: boolean;
@@ -242,6 +245,7 @@ function ChapterCompletionMoment({
         courseTotal={courseTotal}
         nextHref={nextLocked && !isComplete ? undefined : nextHref}
         nextTitle={nextTitle}
+        courseSlug={courseSlug}
       />
     </>
   );

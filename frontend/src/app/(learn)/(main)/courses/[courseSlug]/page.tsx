@@ -11,6 +11,8 @@ import { WebCourseNavigation } from "@/components/learn/course-navigation";
 import { chooseCourseSpecialisationAction, upgradeCourseCurriculumAction } from "@/server/actions/course-track";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { CourseRatingCard } from "@/components/learn/course-rating-card";
+import { CourseRatingLink } from "@/components/learn/course-rating-link";
 
 const loadOverview = cache((courseSlug: string) =>
   serverApiFetchOrNotFound<CourseOverview>(`/api/v1/courses/${encodeURIComponent(courseSlug)}/overview`)
@@ -115,7 +117,22 @@ export default async function CourseOverviewPage({
           "use server";
           await upgradeCourseCurriculumAction(course.slug);
         }}
+        ratingLink={
+          enrollment.status === "COMPLETED" && !overview.rating && overview.ratingDismissed ? (
+            <CourseRatingLink courseSlug={course.slug} />
+          ) : null
+        }
       />
+      {/* The completion modal asks first; this card is the full form or the edit surface. */}
+      {enrollment.status === "COMPLETED" &&
+      (overview.rating || !overview.ratingDismissed) ? (
+        <CourseRatingCard
+          courseSlug={course.slug}
+          courseTitle={course.title}
+          initialRating={overview.rating}
+          initialDismissed={overview.ratingDismissed}
+        />
+      ) : null}
     </WebCourseNavigation>
   );
 }
