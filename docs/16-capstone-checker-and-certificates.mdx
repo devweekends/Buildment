@@ -1,6 +1,6 @@
 ---
 title: Capstone checker and certificates
-status: draft for approval
+status: approved 2026-11-06, built
 ---
 
 # Capstone checker and certificates
@@ -24,11 +24,13 @@ certificate the learner can add to LinkedIn.
 
 ## What the mentor sees
 
-The full report sits in the existing review queue and mentee workspace: automated check
-results, per-criterion scores with the evidence the model cited, token cost, and the commit
-that was graded. The mentor presses **Confirm** (accepts the AI score and verdict) or
-**Override** (edits score, verdict and feedback). This writes the ordinary `Review` row, so the
-queue, notifications and needs-revision loop work as today. **The AI never passes a learner on
+A check reaches the existing review queue when the AI says it is complete, or when the learner
+presses **Ask my mentor to look**. There is one waiting item per learner per capstone: a newer
+check replaces the one already waiting. The review page shows the full report: automated check
+results, per-criterion scores with the evidence the model cited, the commit, the model, tokens
+and cost, plus every earlier check. The review form is prefilled from the AI result, so
+**Approve** confirms it, and changing the feedback, score or verdict overrides it. This writes
+the ordinary `Review` row, so the queue, notifications and needs-revision loop work as today. **The AI never passes a learner on
 its own.** Only a mentor-confirmed pass counts toward a certificate.
 
 ## How a check runs
@@ -141,7 +143,21 @@ expected: { completed: true, percent: 85, tolerance: 10 }
 note: Clean site, tracked links, weak README.
 ```
 
-The block in the chapter MDX: `<CapstoneCheck id="01J..." pack="capstone/rubric.yaml" />`.
+The block in a chapter is a fence; the importer reads the pack file, validates it and stores it
+in the block's server-only config (calibration files never ship to learners):
+
+````md
+```capstone
+title: Ship your personal site
+intro: Paste your repo and your live site. The check takes about a minute.
+pack: capstone/rubric.yaml
+```
+````
+
+Check ids default to the check name (`live_ok`), so a criterion gates on `[live_ok]`. Give an
+id when a pack has two checks of the same kind. `passLevel` (default: full marks) sets the level
+that counts as met. A snapshot example can include `live.html` so calibration never touches the
+network.
 
 ## Calibration test
 
@@ -223,7 +239,21 @@ block, before the mentor can confirm. Phase 1 ships the stage interface and the 
 | --- | --- |
 | `ANTHROPIC_API_KEY` on Heroku (already used by chapter Q&A) and `CAPSTONE_CHECK_ENABLED=true` | User |
 | `GITHUB_TOKEN`: fine-grained token, public repositories read-only (raises the GitHub API limit from 60 to 5,000 an hour) | User |
-| Dev Weekends LinkedIn company page id for `organizationId` (without it we fall back to `organizationName`) | User |
-| Issuer line: "Zeeshan Adil" with which title? | User |
-| Daily caps above | User |
+| Dev Weekends LinkedIn company page id, set as `CERTIFICATE_LINKEDIN_ORG_ID` (without it LinkedIn gets the name "Dev Weekends" as free text) | User |
+| Issuer title next to "Zeeshan Adil": `certificate.issuer.title` in each course.yaml (left empty until decided) | User |
+| Daily caps above (env, defaults in the cost table) | User |
+| One live calibration run per level pack (`pnpm capstone:calibrate --pack <rubric.yaml> --live --record`, about $0.20 per example) | Level sessions, with the API key |
 | Each level's capstone template ships a CI workflow that builds and runs tests | Level sessions |
+
+## Known limits and follow-ups
+
+- The desktop app's reader does not draw the capstone block yet; it needs the same block in
+  `packages/learning-ui` (the web app has it). Learners can use the web app meanwhile.
+- Certificate eligibility counts every capstone block in the course. It does not yet filter by the
+  learner's course variant or release.
+- Claude's server-side refusal fallback is not enabled. A refused grade fails the check with a
+  message telling the learner to send it to their mentor.
+- Checks run inside the API process. A restart marks running checks as interrupted after five
+  minutes so the learner can check again. A job queue can replace this if volume grows.
+- Level 3's oral exam stage is the next phase (see above).
+
