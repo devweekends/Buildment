@@ -15,7 +15,8 @@ describe("learner areas", () => {
     expect(areaForPath("/my-courses")?.id).toBe("courses");
     expect(areaForPath("/labs/visual/hld-visual-chat")?.id).toBe("labs");
     expect(areaForPath("/voice")?.id).toBe("voice");
-    expect(areaForPath("/listen")?.id).toBe("listen");
+    expect(areaForPath("/audiobooks")?.id).toBe("audiobooks");
+    expect(areaForPath("/audiobooks/collaboration")?.id).toBe("audiobooks");
     expect(areaForPath("/labsx")).toBeNull();
     expect(areaForPath("/dashboard")).toBeNull();
   });

@@ -5,7 +5,7 @@
 
 export type AreaStatus = "live" | "partly-live" | "coming-soon";
 
-export type LearnAreaId = "courses" | "listen" | "labs" | "practice" | "puzzles" | "voice";
+export type LearnAreaId = "courses" | "audiobooks" | "labs" | "practice" | "puzzles" | "voice";
 
 export interface LearnArea {
   id: LearnAreaId;
@@ -36,15 +36,15 @@ export const LEARN_AREAS: readonly LearnArea[] = [
     matches: ["/catalog", "/my-courses", "/courses"],
   },
   {
-    id: "listen",
-    name: "Listen",
-    short: "Listen",
-    href: "/listen",
+    id: "audiobooks",
+    name: "Audiobooks",
+    short: "Audiobooks",
+    href: "/audiobooks",
     status: "live",
-    tagline: "Every course as an audiobook. Learn on a walk, a drive or a run.",
+    tagline: "Every narrated course as an audiobook. Learn on a walk, a drive or a run.",
     summary:
-      "Every course with audio in one place, like a shelf of audiobooks, with its chapters and hours. Press play in any chapter and read along, or put the phone away and just listen, at any speed from 0.75x to 4x.",
-    matches: ["/listen"],
+      "A shelf of books made from the narrated courses. Chapters play one after another, the player stays with you from page to page, and every book remembers where you stopped. Skip back 15 seconds, set a sleep timer, listen at up to 2x.",
+    matches: ["/audiobooks"],
   },
   {
     id: "labs",

@@ -3,7 +3,7 @@ import type { LabKindId, LearnAreaId } from "@/lib/learn-areas";
 
 export const AREA_ICON: Record<LearnAreaId, LucideIcon> = {
   courses: BookOpenText,
-  listen: Headphones,
+  audiobooks: Headphones,
   labs: FlaskConical,
   practice: Sparkles,
   puzzles: Puzzle,

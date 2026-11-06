@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { PostHogProvider } from "@/components/posthog-provider";
 import { AppToast } from "@/components/ui/app-toast";
 import { PwaSupport } from "@/components/pwa-support";
+import { AudiobookPlayerProvider } from "@/components/audiobooks/audiobook-player";
 import { ThemeProvider } from "@/components/theme-provider";
 import { THEME_INIT_SCRIPT } from "@/lib/theme-init-script";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_SHARE_IMAGE, SITE_URL } from "@/lib/site";
@@ -72,7 +73,9 @@ export default function RootLayout({
           suppressHydrationWarning
         />
         <ThemeProvider>
-          <PostHogProvider>{children}</PostHogProvider>
+          <PostHogProvider>
+            <AudiobookPlayerProvider>{children}</AudiobookPlayerProvider>
+          </PostHogProvider>
           <AppToast />
         </ThemeProvider>
         <PwaSupport />

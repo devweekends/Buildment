@@ -934,6 +934,39 @@
 }
 
 
+/* Audiobook mini player: it sits above the phone tab bar and beside the desktop sidebar of the
+   learner workspace, and lifts floating buttons (Ask AI, focus dock) so they stay clear of it. */
+:root {
+  --audiobook-bar-bottom: 0px;
+  --audiobook-bar-left: 0px;
+  --audiobook-bar-safe: env(safe-area-inset-bottom, 0px);
+  --audiobook-bar-space: 0px;
+}
+body:has([data-learner-bottom-nav]) {
+  --audiobook-bar-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+  --audiobook-bar-safe: 0px;
+}
+@media (min-width: 64rem) {
+  body:has([data-learner-bottom-nav]) {
+    --audiobook-bar-bottom: 0px;
+    --audiobook-bar-left: 15rem;
+    --audiobook-bar-safe: env(safe-area-inset-bottom, 0px);
+  }
+}
+body:has([data-audiobook-bar]) {
+  --audiobook-bar-space: 4.75rem;
+}
+
+@keyframes audiobook-eq {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
 /*
  * The reading palette lives in the utilities layer: the typography plugin's prose-neutral is a
  * utility, so values set in the base layer lost to its grey (#404040) and lesson text was not ink.
