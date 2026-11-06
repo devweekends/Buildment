@@ -15,6 +15,7 @@ import { z } from "zod";
 import { COURSE_CATEGORY_SOURCE_VALUES } from "../src/shared/domain/enums.js";
 import { findCourseFamily } from "../src/shared/lib/course-tracks.js";
 import { isSafeProductName } from "../src/shared/lib/content-tokens.js";
+import { CertificateSettingsSchema } from "../src/shared/lib/certificates.js";
 import { ASSISTANT_GUIDANCE_MAX, ASSISTANT_STARTERS_MAX, ASSISTANT_STARTER_MAX, assistantEfforts } from "../src/services/ai/chapter-qa/assistant.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -128,6 +129,11 @@ export const CourseManifestSchema = z.object({
     /** Short questions offered as one-tap chips in every chapter. */
     starters: z.array(z.string().trim().min(3).max(ASSISTANT_STARTER_MAX)).max(ASSISTANT_STARTERS_MAX).optional(),
   }).strict().optional(),
+  /**
+   * Completion certificate for this track (docs/16-capstone-checker-and-certificates.mdx). Issued when
+   * every chapter is complete and a mentor approved every capstone check in the course.
+   */
+  certificate: CertificateSettingsSchema.optional(),
   /**
    * Branded diagrams written as ```flow and ```sequence fences (docs/diagram-components-plan.md).
    * `pnpm diagrams:export --course <slug>` writes a static SVG of each one when exportSvg is on,

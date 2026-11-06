@@ -1,0 +1,11 @@
+{
+  "summary": "The site has tracked proposal links and tests for them. The README only says how to run it.",
+  "criteria": [
+    { "id": "proposal-links", "score": 2, "evidence": ["src/links.py: one URL per proposal and a visit counter"], "missing": [] },
+    { "id": "readme", "score": 1, "evidence": ["README.md: has a run command"], "missing": ["How to test and deploy"] },
+    { "id": "tests", "score": 2, "evidence": ["tests/test_links.py: covers creating a link and a visit"], "missing": [] }
+  ],
+  "whatIsLeft": [{ "criterionId": "readme", "title": "README a mentor can follow", "steps": ["Add a Test section with the test command.", "Add a Deploy section."] }],
+  "qualityNotes": { "strengths": ["Small, focused functions."], "improvements": ["Store visits somewhere that survives a restart."] },
+  "confidence": "high"
+}

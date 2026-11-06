@@ -21,6 +21,7 @@ export const BLOCK_TYPES = [
   "VISUAL_DIAGRAM",
   "ROADMAP",
   "AI_INTERVIEW",
+  "CAPSTONE_CHECK",
 ] as const;
 export type BlockType = (typeof BLOCK_TYPES)[number];
 

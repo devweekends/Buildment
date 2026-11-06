@@ -1,4 +1,5 @@
 // GENERATED from server/src/shared — do not edit here. Run `pnpm sync-shared` in server/.
+import type { CapstoneMentorView } from "../blocks/capstone-check/report";
 import type {
   ChapterReaderMode,
   CourseCategory,
@@ -557,6 +558,8 @@ export type ReviewDetailView = {
   history: Array<{ id: string; attempt: number; verdict: ReviewVerdict; feedback: string; reviewerName: string | null }>;
   /** Quiz integrity attempts on this chapter by this learner, newest first. */
   integrity: IntegrityAttemptSummary[];
+  /** Capstone checks: the check under review and the learner's other checks on this block, newest first. */
+  capstone: { title: string; current: CapstoneMentorView | null; history: CapstoneMentorView[] } | null;
 };
 
 export type AiReviewDraft = {

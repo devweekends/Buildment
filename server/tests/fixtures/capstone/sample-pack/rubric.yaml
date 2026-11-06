@@ -1,0 +1,48 @@
+# A small pack used by the capstone tests. Real packs live with their course in Edorax-core.
+pack: sample-site
+version: 1
+title: Personal site with tracked proposal links
+passPercent: 70
+submission:
+  repo: required
+  liveUrl: required
+automated:
+  - check: repo_public
+  - check: ci_green
+  - check: files
+    paths: [README.md]
+  - check: live_ok
+  - check: live_contains
+    text: data-analytics
+snapshot:
+  include: [README.md, "src/**", "tests/**"]
+criteria:
+  - id: proposal-links
+    title: Tracked proposal links
+    weight: 40
+    required: true
+    gate: [live_ok]
+    lookFor: Each proposal has its own URL and visits are recorded per link.
+    levels:
+      0: No proposal links.
+      1: Links exist but visits are not recorded.
+      2: Links exist and every visit is recorded with the link it came from.
+  - id: readme
+    title: README a mentor can follow
+    weight: 20
+    passLevel: 1
+    lookFor: The README says what the site is, how to run it and how to deploy it.
+    levels:
+      0: No README or only the template text.
+      1: Says how to run it.
+      2: Says how to run, test and deploy it.
+  - id: tests
+    title: Tests for the link tracker
+    weight: 40
+    required: true
+    gate: [ci_green]
+    lookFor: Tests cover creating a link and recording a visit.
+    levels:
+      0: No tests.
+      1: Tests exist but miss the visit recording.
+      2: Tests cover both creating a link and recording a visit.

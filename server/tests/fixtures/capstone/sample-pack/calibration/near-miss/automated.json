@@ -1,0 +1,7 @@
+[
+  { "id": "repo_public", "check": "repo_public", "status": "pass", "message": "Found the repo." },
+  { "id": "ci_green", "check": "ci_green", "status": "pass", "message": "GitHub Actions passed." },
+  { "id": "files", "check": "files", "status": "pass", "message": "All the required files are in the repo." },
+  { "id": "live_ok", "check": "live_ok", "status": "pass", "message": "The live site loads." },
+  { "id": "live_contains", "check": "live_contains", "status": "fail", "message": "The live page does not contain \"data-analytics\" yet." }
+]

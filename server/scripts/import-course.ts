@@ -37,6 +37,8 @@ import { VisualWalkthroughConfigSchema } from "../src/shared/blocks/visual-walkt
 import { VisualDiagramConfigSchema } from "../src/shared/blocks/visual-diagram/schema.js";
 import { RoadmapConfigSchema } from "../src/shared/blocks/roadmap/schema.js";
 import { AiInterviewFenceSchema } from "../src/shared/blocks/ai-interview/schema.js";
+import { CapstoneFenceSchema } from "../src/shared/blocks/capstone-check/schema.js";
+import { loadRubricPackFile } from "../src/services/capstone/pack-loader.js";
 import { COURSE_SOURCE_DIR, loadCourseManifest, type CourseManifest } from "./course-source.js";
 import { recomputeEnrollmentRollup } from "../src/services/progress/compute.js";
 
@@ -75,7 +77,7 @@ const CHAPTER_NAMES: Record<number, string> = {
 
 export type PendingBlock = {
   id: string;
-  type: "QUIZ" | "OPEN_QUESTION" | "CHAPTER_RECAP" | "PROJECT_PREVIEW" | "LEARNING_OBJECTIVES" | "CODE" | "PREDICT" | "MUST_READ" | "VIDEO" | "VISUAL_WALKTHROUGH" | "VISUAL_DIAGRAM" | "ROADMAP" | "AI_INTERVIEW";
+  type: "QUIZ" | "OPEN_QUESTION" | "CHAPTER_RECAP" | "PROJECT_PREVIEW" | "LEARNING_OBJECTIVES" | "CODE" | "PREDICT" | "MUST_READ" | "VIDEO" | "VISUAL_WALKTHROUGH" | "VISUAL_DIAGRAM" | "ROADMAP" | "AI_INTERVIEW" | "CAPSTONE_CHECK";
   config: Prisma.InputJsonValue;
   required: boolean;
 };
@@ -136,7 +138,9 @@ function blockPlaceholderTag(block: PendingBlock): string {
                             ? "Roadmap"
                             : block.type === "AI_INTERVIEW"
                               ? "AiInterview"
-                              : "OpenQuestion";
+                              : block.type === "CAPSTONE_CHECK"
+                                ? "CapstoneCheck"
+                                : "OpenQuestion";
   return `<${tag} id="${block.id}" />`;
 }
 
@@ -663,6 +667,35 @@ function transformAiInterviewFences(body: string, pushBlock: (b: PendingBlock) =
 }
 
 /**
+ * ```capstone``` fenced YAML -> CapstoneCheck block + placeholder tag. The fence names a
+ * rubric pack file in the course folder (capstone/<name>.yaml); the parsed pack is stored
+ * in the block config, where it stays server-only. Any problem stops the import.
+ */
+function transformCapstoneFences(body: string, pushBlock: (b: PendingBlock) => string): string {
+  return body.replace(/```capstone\n([\s\S]*?)```/g, (_match, yamlText: string) => {
+    let parsed: unknown;
+    try {
+      parsed = loadYaml(yamlText);
+    } catch {
+      throw new Error("capstone fence: the YAML could not be read.");
+    }
+    const result = CapstoneFenceSchema.safeParse(parsed);
+    if (!result.success) {
+      const reasons = result.error.issues.map((issue) => `${issue.path.join(".") || "fence"}: ${issue.message}`);
+      throw new Error(`capstone fence is invalid (${reasons.join("; ")}).`);
+    }
+    const { required, ...fence } = result.data;
+    const rubric = loadRubricPackFile(COURSE_SOURCE_DIR, fence.pack);
+    return pushBlock({
+      id: ulid(),
+      type: "CAPSTONE_CHECK",
+      required: required ?? true,
+      config: { ...fence, rubric } as unknown as Prisma.InputJsonValue,
+    });
+  });
+}
+
+/**
  * One explanation string for the learner, shown after they answer. `explanations` holds one
  * reason per option, in option order, so every choice (right or wrong) gets its own feedback.
  */
@@ -836,6 +869,7 @@ export function parseLesson(moduleNum: number, moduleDir: string, fileName: stri
   source = transformOpenQuestionFences(source, pushBlock);
   source = transformPredictFences(source, pushBlock);
   source = transformAiInterviewFences(source, pushBlock);
+  source = transformCapstoneFences(source, pushBlock);
   source = transformCodeExerciseFences(source, pushBlock);
   source = transformFaqSections(source);
   const isMilestone = /-checklist\.md$/.test(fileName);

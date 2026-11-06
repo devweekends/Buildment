@@ -26,6 +26,7 @@ export const BLOCK_TAG_NAMES = {
   CodeExercise: "CODE",
   Predict: "PREDICT",
   AiInterview: "AI_INTERVIEW",
+  CapstoneCheck: "CAPSTONE_CHECK",
   Steps: "STEPS",
   ProjectPreview: "PROJECT_PREVIEW",
   LearningObjectives: "LEARNING_OBJECTIVES",
