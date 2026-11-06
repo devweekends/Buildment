@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { CalendarDays, Gauge, Route, Trophy } from "lucide-react";
 import { SITE_SHARE_IMAGE } from "@/lib/site";
 import { areaById } from "@/lib/learn-areas";
-import { AreaHero, AreaPage, AreaSection, CardGrid, ComingSoonPanel, InfoCard } from "@/components/areas/area-page";
+import { AreaHero, AreaPage, ComingSoonPanel } from "@/components/areas/area-page";
+import { FilterChips, pickFilter } from "@/components/areas/filter-chips";
 
 export const metadata: Metadata = {
   title: "Puzzles",
@@ -11,8 +11,48 @@ export const metadata: Metadata = {
   openGraph: { title: "Daily puzzles on Edorax", url: "/puzzles", images: [SITE_SHARE_IMAGE] },
 };
 
-export default function PuzzlesPage() {
+// The kinds take turns through the week. Each has a one-line goal and an example of the day's prompt.
+const KINDS = [
+  {
+    id: "bottleneck",
+    label: "Find the bottleneck",
+    goal: "A small system is struggling. Tap the one part that gives out first.",
+    example: "Users → load balancer → two app servers → one database at 95% CPU. Checkout takes 9 seconds.",
+  },
+  {
+    id: "trace",
+    label: "Trace the request",
+    goal: "Put the steps of a request in order, from the tap on a phone to the answer on screen.",
+    example: "DNS lookup · TLS handshake · cache miss · database read · response rendered",
+  },
+  {
+    id: "fix",
+    label: "Fix the diagram",
+    goal: "One link or one part is wrong. Find it and fix it in as few moves as you can.",
+    example: "A queue sits between the browser and the load balancer. One move fixes it.",
+  },
+  {
+    id: "odd",
+    label: "Odd one out",
+    goal: "Four ideas, one does not belong. Say which, and the reason appears.",
+    example: "Read replica · write-ahead log · CDN edge cache · sticky session",
+  },
+] as const;
+
+const RULES = [
+  ["One a day", "New at midnight in your time zone. Yesterday's stays open to practise."],
+  ["A few tries", "Each wrong try shows a clue, so you learn something either way."],
+  ["Daily leaderboard", "Fewer tries and a faster solve rank higher. It resets every day; joining is your choice."],
+] as const;
+
+type SearchParams = Promise<Record<string, string | string[] | undefined>>;
+
+export default async function PuzzlesPage({ searchParams }: { searchParams: SearchParams }) {
   const area = areaById("puzzles");
+  const query = await searchParams;
+  const id = pickFilter(query.kind, KINDS.map((k) => k.id)) ?? KINDS[0].id;
+  const kind = KINDS.find((k) => k.id === id)!;
+
   return (
     <AreaPage>
       <AreaHero
@@ -20,27 +60,33 @@ export default function PuzzlesPage() {
         title="Daily puzzles"
         status={area.status}
         mood="wink"
-        intro="One small puzzle a day, the same for everyone. Solve it, see where you landed on today's leaderboard, and come back tomorrow. Each one uses an idea from the courses, so a good guess turns into something you understand."
+        intro="One small puzzle a day, the same for everyone. Solve it, see where you landed on today's leaderboard, and come back tomorrow."
       />
 
-      <AreaSection id="kinds" title="Kinds of puzzle" intro="Several kinds take turns through the week, so no two days feel the same.">
-        <CardGrid columns={2}>
-          <InfoCard icon={<Gauge className="size-6" />} title="Find the bottleneck" body="A small system is struggling. Tap the one part that gives out first." />
-          <InfoCard icon={<Route className="size-6" />} title="Trace the request" body="Put the steps of a request in order, from the tap on a phone to the answer on screen." />
-          <InfoCard title="Fix the diagram" body="One link or one part is wrong. Find it and fix it in as few moves as you can." />
-          <InfoCard title="Odd one out" body="Four ideas, one does not belong. Say which, and the reason appears." />
-        </CardGrid>
-      </AreaSection>
+      <div className="mt-8">
+        <FilterChips label="Kind" param="kind" current={id} basePath="/puzzles" params={{}} options={KINDS.map((k) => ({ value: k.id, label: k.label }))} />
+      </div>
 
-      <AreaSection id="daily" title="How the daily puzzle works">
-        <CardGrid>
-          <InfoCard icon={<CalendarDays className="size-6" />} title="One a day" body="A new puzzle at midnight in your time zone. Missed one? Yesterday's stays open to practise." />
-          <InfoCard title="A few tries" body="You get a few attempts. Each wrong try shows a clue, so you learn something either way." />
-          <InfoCard icon={<Trophy className="size-6" />} title="Daily leaderboard" body="Fewer tries and a faster solve put you higher on today's board. It resets every day, so everyone starts level. Joining it is your choice, like every leaderboard on Edorax." />
-        </CardGrid>
-      </AreaSection>
+      <section aria-label={kind.label} className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+        <div className="border border-border bg-card p-5 sm:p-6">
+          <span className="text-sm font-bold uppercase tracking-wider text-primary">{kind.label}</span>
+          <p className="mt-2 text-xl tracking-[-0.02em]">{kind.goal}</p>
+          <p className="mt-4 border-l-4 border-brand-yellow bg-secondary/60 px-4 py-3 text-base">
+            <span className="font-bold">Example: </span>
+            {kind.example}
+          </p>
+        </div>
+        <dl className="divide-y divide-border border border-border bg-card">
+          {RULES.map(([title, body]) => (
+            <div key={title} className="px-5 py-3.5">
+              <dt className="text-base font-bold">{title}</dt>
+              <dd className="text-base text-muted-foreground">{body}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
 
-      <ComingSoonPanel title="Puzzles are on the way" action={{ href: "/labs/visual", label: "Try a visual lab now" }}>
+      <ComingSoonPanel title="Puzzles are on the way" action={{ href: "/labs?kind=visual", label: "Try a visual lab now" }}>
         The visual labs are the closest thing today: a design, a set of checks, and a reason for every result.
       </ComingSoonPanel>
     </AreaPage>
