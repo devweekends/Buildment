@@ -1,7 +1,9 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import request from "supertest";
 import { createApp } from "../../src/app.js";
-import { createCourseFixture, createOrganizationFixture } from "../helpers/fixtures.js";
+import { createCourseFixture, createOrganizationFixture, completeChapter } from "../helpers/fixtures.js";
+import { prisma } from "../../src/db/prisma.js";
+import { recomputeEnrollmentRollup } from "../../src/services/progress/compute.js";
 
 const app = createApp();
 let fx: Awaited<ReturnType<typeof createCourseFixture>>;
@@ -65,7 +67,41 @@ describe("/integrations/v1 (public organisation API)", () => {
     expect(lookup.body.enrollment).toMatchObject({ enrollment_id: created.body.enrollment_id, learner_email: payload.student_email });
 
     const progress = await request(app).get("/integrations/v1/progress").set(org.headers).query({ course_id: fx.course.id, learner_email: payload.student_email });
-    expect(progress.body).toMatchObject({ status: "NOT_STARTED", total_lessons: 2, completed_lessons: 0 });
+    expect(progress.body).toMatchObject({
+      status: "NOT_STARTED",
+      total_lessons: 2,
+      completed_lessons: 0,
+      total_modules: 1,
+      modules: [{
+        title: "Module 1",
+        status: "NOT_STARTED",
+        completed_chapters: 0,
+        total_chapters: 2,
+        chapters: [
+          { id: fx.chapterA.id, title: "Chapter A", status: "NOT_STARTED", completed: false, progress_percent: 0 },
+          { id: fx.chapterB.id, title: "Chapter B", status: "NOT_STARTED", completed: false, progress_percent: 0 },
+        ],
+      }],
+    });
+
+    await completeChapter(created.body.enrollment_id, fx.chapterA.id);
+    await prisma.$transaction((tx) => recomputeEnrollmentRollup(tx, created.body.enrollment_id));
+    const updatedProgress = await request(app).get("/integrations/v1/progress").set(org.headers).query({ course_id: fx.course.id, learner_email: payload.student_email });
+    expect(updatedProgress.body).toMatchObject({
+      status: "IN_PROGRESS",
+      overall_progress: 50,
+      completed_chapters: 1,
+      total_chapters: 2,
+      modules: [{
+        status: "IN_PROGRESS",
+        progress_percent: 50,
+        completed_chapters: 1,
+        chapters: [
+          { id: fx.chapterA.id, status: "COMPLETED", completed: true, progress_percent: 100 },
+          { id: fx.chapterB.id, status: "NOT_STARTED", completed: false, progress_percent: 0 },
+        ],
+      }],
+    });
 
     const cancelled = await request(app)
       .post("/integrations/v1/enrollments/cancel")
