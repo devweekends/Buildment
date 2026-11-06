@@ -1,0 +1,229 @@
+---
+title: Capstone checker and certificates
+status: draft for approval
+---
+
+# Capstone checker and certificates
+
+**Reads:** [`05-review-queue.mdx`](05-review-queue.mdx), [`09-security.mdx`](09-security.mdx), [`15-content-separation.mdx`](15-content-separation.mdx)
+
+For the Dev Weekends guided-lab tracks (Level 1, 2 and 3). A learner submits a capstone, our
+own AI says how complete it is and what is left, a mentor confirms, and a passed track earns a
+certificate the learner can add to LinkedIn.
+
+## What the learner sees
+
+1. On the capstone chapter, a **Capstone check** block asks for a GitHub repo URL (and a live URL
+   for Level 2).
+2. They press **Check my capstone**. Within about a minute they see:
+   - **Complete** or **Not complete yet**, and a percentage.
+   - **What is left**: one card per unmet criterion, each with numbered steps.
+   - **Quality notes**: what is good and what would make it better.
+   - A line saying a mentor will confirm the result.
+3. They fix things and press **Check again**. Every attempt is kept as history.
+
+## What the mentor sees
+
+The full report sits in the existing review queue and mentee workspace: automated check
+results, per-criterion scores with the evidence the model cited, token cost, and the commit
+that was graded. The mentor presses **Confirm** (accepts the AI score and verdict) or
+**Override** (edits score, verdict and feedback). This writes the ordinary `Review` row, so the
+queue, notifications and needs-revision loop work as today. **The AI never passes a learner on
+its own.** Only a mentor-confirmed pass counts toward a certificate.
+
+## How a check runs
+
+```
+submit -> automated checks -> (stop early if a hard gate fails) -> Sonnet grade -> report
+```
+
+**Automated checks** (no model, no cost), defined per pack:
+
+| Check | How |
+| --- | --- |
+| Repo reachable | GitHub API: repo exists and is public, default branch, head commit SHA |
+| Builds and tests pass | Status of the latest GitHub Actions run on that commit. We never run learner code on our servers. Each capstone template ships a CI workflow. |
+| Tags | Required tag pattern exists (for example `v1.*`) |
+| Files | Required paths exist (README, workflow, tests folder) |
+| Live URL responds | HTTPS GET returns 2xx within 5 s (Level 2) |
+| Live page contains | Optional text or selector on the live page (for example the analytics snippet) |
+
+If the repo is unreachable or CI is red, the learner gets instant steps and **no model call is
+made**.
+
+**AI grade.** We send the rubric pack, the automated results, and a bounded snapshot of the repo
+(file tree, README, and the files the pack names, trimmed to a token budget) to
+`claude-sonnet-5-5` with a JSON output schema. The output contract:
+
+```ts
+{
+  completed: boolean,          // all required criteria met and percent >= pack.passPercent
+  percent: number,             // 0..100, weighted from criterion scores
+  criteria: [{ id, score, max, met, evidence: string[], missing: string[] }],
+  whatIsLeft: [{ criterionId, title, steps: string[] }],
+  qualityNotes: { strengths: string[], improvements: string[] },
+  confidence: "high" | "medium" | "low"
+}
+```
+
+The server recomputes `percent` and `completed` from the criterion scores and the hard gates,
+so the model cannot claim 100% with a failing gate. A criterion tied to a failed automated
+check is capped at 0.
+
+**Same commit, same pack version: no new call.** The previous result is returned free.
+
+## Cost
+
+Sonnet 5.5 is $2 per million input tokens and $10 per million output tokens. A typical check is
+about 30k input and 4k output, so **about $0.10**. Caps, all counted in the database like the
+chapter Q&A limits:
+
+| Limit | Default | Env |
+| --- | --- | --- |
+| Input budget per check | 40k tokens (snapshot trimmed to fit) | `CAPSTONE_MAX_INPUT_TOKENS` |
+| Output per check | 8k tokens | `CAPSTONE_MAX_OUTPUT_TOKENS` |
+| Worst case per check | about $0.16 | |
+| Checks per learner per block per day | 3 | `CAPSTONE_LEARNER_DAILY_LIMIT` |
+| Checks platform-wide per day | 150 (about $15 worst case) | `CAPSTONE_GLOBAL_DAILY_LIMIT` |
+
+Off unless `CAPSTONE_CHECK_ENABLED=true` and `ANTHROPIC_API_KEY` is set. Tokens and cost are
+stored on every check.
+
+## Rubric packs
+
+Packs live with the course in Edorax-core and travel through the normal publish path. The
+importer reads them, validates them, and stores them in the block's server-only config.
+
+```
+courses/<course-slug>/capstone/
+  rubric.yaml
+  calibration/<example>.yaml
+  calibration/<example>/         # frozen repo snapshot for the example (optional)
+```
+
+```yaml
+# rubric.yaml
+pack: dw-level-2
+version: 1
+title: Personal site and outreach engine
+passPercent: 70
+submission: { repo: required, liveUrl: required }
+automated:
+  - { check: repo_public }
+  - { check: ci_green }
+  - { check: tag, pattern: "v1.*" }
+  - { check: files, paths: [README.md, ".github/workflows/*.yml"] }
+  - { check: live_ok }
+  - { check: live_contains, text: "data-analytics" }
+snapshot:                       # which files the grader reads, in priority order
+  include: ["README.md", "src/**", "docs/**"]
+  exclude: ["**/*.lock", "**/node_modules/**"]
+criteria:
+  - id: proposal-links
+    title: Tracked proposal links
+    weight: 20
+    required: true
+    gate: [live_ok]             # capped at 0 if these automated checks fail
+    lookFor: Each proposal has its own URL and visits are recorded per link.
+    levels:
+      0: No proposal links.
+      2: Links exist but visits are not tracked.
+      4: Links tracked and visible in an analytics view.
+oralExam: { enabled: false }    # Level 3 hook, see below
+```
+
+```yaml
+# calibration/strong-submission.yaml
+repo: https://github.com/example/site@3f2a9c1   # pinned commit, or
+snapshot: ./strong-submission/                    # frozen files plus automated.json
+liveUrl: https://example.dev
+expected: { completed: true, percent: 85, tolerance: 10 }
+note: Clean site, tracked links, weak README.
+```
+
+The block in the chapter MDX: `<CapstoneCheck id="01J..." pack="capstone/rubric.yaml" />`.
+
+## Calibration test
+
+- **CI (free):** loader and schema tests for every pack, plus grading-pipeline tests with a
+  recorded model response, so gates, recomputed percent and caps are covered without the API.
+- **Live (paid, run by hand):** `pnpm --dir server capstone:calibrate --pack <dir>` runs every
+  calibration example through the real checker and fails if `completed` differs or `percent`
+  falls outside `tolerance`. It prints the cost before and after. Run it when a pack changes.
+
+## Certificates
+
+**When:** a learner's enrollment is complete and every capstone check in the course has a
+mentor-confirmed pass. Issued once per enrollment; a mentor or admin can revoke.
+
+**What it says:** the learner's name, the track title (for example "Level 2: Personal Site and
+Outreach Engine"), "Dev Weekends", the issue date, the skills covered, a unique id such as
+`DW-L2-7K3F9QXM`, and Zeeshan Adil's name as issuer.
+
+**Configured per course** in `course.yaml`:
+
+```yaml
+certificate:
+  program: Dev Weekends Mentorship
+  title: "Level 2: Personal Site and Outreach Engine"
+  code: L2
+  skills: [Personal site, Outreach engine, Link tracking, Web analytics]
+```
+
+**Public verify page** at `/verify/<id>`: no sign-in, shows the certificate, its status (valid
+or revoked), skills, and the capstone repo link. It sets Open Graph tags so a shared link shows
+the certificate image.
+
+**Add to LinkedIn:** one button that opens LinkedIn's add-to-profile form pre-filled:
+
+```
+https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME
+  &name=<title>&organizationId=<DW company id>&issueYear=2026&issueMonth=11
+  &certUrl=<verify url>&certId=<id>
+```
+
+Plus **Share on LinkedIn** (post with the verify link) and **Download image** (1200 x 627 PNG
+rendered on the server with `next/og`).
+
+**Look:** Edorax type (Unbounded headings, DM Sans body), white card with a 1px line border and
+square corners, ink text on paper, no gradients, no ribbons, no seals, no script fonts. The Dev
+Weekends wordmark with its seven week bars carries the issuer mark in black and white. One
+cobalt element at most (the verify link). It should read like a well set document, not a
+template.
+
+## Level 3 oral exam (later phase)
+
+Each check is a list of stages: `automated`, `ai_grade`, and later `oral_exam`. A pack with
+`oralExam.enabled: true` will require a passed oral stage, built on the existing AI interview
+block, before the mentor can confirm. Phase 1 ships the stage interface and the pack field only.
+
+## Security
+
+- Fetching learner URLs is new for Edorax (the review queue doc says we do not). Rules: HTTPS
+  only, DNS resolved and private, loopback, link-local and metadata ranges refused (also after
+  redirects), GET only, no cookies, 5 s timeout, 512 KB cap.
+- GitHub is read through its API with a server token that has public read access only.
+- Repo text is untrusted. The prompt treats it as data, output is schema-bound, the server
+  recomputes the score, gates are enforced in code, and a mentor confirms every pass.
+- Rubric packs stay server-only, like every block config.
+
+## Data model
+
+- `BlockType.CAPSTONE_CHECK`.
+- `CapstoneCheck`: one row per attempt, linked to the `Response` it creates. Holds repo URL,
+  live URL, commit SHA, pack id and version, status (`QUEUED`, `RUNNING`, `DONE`, `FAILED`),
+  automated results, AI report, percent, completed, model, tokens, cost. Mentor decisions use the
+  existing `Review`.
+- `Certificate`: public id, user, course, enrollment (unique), recipient name and title snapshot,
+  skills, issued at, revoked at and reason.
+
+## Needs keys or approval
+
+| Item | Who |
+| --- | --- |
+| `ANTHROPIC_API_KEY` on Heroku (already used by chapter Q&A) and `CAPSTONE_CHECK_ENABLED=true` | User |
+| `GITHUB_TOKEN`: fine-grained token, public repositories read-only (raises the GitHub API limit from 60 to 5,000 an hour) | User |
+| Dev Weekends LinkedIn company page id for `organizationId` (without it we fall back to `organizationName`) | User |
+| Issuer line: "Zeeshan Adil" with which title? | User |
+| Daily caps above | User |
+| Each level's capstone template ships a CI workflow that builds and runs tests | Level sessions |
