@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import { RubricPackSchema, CapstoneSubmitSchema, capstoneClientConfig, type RubricPack } from "../../../../src/shared/blocks/capstone-check/schema.js";
 import type { AutomatedCheckResult } from "../../../../src/shared/blocks/capstone-check/report.js";
 import { globToRegExp, normaliseText, parseTemplateRef, runAutomatedChecks } from "../../../../src/services/capstone/automated.js";
-import { summariseCheckRun, summariseRuns, parseRepoUrl, type CapstoneRepoSource } from "../../../../src/services/capstone/github.js";
+import { githubRepoSource, summariseCheckRun, summariseRuns, parseRepoUrl, type CapstoneRepoSource } from "../../../../src/services/capstone/github.js";
 import { anthropicGrader, buildGradePrompt, costMicroUsd, GraderError, recomputeReport, type ModelGrade } from "../../../../src/services/capstone/grade.js";
 import { calibrationDir, loadCalibrationExamples, loadRubricPackFile, parseRubricPack } from "../../../../src/services/capstone/pack-loader.js";
 import { assertFetchableUrl, isPublicAddress } from "../../../../src/services/capstone/safe-fetch.js";
@@ -138,6 +138,25 @@ describe("live URL guard", () => {
     expect(() => assertFetchableUrl("https://example.dev:8443/")).toThrow("standard https port");
     expect(() => assertFetchableUrl("https://a:b@example.dev/")).toThrow("username or password");
     expect(assertFetchableUrl("https://example.dev/p/acme").hostname).toBe("example.dev");
+  });
+});
+
+describe("GitHub reads", () => {
+  it("reads files from the raw host so a check fits in the 60 an hour API limit without a token", async () => {
+    const calls: Array<{ url: string; auth: string | undefined }> = [];
+    const fetchImpl = vi.fn(async (url: string | URL | Request, init?: RequestInit) => {
+      calls.push({ url: String(url), auth: (init?.headers as Record<string, string> | undefined)?.Authorization });
+      return new Response(String(url).includes("/commits/") ? JSON.stringify({ sha: "abc" }) : String(url).startsWith("https://api.github.com") ? JSON.stringify({ default_branch: "main", private: false }) : "hello", { status: 200 });
+    });
+    const source = githubRepoSource({ fetchImpl: fetchImpl as unknown as typeof fetch });
+    expect(await source.repo({ owner: "me", repo: "site" })).toEqual({ defaultBranch: "main", headSha: "abc", isPrivate: false });
+    expect(await source.file({ owner: "me", repo: "site" }, "abc", "src/a b.ts", 100)).toBe("hello");
+    expect(calls.map((c) => c.url)).toEqual([
+      "https://api.github.com/repos/me/site",
+      "https://api.github.com/repos/me/site/commits/main",
+      "https://raw.githubusercontent.com/me/site/abc/src/a%20b.ts",
+    ]);
+    expect(calls.every((c) => c.auth === undefined)).toBe(true);
   });
 });
 
@@ -457,9 +476,10 @@ describe("certificates", () => {
     expect(linkedInShareUrl("https://x.dev/verify/A")).toBe("https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fx.dev%2Fverify%2FA");
   });
 
-  it("issues readable public ids and defaults the issuer to Zeeshan Adil for Dev Weekends", () => {
+  it("issues readable public ids and leaves the signature to the course trainer unless named", () => {
     const settings = CertificateSettingsSchema.parse({ title: "Level 1: Foundations", code: "L1" });
-    expect(settings).toMatchObject({ program: "Dev Weekends Mentorship", organization: "Dev Weekends", prefix: "DW", issuer: { name: "Zeeshan Adil" } });
+    expect(settings).toMatchObject({ program: "Dev Weekends Mentorship", organization: "Dev Weekends", prefix: "DW", issuer: {} });
+    expect(CertificateSettingsSchema.parse({ title: "T", code: "MV", issuer: { name: "Aqib Nawab" } }).issuer.name).toBe("Aqib Nawab");
     const codes = new Set(Array.from({ length: 200 }, () => newCertificateCode(settings)));
     expect(codes.size).toBe(200);
     for (const code of codes) expect(code).toMatch(CERTIFICATE_CODE_PATTERN);

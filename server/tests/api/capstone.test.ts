@@ -190,10 +190,12 @@ describe("capstone checks", () => {
     const claim = await authed(request(app).post(`/api/v1/courses/${fx.course.slug}/certificate`).send({ recipientName: "Ayesha Khan" }));
     expect(claim.status).toBe(200);
     const certificate = claim.body.data.certificate;
-    expect(certificate).toMatchObject({ recipientName: "Ayesha Khan", title: "Level 2: Personal Site and Outreach Engine", issuerName: "Zeeshan Adil", organization: "Dev Weekends", skills: ["Personal site", "Link tracking"] });
+    expect(certificate).toMatchObject({ recipientName: "Ayesha Khan", title: "Level 2: Personal Site and Outreach Engine", issuerName: "Test Mentor", organization: "Dev Weekends", skills: ["Personal site", "Link tracking"] });
     expect(certificate.code).toMatch(/^DW-L2-[0-9A-Z]{8}$/);
     expect(certificate.evidence[0]).toMatchObject({ repoUrl: "https://github.com/me/site", percent: 90 });
     expect(certificate.linkedInAddUrl).toContain("startTask=CERTIFICATION_NAME");
+    // The course's trainer signs; LinkedIn lists Edorax, never Dev Weekends, as the issuing organisation.
+    expect(new URL(certificate.linkedInAddUrl).searchParams.get("organizationName")).toBe("Edorax");
 
     const again = await authed(request(app).post(`/api/v1/courses/${fx.course.slug}/certificate`).send({ recipientName: "Someone Else" }));
     expect(again.body.data.certificate.code).toBe(certificate.code);
