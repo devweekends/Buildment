@@ -96,6 +96,11 @@ router.get("/organizations/:orgId", validateParams(orgIdParams), admin.getOrgani
 router.post("/organizations/:orgId/credentials/rotate", validateParams(orgIdParams), admin.rotateCredential);
 router.put("/organizations/:orgId/allocations", validate({ params: orgIdParams, body: allocationsBody }), admin.upsertAllocations);
 router.patch(
+  "/organizations/:orgId/allocations/:courseId/allowed",
+  validate({ params: allocationParams, body: instructorAccessBody }),
+  admin.setAllocationAllowed
+);
+router.patch(
   "/organizations/:orgId/allocations/:courseId/leaderboard",
   validate({ params: allocationParams, body: instructorAccessBody }),
   admin.setAllocationLeaderboard
