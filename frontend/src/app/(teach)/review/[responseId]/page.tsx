@@ -6,6 +6,7 @@ import { serverApiFetchOrNotFound } from "@/lib/api-server";
 import { submitReview } from "@/server/actions/reviews";
 import { ReviewForm } from "@/components/teach/review-form";
 import { QuizIntegrity } from "@/components/teach/evaluation/quiz-integrity";
+import { CapstoneReport, capstoneDraftFeedback } from "@/components/teach/evaluation/capstone-report";
 
 export default async function ReviewDetailPage({
   params,
@@ -21,6 +22,8 @@ export default async function ReviewDetailPage({
   const { course, question, history } = response;
   const alreadyReviewed = response.status !== "PENDING_REVIEW";
   const reviewResponseId = response.id;
+  const capstone = response.capstone;
+  const capstonePercent = capstone?.current?.report?.percent ?? null;
 
   async function submitReviewAction(formData: FormData) {
     "use server";
@@ -63,8 +66,9 @@ export default async function ReviewDetailPage({
       </div>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
-        {/* Left: the question, rubric, and reference answer — mentor-only config */}
-        <section className="rounded-xl border bg-card p-5 text-card-foreground shadow-sm">
+        {capstone ? <CapstoneReport capstone={capstone} /> : null}
+        {/* Left: the question, rubric, and reference answer, mentor-only config */}
+        {capstone ? null : <section className="rounded-xl border bg-card p-5 text-card-foreground shadow-sm">
           <h2 className="text-sm font-semibold">Question</h2>
           <p className="mt-2 text-[15px] font-medium leading-snug">
             {question?.prompt ?? "(prompt unavailable)"}
@@ -108,11 +112,11 @@ export default async function ReviewDetailPage({
               ))}
             </div>
           )}
-        </section>
+        </section>}
 
         {/* Right: the mentee's answer + review form */}
         <section className="flex flex-col gap-4">
-          <div className="rounded-xl border bg-card p-5 text-card-foreground shadow-sm">
+          {capstone ? null : <div className="rounded-xl border bg-card p-5 text-card-foreground shadow-sm">
             <h2 className="text-sm font-semibold">Mentee&apos;s answer</h2>
             <p className="mt-2 whitespace-pre-wrap text-[15px] leading-relaxed">
               {response.answerText}
@@ -125,7 +129,7 @@ export default async function ReviewDetailPage({
                 </a>
               </p>
             ) : null}
-          </div>
+          </div>}
 
           {alreadyReviewed ? (
             <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm text-emerald-700 dark:text-emerald-300">
@@ -141,6 +145,14 @@ export default async function ReviewDetailPage({
               responseId={reviewResponseId}
               maxScore={response.block.points}
               action={submitReviewAction}
+              {...(capstone
+                ? {
+                    aiDraft: false,
+                    initialFeedback: capstoneDraftFeedback(capstone.current),
+                    initialScore: capstonePercent === null ? null : Math.round((capstonePercent / 100) * response.block.points),
+                    note: "Prefilled from the AI check. Approve to confirm it, or change the feedback, score or verdict to override it. Only an approval counts toward the certificate.",
+                  }
+                : {})}
             />
           )}
         </section>
