@@ -10,7 +10,7 @@ import {
   pathmentEnrollmentPatch,
   shouldAttachPathmentOrg,
 } from "./attach-org-enrollment.js";
-import { couponUnlocksContent, issueCouponForEnrollment } from "../../coupons/issue.js";
+import { couponUnlocksContent, discountedAmountCents, issueCouponForEnrollment, redeemCouponUsage } from "../../coupons/issue.js";
 
 export type PathmentEnrollmentInput = {
   organizationId: string;
@@ -94,14 +94,32 @@ export async function createPathmentEnrollment(
         !byUser.externalAssignmentId ||
         byUser.externalAssignmentId !== assignmentId
       ) {
-        const updated = await db.enrollment.update({
-          where: { id: byUser.id },
-          data: pathmentEnrollmentPatch({
-            organizationId: input.organizationId,
-            mentorId: input.mentorId,
-            assignmentId,
-          }),
-          include: { course: true, learnerProfile: true },
+        const updated = await db.$transaction(async (tx) => {
+          let row = await tx.enrollment.update({
+            where: { id: byUser.id },
+            data: pathmentEnrollmentPatch({ organizationId: input.organizationId, mentorId: input.mentorId, assignmentId }),
+            include: { course: true, learnerProfile: true },
+          });
+          if (row.lifecycle === "PAYMENT_REQUIRED") {
+            const coupon = await issueCouponForEnrollment(tx, {
+              organizationId: input.organizationId, courseId: input.courseId, enrollmentId: row.id,
+              userId: linkedUser.id, learnerEmail: email, assignedById: input.mentorId?.trim() || null,
+            });
+            if (coupon) {
+              if (couponUnlocksContent(coupon.percentOff)) {
+                row = await tx.enrollment.update({ where: { id: row.id }, data: { lifecycle: "ACTIVE", status: "IN_PROGRESS", startedAt: new Date() }, include: { course: true, learnerProfile: true } });
+                await tx.payment.updateMany({ where: { enrollmentId: row.id, status: "PENDING" }, data: { amountCents: 0, status: "SUCCEEDED", provider: "coupon", paidAt: new Date() } });
+                await redeemCouponUsage(tx, row.id);
+              } else {
+                await tx.payment.upsert({
+                  where: { enrollmentId: row.id },
+                  create: { enrollmentId: row.id, amountCents: discountedAmountCents(course.priceCents, coupon.percentOff), currency: course.currency, status: "PENDING" },
+                  update: { amountCents: discountedAmountCents(course.priceCents, coupon.percentOff), status: "PENDING", provider: null, paidAt: null },
+                });
+              }
+            }
+          }
+          return row;
         });
         return { enrollment: updated, created: false as const };
       }
@@ -164,6 +182,7 @@ export async function createPathmentEnrollment(
         data: { lifecycle: "ACTIVE", status: "IN_PROGRESS", startedAt: new Date() },
         include: { course: true, learnerProfile: true },
       });
+      await redeemCouponUsage(tx, enrollment.id);
       return { enrollment: unlocked, created: true as const };
     }
 
@@ -171,7 +190,7 @@ export async function createPathmentEnrollment(
       await tx.payment.create({
         data: {
           enrollmentId: enrollment.id,
-          amountCents: course.priceCents,
+          amountCents: coupon ? discountedAmountCents(course.priceCents, coupon.percentOff) : course.priceCents,
           currency: course.currency,
           status: "PENDING",
         },

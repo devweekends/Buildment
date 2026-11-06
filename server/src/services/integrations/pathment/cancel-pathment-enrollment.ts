@@ -2,6 +2,7 @@ import type { Enrollment, PrismaClient } from "../../../generated/prisma/index.j
 import { releaseEnrollmentSlot } from "../allocation.js";
 import { pathmentAssignmentId } from "./enrollment-idempotency.js";
 import { PathmentEnrollmentError } from "./create-pathment-enrollment.js";
+import { cancelIssuedCouponUsage } from "../../coupons/issue.js";
 
 export type CancelPathmentEnrollmentInput = {
   organizationId: string;
@@ -142,6 +143,7 @@ export async function cancelPathmentEnrollment(
     if (enrollment.source === "PATHMENT") {
       await releaseEnrollmentSlot(tx, input.organizationId, input.courseId);
     }
+    await cancelIssuedCouponUsage(tx, enrollment.id);
     return tx.enrollment.update({
       where: { id: enrollment.id },
       data: {

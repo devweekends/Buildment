@@ -37,6 +37,8 @@ function mockDb(overrides: {
         }
       ),
     },
+    couponUsage: { findUnique: vi.fn().mockResolvedValue(null) },
+    organizationCouponPool: { updateMany: vi.fn() },
     $executeRaw: vi.fn().mockResolvedValue(1),
   };
   return {

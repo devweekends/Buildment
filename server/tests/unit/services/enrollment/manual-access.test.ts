@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const db = vi.hoisted(() => ({ enrollment: { findFirst: vi.fn(), findUnique: vi.fn(), updateMany: vi.fn() }, user: { findMany: vi.fn() }, payment: { update: vi.fn() }, adminAuditLog: { create: vi.fn() }, $transaction: vi.fn() }));
+const db = vi.hoisted(() => ({ enrollment: { findFirst: vi.fn(), findUnique: vi.fn(), updateMany: vi.fn() }, user: { findMany: vi.fn() }, payment: { update: vi.fn() }, couponUsage: { updateMany: vi.fn() }, adminAuditLog: { create: vi.fn() }, $transaction: vi.fn() }));
 const sendEmail = vi.hoisted(() => vi.fn());
 vi.mock("../../../../src/db/prisma.js", () => ({ prisma: db }));
 vi.mock("../../../../src/config/env.js", () => ({ env: { ADMIN_NOTIFY_EMAIL: ["ops@example.com"] } }));

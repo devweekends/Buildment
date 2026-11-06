@@ -75,6 +75,18 @@ export async function listCouponPools(organizationId: string) {
       course: { select: { id: true, slug: true, title: true } },
     },
   });
+  const counts = pools.length ? await prisma.couponUsage.groupBy({
+    by: ["poolId", "status"],
+    where: { poolId: { in: pools.map((pool) => pool.id) } },
+    _count: { _all: true },
+  }) : [];
+  const countByPool = new Map<string, { reserved: number; redeemed: number }>();
+  for (const row of counts) {
+    const current = countByPool.get(row.poolId) ?? { reserved: 0, redeemed: 0 };
+    if (row.status === "ISSUED") current.reserved = row._count._all;
+    if (row.status === "REDEEMED") current.redeemed = row._count._all;
+    countByPool.set(row.poolId, current);
+  }
   return pools.map((pool) => ({
     id: pool.id,
     label: pool.label,
@@ -82,6 +94,8 @@ export async function listCouponPools(organizationId: string) {
     percentOff: pool.percentOff,
     maxRedemptions: pool.maxRedemptions,
     redemptionCount: pool.redemptionCount,
+    reservedCount: countByPool.get(pool.id)?.reserved ?? 0,
+    redeemedCount: countByPool.get(pool.id)?.redeemed ?? 0,
     remaining: Math.max(0, pool.maxRedemptions - pool.redemptionCount),
     active: pool.active,
     expiresAt: pool.expiresAt?.toISOString() ?? null,
@@ -97,6 +111,39 @@ export async function setCouponPoolActive(organizationId: string, poolId: string
     data: { active },
   });
   if (updated.count === 0) throw new NotFoundError("Coupon pool not found");
+}
+
+/** Change pool state and/or add capacity without invalidating already issued seats. */
+export async function updateCouponPool(
+  organizationId: string,
+  poolId: string,
+  input: { active?: boolean; maxRedemptions?: number }
+) {
+  const pool = await prisma.organizationCouponPool.findFirst({ where: { id: poolId, organizationId } });
+  if (!pool) throw new NotFoundError("Coupon pool not found");
+  if (input.maxRedemptions !== undefined) {
+    if (input.maxRedemptions < pool.maxRedemptions) {
+      throw new UnprocessableError("Coupon pool capacity can only be increased.", "VALIDATION_ERROR");
+    }
+    if (input.maxRedemptions < pool.redemptionCount) {
+      throw new UnprocessableError("Capacity cannot be lower than seats already reserved or redeemed.", "VALIDATION_ERROR");
+    }
+  }
+  const result = await prisma.organizationCouponPool.updateMany({
+    where: {
+      id: poolId,
+      organizationId,
+      ...(input.maxRedemptions !== undefined ? {
+        redemptionCount: { lte: input.maxRedemptions },
+        maxRedemptions: { lte: input.maxRedemptions },
+      } : {}),
+    },
+    data: {
+      ...(input.active !== undefined ? { active: input.active } : {}),
+      ...(input.maxRedemptions !== undefined ? { maxRedemptions: input.maxRedemptions } : {}),
+    },
+  });
+  if (!result.count) throw new UnprocessableError("Capacity changed; refresh and try again.", "VALIDATION_ERROR");
 }
 
 /** Course-specific pool first, then a general (courseId null) pool with remaining seats. */

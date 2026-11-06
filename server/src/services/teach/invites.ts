@@ -10,7 +10,7 @@ import { notifyMenteeCourseEnrollment, notifyMentorNewEnrollment } from "../noti
 import { dispatchNotification } from "../notifications/service.js";
 import { lifecycleForSignedInEnrollment } from "../enrollment/lifecycle.js";
 import { assignmentForNewEnrollment } from "../courses/variant-assignment.js";
-import { couponUnlocksContent, issueCouponForEnrollment } from "../coupons/issue.js";
+import { couponUnlocksContent, discountedAmountCents, issueCouponForEnrollment, redeemCouponUsage } from "../coupons/issue.js";
 import { resolveCouponOrganizationForCourse } from "../coupons/resolve-org.js";
 import { inviteAcceptUrl, sendEmail } from "../email/send.js";
 import { requireCourseById, type OwnedCourse } from "./access.js";
@@ -110,10 +110,12 @@ export async function assignByEmails(user: SessionUser, courseId: string, emails
               where: { id: created.id },
               data: { lifecycle: "ACTIVE", status: "IN_PROGRESS", startedAt: new Date() },
             });
+            await redeemCouponUsage(tx, created.id);
           }
         }
         if (lifecycle === "PAYMENT_REQUIRED" && !coveredByCoupon) {
-          await tx.payment.create({ data: { enrollmentId: created.id, amountCents: pricing.priceCents, currency: pricing.currency, status: "PENDING" } });
+          const issuedCoupon = await tx.couponUsage.findUnique({ where: { enrollmentId: created.id }, select: { percentOff: true, status: true } });
+          await tx.payment.create({ data: { enrollmentId: created.id, amountCents: issuedCoupon && issuedCoupon.status !== "CANCELLED" ? discountedAmountCents(pricing.priceCents, issuedCoupon.percentOff) : pricing.priceCents, currency: pricing.currency, status: "PENDING" } });
         }
         return created;
       });
