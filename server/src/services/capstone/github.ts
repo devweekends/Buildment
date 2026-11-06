@@ -37,6 +37,7 @@ export function parseRepoUrl(url: string): RepoRef | null {
 }
 
 const API = "https://api.github.com";
+const RAW = "https://raw.githubusercontent.com";
 const TIMEOUT_MS = 10_000;
 
 type FetchLike = typeof fetch;
@@ -100,9 +101,14 @@ export function githubRepoSource(options: { token?: string; fetchImpl?: FetchLik
         truncated: tree.truncated,
       };
     },
+    // Files come from GitHub's raw file host, which does not count against the REST API's hourly
+    // limit (60 an hour without a token). A check then uses about five API calls in total.
     async file(ref, sha, path, maxBytes) {
       const encoded = path.split("/").map(encodeURIComponent).join("/");
-      const response = await get(`${base(ref)}/contents/${encoded}?ref=${encodeURIComponent(sha)}`, "application/vnd.github.raw+json");
+      const response = await doFetch(
+        `${RAW}/${encodeURIComponent(ref.owner)}/${encodeURIComponent(ref.repo)}/${encodeURIComponent(sha)}/${encoded}`,
+        { headers: { "User-Agent": headers["User-Agent"]! }, signal: AbortSignal.timeout(TIMEOUT_MS), redirect: "follow" }
+      );
       if (!response.ok) return null;
       const bytes = new Uint8Array(await response.arrayBuffer()).subarray(0, maxBytes);
       if (bytes.includes(0)) return null;
