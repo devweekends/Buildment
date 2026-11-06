@@ -48,6 +48,32 @@ describe("/integrations/v1 (public organisation API)", () => {
     expect(allocations.body.allocations[0]).toMatchObject({ course_id: fx.course.id, max_enrollments: 1, current_enrollments: 0 });
   });
 
+  // A catalog that looks complete but is switched off reads as "no courses" to
+  // the consumer, which is indistinguishable from "nothing allocated". The
+  // allocations endpoint is what tells the two apart.
+  it("hides a course from the catalog while it is not allowed, but still reports the allocation", async () => {
+    const key = { organizationId_courseId: { organizationId: org.organization.id, courseId: fx.course.id } };
+    await prisma.organizationCourse.update({ where: key, data: { isAllowed: false } });
+    try {
+      const courses = await request(app).get("/integrations/v1/courses").set(org.headers);
+      expect(courses.status).toBe(200);
+      expect(courses.body.courses).toEqual([]);
+
+      const allocations = await request(app).get("/integrations/v1/allocations").set(org.headers);
+      expect(allocations.body.allocations).toHaveLength(1);
+      expect(allocations.body.allocations[0]).toMatchObject({
+        course_id: fx.course.id,
+        is_allowed: false,
+        course_status: "PUBLISHED",
+      });
+    } finally {
+      await prisma.organizationCourse.update({ where: key, data: { isAllowed: true } });
+    }
+
+    const restored = await request(app).get("/integrations/v1/courses").set(org.headers);
+    expect(restored.body.courses).toHaveLength(1);
+  });
+
   it("creates an enrollment once, consumes the slot, then reports it", async () => {
     const payload = { student_email: `new-${fx.tag}@test.local`, course_id: fx.course.id, external_assignment_id: `assign-${fx.tag}` };
 

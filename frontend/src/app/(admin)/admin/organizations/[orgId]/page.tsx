@@ -19,6 +19,7 @@ import { OrganizationCourseDrawer } from "@/components/admin/organization-course
 import {
   createOrganizationCouponPoolAction,
   rotateOrganizationCredentialFormAction,
+  setAllocationAllowedAction,
   setAllocationLeaderboardAction,
   setOrganizationCouponPoolActiveAction,
 } from "@/server/actions/admin/organizations";
@@ -200,7 +201,7 @@ export default async function AdminOrganizationDetailPage({
               <AdminTableHeaderCell>Course</AdminTableHeaderCell>
               <AdminTableHeaderCell align="right">Used / max</AdminTableHeaderCell>
               <AdminTableHeaderCell>Expires</AdminTableHeaderCell>
-              <AdminTableHeaderCell>Allowed</AdminTableHeaderCell>
+              <AdminTableHeaderCell>Assignable</AdminTableHeaderCell>
               <AdminTableHeaderCell>Leaderboards</AdminTableHeaderCell>
             </tr>
           </AdminTableHead>
@@ -230,11 +231,26 @@ export default async function AdminOrganizationDetailPage({
                     {row.expiresAt ? new Date(row.expiresAt).toLocaleDateString() : "—"}
                   </AdminTableCell>
                   <AdminTableCell>
-                    {row.isAllowed ? (
-                      <Badge variant="secondary">Yes</Badge>
-                    ) : (
-                      <Badge variant="outline">No</Badge>
-                    )}
+                    <form action={setAllocationAllowedAction} className="flex items-center gap-2">
+                      <input type="hidden" name="organizationId" value={org.id} />
+                      <input type="hidden" name="courseId" value={row.course.id} />
+                      <input type="hidden" name="enabled" value={row.isAllowed ? "false" : "true"} />
+                      {row.isAllowed ? (
+                        <Badge variant="secondary">Yes</Badge>
+                      ) : (
+                        <Badge variant="destructive" title="The integration cannot see this course, so it cannot be assigned">
+                          Not assignable
+                        </Badge>
+                      )}
+                      <Button
+                        type="submit"
+                        size="sm"
+                        variant="ghost"
+                        aria-label={`${row.isAllowed ? "Turn off" : "Turn on"} integration enrollments for ${row.course.title}`}
+                      >
+                        {row.isAllowed ? "Turn off" : "Turn on"}
+                      </Button>
+                    </form>
                   </AdminTableCell>
                   <AdminTableCell>
                     <form action={setAllocationLeaderboardAction} className="flex items-center gap-2">

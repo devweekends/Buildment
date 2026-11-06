@@ -119,6 +119,13 @@ export async function bulkRejectCourseRequests(req: Request, res: Response) {
   ok(res, await courseRequests.bulkRejectCourseRequests(req.user!, ids));
 }
 
+// PATCH /api/v1/admin/organizations/:orgId/allocations/:courseId/allowed
+export async function setAllocationAllowed(req: Request, res: Response) {
+  const { enabled } = req.body as { enabled: boolean };
+  await organizations.setAllocationAllowed(req.user!, param(req, "orgId"), param(req, "courseId"), enabled);
+  noContent(res);
+}
+
 // PATCH /api/v1/admin/organizations/:orgId/allocations/:courseId/leaderboard
 export async function setAllocationLeaderboard(req: Request, res: Response) {
   const { enabled } = req.body as { enabled: boolean };

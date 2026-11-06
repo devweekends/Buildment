@@ -83,6 +83,23 @@ export async function bulkUpsertOrganizationCourseAllocationsAction(
   });
 }
 
+/**
+ * Turns integration enrollments on or off for one allocated course. This is the
+ * flag the integration catalog filters on, so a course with it off cannot be
+ * assigned even though it sits in the organization's catalog.
+ */
+export async function setAllocationAllowedAction(formData: FormData): Promise<void> {
+  const organizationId = String(formData.get("organizationId") ?? "");
+  const courseId = String(formData.get("courseId") ?? "");
+  if (!organizationId || !courseId) throw new Error("Missing organization or course.");
+  await adminCall(
+    `/api/v1/admin/organizations/${encodeURIComponent(organizationId)}/allocations/${encodeURIComponent(courseId)}/allowed`,
+    { method: "PATCH", json: { enabled: formData.get("enabled") === "true" } }
+  );
+  revalidatePath(`/admin/organizations/${organizationId}`);
+  revalidatePath("/admin/organizations");
+}
+
 /** Lets (or stops) an organization's learners joining a course's weekly leaderboards. */
 export async function setAllocationLeaderboardAction(formData: FormData): Promise<void> {
   const organizationId = String(formData.get("organizationId") ?? "");
