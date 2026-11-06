@@ -42,7 +42,7 @@ export default async function Image({ params }: { params: Promise<{ code: string
   const date = issuedOn(certificate.issuedAt);
   const verify = certificate.verifyUrl.replace(/^https?:\/\//, "");
   const skills = certificate.skills.join(", ");
-  const bodyText = `completed ${certificate.title} in the ${certificate.program} ${skills} ${line} ${certificate.organization} ${date} ${verify} Issued Verify ${certificate.code} // CERTIFICATE OF COMPLETION Skills: WITHDRAWN`;
+  const bodyText = `${certificate.title} ${certificate.program}. Capstone project reviewed by a mentor. ${skills} ${line} ${certificate.organization} ${date} ${verify} Issued Verify ${certificate.code} // CERTIFICATE OF COMPLETION Skills: WITHDRAWN`;
   const [heading, body, bold] = await Promise.all([
     googleFont("Unbounded", 700, name),
     googleFont("DM+Sans", 400, bodyText),
@@ -78,12 +78,9 @@ export default async function Image({ params }: { params: Promise<{ code: string
 
           <div style={{ display: "flex", marginTop: 34, fontSize: 16, color: MUTED, letterSpacing: 3 }}>{"// CERTIFICATE OF COMPLETION"}</div>
           <div style={{ display: "flex", marginTop: 10, fontFamily: "Unbounded", fontWeight: 700, fontSize: nameSize, letterSpacing: -2, lineHeight: 1.05 }}>{name}</div>
-          <div style={{ display: "flex", flexWrap: "wrap", marginTop: 18, fontSize: 28, lineHeight: 1.3, maxWidth: 940 }}>
-            <span>completed&nbsp;</span>
-            <span style={{ fontWeight: 700 }}>{certificate.title}</span>
-            <span>&nbsp;in the {certificate.program}</span>
-          </div>
-          {skills ? <div style={{ display: "flex", marginTop: 12, fontSize: 20, color: MUTED, maxWidth: 980 }}>{`Skills: ${skills}`}</div> : null}
+          <div style={{ display: "flex", marginTop: 18, fontSize: 32, fontWeight: 700, lineHeight: 1.2, maxWidth: 1000 }}>{certificate.title}</div>
+          <div style={{ display: "flex", marginTop: 8, fontSize: 22, maxWidth: 1000 }}>{`${certificate.program}. Capstone project reviewed by a mentor.`}</div>
+          {skills ? <div style={{ display: "flex", marginTop: 10, fontSize: 19, color: MUTED, maxWidth: 1000 }}>{`Skills: ${skills}`}</div> : null}
 
           <div style={{ display: "flex", marginTop: "auto", borderTop: `1px solid ${INK}`, paddingTop: 16, justifyContent: "space-between", fontSize: 19 }}>
             <div style={{ display: "flex", flexDirection: "column" }}>

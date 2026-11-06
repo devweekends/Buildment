@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CircleAlert, CircleCheck } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 import { SITE_NAME } from "@/lib/site";
 import { issuedOn, issuerLine, loadCertificate } from "./certificate-data";
@@ -78,9 +79,8 @@ export default async function VerifyCertificatePage({ params }: Props) {
 
           <p className="mt-10 font-mono text-xs uppercase tracking-[0.18em] text-[#46507A]">{"// Certificate of completion"}</p>
           <h1 className="mt-3 font-heading text-3xl font-bold leading-tight tracking-[-0.035em] sm:text-5xl">{certificate.recipientName}</h1>
-          <p className="mt-4 max-w-2xl text-lg leading-7 sm:text-xl">
-            completed <span className="font-bold">{certificate.title}</span> in the {certificate.program}, including a capstone project reviewed by a mentor.
-          </p>
+          <p className="mt-4 max-w-2xl text-lg font-bold leading-7 sm:text-2xl">{certificate.title}</p>
+          <p className="mt-1.5 max-w-2xl text-base leading-7">{certificate.program}. Capstone project reviewed by a mentor.</p>
           {certificate.skills.length > 0 ? (
             <p className="mt-4 max-w-2xl text-sm leading-6 text-[#46507A]">Skills: {certificate.skills.join(", ")}</p>
           ) : null}
@@ -95,21 +95,21 @@ export default async function VerifyCertificatePage({ params }: Props) {
               <p className="text-[#46507A]">Issued</p>
             </div>
             <div className="sm:text-right">
-              <p className="break-all font-bold">{certificate.verifyUrl.replace(/^https?:\/\//, "")}</p>
-              <p className="text-[#46507A]">Verify</p>
+              <p className="font-bold">{certificate.code}</p>
+              <p className="text-[#46507A]">Certificate ID</p>
             </div>
           </div>
         </article>
 
         {!revoked ? (
           <div className="flex flex-wrap gap-3">
-            <a href={certificate.linkedInAddUrl} target="_blank" rel="noreferrer noopener" className={buttonVariants()}>
+            <a href={certificate.linkedInAddUrl} target="_blank" rel="noreferrer noopener" className={cn(buttonVariants())}>
               Add to LinkedIn
             </a>
-            <a href={certificate.linkedInShareUrl} target="_blank" rel="noreferrer noopener" className={buttonVariants({ variant: "outline" })}>
+            <a href={certificate.linkedInShareUrl} target="_blank" rel="noreferrer noopener" className={cn(buttonVariants({ variant: "outline" }))}>
               Share a post
             </a>
-            <a href={`/verify/${certificate.code}/opengraph-image`} download={`${certificate.code}.png`} className={buttonVariants({ variant: "outline" })}>
+            <a href={`/verify/${certificate.code}/opengraph-image`} download={`${certificate.code}.png`} className={cn(buttonVariants({ variant: "outline" }))}>
               Download image
             </a>
           </div>

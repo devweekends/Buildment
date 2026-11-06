@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Award } from "lucide-react";
 import { ApiError, apiFetch } from "@/lib/api-client";
+import { cn } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { CertificateView, MyCertificateState } from "@/shared/lib/certificates";
@@ -63,10 +64,10 @@ export function CertificateCard({ courseSlug }: { courseSlug: string }) {
             {certificate.title}, issued to {certificate.recipientName}. Certificate {certificate.code}.
           </p>
           <div className="flex flex-wrap gap-2">
-            <a href={certificate.linkedInAddUrl} target="_blank" rel="noreferrer noopener" className={buttonVariants({ size: "sm" })}>
+            <a href={certificate.linkedInAddUrl} target="_blank" rel="noreferrer noopener" className={cn(buttonVariants({ size: "sm" }))}>
               Add to LinkedIn
             </a>
-            <Link href={`/verify/${certificate.code}`} className={buttonVariants({ size: "sm", variant: "outline" })}>
+            <Link href={`/verify/${certificate.code}`} className={cn(buttonVariants({ size: "sm", variant: "outline" }))}>
               View certificate
             </Link>
           </div>

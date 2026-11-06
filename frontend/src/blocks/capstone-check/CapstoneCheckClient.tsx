@@ -36,7 +36,7 @@ function Meter({ percent, passPercent }: { percent: number; passPercent: number 
   );
 }
 
-function Report({ check, onSend, sending }: { check: CapstoneCheckView; onSend: () => void; sending: boolean }) {
+function Report({ check, onSend, sending, decided }: { check: CapstoneCheckView; onSend: () => void; sending: boolean; decided: boolean }) {
   const report = check.report!;
   return (
     <div className="space-y-5">
@@ -128,7 +128,7 @@ function Report({ check, onSend, sending }: { check: CapstoneCheckView; onSend: 
       ) : null}
 
       <div className="flex flex-wrap items-center gap-3 border-t pt-4">
-        {check.sentToMentor ? (
+        {decided ? null : check.sentToMentor ? (
           <p className="text-sm text-muted-foreground">Your mentor has this check and will confirm the result.</p>
         ) : (
           <>
@@ -184,7 +184,7 @@ export function CapstoneCheckClient({
 
   if (!state) {
     return (
-      <section className="my-6 border bg-card p-5 text-card-foreground">
+      <section className="not-prose my-6 border bg-card p-5 text-card-foreground">
         <h3 className="font-heading text-lg font-bold tracking-tight">{config.title}</h3>
         <p className="mt-2 text-sm text-muted-foreground">Sign in to check your capstone.</p>
       </section>
@@ -226,7 +226,7 @@ export function CapstoneCheckClient({
   const outOfChecks = state.remainingToday <= 0;
 
   return (
-    <section className="my-6 border bg-card text-card-foreground" aria-labelledby={`capstone-${id}`}>
+    <section className="not-prose my-6 border bg-card text-card-foreground" aria-labelledby={`capstone-${id}`}>
       <header className="space-y-2 border-b px-4 py-4 sm:px-6">
         <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Capstone check</p>
         <h3 id={`capstone-${id}`} className="font-heading text-lg font-bold leading-snug tracking-tight">{config.title}</h3>
@@ -325,7 +325,7 @@ export function CapstoneCheckClient({
                 ) : null}
               </div>
             ) : latest.report ? (
-              <Report check={latest} onSend={send} sending={busy === "send"} />
+              <Report check={latest} onSend={send} sending={busy === "send"} decided={state.decision?.verdict === "APPROVED" && latest.sentToMentor} />
             ) : null}
           </div>
         ) : null}
