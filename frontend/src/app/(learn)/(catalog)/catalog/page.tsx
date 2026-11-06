@@ -9,6 +9,7 @@ import { COURSE_CATEGORY_INFO, categoryFromParam } from "@/lib/course-categories
 import { CatalogCourseCard } from "@/components/learn/catalog-course-card";
 import { CatalogCategoryTiles } from "@/components/learn/catalog-category-tiles";
 import { Dot } from "@/components/brand/dot";
+import { Search, SlidersHorizontal, X } from "lucide-react";
 
 function CourseGrid({ courses }: { courses: CatalogCourseSummary[] }) {
   return (
@@ -79,13 +80,34 @@ export default async function CatalogPage({ searchParams }: { searchParams: Prom
           {user ? "Explore the catalog and find the next course for your learning goals." : "Look inside any course. You only need an account to enroll."}
         </p>
         {courses.length > 0 ? <CatalogCategoryTiles counts={counts} total={courses.length} active={active} /> : null}
-        {courses.length > 0 ? <form action="/catalog" method="get" className="mt-5 grid gap-3 rounded-xl border bg-card p-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="Filter courses">
-          <input type="hidden" name="category" value={params.category ?? ""} />
-          <label className="space-y-1 text-xs font-medium text-muted-foreground">Search topics or courses<input name="q" defaultValue={query} placeholder="AI, AWS, React…" className="h-10 w-full rounded-md border bg-background px-3 text-sm text-foreground" /></label>
-          <label className="space-y-1 text-xs font-medium text-muted-foreground">Subcategory<select name="subcategory" defaultValue={subcategory} className="h-10 w-full rounded-md border bg-background px-3 text-sm text-foreground"><option value="">All subcategories</option>{subcategories.map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
-          <label className="space-y-1 text-xs font-medium text-muted-foreground">Topic tag<select name="tag" defaultValue={tag} className="h-10 w-full rounded-md border bg-background px-3 text-sm text-foreground"><option value="">All topics</option>{tags.map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
-          <div className="flex items-end gap-2"><button type="submit" className="h-10 rounded-md bg-primary px-4 text-sm font-semibold text-primary-foreground">Find courses</button><a href={params.category ? `/catalog?category=${encodeURIComponent(params.category)}` : "/catalog"} className="inline-flex h-10 items-center px-3 text-sm font-medium text-muted-foreground">Clear</a></div>
-        </form> : null}
+        {courses.length > 0 ? (
+          <div className="mt-6 rounded-2xl border border-border/80 bg-card p-4 shadow-sm sm:p-5">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <span className="grid size-10 place-items-center rounded-xl bg-primary/10 text-primary"><SlidersHorizontal className="size-5" aria-hidden /></span>
+                <div><h2 className="text-sm font-semibold tracking-tight">Find your next course</h2><p className="mt-0.5 text-xs text-muted-foreground">Search by course, skill, or topic.</p></div>
+              </div>
+              <p className="rounded-full bg-muted px-3 py-1.5 text-xs font-medium text-muted-foreground" aria-live="polite">{filteredCourses.length} {filteredCourses.length === 1 ? "course" : "courses"} found</p>
+            </div>
+            <form action="/catalog" method="get" className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-12 lg:items-end" aria-label="Filter courses">
+              <input type="hidden" name="category" value={params.category ?? ""} />
+              <label htmlFor="catalog-search" className="space-y-1.5 text-xs font-semibold text-foreground/80 lg:col-span-4">
+                <span className="block">Search courses or topics</span>
+                <span className="relative block"><Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden /><input id="catalog-search" name="q" defaultValue={query} placeholder="Try AI, AWS, React…" className="h-11 w-full rounded-xl border border-input bg-background pl-10 pr-3 text-sm font-normal text-foreground shadow-sm outline-none transition placeholder:text-muted-foreground/75 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20" /></span>
+              </label>
+              <label htmlFor="catalog-subcategory" className="space-y-1.5 text-xs font-semibold text-foreground/80 lg:col-span-3">
+                <span className="block">Subcategory</span><select id="catalog-subcategory" name="subcategory" defaultValue={subcategory} className="h-11 w-full rounded-xl border border-input bg-background px-3 text-sm font-normal text-foreground shadow-sm outline-none transition focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"><option value="">All subcategories</option>{subcategories.map((item) => <option key={item} value={item}>{item}</option>)}</select>
+              </label>
+              <label htmlFor="catalog-tag" className="space-y-1.5 text-xs font-semibold text-foreground/80 lg:col-span-3">
+                <span className="block">Topic tag</span><select id="catalog-tag" name="tag" defaultValue={tag} className="h-11 w-full rounded-xl border border-input bg-background px-3 text-sm font-normal text-foreground shadow-sm outline-none transition focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/20"><option value="">All topics</option>{tags.map((item) => <option key={item} value={item}>{item}</option>)}</select>
+              </label>
+              <div className="flex items-center gap-2 sm:col-span-2 lg:col-span-2">
+                <button type="submit" className="inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"><Search className="size-4" aria-hidden />Find courses</button>
+                <a href={params.category ? `/catalog?category=${encodeURIComponent(params.category)}` : "/catalog"} className="inline-flex h-11 items-center gap-1 rounded-xl px-3 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"><X className="size-3.5" aria-hidden /><span>Clear</span></a>
+              </div>
+            </form>
+          </div>
+        ) : null}
       </header>
 
       {courses.length === 0 ? (
