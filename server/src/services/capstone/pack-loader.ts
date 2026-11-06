@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { load as loadYaml } from "js-yaml";
 import { z } from "zod";
-import { CAPSTONE_PACK_PATH, RubricPackSchema, type RubricPack } from "../../shared/blocks/capstone-check/schema.js";
+import { AUTOMATED_CHECKS, CAPSTONE_PACK_PATH, RubricPackSchema, type RubricPack } from "../../shared/blocks/capstone-check/schema.js";
 import type { AutomatedCheckResult } from "../../shared/blocks/capstone-check/report.js";
 
 // Reads rubric packs and calibration examples from a course package folder:
@@ -10,6 +10,9 @@ import type { AutomatedCheckResult } from "../../shared/blocks/capstone-check/re
 //   courses/<slug>/capstone/<name>.yaml                  the pack (shipped with the course)
 //   courses/<slug>/capstone/calibration/<example>.yaml   calibration examples (never shipped)
 //   courses/<slug>/capstone/calibration/<example>/       optional frozen repo snapshot
+//
+// A course with several packs (capstone/capstone-1.yaml, capstone-2.yaml, ...) keeps each
+// pack's examples in calibration/<pack name>/. A lone capstone/rubric.yaml uses calibration/.
 //
 // Used by the course importer (inline the pack into the block) and by the calibration
 // runner. Every error names the file and the field.
@@ -43,9 +46,10 @@ const PINNED_REPO = /^https:\/\/github\.com\/[A-Za-z0-9-]{1,39}\/[A-Za-z0-9._-]{
 const AutomatedFixtureSchema = z.array(
   z.object({
     id: z.string(),
-    check: z.enum(["repo_public", "ci_green", "tag", "files", "live_ok", "live_contains"]),
+    check: z.enum(AUTOMATED_CHECKS),
     status: z.enum(["pass", "fail", "pending", "skipped"]),
     message: z.string(),
+    blocking: z.boolean().optional(),
   })
 );
 
@@ -79,8 +83,14 @@ export type CalibrationExample = z.infer<typeof CalibrationExampleSchema> & {
   recorded: unknown | null;
 };
 
-export function loadCalibrationExamples(packDir: string): CalibrationExample[] {
-  const dir = path.join(packDir, "calibration");
+/** Where a pack's examples live: calibration/ for rubric.yaml, calibration/<name>/ otherwise. */
+export function calibrationDir(packDir: string, packFile = "rubric.yaml"): string {
+  const name = path.basename(packFile).replace(/.yaml$/, "");
+  return name === "rubric" ? path.join(packDir, "calibration") : path.join(packDir, "calibration", name);
+}
+
+export function loadCalibrationExamples(packDir: string, packFile = "rubric.yaml"): CalibrationExample[] {
+  const dir = calibrationDir(packDir, packFile);
   if (!fs.existsSync(dir)) return [];
   return fs
     .readdirSync(dir)

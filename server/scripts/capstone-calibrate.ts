@@ -12,7 +12,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { anthropicGrader } from "../src/services/capstone/grade.js";
 import { formatCalibration, runCalibration } from "../src/services/capstone/calibration.js";
-import { loadCalibrationExamples, parseRubricPack } from "../src/services/capstone/pack-loader.js";
+import { calibrationDir, loadCalibrationExamples, parseRubricPack } from "../src/services/capstone/pack-loader.js";
 
 function arg(name: string): string | undefined {
   const index = process.argv.indexOf(`--${name}`);
@@ -20,15 +20,16 @@ function arg(name: string): string | undefined {
 }
 
 async function main() {
-  const packFile = arg("pack");
-  if (!packFile) throw new Error("Pass --pack <path to capstone/rubric.yaml>");
-  const full = path.resolve(packFile);
+  const packArg = arg("pack");
+  if (!packArg) throw new Error("Pass --pack <path to capstone/rubric.yaml>");
+  const full = path.resolve(packArg);
   const packDir = path.dirname(full);
   const pack = parseRubricPack(fs.readFileSync(full, "utf8"), path.basename(full));
   const live = process.argv.includes("--live");
   const record = process.argv.includes("--record");
-  const examples = loadCalibrationExamples(packDir);
-  if (examples.length === 0) throw new Error(`No examples in ${path.join(packDir, "calibration")}`);
+  const packFile = path.basename(full);
+  const examples = loadCalibrationExamples(packDir, packFile);
+  if (examples.length === 0) throw new Error(`No examples in ${calibrationDir(packDir, packFile)}`);
 
   const model = process.env.CAPSTONE_MODEL || "claude-sonnet-5-5";
   const maxOutputTokens = Number(process.env.CAPSTONE_MAX_OUTPUT_TOKENS || 8000);
@@ -44,6 +45,7 @@ async function main() {
   const outcomes = await runCalibration({
     pack,
     packDir,
+    packFile,
     mode: live ? "live" : "replay",
     liveGrader: live
       ? anthropicGrader({ apiKey: process.env.ANTHROPIC_API_KEY!, model, maxOutputTokens, effort: (process.env.CAPSTONE_EFFORT as "low" | "medium" | "high") || "medium" })
@@ -56,7 +58,7 @@ async function main() {
   if (live && record) {
     for (const outcome of outcomes) {
       if (outcome.output === null) continue;
-      const file = path.join(packDir, "calibration", `${outcome.name}.recorded.json`);
+      const file = path.join(calibrationDir(packDir, packFile), `${outcome.name}.recorded.json`);
       fs.writeFileSync(file, `${JSON.stringify(outcome.output, null, 2)}\n`);
       console.log(`  recorded ${path.relative(process.cwd(), file)}`);
     }

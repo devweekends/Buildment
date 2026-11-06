@@ -53,6 +53,13 @@ async function loadCapstoneBlock(blockId: string, user: SessionUser | undefined)
   return { block, enrollment, learner, config: config.data };
 }
 
+/** The learner's view never carries integrity flags; those are for the mentor. */
+function learnerReport(report: CapstoneReport | null): CapstoneReport | null {
+  if (!report) return null;
+  const { integrityFlags: _flags, ...rest } = report;
+  return rest;
+}
+
 function toView(check: CapstoneCheck): CapstoneCheckView {
   return {
     id: check.id,
@@ -64,7 +71,7 @@ function toView(check: CapstoneCheck): CapstoneCheckView {
     createdAt: check.createdAt.toISOString(),
     finishedAt: check.finishedAt?.toISOString() ?? null,
     automated: (check.automated as AutomatedCheckResult[] | null) ?? [],
-    report: (check.report as CapstoneReport | null) ?? null,
+    report: learnerReport((check.report as CapstoneReport | null) ?? null),
     error: check.error,
     sentToMentor: check.responseId !== null,
     reused: check.reusedFromId !== null,
@@ -74,6 +81,7 @@ function toView(check: CapstoneCheck): CapstoneCheckView {
 export function toMentorView(check: CapstoneCheck): CapstoneMentorView {
   return {
     ...toView(check),
+    report: (check.report as CapstoneReport | null) ?? null,
     model: check.model,
     inputTokens: check.inputTokens,
     outputTokens: check.outputTokens,
@@ -223,6 +231,9 @@ export async function queueForMentor(checkId: string): Promise<void> {
 
 // ---- Pipeline ---------------------------------------------------------------------
 
+/** A complete check, or one with an integrity flag, goes to the mentor without waiting for the learner. */
+const needsMentor = (report: CapstoneReport) => report.completed || (report.integrityFlags?.length ?? 0) > 0;
+
 function defaultGrader(): GraderModel {
   return anthropicGrader({
     apiKey: env.ANTHROPIC_API_KEY!,
@@ -273,7 +284,7 @@ export async function runCapstoneCheck(checkId: string, deps: CapstoneDeps = {})
     if (previous?.report && sameAutomated((previous.automated as AutomatedCheckResult[]) ?? [], automated)) {
       const report = previous.report as unknown as CapstoneReport;
       await finish({ status: "DONE", commitSha, automated: automated as unknown as Prisma.InputJsonValue, report: report as unknown as Prisma.InputJsonValue, percent: report.percent, completed: report.completed, reusedFromId: previous.reusedFromId ?? previous.id, model: previous.model });
-      if (report.completed) await queueForMentor(checkId);
+      if (needsMentor(report)) await queueForMentor(checkId);
       return;
     }
 
@@ -296,7 +307,7 @@ export async function runCapstoneCheck(checkId: string, deps: CapstoneDeps = {})
       outputTokens: call.outputTokens,
       costMicroUsd: costMicroUsd(call.model, call.inputTokens, call.outputTokens),
     });
-    if (report.completed) await queueForMentor(checkId);
+    if (needsMentor(report)) await queueForMentor(checkId);
   } catch (error) {
     const grader = error instanceof GraderError ? error : null;
     if (!grader) logger.warn({ err: error, checkId }, "capstone check failed");

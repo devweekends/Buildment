@@ -20,7 +20,15 @@ export interface CapstoneRepoSource {
   /** Raw file text, or null when missing or binary. Reads at most maxBytes. */
   file(ref: RepoRef, sha: string, path: string, maxBytes: number): Promise<string | null>;
   ci(ref: RepoRef, sha: string): Promise<CiStatus>;
+  /** The latest run of one named check on a commit. */
+  checkRun(ref: RepoRef, sha: string, name: string): Promise<CheckRunStatus>;
 }
+
+export type CheckRunStatus =
+  | { state: "success" }
+  | { state: "failure"; conclusion: string }
+  | { state: "pending" }
+  | { state: "none" };
 
 export function parseRepoUrl(url: string): RepoRef | null {
   const match = /^https:\/\/github\.com\/([A-Za-z0-9-]{1,39})\/([A-Za-z0-9._-]{1,100})\/?$/.exec(url.replace(/\.git$/, ""));
@@ -106,7 +114,21 @@ export function githubRepoSource(options: { token?: string; fetchImpl?: FetchLik
       );
       return summariseRuns(runs?.workflow_runs ?? []);
     },
+    async checkRun(ref, sha, name) {
+      const result = await json<{ check_runs: Array<{ status: string; conclusion: string | null; started_at: string | null }> }>(
+        `${base(ref)}/commits/${encodeURIComponent(sha)}/check-runs?check_name=${encodeURIComponent(name)}&per_page=20`
+      );
+      return summariseCheckRun(result?.check_runs ?? []);
+    },
   };
+}
+
+/** The latest run with that name decides; skipped and neutral count as not passing here. */
+export function summariseCheckRun(runs: Array<{ status: string; conclusion: string | null; started_at: string | null }>): CheckRunStatus {
+  if (runs.length === 0) return { state: "none" };
+  const latest = [...runs].sort((a, b) => (b.started_at ?? "").localeCompare(a.started_at ?? ""))[0]!;
+  if (latest.status !== "completed") return { state: "pending" };
+  return latest.conclusion === "success" ? { state: "success" } : { state: "failure", conclusion: latest.conclusion ?? "unknown" };
 }
 
 /** The latest run of each workflow decides. Skipped and neutral runs do not fail the build. */

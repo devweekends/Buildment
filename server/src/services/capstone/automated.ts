@@ -1,6 +1,6 @@
-import { automatedSpecs, HARD_STOP_CHECKS, type AutomatedCheckSpec, type RubricPack } from "../../shared/blocks/capstone-check/schema.js";
-import type { AutomatedCheckResult } from "../../shared/blocks/capstone-check/report.js";
-import type { CapstoneRepoSource, RepoRef, RepoTreeEntry } from "./github.js";
+import { automatedSpecs, stopsRun, type AutomatedCheckSpec, type RubricPack } from "../../shared/blocks/capstone-check/schema.js";
+import { blocksGrade, type AutomatedCheckResult } from "../../shared/blocks/capstone-check/report.js";
+import { parseRepoUrl, type CapstoneRepoSource, type RepoRef, type RepoTreeEntry } from "./github.js";
 import type { PublicPage } from "./safe-fetch.js";
 
 // Deterministic checks that run before (and instead of, when a hard gate fails) the
@@ -64,6 +64,21 @@ function pageText(html: string): string {
     .slice(0, 8_000);
 }
 
+const MATCH_MAX_BYTES = 200_000;
+
+/** Line endings and a trailing newline never count as a change. */
+export function normaliseText(text: string): string {
+  return text.replace(/\r\n/g, "\n").replace(/\s+$/, "");
+}
+
+/** https://github.com/owner/repo@ref, as used by files_match. */
+export function parseTemplateRef(value: string): { ref: RepoRef; at: string } | null {
+  const at = value.lastIndexOf("@");
+  if (at < 0) return null;
+  const ref = parseRepoUrl(value.slice(0, at));
+  return ref ? { ref, at: value.slice(at + 1) } : null;
+}
+
 function tagMatches(tags: string[], pattern: string): string | null {
   const regex = globToRegExp(pattern);
   return tags.find((tag) => regex.test(tag)) ?? null;
@@ -77,9 +92,9 @@ export async function runAutomatedChecks(
   const specs = automatedSpecs(pack);
   const results = new Map<string, AutomatedCheckResult>();
   const skip = (spec: AutomatedCheckSpec, message: string) =>
-    results.set(spec.id, { id: spec.id, check: spec.check, status: "skipped", message });
+    results.set(spec.id, { id: spec.id, check: spec.check, status: "skipped", message, blocking: stopsRun(spec) });
   const set = (spec: AutomatedCheckSpec, status: AutomatedCheckResult["status"], message: string) =>
-    results.set(spec.id, { id: spec.id, check: spec.check, status, message });
+    results.set(spec.id, { id: spec.id, check: spec.check, status, message, blocking: stopsRun(spec) });
 
   // 1. The repo itself. Nothing else can run without it.
   const repoSpec = specs.find((spec) => spec.check === "repo_public")!;
@@ -139,11 +154,35 @@ export async function runAutomatedChecks(
       const missing = spec.paths.filter((pattern) => !facts!.tree.some((entry) => globToRegExp(pattern).test(entry.path)));
       if (missing.length === 0) set(spec, "pass", "All the required files are in the repo.");
       else set(spec, "fail", `Missing from the repo: ${missing.join(", ")}.`);
+    } else if (spec.check === "files_match") {
+      const template = parseTemplateRef(spec.against)!;
+      const changed: string[] = [];
+      for (const path of spec.paths) {
+        const [learner, course] = await Promise.all([
+          deps.source.file(facts.ref, facts.commitSha, path, MATCH_MAX_BYTES),
+          deps.source.file(template.ref, template.at, path, MATCH_MAX_BYTES),
+        ]);
+        if (course === null) throw new Error(`files_match: ${path} is missing from ${spec.against}`);
+        if (learner === null || normaliseText(learner) !== normaliseText(course)) changed.push(path);
+      }
+      if (changed.length === 0) set(spec, "pass", "The course-owned files match the template.");
+      else set(spec, "fail", `A course file was changed or removed: ${changed.join(", ")}. Restore it from the template, commit and push.`);
+    } else if (spec.check === "file_contains") {
+      const text = await deps.source.file(facts.ref, facts.commitSha, spec.path, MATCH_MAX_BYTES);
+      if (text === null) set(spec, "fail", `${spec.path} is missing from the repo.`);
+      else if (normaliseText(text).includes(normaliseText(spec.text))) set(spec, "pass", `${spec.path} has the expected line.`);
+      else set(spec, "fail", `${spec.path} does not contain the line the course expects: ${spec.text}`);
+    } else if (spec.check === "check_run") {
+      const run = await deps.source.checkRun(facts.ref, facts.commitSha, spec.name);
+      if (run.state === "success") set(spec, "pass", `The "${spec.name}" check passed on the latest commit.`);
+      else if (run.state === "pending") set(spec, "pending", `The "${spec.name}" check is still running. Check again when it finishes.`);
+      else if (run.state === "failure") set(spec, "fail", `The "${spec.name}" check did not pass (${run.conclusion}). Open the Actions tab to see why.`);
+      else set(spec, "fail", `The "${spec.name}" check did not run on the latest commit.`);
     }
   }
 
   const ordered = specs.map((spec) => results.get(spec.id)!);
-  const stopped = ordered.some((result) => HARD_STOP_CHECKS.has(result.check) && result.status !== "pass");
+  const stopped = ordered.some(blocksGrade);
   const live = liveSpecs.length ? [...pages.values()].find((result) => result.ok) : undefined;
   return {
     results: ordered,

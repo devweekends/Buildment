@@ -11,7 +11,15 @@ export type AutomatedCheckResult = {
   status: AutomatedCheckStatus;
   /** One plain sentence the learner can act on. */
   message: string;
+  /** True when this check failing stops the run before the AI grade. Missing on older rows. */
+  blocking?: boolean;
 };
+
+/** Older stored results have no `blocking`; fall back to the default for their kind. */
+export function blocksGrade(result: AutomatedCheckResult): boolean {
+  const blocking = result.blocking ?? (result.check === "repo_public" || result.check === "ci_green" || result.check === "files_match");
+  return blocking && (result.status === "fail" || result.status === "pending");
+}
 
 export type CriterionResult = {
   id: string;
@@ -43,6 +51,11 @@ export type CapstoneReport = {
   whatIsLeft: WhatIsLeftItem[];
   qualityNotes: { strengths: string[]; improvements: string[] };
   confidence: "high" | "medium" | "low";
+  /**
+   * Integrity concerns the grader raised (text aimed at the grader, copied work, weakened
+   * tests). Mentor only: stripped from the learner's view. Any flag sends the check to the mentor.
+   */
+  integrityFlags?: string[];
   /** False when a hard gate stopped the run before the AI grade. */
   graded: boolean;
 };

@@ -15,24 +15,52 @@ const kebab = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use kebab-case");
 /** Check ids default to the check name (live_ok), so underscores are allowed here. */
 const checkId = z.string().regex(/^[a-z0-9]+(?:[-_][a-z0-9]+)*$/, "Use lower-case words joined by - or _");
 
-export const AUTOMATED_CHECKS = ["repo_public", "ci_green", "tag", "files", "live_ok", "live_contains"] as const;
+export const AUTOMATED_CHECKS = [
+  "repo_public",
+  "ci_green",
+  "tag",
+  "files",
+  "files_match",
+  "file_contains",
+  "check_run",
+  "live_ok",
+  "live_contains",
+] as const;
 export type AutomatedCheckKind = (typeof AUTOMATED_CHECKS)[number];
 
-/** Checks that stop the run before the model is called: nothing to grade, or the build is broken. */
-export const HARD_STOP_CHECKS: ReadonlySet<AutomatedCheckKind> = new Set(["repo_public", "ci_green"]);
+/**
+ * Checks that stop the run before the model is called by default: nothing to grade, the build
+ * is broken, or a course-owned file was changed. A spec can override this with `stop`.
+ */
+export const HARD_STOP_CHECKS: ReadonlySet<AutomatedCheckKind> = new Set(["repo_public", "ci_green", "files_match"]);
 
 const sitePath = z.string().regex(/^\/[^\s]*$/, "Start the path with /").max(200);
+const repoPath = z.string().min(1).max(200).regex(/^(?!\/)(?!.*\.\.)[^\s*?]+$/, "Use a plain repo path like .github/workflows/ci.yml");
+/** A template repo at a tag or commit: https://github.com/owner/repo@v1.0.0 */
+export const TEMPLATE_REF = /^https:\/\/github\.com\/[A-Za-z0-9-]{1,39}\/[A-Za-z0-9._-]{1,100}@[A-Za-z0-9._/-]{1,100}$/;
+const stop = z.boolean().optional();
 
 const AutomatedCheckSpecSchema = z.discriminatedUnion("check", [
   z.object({ check: z.literal("repo_public"), id: checkId.optional() }).strict(),
-  z.object({ check: z.literal("ci_green"), id: checkId.optional() }).strict(),
-  z.object({ check: z.literal("tag"), id: checkId.optional(), pattern: z.string().min(1).max(80) }).strict(),
-  z.object({ check: z.literal("files"), id: checkId.optional(), paths: z.array(z.string().min(1).max(200)).min(1).max(30) }).strict(),
-  z.object({ check: z.literal("live_ok"), id: checkId.optional(), path: sitePath.optional() }).strict(),
-  z.object({ check: z.literal("live_contains"), id: checkId.optional(), text: z.string().min(1).max(200), path: sitePath.optional() }).strict(),
+  z.object({ check: z.literal("ci_green"), id: checkId.optional(), stop }).strict(),
+  z.object({ check: z.literal("tag"), id: checkId.optional(), pattern: z.string().min(1).max(80), stop }).strict(),
+  z.object({ check: z.literal("files"), id: checkId.optional(), paths: z.array(z.string().min(1).max(200)).min(1).max(30), stop }).strict(),
+  /** Course-owned files (workflow, supplied tests) must be byte-identical to the template at a tag. */
+  z.object({ check: z.literal("files_match"), id: checkId.optional(), paths: z.array(repoPath).min(1).max(20), against: z.string().regex(TEMPLATE_REF, "Use https://github.com/owner/repo@<tag or commit>"), stop }).strict(),
+  /** A repo file contains a line, for example a pinned `uses:` of a reusable workflow. */
+  z.object({ check: z.literal("file_contains"), id: checkId.optional(), path: repoPath, text: z.string().min(1).max(300), stop }).strict(),
+  /** One named GitHub check run on the commit concluded with success. */
+  z.object({ check: z.literal("check_run"), id: checkId.optional(), name: z.string().trim().min(1).max(100), stop }).strict(),
+  z.object({ check: z.literal("live_ok"), id: checkId.optional(), path: sitePath.optional(), stop }).strict(),
+  z.object({ check: z.literal("live_contains"), id: checkId.optional(), text: z.string().min(1).max(200), path: sitePath.optional(), stop }).strict(),
 ]);
 
 export type AutomatedCheckSpec = z.infer<typeof AutomatedCheckSpecSchema> & { id: string };
+
+/** Whether a failed or pending check stops the run before the AI grade. */
+export function stopsRun(spec: { check: AutomatedCheckKind; stop?: boolean }): boolean {
+  return spec.check === "repo_public" || (spec.stop ?? HARD_STOP_CHECKS.has(spec.check));
+}
 
 const CriterionSchema = z
   .object({

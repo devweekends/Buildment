@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { CapstoneCheckConfig, RubricPack } from "../../shared/blocks/capstone-check/schema.js";
-import type { CapstoneReport } from "../../shared/blocks/capstone-check/report.js";
+import { blocksGrade, type CapstoneReport } from "../../shared/blocks/capstone-check/report.js";
 import { runAutomatedChecks, type AutomatedRun } from "./automated.js";
 import { githubRepoSource, parseRepoUrl, type CapstoneRepoSource } from "./github.js";
 import { costMicroUsd, recomputeReport, type GraderCall, type GraderModel } from "./grade.js";
@@ -46,6 +46,9 @@ export function snapshotRepoSource(snapshotDir: string): CapstoneRepoSource {
     async ci() {
       return { state: "success", runs: 1 };
     },
+    async checkRun() {
+      return { state: "success" };
+    },
   };
 }
 
@@ -84,7 +87,7 @@ async function automatedFor(pack: RubricPack, example: CalibrationExample, sourc
   const run = await runAutomatedChecks(pack, { ref, liveUrl: example.liveUrl ?? null }, { source, fetchPage });
   if (example.automated) {
     // A snapshot example states its automated results; the repo facts still come from the folder.
-    return { ...run, results: example.automated, stopped: example.automated.some((r) => (r.check === "repo_public" || r.check === "ci_green") && r.status !== "pass") };
+    return { ...run, results: example.automated, stopped: example.automated.some(blocksGrade) };
   }
   return run;
 }
@@ -92,6 +95,8 @@ async function automatedFor(pack: RubricPack, example: CalibrationExample, sourc
 export async function runCalibration(input: {
   pack: RubricPack;
   packDir: string;
+  /** The pack's file name; decides the calibration folder (see calibrationDir). */
+  packFile?: string;
   mode: "replay" | "live";
   liveGrader?: GraderModel;
   githubToken?: string;
@@ -99,7 +104,7 @@ export async function runCalibration(input: {
 }): Promise<CalibrationOutcome[]> {
   const config: CapstoneCheckConfig = { pack: "capstone/rubric.yaml", rubric: input.pack };
   const outcomes: CalibrationOutcome[] = [];
-  for (const example of loadCalibrationExamples(input.packDir)) {
+  for (const example of loadCalibrationExamples(input.packDir, input.packFile)) {
     const base: Omit<CalibrationOutcome, "report" | "withinTolerance" | "skipped" | "costUsd" | "output"> = { name: example.name, expected: example.expected };
     const replayWithoutRecording = input.mode === "replay" && example.recorded === null;
     // A replay never touches the network: a pinned-repo example without a recording is skipped.
