@@ -957,6 +957,26 @@ body:has([data-audiobook-bar]) {
   --audiobook-bar-space: 4.75rem;
 }
 
+/* Tutor voice preview (/voice): the breathing orb and the tutor drawing on its board. */
+@keyframes tutor-orb {
+  0%,
+  100% {
+    transform: scale(0.94);
+  }
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+@keyframes tutor-draw {
+  from {
+    stroke-dashoffset: 300;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
 @keyframes audiobook-eq {
   0%,
   100% {

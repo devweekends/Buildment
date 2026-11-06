@@ -1,71 +1,94 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { Phone } from "lucide-react";
 import { SITE_SHARE_IMAGE } from "@/lib/site";
 import { areaById } from "@/lib/learn-areas";
-import { AreaHero, AreaPage, ComingSoonPanel } from "@/components/areas/area-page";
-import Link from "next/link";
-import { MicOff, Phone, PhoneOff, Volume2 } from "lucide-react";
-import { pickFilter } from "@/components/areas/filter-chips";
 import { cn } from "@/lib/utils";
+import { AreaHero, AreaPage, ComingSoonPanel } from "@/components/areas/area-page";
+import { pickFilter } from "@/components/areas/filter-chips";
+import { TutorVoicePreview, type TutorBoard } from "@/components/voice/tutor-voice-preview";
 
 export const metadata: Metadata = {
   title: "On-call tutors",
-  description: "Call a tutor for any topic, start talking and ask about anything that feels hard. It explains in plain words and keeps your place.",
+  description: "Call a tutor for any topic and talk it through. It answers out loud and shows you diagrams and code on a board while it talks.",
   alternates: { canonical: "/voice" },
   openGraph: { title: "On-call tutors on Edorax", url: "/voice", images: [SITE_SHARE_IMAGE] },
 };
 
 type Line = { who: "agent" | "you"; text: string };
 
-// One tutor per topic, on call: you ring them, they pick up. The sample calls are written out; calls are not open yet.
-const TOPICS: { id: string; label: string; note: string; call: Line[] }[] = [
+// One tutor per topic, on call. While it talks it can keep a board open: a diagram it draws, the
+// commands it runs, the code it writes. Calls are not open yet; the page shows what one looks like.
+const TUTORS: { id: string; label: string; note: string; caption: string; board: TutorBoard; call: Line[] }[] = [
   {
     id: "system-design",
     label: "System Design",
-    note: "Opens first.",
+    note: "opens first",
+    caption: "This box is the load balancer. Watch what happens when one server slows down.",
+    board: { kind: "diagram" },
     call: [
       { who: "agent", text: "Hi, I'm your System Design tutor. What do you already know, and what feels hard?" },
       { who: "you", text: "I know what a server is, but not much more." },
-      { who: "agent", text: "Then we start as a beginner. Module 2 is about why waiting suddenly gets long. Want the two-minute version first?" },
+      { who: "agent", text: "Then we start as a beginner. I'll draw as we go." },
       { who: "you", text: "Wait, what is a load balancer for?" },
-      { who: "agent", text: "It spreads requests over several servers, so one busy server does not slow everyone down. That is module 4. Shall we go there next?" },
+      { who: "agent", text: "This box is the load balancer. Watch what happens when one server slows down." },
     ],
   },
   {
     id: "networking",
     label: "Networking",
-    note: "Opens later.",
+    note: "opens later",
+    caption: "Your address works and the way out works. Names fail, so it is DNS.",
+    board: {
+      kind: "terminal",
+      title: "Terminal",
+      lines: [
+        { prompt: true, text: "ip addr show wlan0" },
+        { text: "inet 192.168.1.23/24" },
+        { prompt: true, text: "ping -c 1 1.1.1.1" },
+        { text: "64 bytes from 1.1.1.1: time=18 ms" },
+        { prompt: true, text: "nslookup edorax.com" },
+        { text: ";; connection timed out" },
+      ],
+    },
     call: [
-      { who: "agent", text: "Hi, I'm your Networking tutor. Where would you like to start?" },
       { who: "you", text: "My laptop says connected, but nothing loads." },
-      { who: "agent", text: "Good place to start. Let's check three things in order: your address, the way out of your network, then names. Can you open a terminal?" },
+      { who: "agent", text: "Let's check three things in order. I'll run them on the board." },
+      { who: "agent", text: "Your address works and the way out works. Names fail, so it is DNS." },
     ],
   },
   {
     id: "ai-engineering",
     label: "AI engineering",
-    note: "Opens later.",
+    note: "opens later",
+    caption: "Same questions, before and after. If the score moves, that is your answer.",
+    board: {
+      kind: "code",
+      title: "eval.py",
+      lines: [
+        "def score(answer, case):",
+        "    hits = [f for f in case.facts if f in answer]",
+        "    return len(hits) / len(case.facts)",
+        "",
+        "before = run_eval(old_pipeline, cases)  # 0.62",
+        "after = run_eval(new_pipeline, cases)   # 0.71",
+      ],
+    },
     call: [
-      { who: "agent", text: "Hi, I'm your AI engineering tutor. Building something, or getting ready for an interview?" },
-      { who: "you", text: "Interview. I always get stuck on evals." },
-      { who: "agent", text: "Then let's practise one answer out loud: how would you know your RAG system got better after a change?" },
+      { who: "you", text: "How do I show my RAG change made things better?" },
+      { who: "agent", text: "Let's write the check together. I'll type it on the board." },
+      { who: "agent", text: "Same questions, before and after. If the score moves, that is your answer." },
     ],
   },
 ];
-
-const HOW = [
-  ["Pick a tutor and call", "One tutor per topic. Press Call and say where you want to start."],
-  ["Say your level", "It checks with one or two questions instead of trusting a label."],
-  ["Ask anything", "Interrupt at any point. It answers briefly, then brings you back."],
-  ["Your place is kept", "The next call picks up where you stopped."],
-] as const;
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
 export default async function VoicePage({ searchParams }: { searchParams: SearchParams }) {
   const area = areaById("voice");
   const query = await searchParams;
-  const id = pickFilter(query.topic, TOPICS.map((t) => t.id)) ?? TOPICS[0]!.id;
-  const topic = TOPICS.find((t) => t.id === id)!;
+  const id = pickFilter(query.topic, TUTORS.map((t) => t.id)) ?? TUTORS[0]!.id;
+  const tutor = TUTORS.find((t) => t.id === id)!;
 
   return (
     <AreaPage>
@@ -74,13 +97,12 @@ export default async function VoicePage({ searchParams }: { searchParams: Search
         title={area.name}
         status={area.status}
         mood="happy"
-        intro="A tutor on call for every topic. Pick one, press Call and start talking. Ask anything that feels hard; it answers in plain words and keeps your place for the next call."
+        intro="Call a tutor and just talk. It answers out loud, and while it talks it can draw, run commands or write code on a board you keep watching."
       />
 
-      {/* Tutors are on call: pick one, then call. The list reads like contacts, each with its line status. */}
       <nav aria-label="Tutors" className="mt-8">
-        <ul className="grid gap-3 sm:grid-cols-3">
-          {TOPICS.map((t) => {
+        <ul className="flex flex-wrap gap-2">
+          {TUTORS.map((t) => {
             const active = t.id === id;
             return (
               <li key={t.id}>
@@ -89,20 +111,15 @@ export default async function VoicePage({ searchParams }: { searchParams: Search
                   scroll={false}
                   aria-current={active ? "true" : undefined}
                   className={cn(
-                    "flex min-h-16 items-center gap-3 border-2 bg-card px-4 py-3 outline-none transition-colors focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand-yellow",
-                    active ? "border-foreground" : "border-border hover:border-foreground",
+                    "inline-flex min-h-11 items-center gap-2.5 rounded-full border-2 py-1 pl-1.5 pr-4 text-[15px] font-bold outline-none transition-colors focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand-yellow",
+                    active ? "border-foreground bg-foreground text-background" : "border-input bg-card text-foreground hover:border-foreground",
                   )}
                 >
-                  <span aria-hidden className={cn("grid size-10 shrink-0 place-items-center rounded-full", active ? "bg-foreground text-background" : "bg-secondary text-primary")}>
-                    <Phone className="size-5" />
+                  <span aria-hidden className={cn("grid size-8 place-items-center rounded-full", active ? "bg-background/15" : "bg-secondary text-primary")}>
+                    <Phone className="size-4" />
                   </span>
-                  <span className="min-w-0">
-                    <span className="block text-base font-bold leading-tight">{t.label} tutor</span>
-                    <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                      <span aria-hidden className="size-2 rounded-full bg-emerald-500" />
-                      On call · {t.note.replace(/\.$/, "").toLowerCase()}
-                    </span>
-                  </span>
+                  {t.label}
+                  <span className={cn("text-sm font-medium", active ? "text-background/70" : "text-muted-foreground")}>{t.note}</span>
                 </Link>
               </li>
             );
@@ -110,62 +127,23 @@ export default async function VoicePage({ searchParams }: { searchParams: Search
         </ul>
       </nav>
 
-      <section aria-label={`${topic.label} tutor`} className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
-        {/* The call screen: what it looks like with the tutor on the line. Captions are the sample call. */}
-        <div className="overflow-hidden rounded-lg bg-[#0A0F2C] text-[#F6F7FB]" data-testid="call-screen">
-          <div className="flex items-center gap-4 px-5 pt-5">
-            <span aria-hidden className="relative grid size-14 shrink-0 place-items-center rounded-full bg-[#2434E0]">
-              <Phone className="size-6" />
-              <span className="absolute -inset-1.5 rounded-full border-2 border-[#2434E0]/60 motion-safe:animate-ping" />
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="text-lg font-bold leading-tight">{topic.label} tutor</p>
-              <p className="mt-0.5 flex items-center gap-2 text-sm text-[#C9CFF0]">
-                <span aria-hidden className="size-2 rounded-full bg-emerald-400" />
-                On the call · <span className="tabular-nums">02:14</span>
-              </p>
-            </div>
-            <span className="rounded-sm bg-white/10 px-2 py-1 text-xs font-bold uppercase tracking-wider text-[#C9CFF0]">Sample</span>
-          </div>
-          <ol className="mt-5 space-y-3 px-5" aria-label="Sample call, as captions">
-            {topic.call.map((line, i) => (
-              <li key={i} className={line.who === "agent" ? "mr-8" : "ml-8 text-right"}>
-                <p className="text-xs font-bold uppercase tracking-wider text-[#7A8BFF]">{line.who === "agent" ? "Tutor" : "You"}</p>
-                <p className={cn("mt-0.5 text-base leading-snug", line.who === "you" && "text-[#FFC933]")}>{line.text}</p>
-              </li>
-            ))}
-          </ol>
-          <div aria-hidden className="mt-6 flex items-center justify-center gap-6 border-t border-white/10 px-5 py-4">
-            <span className="grid size-12 place-items-center rounded-full bg-white/10">
-              <MicOff className="size-5" />
-            </span>
-            <span className="grid size-12 place-items-center rounded-full bg-white/10">
-              <Volume2 className="size-5" />
-            </span>
-            <span className="grid size-12 place-items-center rounded-full bg-[#D92D20]">
-              <PhoneOff className="size-5" />
-            </span>
-          </div>
-          <div className="border-t border-white/10 px-5 py-4">
-            <button
-              type="button"
-              disabled
-              className="inline-flex min-h-12 w-full cursor-not-allowed items-center justify-center gap-2 rounded-full bg-emerald-600 px-5 text-base font-bold text-white opacity-70"
-            >
-              <Phone aria-hidden className="size-5" />
-              Call the {topic.label} tutor · opens soon
-            </button>
-          </div>
-        </div>
-        <dl className="divide-y divide-border self-start border border-border bg-card">
-          {HOW.map(([title, body]) => (
-            <div key={title} className="px-5 py-3.5">
-              <dt className="text-base font-bold">{title}</dt>
-              <dd className="text-base text-muted-foreground">{body}</dd>
-            </div>
+      <div className="mt-6">
+        <TutorVoicePreview name={tutor.label} caption={tutor.caption} board={tutor.board} />
+      </div>
+
+      <details className="group mt-6 border-t border-border pt-4">
+        <summary className="flex min-h-11 cursor-pointer list-none items-center text-lg font-bold outline-none focus-visible:outline-3 focus-visible:outline-brand-yellow [&::-webkit-details-marker]:hidden">
+          Read this call
+        </summary>
+        <ol className="mt-3 max-w-2xl space-y-2" aria-label={`Sample call with the ${tutor.label} tutor`}>
+          {tutor.call.map((line, i) => (
+            <li key={i} className="text-base">
+              <span className="font-bold">{line.who === "agent" ? "Tutor" : "You"}: </span>
+              <span className="text-muted-foreground">{line.text}</span>
+            </li>
           ))}
-        </dl>
-      </section>
+        </ol>
+      </details>
 
       <ComingSoonPanel title="On-call tutors are on the way" action={{ href: "/audiobooks", label: "Listen to a course" }}>
         System Design gets the first tutor. Until then, every narrated course is on the Audiobooks shelf.
