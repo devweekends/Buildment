@@ -108,7 +108,7 @@ export function loadCalibrationExamples(packDir: string): CalibrationExample[] {
     });
 }
 
-/** Every file under a snapshot folder except automated.json, as repo-relative paths. */
+/** Every file under a snapshot folder except automated.json and live.html, as repo-relative paths. */
 export function snapshotFiles(snapshotDir: string): Array<{ path: string; size: number }> {
   const out: Array<{ path: string; size: number }> = [];
   const visit = (current: string) => {
@@ -117,7 +117,7 @@ export function snapshotFiles(snapshotDir: string): Array<{ path: string; size: 
       if (entry.isDirectory()) visit(full);
       else if (entry.isFile()) {
         const relative = path.relative(snapshotDir, full).split(path.sep).join("/");
-        if (relative !== "automated.json") out.push({ path: relative, size: fs.statSync(full).size });
+        if (relative !== "automated.json" && relative !== "live.html") out.push({ path: relative, size: fs.statSync(full).size });
       }
     }
   };

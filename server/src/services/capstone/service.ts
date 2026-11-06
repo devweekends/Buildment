@@ -4,7 +4,6 @@ import { prisma } from "../../db/prisma.js";
 import {
   CapstoneCheckConfigSchema,
   CapstoneSubmitSchema,
-  type CapstoneCheckConfig,
   type CapstoneCheckPayload,
 } from "../../shared/blocks/capstone-check/schema.js";
 import type {
@@ -25,18 +24,10 @@ import { dispatchNotification } from "../notifications/service.js";
 import { adjustEnrollmentPendingReviews, lockEnrollmentVariant, recomputeChapterProgress, recordBlockStats } from "../progress/compute.js";
 import { runAutomatedChecks } from "./automated.js";
 import { GitHubApiError, githubRepoSource, parseRepoUrl, type CapstoneRepoSource } from "./github.js";
-import {
-  anthropicGrader,
-  buildGradePrompt,
-  costMicroUsd,
-  GraderError,
-  ModelGradeSchema,
-  recomputeReport,
-  type GraderModel,
-} from "./grade.js";
+import { anthropicGrader, costMicroUsd, GraderError, recomputeReport, type GraderModel } from "./grade.js";
+import { gradeWithModel } from "./run-grade.js";
 import { assertLearnerMayCheck, remainingChecksToday, reserveModelCall, STALE_CHECK_MESSAGE, STALE_CHECK_MS } from "./limits.js";
 import { fetchPublicPage, type PublicPage } from "./safe-fetch.js";
-import { buildSnapshot } from "./snapshot.js";
 
 // The capstone check pipeline (docs/16-capstone-checker-and-certificates.mdx):
 //   start -> QUEUED -> RUNNING -> automated checks -> (stop, reuse, or AI grade) -> DONE | FAILED
@@ -50,8 +41,6 @@ export type CapstoneDeps = {
   /** Tests run the pipeline inline instead of after the response. */
   inline?: boolean;
 };
-
-const PROMPT_CHARS_PER_TOKEN = 3;
 
 const unavailable = (message: string, code: string) => new AppError(message, 503, code);
 
@@ -245,53 +234,6 @@ function defaultGrader(): GraderModel {
 
 const sameAutomated = (a: AutomatedCheckResult[], b: AutomatedCheckResult[]) =>
   a.length === b.length && a.every((item, index) => item.id === b[index]!.id && item.status === b[index]!.status);
-
-type GradeInput = {
-  config: CapstoneCheckConfig;
-  repoUrl: string;
-  liveUrl: string | null;
-  automatedRun: Awaited<ReturnType<typeof runAutomatedChecks>>;
-  source: CapstoneRepoSource;
-  grader: GraderModel;
-  maxInputTokens: number;
-};
-
-/**
- * Snapshot the repo inside the token budget, call the grader once, recompute the report.
- * Shared by the live pipeline and the calibration runner.
- */
-export async function gradeWithModel(input: GradeInput) {
-  const { config, automatedRun } = input;
-  const repo = automatedRun.repo!;
-  const empty = { tree: [], treeOmitted: 0, files: [], skippedForBudget: [], chars: 0 };
-  const overhead = buildGradePrompt({
-    pack: config.rubric,
-    automated: automatedRun.results,
-    repoUrl: input.repoUrl,
-    commitSha: repo.commitSha,
-    liveUrl: input.liveUrl,
-    snapshot: empty,
-    livePage: automatedRun.livePage,
-  });
-  const budget = input.maxInputTokens * PROMPT_CHARS_PER_TOKEN - overhead.system.length - overhead.user.length;
-  if (budget < 2_000) throw new GraderError("The rubric is too long for the input budget.", "UNAVAILABLE");
-  const snapshot = await buildSnapshot(input.source, repo.ref, repo.commitSha, repo.tree, config.rubric.snapshot, budget);
-  const prompt = buildGradePrompt({
-    pack: config.rubric,
-    automated: automatedRun.results,
-    repoUrl: input.repoUrl,
-    commitSha: repo.commitSha,
-    liveUrl: input.liveUrl,
-    snapshot,
-    livePage: automatedRun.livePage,
-  });
-  const call = await input.grader.grade(prompt);
-  const parsed = ModelGradeSchema.safeParse(call.output);
-  if (!parsed.success) {
-    throw new GraderError("The grader returned something we could not read.", "BAD_OUTPUT", { inputTokens: call.inputTokens, outputTokens: call.outputTokens });
-  }
-  return { call, report: recomputeReport(config.rubric, automatedRun.results, parsed.data), snapshot };
-}
 
 const FAILURE_MESSAGES: Record<GraderError["code"], string> = {
   REFUSED: "The AI grader could not grade this one. Send it to your mentor and they will review it by hand.",
