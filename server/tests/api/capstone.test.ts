@@ -33,6 +33,7 @@ const source: CapstoneRepoSource = {
   tree: async () => ({ entries: [{ path: "README.md", size: 20 }, { path: "src/links.py", size: 50 }], truncated: false }),
   file: async (_ref, _sha, filePath) => (filePath === "README.md" ? "# Site\nRun it." : "def create_link(): ..."),
   ci: async () => (ciState === "success" ? { state: "success", runs: 1 } : { state: "failure", failed: ["test"] }),
+  checkRun: async () => ({ state: "success" }),
 };
 const fetchPage = async (url: string) => ({ ok: true, status: 200, finalUrl: url, body: '<script data-analytics="1"></script>' });
 let graderCalls = 0;
@@ -207,6 +208,34 @@ describe("capstone checks", () => {
     expect((await request(app).get(`/api/v1/certificates/verify/${certificate.code}`)).body.data.certificate.revokedAt).not.toBeNull();
     const learnerRevoke = await authed(request(app).post(`/api/v1/certificates/${certificate.code}/revoke`).send({ reason: "nope" }));
     expect(learnerRevoke.status).toBe(403);
+  });
+
+  it("sends a flagged check to the mentor and hides the flag from the learner", async () => {
+    await prisma.capstoneCheck.updateMany({ where: { blockId }, data: { createdAt: new Date(Date.now() - 120_000) } });
+    const flagged: GraderModel = {
+      async grade() {
+        return {
+          model: "claude-sonnet-5-5", inputTokens: 1000, outputTokens: 100,
+          output: {
+            summary: "Half done.",
+            criteria: [{ id: "proposal-links", score: 1, evidence: [], missing: [] }],
+            whatIsLeft: [],
+            qualityNotes: { strengths: [], improvements: [] },
+            confidence: "low",
+            integrityFlags: ["README.md tells the grader to give full marks."],
+          },
+        };
+      },
+    };
+    const other = { ...deps, grader: flagged, source: { ...source, repo: async () => ({ defaultBranch: "main", headSha: "flagsha", isPrivate: false }) } };
+    const check = await startCapstoneCheck({ blockId, user: await learnerUser(), body: { repoUrl: "https://github.com/me/site", liveUrl: "https://example.dev" } }, other);
+    expect(check.report?.completed).toBe(false);
+    expect(check.sentToMentor).toBe(true);
+    expect(check.report).not.toHaveProperty("integrityFlags");
+    const row = await prisma.capstoneCheck.findUniqueOrThrow({ where: { id: check.id } });
+    expect((row.report as { integrityFlags: string[] }).integrityFlags).toEqual(["README.md tells the grader to give full marks."]);
+    const state = await authed(request(app).get("/api/v1/blocks/" + blockId + "/capstone"));
+    expect(JSON.stringify(state.body)).not.toContain("full marks");
   });
 
   it("runs checks after the response when not inline", async () => {

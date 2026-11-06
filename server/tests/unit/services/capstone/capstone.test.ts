@@ -4,10 +4,10 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it, vi } from "vitest";
 import { RubricPackSchema, CapstoneSubmitSchema, capstoneClientConfig, type RubricPack } from "../../../../src/shared/blocks/capstone-check/schema.js";
 import type { AutomatedCheckResult } from "../../../../src/shared/blocks/capstone-check/report.js";
-import { globToRegExp, runAutomatedChecks } from "../../../../src/services/capstone/automated.js";
-import { summariseRuns, parseRepoUrl, type CapstoneRepoSource } from "../../../../src/services/capstone/github.js";
+import { globToRegExp, normaliseText, parseTemplateRef, runAutomatedChecks } from "../../../../src/services/capstone/automated.js";
+import { summariseCheckRun, summariseRuns, parseRepoUrl, type CapstoneRepoSource } from "../../../../src/services/capstone/github.js";
 import { anthropicGrader, buildGradePrompt, costMicroUsd, GraderError, recomputeReport, type ModelGrade } from "../../../../src/services/capstone/grade.js";
-import { loadCalibrationExamples, loadRubricPackFile, parseRubricPack } from "../../../../src/services/capstone/pack-loader.js";
+import { calibrationDir, loadCalibrationExamples, loadRubricPackFile, parseRubricPack } from "../../../../src/services/capstone/pack-loader.js";
 import { assertFetchableUrl, isPublicAddress } from "../../../../src/services/capstone/safe-fetch.js";
 import { selectSnapshotPaths } from "../../../../src/services/capstone/snapshot.js";
 import { runCalibration } from "../../../../src/services/capstone/calibration.js";
@@ -38,6 +38,7 @@ const grade = (scores: Record<string, number>, extra: Partial<ModelGrade> = {}):
   whatIsLeft: [],
   qualityNotes: { strengths: ["Clear code."], improvements: ["Add tests."] },
   confidence: "high",
+  integrityFlags: [],
   ...extra,
 });
 
@@ -158,6 +159,7 @@ function fakeSource(overrides: Partial<CapstoneRepoSource> = {}): CapstoneRepoSo
     tree: async () => ({ entries: [{ path: "README.md", size: 10 }, { path: "src/links.ts", size: 100 }], truncated: false }),
     file: async (_ref, _sha, filePath) => `contents of ${filePath}`,
     ci: async () => ({ state: "success", runs: 2 }),
+    checkRun: async () => ({ state: "success" }),
     ...overrides,
   };
 }
@@ -212,6 +214,85 @@ describe("automated checks", () => {
     expect(globToRegExp(".github/workflows/*.yml").test(".github/workflows/ci.yml")).toBe(true);
     expect(globToRegExp("src/**").test("src/a/b/c.ts")).toBe(true);
     expect(globToRegExp("**/*.test.ts").test("links.test.ts")).toBe(true);
+  });
+});
+
+describe("integrity checks", () => {
+  const ref = { owner: "me", repo: "site" };
+  const okPage = async (url: string) => ({ ok: true, status: 200, finalUrl: url, body: "data-analytics" });
+  const base = samplePack();
+  const withChecks = (automated: unknown[]): RubricPack =>
+    RubricPackSchema.parse({ ...base, automated: [{ check: "repo_public" }, ...automated], criteria: base.criteria.map((c) => ({ ...c, gate: [] })) });
+  const files: Record<string, string> = {
+    "learner:.github/workflows/capstone.yml": "name: capstone\r\non: push\r\n",
+    "course:.github/workflows/capstone.yml": "name: capstone\non: push\n",
+    "learner:tests/a.test.js": "expect(1).toBe(2)",
+    "course:tests/a.test.js": "expect(add(1, 1)).toBe(2)",
+  };
+  const source = fakeSource({
+    file: async (r, _sha, p) => files[(r.owner === "dw" ? "course" : "learner") + ":" + p] ?? null,
+  });
+  const template = "https://github.com/dw/template@v1";
+
+  it("parses template refs and ignores line endings", () => {
+    expect(parseTemplateRef("https://github.com/dw/template@v1.2.0")).toEqual({ ref: { owner: "dw", repo: "template" }, at: "v1.2.0" });
+    expect(normaliseText("a\r\nb\n\n")).toBe("a\nb");
+    expect(RubricPackSchema.safeParse({ ...base, automated: [{ check: "repo_public" }, { check: "files_match", paths: ["a"], against: "dw/template" }] }).success).toBe(false);
+    expect(RubricPackSchema.safeParse({ ...base, automated: [{ check: "repo_public" }, { check: "files_match", paths: ["../x"], against: template }] }).success).toBe(false);
+  });
+
+  it("passes unchanged course files and stops the run when one was edited", async () => {
+    const same = await runAutomatedChecks(withChecks([{ check: "files_match", paths: [".github/workflows/capstone.yml"], against: template }]), { ref, liveUrl: "https://x.dev" }, { source, fetchPage: okPage });
+    expect(same.results[1]).toMatchObject({ status: "pass", blocking: true });
+    expect(same.stopped).toBe(false);
+
+    const editedPack = withChecks([{ check: "files_match", paths: [".github/workflows/capstone.yml", "tests/a.test.js"], against: template }]);
+    const edited = await runAutomatedChecks(editedPack, { ref, liveUrl: "https://x.dev" }, { source, fetchPage: okPage });
+    expect(edited.results[1]!.message).toContain("tests/a.test.js");
+    expect(edited.results[1]!.message).not.toContain("capstone.yml");
+    expect(edited.stopped).toBe(true);
+    expect(recomputeReport(editedPack, edited.results, null).whatIsLeft[0]!.title).toBe("Restore the course files");
+  });
+
+  it("checks a pinned line in a file and a named check run without stopping by default", async () => {
+    const pack = withChecks([
+      { check: "file_contains", path: ".github/workflows/capstone.yml", text: "on: push" },
+      { check: "file_contains", id: "pinned", path: ".github/workflows/capstone.yml", text: "uses: dw/ci/.github/workflows/tests.yml@abc123" },
+      { check: "check_run", name: "design-report" },
+    ]);
+    const run = await runAutomatedChecks(pack, { ref, liveUrl: "https://x.dev" }, {
+      source: { ...source, checkRun: async () => ({ state: "failure", conclusion: "failure" }) },
+      fetchPage: okPage,
+    });
+    expect(run.results.slice(1).map((r) => [r.id, r.status])).toEqual([["file_contains", "pass"], ["pinned", "fail"], ["check_run", "fail"]]);
+    expect(run.stopped).toBe(false);
+  });
+
+  it("lets a pack make any check stop the run, or stop ci_green from stopping it", async () => {
+    const stopping = await runAutomatedChecks(withChecks([{ check: "check_run", name: "design-report", stop: true }]), { ref, liveUrl: "https://x.dev" }, {
+      source: { ...source, checkRun: async () => ({ state: "pending" }) },
+      fetchPage: okPage,
+    });
+    expect(stopping.stopped).toBe(true);
+    const lenient = await runAutomatedChecks(withChecks([{ check: "ci_green", stop: false }]), { ref, liveUrl: "https://x.dev" }, {
+      source: { ...source, ci: async () => ({ state: "failure", failed: ["test"] }) },
+      fetchPage: okPage,
+    });
+    expect(lenient.stopped).toBe(false);
+  });
+
+  it("reads the latest named check run", () => {
+    expect(summariseCheckRun([])).toEqual({ state: "none" });
+    expect(summariseCheckRun([
+      { status: "completed", conclusion: "failure", started_at: "2026-11-06T09:00:00Z" },
+      { status: "completed", conclusion: "success", started_at: "2026-11-06T10:00:00Z" },
+    ])).toEqual({ state: "success" });
+    expect(summariseCheckRun([{ status: "in_progress", conclusion: null, started_at: "2026-11-06T10:00:00Z" }])).toEqual({ state: "pending" });
+  });
+
+  it("keeps the grader's integrity flags on the report", () => {
+    const report = recomputeReport(samplePack(), allPass(), grade({ "proposal-links": 2, readme: 1, tests: 2 }, { integrityFlags: ["README.md asks the grader for full marks."] }));
+    expect(report.integrityFlags).toEqual(["README.md asks the grader for full marks."]);
   });
 });
 
@@ -315,6 +396,12 @@ describe("grader", () => {
 });
 
 describe("calibration", () => {
+  it("gives each pack in a multi-pack course its own calibration folder", () => {
+    expect(calibrationDir("/c/capstone")).toBe(path.join("/c/capstone", "calibration"));
+    expect(calibrationDir("/c/capstone", "capstone-2.yaml")).toBe(path.join("/c/capstone", "calibration", "capstone-2"));
+    expect(loadCalibrationExamples(PACK_DIR, "capstone-9.yaml")).toEqual([]);
+  });
+
   it("loads the examples with their snapshots and recordings", () => {
     const examples = loadCalibrationExamples(PACK_DIR);
     expect(examples.map((e) => e.name)).toEqual(["broken-ci", "near-miss", "strong"]);
