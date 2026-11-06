@@ -1,0 +1,124 @@
+# Organization API: learner progress report
+
+The organization API lets an authorized partner read progress for a learner enrolled through that
+organization. The learner must already have an enrollment for the requested course.
+
+## Request
+
+```http
+GET /integrations/v1/progress?course_id=<course-id>&learner_email=<learner-email>
+x-buildment-access-key: <organization-access-key>
+x-buildment-secret-key: <organization-secret>
+```
+
+Both credentials are required. The API only returns an enrollment owned by the authenticated
+organization; a missing or out-of-scope enrollment returns `404`.
+
+## Response
+
+The response is snake case. `modules` contains the learner's course release, with every chapter in
+that release, including chapters the learner has not started. Chapter progress and scores are
+summaries; learner answers and submission contents are not exposed.
+
+```json
+{
+  "enrollment_id": "enrollment-id",
+  "course_id": "course-id",
+  "course_slug": "course-slug",
+  "course_title": "Course title",
+  "learner_email": "learner@example.com",
+  "lifecycle": "ACTIVE",
+  "enrollment_status": "IN_PROGRESS",
+  "status": "IN_PROGRESS",
+  "overall_progress": 50,
+  "completed_chapters": 1,
+  "total_chapters": 2,
+  "completed_lessons": 1,
+  "total_lessons": 2,
+  "total_modules": 1,
+  "total_score": 8,
+  "max_score": 10,
+  "pending_reviews": 0,
+  "time_spent_seconds": 3600,
+  "started_at": "2026-11-06T09:00:00.000Z",
+  "last_active_at": "2026-11-06T10:00:00.000Z",
+  "completed_at": null,
+  "current_chapter": {
+    "id": "chapter-b",
+    "title": "Chapter B",
+    "module_id": "module-1",
+    "module_title": "Module 1",
+    "status": "IN_PROGRESS",
+    "progress": 25
+  },
+  "modules": [
+    {
+      "id": "module-1",
+      "title": "Module 1",
+      "order": 1,
+      "status": "IN_PROGRESS",
+      "progress_percent": 63,
+      "completed_chapters": 1,
+      "total_chapters": 2,
+      "time_spent_seconds": 3600,
+      "chapters": [
+        {
+          "id": "chapter-a",
+          "title": "Chapter A",
+          "order": 1,
+          "module_id": "module-1",
+          "module_title": "Module 1",
+          "status": "COMPLETED",
+          "completed": true,
+          "progress_percent": 100,
+          "blocks_completed": 4,
+          "blocks_total": 4,
+          "score": 8,
+          "max_score": 10,
+          "time_spent_seconds": 2400,
+          "started_at": "2026-11-06T09:00:00.000Z",
+          "completed_at": "2026-11-06T09:40:00.000Z"
+        },
+        {
+          "id": "chapter-b",
+          "title": "Chapter B",
+          "order": 2,
+          "module_id": "module-1",
+          "module_title": "Module 1",
+          "status": "IN_PROGRESS",
+          "completed": false,
+          "progress_percent": 25,
+          "blocks_completed": 1,
+          "blocks_total": 4,
+          "score": 0,
+          "max_score": 0,
+          "time_spent_seconds": 1200,
+          "started_at": "2026-11-06T09:45:00.000Z",
+          "completed_at": null
+        }
+      ]
+    }
+  ],
+  "unassigned_chapters": [],
+  "completed": false,
+  "report_generated_at": "2026-11-06T10:01:00.000Z"
+}
+```
+
+### Field notes
+
+- `status` is the course progress state: `NOT_STARTED`, `IN_PROGRESS`, or `COMPLETED`. The
+  separate `lifecycle` reports access state, such as `PENDING_ACCOUNT` or `PAYMENT_REQUIRED`.
+- `modules[].chapters[]` is the source for chapter-level milestones. Each chapter's `status` is
+  `NOT_STARTED`, `IN_PROGRESS`, or `COMPLETED`; `completed` is a boolean convenience field.
+- Missing progress records are reported as `NOT_STARTED` with zero counts and no timestamps.
+- Chapter progress is 100 for a completed chapter. Otherwise, it is the rounded ratio of completed
+  blocks to total blocks (or zero when no progress is recorded).
+- `progress_percent` on a module is the rounded average of its chapter percentages.
+- `completed_lessons` and `total_lessons` are kept as compatibility aliases for
+  `completed_chapters` and `total_chapters`.
+- `time_spent_seconds` sums tracked chapter study time. Use seconds as the canonical unit.
+- `unassigned_chapters` is for active course chapters without a module in courses that do not use
+  pinned releases.
+- `report_generated_at` records when Edorax assembled this response. The endpoint is pull-based;
+  partners refresh it when they need updated progress.

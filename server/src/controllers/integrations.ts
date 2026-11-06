@@ -30,7 +30,7 @@ const ENDPOINTS = [
     path: "/integrations/v1/enrollments/cancel",
     description: "Cancel org enrollment (org_slug, email, course_id, optional user_id / mentor_id)",
   },
-  { method: "GET", path: "/integrations/v1/progress", description: "Progress for org enrollment" },
+  { method: "GET", path: "/integrations/v1/progress", description: "Enrollment report with module and chapter progress, completion, scores, and study time" },
   { method: "GET", path: "/integrations/v1/course-requests", description: "List course access requests for your org" },
   { method: "POST", path: "/integrations/v1/course-requests", description: "Request access to a published course" },
 ] as const;
