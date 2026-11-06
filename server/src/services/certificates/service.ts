@@ -4,6 +4,7 @@ import { prisma } from "../../db/prisma.js";
 import {
   CERTIFICATE_CODE_PATTERN,
   CertificateSettingsSchema,
+  LINKEDIN_ISSUER_NAME,
   linkedInAddToProfileUrl,
   linkedInShareUrl,
   type CertificateEligibility,
@@ -49,7 +50,7 @@ export function toCertificateView(certificate: Certificate, organization: string
     linkedInAddUrl: linkedInAddToProfileUrl({
       name: certificate.title,
       organizationId: env.CERTIFICATE_LINKEDIN_ORG_ID,
-      organizationName: organization,
+      organizationName: LINKEDIN_ISSUER_NAME,
       issuedAt: certificate.issuedAt,
       certUrl: verifyUrl,
       certId: certificate.code,
@@ -107,7 +108,10 @@ export async function certificateEligibility(
 
 async function loadLearnerEnrollment(courseSlug: string, user: SessionUser | undefined) {
   if (!user) throw new UnauthorizedError();
-  const course = await prisma.course.findUnique({ where: { slug: courseSlug }, select: { id: true, certificate: true } });
+  const course = await prisma.course.findUnique({
+    where: { slug: courseSlug },
+    select: { id: true, certificate: true, mentor: { select: { name: true } } },
+  });
   if (!course) throw new NotFoundError("Course not found");
   const enrollment = await prisma.enrollment.findUnique({
     where: { courseId_userId: { courseId: course.id, userId: user.id } },
@@ -151,7 +155,8 @@ export async function claimCertificate(courseSlug: string, user: SessionUser | u
           recipientName,
           program: settings.program,
           title: settings.title,
-          issuerName: settings.issuer.name,
+          // The course's trainer signs unless course.yaml names someone else.
+          issuerName: settings.issuer.name ?? course.mentor.name ?? LINKEDIN_ISSUER_NAME,
           issuerTitle: settings.issuer.title ?? null,
           skills: settings.skills,
           evidence: eligibility.evidence as unknown as Prisma.InputJsonValue,

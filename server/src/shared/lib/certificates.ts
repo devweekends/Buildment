@@ -12,17 +12,21 @@ export const CertificateSettingsSchema = z
     title: z.string().trim().min(1).max(120),
     /** Short track code used in the public id, for example L2 in DW-L2-7K3F9QXM. */
     code: z.string().regex(/^[A-Z0-9]{1,6}$/, "Use 1 to 6 capital letters or digits"),
-    /** The issuing organisation, shown on the certificate and sent to LinkedIn. */
+    /** The programme's organisation, shown on the certificate. LinkedIn's issuer is always Edorax. */
     organization: z.string().trim().min(1).max(120).default("Dev Weekends"),
     /** Prefix of the public id. */
     prefix: z.string().regex(/^[A-Z]{2,4}$/).default("DW"),
+    /**
+     * Who signs the certificate. Leave the name out to use the course's trainer, the instructor
+     * name the catalog shows for the course.
+     */
     issuer: z
       .object({
-        name: z.string().trim().min(1).max(120).default("Zeeshan Adil"),
+        name: z.string().trim().min(1).max(120).optional(),
         title: z.string().trim().min(1).max(120).optional(),
       })
       .strict()
-      .default({ name: "Zeeshan Adil" }),
+      .default({}),
     skills: z.array(z.string().trim().min(1).max(60)).max(12).default([]),
   })
   .strict();
@@ -55,6 +59,9 @@ export type CertificateView = {
   linkedInAddUrl: string;
   linkedInShareUrl: string;
 };
+
+/** The organisation LinkedIn lists as the issuer: the platform that issues and verifies certificates. */
+export const LINKEDIN_ISSUER_NAME = "Edorax";
 
 export type CertificateEligibility = {
   /** False when the course has no certificate block. */
