@@ -6,10 +6,13 @@ import { createApp } from "./app.js";
 import { startScheduler } from "./jobs/scheduler.js";
 import { startNotificationWorker } from "./jobs/notification-worker.js";
 import { startRealtime } from "./realtime/sse.js";
+import { failStaleCapstoneChecks } from "./services/capstone/service.js";
 
 async function start() {
   await prisma.$connect();
   logger.info("database connection established");
+  // Capstone checks run in process; any left running by the previous process will never finish.
+  failStaleCapstoneChecks().catch((error) => logger.warn({ err: error }, "could not clear stale capstone checks"));
 
   const server = http.createServer(createApp());
   // Keep idle connections longer than any client or proxy in front of us does

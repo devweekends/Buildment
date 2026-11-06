@@ -91,6 +91,29 @@ const schema = z.object({
   /** Questions the whole platform may answer per UTC day, the cap on the Anthropic bill. */
   LEARNER_QA_GLOBAL_DAILY_LIMIT: z.coerce.number().int().min(1).max(100_000).default(500),
 
+  /**
+   * Capstone checker (docs/16-capstone-checker-and-certificates.mdx): automated checks plus an AI
+   * grade with the platform's ANTHROPIC_API_KEY. Off unless CAPSTONE_CHECK_ENABLED is "true" and the
+   * key is set. Limits are counted in the database, like the chapter question limits.
+   */
+  CAPSTONE_CHECK_ENABLED: z
+    .string()
+    .optional()
+    .transform((value) => value === "true"),
+  CAPSTONE_MODEL: z.string().trim().min(1).default("claude-sonnet-5-5"),
+  CAPSTONE_EFFORT: z.enum(["low", "medium", "high"]).default("medium"),
+  /** Input budget for one check; the repo snapshot is trimmed to fit. */
+  CAPSTONE_MAX_INPUT_TOKENS: z.coerce.number().int().min(4_000).max(200_000).default(40_000),
+  CAPSTONE_MAX_OUTPUT_TOKENS: z.coerce.number().int().min(1_000).max(32_000).default(8_000),
+  /** Checks one learner may start per capstone block per UTC day. */
+  CAPSTONE_LEARNER_DAILY_LIMIT: z.coerce.number().int().min(1).max(50).default(3),
+  /** AI grades the whole platform may run per UTC day, the cap on the Anthropic bill. */
+  CAPSTONE_GLOBAL_DAILY_LIMIT: z.coerce.number().int().min(1).max(10_000).default(150),
+  /** Fine-grained GitHub token with public read access only. Raises the API limit to 5,000 an hour. */
+  GITHUB_TOKEN: optionalString,
+  /** Dev Weekends' LinkedIn company id for Add to profile; without it LinkedIn gets the name instead. */
+  CERTIFICATE_LINKEDIN_ORG_ID: optionalString,
+
   /** Private Cloudflare R2 bucket used for instructor-uploaded course images. */
   R2_ENDPOINT: optionalString,
   R2_BUCKET: optionalString,
@@ -164,3 +187,5 @@ export const rateLimitsEnabled = !(env.DISABLE_RATE_LIMITS && !isProduction);
 export const isTest = env.NODE_ENV === "test";
 /** Chapter questions need both the switch and a key; either missing hides the feature. */
 export const learnerQaAvailable = env.LEARNER_QA_ENABLED && Boolean(env.ANTHROPIC_API_KEY);
+/** Capstone AI checks need both the switch and the key; automated checks never run without them either. */
+export const capstoneCheckAvailable = env.CAPSTONE_CHECK_ENABLED && Boolean(env.ANTHROPIC_API_KEY);
