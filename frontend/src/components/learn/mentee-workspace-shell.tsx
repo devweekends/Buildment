@@ -151,7 +151,7 @@ export function MenteeWorkspaceShell({
 
       <main className="min-h-dvh pb-20 lg:pb-0 lg:pl-60">{children}</main>
 
-      <nav aria-label="Learner workspace" className="fixed inset-x-0 bottom-0 z-40 flex border-t border-border bg-card pb-[env(safe-area-inset-bottom)] lg:hidden">
+      <nav aria-label="Learner workspace" data-learner-bottom-nav="" className="fixed inset-x-0 bottom-0 z-40 flex border-t border-border bg-card pb-[env(safe-area-inset-bottom)] lg:hidden">
         {mobileItems.map((item) => {
           const Icon = item.icon;
           return (

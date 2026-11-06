@@ -88,6 +88,7 @@ export function ChapterAudio({ src, minutes, bytes, title, className }: { src: s
     >
       <audio
         ref={audio}
+        data-narration=""
         src={src}
         preload="none"
         onLoadedMetadata={(event) => {
