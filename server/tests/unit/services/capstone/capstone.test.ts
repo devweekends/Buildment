@@ -262,7 +262,7 @@ describe("recomputed grade", () => {
   });
 
   it("removes long dashes from model text", () => {
-    const report = recomputeReport(samplePack(), allPass(), grade({ "proposal-links": 2, readme: 1, tests: 2 }, { qualityNotes: { strengths: ["Clean code — small files"], improvements: [] } }));
+    const report = recomputeReport(samplePack(), allPass(), grade({ "proposal-links": 2, readme: 1, tests: 2 }, { qualityNotes: { strengths: ["Clean code \u2014 small files"], improvements: [] } }));
     expect(report.qualityNotes.strengths[0]).toBe("Clean code, small files");
   });
 });

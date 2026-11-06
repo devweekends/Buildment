@@ -204,7 +204,7 @@ export function anthropicGrader(options: {
 
 const clip = (items: string[], count: number, length = 400) =>
   // The house style has no long dashes; the model sometimes writes them anyway.
-  items.map((item) => item.trim().replace(/\s*—\s*/g, ", ")).filter(Boolean).slice(0, count).map((item) => item.slice(0, length));
+  items.map((item) => item.trim().replace(/\s*\u2014\s*/g, ", ")).filter(Boolean).slice(0, count).map((item) => item.slice(0, length));
 
 function stepsForCheck(result: AutomatedCheckResult): string[] {
   switch (result.check) {
