@@ -1,9 +1,7 @@
-import { randomInt } from "node:crypto";
 import type { Certificate, Prisma } from "../../generated/prisma/index.js";
 import { env } from "../../config/env.js";
 import { prisma } from "../../db/prisma.js";
 import {
-  CERTIFICATE_CODE_ALPHABET,
   CERTIFICATE_CODE_PATTERN,
   CertificateSettingsSchema,
   linkedInAddToProfileUrl,
@@ -18,17 +16,12 @@ import type { CapstoneCheckPayload } from "../../shared/blocks/capstone-check/sc
 import type { SessionUser } from "../../types/auth.js";
 import { BadRequestError, ConflictError, ForbiddenError, NotFoundError, UnauthorizedError } from "../../utils/errors.js";
 import { requireCourseById } from "../teach/access.js";
+import { newCertificateCode } from "./code.js";
 
 // Certificates for passed tracks. A learner is eligible when every chapter is complete
 // and every capstone check in the course has a mentor-approved review. The AI result
 // alone never qualifies anyone. Issued certificates keep snapshots of the names and
 // titles so a later course rename never changes one.
-
-export function newCertificateCode(settings: Pick<CertificateSettings, "prefix" | "code">): string {
-  let suffix = "";
-  for (let i = 0; i < 8; i++) suffix += CERTIFICATE_CODE_ALPHABET[randomInt(CERTIFICATE_CODE_ALPHABET.length)];
-  return `${settings.prefix}-${settings.code}-${suffix}`;
-}
 
 function settingsFor(course: { certificate: Prisma.JsonValue | null }): CertificateSettings | null {
   if (!course.certificate) return null;
@@ -49,6 +42,7 @@ export function toCertificateView(certificate: Certificate, organization: string
     skills: certificate.skills,
     issuedAt: certificate.issuedAt.toISOString(),
     revokedAt: certificate.revokedAt?.toISOString() ?? null,
+    revokedReason: certificate.revokedAt ? certificate.revokedReason : null,
     evidence: (certificate.evidence as CertificateEvidence[] | null) ?? [],
     verifyUrl,
     imageUrl: `${verifyUrl}/opengraph-image`,

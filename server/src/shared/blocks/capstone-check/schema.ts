@@ -11,6 +11,8 @@ import { isSafeSubmissionUrl } from "../../lib/safe-submission-url.js";
 // services/blocks/state.ts (title, live URL rule, criterion titles).
 
 const kebab = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Use kebab-case");
+/** Check ids default to the check name (live_ok), so underscores are allowed here. */
+const checkId = z.string().regex(/^[a-z0-9]+(?:[-_][a-z0-9]+)*$/, "Use lower-case words joined by - or _");
 
 export const AUTOMATED_CHECKS = ["repo_public", "ci_green", "tag", "files", "live_ok", "live_contains"] as const;
 export type AutomatedCheckKind = (typeof AUTOMATED_CHECKS)[number];
@@ -21,12 +23,12 @@ export const HARD_STOP_CHECKS: ReadonlySet<AutomatedCheckKind> = new Set(["repo_
 const sitePath = z.string().regex(/^\/[^\s]*$/, "Start the path with /").max(200);
 
 const AutomatedCheckSpecSchema = z.discriminatedUnion("check", [
-  z.object({ check: z.literal("repo_public"), id: kebab.optional() }).strict(),
-  z.object({ check: z.literal("ci_green"), id: kebab.optional() }).strict(),
-  z.object({ check: z.literal("tag"), id: kebab.optional(), pattern: z.string().min(1).max(80) }).strict(),
-  z.object({ check: z.literal("files"), id: kebab.optional(), paths: z.array(z.string().min(1).max(200)).min(1).max(30) }).strict(),
-  z.object({ check: z.literal("live_ok"), id: kebab.optional(), path: sitePath.optional() }).strict(),
-  z.object({ check: z.literal("live_contains"), id: kebab.optional(), text: z.string().min(1).max(200), path: sitePath.optional() }).strict(),
+  z.object({ check: z.literal("repo_public"), id: checkId.optional() }).strict(),
+  z.object({ check: z.literal("ci_green"), id: checkId.optional() }).strict(),
+  z.object({ check: z.literal("tag"), id: checkId.optional(), pattern: z.string().min(1).max(80) }).strict(),
+  z.object({ check: z.literal("files"), id: checkId.optional(), paths: z.array(z.string().min(1).max(200)).min(1).max(30) }).strict(),
+  z.object({ check: z.literal("live_ok"), id: checkId.optional(), path: sitePath.optional() }).strict(),
+  z.object({ check: z.literal("live_contains"), id: checkId.optional(), text: z.string().min(1).max(200), path: sitePath.optional() }).strict(),
 ]);
 
 export type AutomatedCheckSpec = z.infer<typeof AutomatedCheckSpecSchema> & { id: string };
@@ -38,7 +40,7 @@ const CriterionSchema = z
     weight: z.number().int().min(1).max(100),
     required: z.boolean().default(false),
     /** Automated check ids; the criterion scores 0 if any of them did not pass. */
-    gate: z.array(kebab).max(6).default([]),
+    gate: z.array(checkId).max(6).default([]),
     /** What the grader should look for, in one or two sentences. */
     lookFor: z.string().trim().min(1).max(1200),
     /** Score levels: "0" is required, the highest key is full marks. */

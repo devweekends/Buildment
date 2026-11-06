@@ -48,6 +48,7 @@ export type CertificateView = {
   skills: string[];
   issuedAt: string;
   revokedAt: string | null;
+  revokedReason: string | null;
   evidence: CertificateEvidence[];
   verifyUrl: string;
   imageUrl: string;
