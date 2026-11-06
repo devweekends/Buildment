@@ -124,7 +124,7 @@ export const LAB_KINDS: readonly LabKind[] = [
   {
     id: "visual",
     name: "Visual labs",
-    href: "/labs/visual",
+    href: "/labs?kind=visual",
     status: "live",
     tagline: "No code. Move parts, press Run, watch the checks.",
     summary:
@@ -150,7 +150,7 @@ export const LAB_KINDS: readonly LabKind[] = [
   },
 ];
 
-/** Visual labs grouped for the catalogue. Slugs come from the lab registry; `id` is the anchor on /labs/visual. */
+/** Visual labs grouped for the catalogue. Slugs come from the lab registry; `id` is the topic filter on /labs (?topic=). */
 export const VISUAL_LAB_GROUPS: readonly { id: string; title: string; description: string; prefix: (slug: string) => boolean }[] = [
   {
     id: "system-design-challenges",
