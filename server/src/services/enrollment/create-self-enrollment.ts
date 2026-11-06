@@ -55,6 +55,12 @@ export async function createSelfEnrollment(
       where: { courseId_userId: { courseId: course.id, userId: input.userId } },
       include: { payment: true },
     });
+    if (existing) {
+      const organizationCoupon = await tx.couponUsage.findUnique({ where: { enrollmentId: existing.id }, select: { status: true } });
+      if (organizationCoupon && organizationCoupon.status !== "CANCELLED") {
+        throw new SelfEnrollmentError("COUPON_NOT_APPLICABLE", "This enrollment already has an organization discount assigned.");
+      }
+    }
     if (existing && existing.lifecycle !== "PAYMENT_REQUIRED") {
       throw new SelfEnrollmentError("ALREADY_ENROLLED", "You are already enrolled in this course.");
     }

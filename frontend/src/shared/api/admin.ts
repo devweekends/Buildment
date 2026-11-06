@@ -102,6 +102,8 @@ export type AdminCouponPoolRow = {
   percentOff: number;
   maxRedemptions: number;
   redemptionCount: number;
+  reservedCount: number;
+  redeemedCount: number;
   remaining: number;
   active: boolean;
   expiresAt: string | null;

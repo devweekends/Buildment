@@ -75,3 +75,31 @@ export async function issueCouponForEnrollmentStandalone(input: IssueCouponInput
 export function couponUnlocksContent(percentOff: number) {
   return percentOff >= 100;
 }
+
+export function discountedAmountCents(amountCents: number, percentOff: number) {
+  return Math.max(0, Math.round(amountCents * (100 - percentOff) / 100));
+}
+
+/** Return an unused reservation when an assignment is cancelled before access is granted. */
+export async function cancelIssuedCouponUsage(tx: Prisma.TransactionClient, enrollmentId: string) {
+  const usage = await tx.couponUsage.findUnique({ where: { enrollmentId } });
+  if (!usage || usage.status !== "ISSUED") return false;
+  const cancelled = await tx.couponUsage.updateMany({
+    where: { id: usage.id, status: "ISSUED" },
+    data: { status: "CANCELLED", cancelledAt: new Date() },
+  });
+  if (!cancelled.count) return false;
+  await tx.organizationCouponPool.updateMany({
+    where: { id: usage.poolId, redemptionCount: { gt: 0 } },
+    data: { redemptionCount: { decrement: 1 } },
+  });
+  return true;
+}
+
+/** A coupon reservation becomes consumed once manual payment/access is approved. */
+export async function redeemCouponUsage(tx: Prisma.TransactionClient, enrollmentId: string) {
+  await tx.couponUsage.updateMany({
+    where: { enrollmentId, status: "ISSUED" },
+    data: { status: "REDEEMED", redeemedAt: new Date() },
+  });
+}

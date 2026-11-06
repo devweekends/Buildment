@@ -97,7 +97,10 @@ export const createCouponPoolBody = z.object({
 export type CreateCouponPoolBody = z.infer<typeof createCouponPoolBody>;
 
 export const couponPoolParams = z.object({ orgId: id, poolId: id });
-export const couponPoolActiveBody = z.object({ active: z.boolean() });
+export const couponPoolActiveBody = z.object({
+  active: z.boolean().optional(),
+  maxRedemptions: z.coerce.number().int().min(1).max(1_000_000).optional(),
+}).refine((body) => body.active !== undefined || body.maxRedemptions !== undefined);
 
 export const suspendUserBody = z.object({
   note: z.string().trim().max(240).optional(),

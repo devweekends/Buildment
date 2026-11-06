@@ -154,9 +154,9 @@ export async function createCouponPool(req: Request, res: Response) {
 
 // PATCH /api/v1/admin/organizations/:orgId/coupons/:poolId
 export async function setCouponPoolActive(req: Request, res: Response) {
-  const { active } = req.body as { active: boolean };
-  const { setCouponPoolActive: setActive } = await import("../services/coupons/pools.js");
-  await setActive(param(req, "orgId"), param(req, "poolId"), active);
+  const body = req.body as { active?: boolean; maxRedemptions?: number };
+  const { updateCouponPool } = await import("../services/coupons/pools.js");
+  await updateCouponPool(param(req, "orgId"), param(req, "poolId"), body);
   noContent(res);
 }
 

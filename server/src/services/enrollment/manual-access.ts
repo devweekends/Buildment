@@ -3,6 +3,7 @@ import { prisma } from "../../db/prisma.js";
 import { ConflictError, NotFoundError } from "../../utils/errors.js";
 import { appBaseUrl, sendEmail } from "../email/send.js";
 import { escapeHtml } from "../email/format.js";
+import { cancelIssuedCouponUsage, redeemCouponUsage } from "../coupons/issue.js";
 
 /** The enrollment is the durable request. Sending can be retried if email fails. */
 export async function requestManualAccess(enrollmentId: string, userId: string) {
@@ -30,6 +31,7 @@ export async function approveManualAccess(enrollmentId: string, actor: AdminActo
       instructorShareCents: Math.floor(enrollment.payment.amountCents / 2),
       instructorPayoutStatus: enrollment.payment.amountCents > 0 ? "PENDING" : "NOT_DUE",
     } });
+    await redeemCouponUsage(tx, enrollmentId);
     await recordAdminAction(tx, { actor, action: ADMIN_AUDIT_ACTIONS.MANUAL_ACCESS_APPROVE, targetType: "Enrollment", targetId: enrollmentId, summary: "Confirmed manual payment and granted course access." });
   });
 }
@@ -46,6 +48,7 @@ export async function rejectManualAccess(enrollmentId: string, actor: AdminActor
       data: { lifecycle: "CANCELLED", status: "DROPPED" },
     });
     if (!updated.count) throw new ConflictError("This enrollment is no longer awaiting access.");
+    await cancelIssuedCouponUsage(tx, enrollmentId);
     await tx.payment.updateMany({
       where: { enrollmentId, status: "PENDING" },
       data: { status: "FAILED" },

@@ -124,9 +124,14 @@ export async function setOrganizationCouponPoolActiveAction(formData: FormData):
   const organizationId = String(formData.get("organizationId") ?? "");
   const poolId = String(formData.get("poolId") ?? "");
   if (!organizationId || !poolId) throw new Error("Missing organization or coupon pool.");
+  const maxRedemptions = String(formData.get("maxRedemptions") ?? "").trim();
+  const active = String(formData.get("active") ?? "").trim();
   await adminCall(
     `/api/v1/admin/organizations/${encodeURIComponent(organizationId)}/coupons/${encodeURIComponent(poolId)}`,
-    { method: "PATCH", json: { active: formData.get("active") === "true" } }
+    { method: "PATCH", json: {
+      ...(active ? { active: active === "true" } : {}),
+      ...(maxRedemptions ? { maxRedemptions: Number(maxRedemptions) } : {}),
+    } }
   );
   revalidatePath(`/admin/organizations/${organizationId}`);
 }

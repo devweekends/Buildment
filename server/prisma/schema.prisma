@@ -788,7 +788,7 @@ model InstructorCouponRedemption {
 }
 
 /// One reserved seat from a pool, created when a mentor/Pathment assigns the course.
-/// Marked redeemed when the learner first opens the course (banner + audit).
+/// Marked redeemed when access is granted (immediately for full discounts, after manual approval for partial discounts).
 model CouponUsage {
   id             String            @id @default(cuid())
   poolId         String
