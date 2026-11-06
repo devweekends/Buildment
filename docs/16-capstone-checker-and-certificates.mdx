@@ -93,7 +93,8 @@ chapter Q&A limits:
 | Checks per learner per block per day | 3 | `CAPSTONE_LEARNER_DAILY_LIMIT` |
 | Checks platform-wide per day | 150 (about $15 worst case) | `CAPSTONE_GLOBAL_DAILY_LIMIT` |
 
-Off unless `CAPSTONE_CHECK_ENABLED=true` and `ANTHROPIC_API_KEY` is set. Tokens and cost are
+It uses the same `ANTHROPIC_API_KEY` as the chapter questions and is on whenever that key is set
+(`CAPSTONE_CHECK_ENABLED=false` switches it off). Only courses with a capstone block use it. Tokens and cost are
 stored on every check.
 
 ## Rubric packs
@@ -181,7 +182,9 @@ mentor-confirmed pass. Issued once per enrollment; a mentor or admin can revoke.
 
 **What it says:** the learner's name, the track title (for example "Level 2: Personal Site and
 Outreach Engine"), "Dev Weekends", the issue date, the skills covered, a unique id such as
-`DW-L2-7K3F9QXM`, and Zeeshan Adil's name as issuer.
+`DW-L2-7K3F9QXM`, and the course's trainer as issuer: the instructor name the catalog shows for
+the course (Zeeshan Adil for the Dev Weekends tracks). `certificate.issuer.name` in course.yaml
+overrides it, for example Aqib Nawab on the multi-vendor marketplace course.
 
 **Configured per course** in `course.yaml`:
 
@@ -201,7 +204,7 @@ the certificate image.
 
 ```
 https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME
-  &name=<title>&organizationId=<DW company id>&issueYear=2026&issueMonth=11
+  &name=<title>&organizationName=Edorax&issueYear=2026&issueMonth=11
   &certUrl=<verify url>&certId=<id>
 ```
 
@@ -225,7 +228,7 @@ block, before the mentor can confirm. Phase 1 ships the stage interface and the 
 - Fetching learner URLs is new for Edorax (the review queue doc says we do not). Rules: HTTPS
   only, DNS resolved and private, loopback, link-local and metadata ranges refused (also after
   redirects), GET only, no cookies, 5 s timeout, 512 KB cap.
-- GitHub is read through its API with a server token that has public read access only.
+- GitHub is read through its API (repo, commit, tags, CI) and its raw file host (file contents), with no token by default.
 - Repo text is untrusted. The prompt treats it as data, output is schema-bound, the server
   recomputes the score, gates are enforced in code, and a mentor confirms every pass.
 - Rubric packs stay server-only, like every block config.
@@ -244,10 +247,10 @@ block, before the mentor can confirm. Phase 1 ships the stage interface and the 
 
 | Item | Who |
 | --- | --- |
-| `ANTHROPIC_API_KEY` on Heroku (already used by chapter Q&A) and `CAPSTONE_CHECK_ENABLED=true` | User |
-| `GITHUB_TOKEN`: fine-grained token, public repositories read-only (raises the GitHub API limit from 60 to 5,000 an hour) | User |
-| Dev Weekends LinkedIn company page id, set as `CERTIFICATE_LINKEDIN_ORG_ID` (without it LinkedIn gets the name "Dev Weekends" as free text) | User |
-| Issuer title next to "Zeeshan Adil": `certificate.issuer.title` in each course.yaml (left empty until decided) | User |
+| Nothing for the AI key: the checker uses the `ANTHROPIC_API_KEY` already set for chapter Q&A | None |
+| `GITHUB_TOKEN` is optional. Files come from GitHub's raw host, so a check uses about five API calls and the 60 an hour limit without a token covers about 12 checks an hour. A read-only token raises that to 5,000 calls if needed | Optional |
+| LinkedIn lists Edorax, never Dev Weekends, as the issuer. When the platform has its own LinkedIn page, set its id as `CERTIFICATE_LINKEDIN_ORG_ID`; until then LinkedIn gets "Edorax" as plain text | Later |
+| Optional title under the trainer's name: `certificate.issuer.title` in course.yaml | Optional |
 | Daily caps above (env, defaults in the cost table) | User |
 | One live calibration run per level pack (`pnpm capstone:calibrate --pack <rubric.yaml> --live --record`, about $0.20 per example) | Level sessions, with the API key |
 | Each level's capstone template ships a CI workflow that builds and runs tests | Level sessions |
