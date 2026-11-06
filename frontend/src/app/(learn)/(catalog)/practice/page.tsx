@@ -5,10 +5,10 @@ import { AreaHero, AreaPage, ComingSoonPanel, StepList } from "@/components/area
 import { FilterChips, pickFilter } from "@/components/areas/filter-chips";
 
 export const metadata: Metadata = {
-  title: "Five-minute practice",
+  title: "Bite-sized practice",
   description: "Master one subject five minutes a day: today's question, quick quizzes, quick reads and a review queue.",
   alternates: { canonical: "/practice" },
-  openGraph: { title: "Five-minute practice on Edorax", url: "/practice", images: [SITE_SHARE_IMAGE] },
+  openGraph: { title: "Bite-sized practice on Edorax", url: "/practice", images: [SITE_SHARE_IMAGE] },
 };
 
 // One practice app per subject. System Design is built first; the rest follow the courses they practise.
@@ -120,7 +120,7 @@ export default async function PracticePage({ searchParams }: { searchParams: Sea
         </div>
       </details>
 
-      <ComingSoonPanel title="Five-minute practice is being built" action={{ href: "/catalog", label: "Browse courses" }}>
+      <ComingSoonPanel title="Bite-sized practice is being built" action={{ href: "/catalog", label: "Browse courses" }}>
         Until then, every course chapter ends with a short quiz you can retake.
       </ComingSoonPanel>
     </AreaPage>

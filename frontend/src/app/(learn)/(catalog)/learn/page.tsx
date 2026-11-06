@@ -6,7 +6,7 @@ import { AreaHero, AreaPage, AreaSection, CardGrid, InfoCard } from "@/component
 
 export const metadata: Metadata = {
   title: "Everything you can learn",
-  description: "Courses, audiobooks, labs, five-minute practice, daily puzzles and on-call tutors. One place to learn tech and human skills.",
+  description: "Courses, audiobooks, labs, bite-sized practice, daily puzzles and on-call tutors. One place to learn tech and human skills.",
   alternates: { canonical: "/learn" },
   openGraph: { title: "Everything you can learn on Edorax", url: "/learn", images: [SITE_SHARE_IMAGE] },
 };

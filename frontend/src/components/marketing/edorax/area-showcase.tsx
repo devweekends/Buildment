@@ -137,7 +137,7 @@ export function AreaShowcase() {
           More than courses. Six ways to learn.
         </h2>
         <p style={{ margin: "16px 0 0", color: MUTED, maxWidth: "600px" }}>
-          Read a course, play it as an audiobook, build in a lab, practise for five minutes, race everyone on today&apos;s puzzle, or call a tutor and talk it through. Courses, audiobooks and visual labs are open now.
+          Read a course, play it as an audiobook, build in a lab, do bite-sized practice, race everyone on today&apos;s puzzle, or call a tutor and talk it through. Courses, audiobooks and visual labs are open now.
         </p>
         <div className={s.rail} style={{ marginTop: "48px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))", gap: "16px" }}>
           {LEARN_AREAS.map((area) => (
