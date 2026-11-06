@@ -20,6 +20,7 @@ import { useReaderLayout } from "@/lib/use-reader-layout";
 import type { Heading } from "@/shared/lib/mdx-headings";
 import type { SyllabusModule } from "@/components/learn/course-syllabus";
 import { AskHelpDialog } from "@/components/help/ask-help-dialog";
+import { ReportIssueDialog } from "@/components/help/report-issue-dialog";
 import { StudyClock } from "@/components/learn/study-time-chip";
 import { useStudySession } from "@/lib/use-study-session";
 import { useMascot } from "@/lib/engagement/use-mascot";
@@ -351,6 +352,11 @@ export function ChapterReaderShell({
                   chapterTitle={chapterTitle}
                   viewerId={user.id}
                   thread={helpThread}
+                />
+                <ReportIssueDialog
+                  courseId={courseId}
+                  chapterId={chapterId}
+                  chapterTitle={chapterTitle}
                 />
                 <div className="hidden items-center gap-1.5 sm:flex">
                   <ThemeToggle />

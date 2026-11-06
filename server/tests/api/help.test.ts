@@ -93,6 +93,51 @@ describe("/api/v1/help", () => {
     expect(after.body.data.threads[0].unread).toBe(false);
   });
 
+  it("creates a lesson report with a category and quote, and the mentor can filter it", async () => {
+    const short = await request(app)
+      .post("/api/v1/help/reports")
+      .set(learner())
+      .send({ courseId: fx.course.id, chapterId: fx.chapterA.id, category: "TYPO", body: "short" });
+    expect(short.status).toBe(400);
+
+    const created = await request(app)
+      .post("/api/v1/help/reports")
+      .set(learner())
+      .send({
+        courseId: fx.course.id,
+        chapterId: fx.chapterA.id,
+        category: "TYPO",
+        body: "The second paragraph has a missing word.",
+        quote: "two copies of the truth",
+      });
+    expect(created.status).toBe(201);
+
+    const list = await request(app).get("/api/v1/help/threads").set(learner());
+    const report = list.body.data.threads.find(
+      (thread: { id: string }) => thread.id === created.body.data.threadId,
+    );
+    expect(report).toMatchObject({
+      kind: "LESSON_REPORT",
+      category: "TYPO",
+      quote: "two copies of the truth",
+    });
+
+    const reports = await request(app).get("/api/v1/teach/help/threads?kind=reports").set(mentor());
+    expect(reports.status).toBe(200);
+    expect(
+      reports.body.data.threads.some(
+        (thread: { id: string }) => thread.id === created.body.data.threadId,
+      ),
+    ).toBe(true);
+
+    const questions = await request(app).get("/api/v1/teach/help/threads?kind=questions").set(mentor());
+    expect(
+      questions.body.data.threads.some(
+        (thread: { id: string }) => thread.id === created.body.data.threadId,
+      ),
+    ).toBe(false);
+  });
+
   it("only the mentor resolves, and a resolved thread rejects replies", async () => {
     const denied = await request(app).post(`/api/v1/help/threads/${threadId}/resolve`).set(learner());
     expect(denied.status).toBe(403);

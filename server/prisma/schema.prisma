@@ -1168,6 +1168,20 @@ model Review {
 }
 
 // Mentee help requests — separate from the open-question review queue (demo Day 3).
+enum HelpThreadKind {
+  QUESTION
+  LESSON_REPORT
+}
+
+enum HelpThreadCategory {
+  ERROR
+  TYPO
+  CONFUSING
+  BROKEN_LINK
+  SUGGESTION
+  OTHER
+}
+
 model HelpThread {
   id         String           @id @default(cuid())
   courseId   String
@@ -1177,6 +1191,13 @@ model HelpThread {
   menteeId   String
   mentee     User             @relation("HelpThreadsAsked", fields: [menteeId], references: [id], onDelete: Cascade)
   status     HelpThreadStatus @default(OPEN)
+  // A question is a conversation the learner starts with the mentor. A lesson
+  // report is the same thread machinery, tagged with a category and an optional
+  // block/quote so the instructor can find the exact passage that is wrong.
+  kind       HelpThreadKind     @default(QUESTION)
+  category   HelpThreadCategory?
+  blockId    String?
+  quote      String?            @db.Text
   menteeLastReadAt DateTime?
   createdAt  DateTime         @default(now())
   updatedAt  DateTime         @updatedAt
@@ -1186,6 +1207,7 @@ model HelpThread {
   @@index([courseId, status, updatedAt])
   @@index([menteeId, updatedAt])
   @@index([chapterId, menteeId])
+  @@index([courseId, kind, status])
 }
 
 model HelpMessage {

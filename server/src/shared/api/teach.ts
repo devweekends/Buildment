@@ -572,6 +572,9 @@ export type AiReviewDraftResult = { draft: AiReviewDraft; model: string };
 export type MentorHelpInboxThread = {
   id: string;
   status: HelpThreadStatus;
+  kind: "QUESTION" | "LESSON_REPORT";
+  category: "ERROR" | "TYPO" | "CONFUSING" | "BROKEN_LINK" | "SUGGESTION" | "OTHER" | null;
+  quote: string | null;
   menteeLabel: string;
   courseTitle: string;
   chapterTitle: string | null;
