@@ -39,6 +39,15 @@ function CheckSummary({ check }: { check: CapstoneMentorView }) {
 
       {report?.summary ? <p className="text-sm leading-relaxed">{report.summary}</p> : null}
 
+      {report?.integrityFlags?.length ? (
+        <div className="rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-sm">
+          <h3 className="font-semibold text-destructive">Integrity flags (the learner does not see these)</h3>
+          <ul className="mt-1.5 list-disc space-y-0.5 pl-5">
+            {report.integrityFlags.map((flag) => <li key={flag}>{flag}</li>)}
+          </ul>
+        </div>
+      ) : null}
+
       <div>
         <h3 className="text-xs font-medium text-muted-foreground">Automated checks</h3>
         <ul className="mt-1.5 space-y-1 text-sm">

@@ -48,9 +48,13 @@ submit -> automated checks -> (stop early if a hard gate fails) -> Sonnet grade 
 | Tags | Required tag pattern exists (for example `v1.*`) |
 | Files | Required paths exist (README, workflow, tests folder) |
 | Live URL responds | HTTPS GET returns 2xx within 5 s (Level 2) |
-| Live page contains | Optional text or selector on the live page (for example the analytics snippet) |
+| Live page contains | Optional text on the live page (for example the analytics snippet) |
+| Course files unchanged (`files_match`) | Named files (workflow, supplied tests) are byte-identical, line endings aside, to the template at a tag: `against: https://github.com/dw/template@v1`. Stops the run by default, so an edited workflow or test cannot fake a green build. |
+| File contains (`file_contains`) | A file has an expected line, for example a pinned `uses:` of a course-owned reusable workflow |
+| Named check run (`check_run`) | One named GitHub check concluded with success on the commit, so a number can come from CI rather than a committed file |
 
-If the repo is unreachable or CI is red, the learner gets instant steps and **no model call is
+Any check can set `stop: true` or `stop: false`; by default the repo, CI and course-file checks stop the run.
+If the repo is unreachable, CI is red or a course file was changed, the learner gets instant steps and **no model call is
 made**.
 
 **AI grade.** We send the rubric pack, the automated results, and a bounded snapshot of the repo
@@ -64,7 +68,8 @@ made**.
   criteria: [{ id, score, max, met, evidence: string[], missing: string[] }],
   whatIsLeft: [{ criterionId, title, steps: string[] }],
   qualityNotes: { strengths: string[], improvements: string[] },
-  confidence: "high" | "medium" | "low"
+  confidence: "high" | "medium" | "low",
+  integrityFlags: string[]     // mentor only; any flag sends the check to the mentor
 }
 ```
 
@@ -163,6 +168,8 @@ network.
 
 - **CI (free):** loader and schema tests for every pack, plus grading-pipeline tests with a
   recorded model response, so gates, recomputed percent and caps are covered without the API.
+- A course with several packs (`capstone/capstone-1.yaml`, `capstone-2.yaml`) keeps each pack's
+  examples in `calibration/<pack name>/`; a lone `capstone/rubric.yaml` uses `calibration/`.
 - **Live (paid, run by hand):** `pnpm --dir server capstone:calibrate --pack <dir>` runs every
   calibration example through the real checker and fails if `completed` differs or `percent`
   falls outside `tolerance`. It prints the cost before and after. Run it when a pack changes.
@@ -256,4 +263,8 @@ block, before the mentor can confirm. Phase 1 ships the stage interface and the 
 - Checks run inside the API process. A restart marks running checks as interrupted after five
   minutes so the learner can check again. A job queue can replace this if volume grows.
 - Level 3's oral exam stage is the next phase (see above).
+- Asked for by Level 2, not built yet: the checker's own screenshots of the live URL at 375 and
+  1280 px for the grader. It needs a headless browser outside the API process.
+- Asked for by Level 1, not built yet: reading CI for the commit a release tag points at, instead of
+  the default branch head.
 
