@@ -93,13 +93,14 @@ const schema = z.object({
 
   /**
    * Capstone checker (docs/16-capstone-checker-and-certificates.mdx): automated checks plus an AI
-   * grade with the platform's ANTHROPIC_API_KEY. Off unless CAPSTONE_CHECK_ENABLED is "true" and the
-   * key is set. Limits are counted in the database, like the chapter question limits.
+   * grade with the platform's ANTHROPIC_API_KEY, the same key the chapter questions use. On whenever
+   * the key is set; CAPSTONE_CHECK_ENABLED=false switches it off. Only courses with a capstone block
+   * use it, and the limits are counted in the database like the chapter question limits.
    */
   CAPSTONE_CHECK_ENABLED: z
     .string()
     .optional()
-    .transform((value) => value === "true"),
+    .transform((value) => value !== "false"),
   CAPSTONE_MODEL: z.string().trim().min(1).default("claude-sonnet-5-5"),
   CAPSTONE_EFFORT: z.enum(["low", "medium", "high"]).default("medium"),
   /** Input budget for one check; the repo snapshot is trimmed to fit. */
@@ -109,9 +110,9 @@ const schema = z.object({
   CAPSTONE_LEARNER_DAILY_LIMIT: z.coerce.number().int().min(1).max(50).default(3),
   /** AI grades the whole platform may run per UTC day, the cap on the Anthropic bill. */
   CAPSTONE_GLOBAL_DAILY_LIMIT: z.coerce.number().int().min(1).max(10_000).default(150),
-  /** Fine-grained GitHub token with public read access only. Raises the API limit to 5,000 an hour. */
+  /** Optional fine-grained GitHub token, public read only. Without it the API allows 60 calls an hour, about 12 checks. */
   GITHUB_TOKEN: optionalString,
-  /** Dev Weekends' LinkedIn company id for Add to profile; without it LinkedIn gets the name instead. */
+  /** Edorax's LinkedIn company id for Add to profile; without it LinkedIn gets the name "Edorax" as text. */
   CERTIFICATE_LINKEDIN_ORG_ID: optionalString,
 
   /** Private Cloudflare R2 bucket used for instructor-uploaded course images. */
