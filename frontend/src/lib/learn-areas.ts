@@ -59,7 +59,7 @@ export const LEARN_AREAS: readonly LearnArea[] = [
   },
   {
     id: "practice",
-    name: "Five-minute practice",
+    name: "Bite-sized practice",
     short: "Practice",
     href: "/practice",
     status: "coming-soon",
