@@ -49,7 +49,7 @@ export default function GuidedLabsPage() {
         </div>
       </AreaSection>
 
-      <ComingSoonPanel title="Guided labs are being built" action={{ href: "/labs/visual", label: "Try a visual lab now" }}>
+      <ComingSoonPanel title="Guided labs are being built" action={{ href: "/labs?kind=visual", label: "Try a visual lab now" }}>
         They run on the same machines as shell labs, so they arrive with the desktop app. Until then, the visual labs check your designs the same way.
       </ComingSoonPanel>
     </AreaPage>

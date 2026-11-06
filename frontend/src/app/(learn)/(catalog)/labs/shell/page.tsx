@@ -68,7 +68,7 @@ export default function ShellLabsPage() {
         </p>
       </AreaSection>
 
-      <ComingSoonPanel title="Shell labs arrive with the desktop app" action={{ href: "/labs/visual", label: "Try a visual lab now" }}>
+      <ComingSoonPanel title="Shell labs arrive with the desktop app" action={{ href: "/labs?kind=visual", label: "Try a visual lab now" }}>
         Visual labs are open today in the browser, with no install.
       </ComingSoonPanel>
     </AreaPage>
