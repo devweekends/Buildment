@@ -6,6 +6,7 @@ export const MDX_COMPONENT_NAMES = [
   "Quiz",
   "Predict",
   "AiInterview",
+  "CapstoneCheck",
   "OpenQuestion",
   "CodeExercise",
   "Steps",
