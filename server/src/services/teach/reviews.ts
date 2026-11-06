@@ -14,6 +14,8 @@ import { xpKeys } from "../../shared/gamification/xp.js";
 import type { SubmitReviewBody } from "../../validations/teach.js";
 import { mentoredCoursesWhere, requireCourseById } from "./access.js";
 import { generateReviewDraft } from "./ai/review-draft.js";
+import { CapstoneCheckConfigSchema } from "../../shared/blocks/capstone-check/schema.js";
+import { toMentorView } from "../capstone/service.js";
 
 // Mentor review of human-graded submissions (docs/05-review-queue.mdx).
 // Completion tracks submission and review tracks quality, so a needs-revision
@@ -92,6 +94,7 @@ export async function loadReviewDetail(user: SessionUser, responseId: string): P
   ]);
 
   const config = OpenQuestionConfigSchema.safeParse(response.block.config);
+  const capstone = response.block.type === "CAPSTONE_CHECK" ? await loadCapstoneReview(response.blockId, response.userId, response.id, response.block.config) : null;
   const payload = response.payload as { text?: string; url?: string } | null;
   const rawUrl = typeof payload?.url === "string" ? payload.url : null;
   const answerText =
@@ -128,6 +131,19 @@ export async function loadReviewDetail(user: SessionUser, responseId: string): P
         : []
     ),
     integrity,
+    capstone,
+  };
+}
+
+/** The check this Response carries plus the learner's other checks, with cost and model for the mentor. */
+async function loadCapstoneReview(blockId: string, userId: string, responseId: string, rawConfig: unknown): Promise<ReviewDetailView["capstone"]> {
+  const config = CapstoneCheckConfigSchema.safeParse(rawConfig);
+  const checks = await prisma.capstoneCheck.findMany({ where: { blockId, userId }, orderBy: { createdAt: "desc" }, take: 20 });
+  const current = checks.find((check) => check.responseId === responseId) ?? null;
+  return {
+    title: config.success ? (config.data.title ?? config.data.rubric.title) : "Capstone",
+    current: current ? toMentorView(current) : null,
+    history: checks.filter((check) => check.id !== current?.id).map(toMentorView),
   };
 }
 
