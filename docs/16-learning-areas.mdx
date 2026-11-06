@@ -18,7 +18,7 @@ area section is written so one work session can pick it up on its own.
 | Area | Route | Status | What it is |
 |---|---|---|---|
 | Courses | `/catalog`, `/my-courses`, `/courses/...` | Open | Full courses: read, play, listen, prove. |
-| Listen | `/listen` | Open | Every course with listen-along audio, its chapters and hours. Videos later. |
+| Audiobooks | `/audiobooks`, `/audiobooks/[course]` | Open | Every narrated course as an audiobook, with a player that follows you across pages. |
 | Labs | `/labs` | Partly open | Visual labs open; guided and shell labs planned. |
 | Five-minute practice | `/practice` | Coming soon | One topic a few minutes a day, led by questions. |
 | Puzzles | `/puzzles` | Coming soon | Several kinds of daily puzzle. |
@@ -42,13 +42,13 @@ an area, change its `status` there and replace its overview page with the real f
 **Routes.** The area pages live in the `(catalog)` route group, next to `/catalog`, so they share its
 layout: public for visitors (a simple header with Courses, Labs and All areas), and inside the learner
 workspace shell for signed-in learners. They need no API and no database, so they render even when the
-API is down. The one exception is `/listen`, which reads the catalog for course titles and shows an
+API is down. The one exception is `/audiobooks`, which reads the catalog for course titles and shows an
 empty state when the API is unreachable.
 
 ```
 frontend/src/app/(learn)/(catalog)/
   catalog/                 Courses (existing)
-  listen/                  Listen: courses with audio, read from the live manifests
+  audiobooks/              Audiobooks: narrated courses as books, read from the live manifests
   learn/                   The hub: every area on one page
   labs/                    Labs overview: the three kinds, open challenges, how a visual lab works
     visual/                Every visual lab, grouped
@@ -85,23 +85,31 @@ gate that route (and drop the slugs from `sitemap.ts`).
 Unchanged. See [`01-domain-model.mdx`](01-domain-model.mdx) through [`12-course-variants-and-publishing.mdx`](12-course-variants-and-publishing.mdx).
 Courses stay the spine: every other area links back to the modules it practises.
 
-## Listen (open)
+## Audiobooks (open)
 
-Code: `app/(learn)/(catalog)/listen/page.tsx`, `lib/listen-library.ts` (server loader), `lib/listen-summary.ts`
-(pure helpers, tested in `tests/unit/lib/listen-summary.test.ts`).
+Replaced the Listen area in November 2026. `/listen` and anything under it redirect to `/audiobooks`
+(permanent, in `next.config.ts`).
 
-- Course list: the published catalog (`/api/v1/catalog`). Audio: each course's live manifest at
+Code: `app/(learn)/(catalog)/audiobooks/page.tsx` (shelf), `audiobooks/[courseSlug]/page.tsx` (book page),
+`lib/audiobook-library.ts` (server loader), `lib/audiobooks.ts` and `lib/audiobook-cover.ts` (pure helpers,
+tested in `tests/unit/lib/audiobooks.test.ts`), `lib/audiobook-progress.ts` (saved place) and
+`components/audiobooks/` (cover, shelf, book page, player).
+
+- Books: the published catalog (`/api/v1/catalog`) joined with each course's live manifest at
   `https://audio.edorax.com/<courseSlug>/manifest.json`, cached for five minutes. `NARRATION_BASE_URL`
-  (https only) points it elsewhere, as it does for the reader. A course shows up as soon as its
-  manifest exists; nothing in the database changes.
-- Each course card shows its chapter count and total hours, a "Listen from the start" button and the
-  full chapter list. Links open the reader at `/courses/<course>/<chapter>#listen`, the chapter's
-  Listen player (`components/learn/chapter-audio.tsx` carries `id="listen"`).
-- Courses are grouped by catalog category, in the order of `lib/course-categories.ts`.
-- Local development reads reader audio from `public/narration`, which has only a few courses, so a
-  chapter link can open a reader without a player there. Production has every manifest.
-- Videos: shown as coming soon on the page and the landing card. When they exist they can join this
-  area (a "Watch" tab beside Listen) or become their own area; decide when the first videos ship.
+  (https only) points it elsewhere. A course shows up as soon as it has a manifest; nothing is generated here.
+- Tracks: the manifest's numbered files (`01.02-...mp3`) give the part and chapter; chapter and part titles
+  come from the public course outline (`/api/v1/catalog/<slug>`), falling back to the slug.
+- Covers: drawn as SVG from the title, subtitle (after the first colon), category and author (Zeeshan Adil)
+  on the Edorax palette. The same SVG, turned into a PNG, is the lock-screen artwork.
+- Player: `AudiobookPlayerProvider` in the root layout, so audio keeps playing across pages. A mini player
+  sits above the phone tab bar and beside the desktop sidebar (CSS variables `--audiobook-bar-*` in
+  `globals.css`); it opens a full player with skip back 15 s and forward 30 s, 0.75x to 2x, a sleep timer,
+  the chapter list and auto-advance. Media Session handles lock-screen and headphone controls. The
+  chapter reader's own Listen player and this one pause each other (`data-narration`).
+- Saved place: per chapter and per book in `localStorage` (`edorax:audiobooks:v1`), on this device only,
+  because there is no listening-progress model on the server yet. It also writes the reader player's
+  per-file key, so stopping in one player resumes in the other.
 
 ## Course categories
 

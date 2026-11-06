@@ -60,7 +60,7 @@ const VISUALS: Record<LearnAreaId, ReactNode> = {
       </div>
     </div>
   ),
-  listen: (
+  audiobooks: (
     <div style={PANEL}>
       <div style={{ fontSize: "12px", fontWeight: 700, color: COBALT, letterSpacing: "0.06em", textTransform: "uppercase" }}>Now playing</div>
       <div style={{ fontWeight: 700, fontSize: "15px", lineHeight: 1.35 }}>Roles and expectations</div>

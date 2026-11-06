@@ -33,7 +33,7 @@ export default function LearnHubPage() {
                 href={area.href}
                 status={area.status}
                 icon={<Icon className="size-6" />}
-                cta={area.status === "coming-soon" ? "See what is coming" : area.id === "listen" ? "Start listening" : `Open ${area.short.toLowerCase()}`}
+                cta={area.status === "coming-soon" ? "See what is coming" : area.id === "audiobooks" ? "Open the shelf" : `Open ${area.short.toLowerCase()}`}
                 meta={area.tagline}
               />
             );
