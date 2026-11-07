@@ -136,6 +136,13 @@ describe("/api/v1/help", () => {
         (thread: { id: string }) => thread.id === created.body.data.threadId,
       ),
     ).toBe(false);
+
+    // Chapter reader Q&A keeps pointing at the mentor question thread, not the lesson report.
+    const reader = await request(app)
+      .get(`/api/v1/courses/${fx.course.slug}/chapters/${fx.chapterA.slug}`)
+      .set(learner());
+    expect(reader.status).toBe(200);
+    expect(reader.body.data.content.helpThread?.id).toBe(threadId);
   });
 
   it("only the mentor resolves, and a resolved thread rejects replies", async () => {
@@ -148,5 +155,14 @@ describe("/api/v1/help", () => {
     const closed = await request(app).post(`/api/v1/help/threads/${threadId}/messages`).set(learner()).send({ body: "One more thing I wanted to ask." });
     expect(closed.status).toBe(409);
     expect(closed.body.code).toBe("THREAD_CLOSED");
+
+    // Asking a new mentor question after resolution starts a new QUESTION thread instead of hijacking an open LESSON_REPORT.
+    const freshQuestion = await request(app)
+      .post("/api/v1/help/threads")
+      .set(learner())
+      .send({ courseId: fx.course.id, chapterId: fx.chapterA.id, body: "Follow-up study question after resolving the first thread." });
+    expect(freshQuestion.status).toBe(201);
+    expect(freshQuestion.body.data.created).toBe(true);
+    expect(freshQuestion.body.data.threadId).not.toBe(threadId);
   });
 });

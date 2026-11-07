@@ -186,7 +186,7 @@ export async function askFromChapter(
   const enrollment = await requireBlockSubmissionAccess(chapter.courseId, user);
 
   const existingOpen = await prisma.helpThread.findFirst({
-    where: { menteeId: user.id, chapterId: chapter.id, status: "OPEN" },
+    where: { menteeId: user.id, chapterId: chapter.id, kind: "QUESTION", status: "OPEN" },
     select: { id: true },
   });
 
@@ -491,10 +491,10 @@ async function appendMessage(
   return messageView;
 }
 
-/** Latest help thread for this mentee + chapter (open or resolved), for the chapter reader. */
+/** Latest mentor Q&A thread for this mentee + chapter (open or resolved), for the chapter reader. */
 export async function loadChapterThread(menteeId: string, chapterId: string) {
   return prisma.helpThread.findFirst({
-    where: { menteeId, chapterId },
+    where: { menteeId, chapterId, kind: "QUESTION" },
     orderBy: { updatedAt: "desc" },
     include: { messages: messageInclude },
   });

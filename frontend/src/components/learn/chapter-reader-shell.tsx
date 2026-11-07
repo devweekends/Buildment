@@ -353,11 +353,6 @@ export function ChapterReaderShell({
                   viewerId={user.id}
                   thread={helpThread}
                 />
-                <ReportIssueDialog
-                  courseId={courseId}
-                  chapterId={chapterId}
-                  chapterTitle={chapterTitle}
-                />
                 <div className="hidden items-center gap-1.5 sm:flex">
                   <ThemeToggle />
                   <FocusModeToggle active={focusMode} onClick={toggleFocusMode} />
@@ -515,24 +510,35 @@ export function ChapterReaderShell({
                   />
                 ) : null}
 
-                {prevHref || nextHref ? (
-                  <p className="mt-4 hidden text-center text-xs text-muted-foreground md:block">
-                    Tip: press{" "}
-                    {prevHref ? (
-                      <>
-                        <Kbd>[</Kbd> for the previous chapter
-                      </>
-                    ) : null}
-                    {prevHref && nextHref ? " and " : null}
-                    {nextHref ? (
-                      <>
-                        <Kbd>]</Kbd> for the next
-                        {prevHref ? null : " chapter"}
-                      </>
-                    ) : null}
-                    .
-                  </p>
-                ) : null}
+                <div className="mt-4 flex items-center justify-between gap-3">
+                  {prevHref || nextHref ? (
+                    <p className="hidden text-xs text-muted-foreground md:block">
+                      Tip: press{" "}
+                      {prevHref ? (
+                        <>
+                          <Kbd>[</Kbd> for the previous chapter
+                        </>
+                      ) : null}
+                      {prevHref && nextHref ? " and " : null}
+                      {nextHref ? (
+                        <>
+                          <Kbd>]</Kbd> for the next
+                          {prevHref ? null : " chapter"}
+                        </>
+                      ) : null}
+                      .
+                    </p>
+                  ) : (
+                    <span />
+                  )}
+                  <div className="ml-auto">
+                    <ReportIssueDialog
+                      courseId={courseId}
+                      chapterId={chapterId}
+                      chapterTitle={chapterTitle}
+                    />
+                  </div>
+                </div>
               </div>
             </main>
 
