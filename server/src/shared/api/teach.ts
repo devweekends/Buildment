@@ -499,6 +499,12 @@ export type CourseReportView = {
   atRiskDays: number;
   enrollments: ReportEnrollmentRow[];
   chapterReport: ChapterReportView | null;
+  ratings: {
+    average: number | null;
+    count: number;
+    distribution: Array<{ stars: number; count: number }>;
+    recent: Array<{ id: string; rating: number; review: string | null; reviewer: string; createdAt: string }>;
+  };
 };
 
 export type CourseActivityView = {

@@ -115,6 +115,7 @@ export default async function ChapterReaderPage({
         headingNotes={content.headingNotes}
         predictGate={content.predictGate}
         predictRevealed={content.predictRevealed}
+        promptCourseRating={Boolean(content.promptCourseRating)}
         helpThread={content.helpThread}
         narration={narration}
         user={user}
