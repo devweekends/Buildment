@@ -47,12 +47,12 @@
     "ulid": "^3.0.2",
     "unified": "^11.0.5",
     "unist-util-visit": "^5.1.0",
-    "zod": "^4.4.3",
+    "zod": "^4.6.7",
     "@buildment/learning-ui": "file:../packages/learning-ui"
   },
   "devDependencies": {
     "@mdx-js/mdx": "3.1.1",
-    "@playwright/test": "1.55.0",
+    "@playwright/test": "^1.55.1",
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.20",
     "@types/d3-scale": "^4.0.9",
