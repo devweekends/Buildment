@@ -1,0 +1,4 @@
+snapshot: ./broken-ci/
+liveUrl: https://example.dev
+expected: { completed: false, percent: 0, tolerance: 0 }
+note: CI is red, so the run stops before the AI grade.

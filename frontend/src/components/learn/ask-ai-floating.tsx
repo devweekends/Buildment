@@ -92,7 +92,7 @@ export function AskAiFloating({ focusMode = false }: { focusMode?: boolean }) {
         aria-controls={ASK_AI_WINDOW_ID}
         aria-label="Ask AI about this chapter"
         className={cn(
-          "fixed right-4 z-40 inline-flex h-12 items-center gap-2 rounded-full bg-primary px-5 text-[15px] font-bold text-primary-foreground shadow-lg shadow-foreground/20 outline-none transition-colors hover:bg-primary/90 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand-yellow sm:right-6",
+          "fixed right-4 z-40 mb-[var(--audiobook-bar-space,0px)] inline-flex h-12 items-center gap-2 rounded-full bg-primary px-5 text-[15px] font-bold text-primary-foreground shadow-lg shadow-foreground/20 outline-none transition-colors hover:bg-primary/90 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand-yellow sm:right-6",
           focusMode ? "bottom-20" : "bottom-[max(1rem,env(safe-area-inset-bottom))] sm:bottom-6"
         )}
       >

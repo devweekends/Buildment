@@ -1,6 +1,8 @@
 import type { BlockState, ContentBlockState } from "../../shared/api/blocks.js";
 import { blockDefinitions } from "../../shared/blocks/definitions.js";
 import { AiInterviewConfigSchema, type SanitizedAiInterviewConfig } from "../../shared/blocks/ai-interview/schema.js";
+import { CapstoneCheckConfigSchema, capstoneClientConfig } from "../../shared/blocks/capstone-check/schema.js";
+import { loadCapstoneState } from "../capstone/service.js";
 import { CodeConfigSchema, type SanitizedCodeConfig } from "../../shared/blocks/code/schema.js";
 import { MustReadConfigSchema } from "../../shared/blocks/must-read/schema.js";
 import {
@@ -188,6 +190,15 @@ async function blockStateFor(
         // sanitizeBlockConfig drops the rubric (a SECRET_KEY) along with every other server-only field.
         config: sanitizeBlockConfig<typeof config, SanitizedAiInterviewConfig>(config),
         initialState: await loadAiInterviewInitialState(user?.id, blockId, config),
+      };
+    }
+    case "CAPSTONE_CHECK": {
+      const config = CapstoneCheckConfigSchema.parse(block.config);
+      return {
+        type: "CAPSTONE_CHECK",
+        // Built field by field: the rubric pack (levels, weights, guidance) stays on the server.
+        config: capstoneClientConfig(config),
+        initialState: user ? await loadCapstoneState(blockId, user.id) : null,
       };
     }
     case "STEPS":

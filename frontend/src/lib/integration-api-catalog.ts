@@ -38,7 +38,7 @@ export const INTEGRATION_API_CATALOG = {
       path: "/integrations/v1/enrollments/cancel",
       description: "Cancel org enrollment (org_slug, email, course_id, optional user_id / mentor_id)",
     },
-    { method: "GET", path: "/integrations/v1/progress", description: "Progress for org enrollment" },
+    { method: "GET", path: "/integrations/v1/progress", description: "Read a learner report with module and chapter progress, completion, scores, and study time" },
     {
       method: "GET",
       path: "/integrations/v1/course-requests",

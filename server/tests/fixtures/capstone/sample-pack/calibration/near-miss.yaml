@@ -1,0 +1,4 @@
+snapshot: ./near-miss/
+liveUrl: https://example.dev
+expected: { completed: false, percent: 60, tolerance: 5 }
+note: Links exist but visits are not recorded, and the analytics snippet is missing.

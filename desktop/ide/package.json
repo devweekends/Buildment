@@ -108,9 +108,17 @@
     "@theia/vsx-registry": "1.76.0",
     "@theia/workspace": "1.76.0",
     "edorax-ide-extension": "file:./edorax-extension",
-    "node": "24.8.0"
+    "node": "24.8.0",
+    "decompress": "file:vendor/decompress-cjs"
   },
   "devDependencies": {
     "@theia/cli": "1.76.0"
+  },
+  "overrides": {
+    "decompress": "$decompress",
+    "dompurify": "3.4.17",
+    "zod": "^4.6.7",
+    "serialize-javascript": "^7.1.4",
+    "minimatch": "^11.0.5"
   }
 }

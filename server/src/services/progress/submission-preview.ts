@@ -57,6 +57,16 @@ export function submissionPreview(
 
   if (type === "AI_INTERVIEW") return aiInterviewPreview(config, payload);
 
+  if (type === "CAPSTONE_CHECK") {
+    const repo = readString(payload, "repoUrl");
+    const live = readString(payload, "liveUrl");
+    const percent = payload && typeof payload === "object" ? (payload as { percent?: unknown }).percent : null;
+    return {
+      prompt: "Capstone check",
+      answer: [repo, live, typeof percent === "number" ? `AI check: ${percent}%` : ""].filter(Boolean).join("\n") || "Capstone submitted",
+    };
+  }
+
   return { prompt: null, answer: "Submitted" };
 }
 

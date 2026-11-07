@@ -7,6 +7,26 @@ export const allocationParams = z.object({ orgId: id, courseId: id });
 export const requestIdParams = params("requestId");
 export const userIdParams = params("userId");
 export const courseIdParams = params("courseId");
+export const createDiscountCampaignBody = z.object({
+  label: z.string().trim().min(2).max(100),
+  code: z.string().trim().min(3).max(32).regex(/^[A-Za-z0-9][A-Za-z0-9_-]*$/).nullable().optional(),
+  percentOff: z.coerce.number().int().min(1).max(100),
+  maxRedemptions: z.coerce.number().int().min(1).max(100000),
+  expiresAt: z.string().datetime().nullable().optional(),
+  autoApply: z.boolean().default(false),
+  scope: z.enum(["ALL", "CATEGORY", "SUBCATEGORY", "TAG", "SELECTED_COURSES"]),
+  category: z.enum(["TECH", "SOFT_SKILLS"]).optional(),
+  subcategory: z.string().trim().min(1).max(80).optional(),
+  tag: z.string().trim().min(1).max(32).optional(),
+  courseIds: z.array(id).max(500).default([]),
+}).refine((body) => body.code || body.autoApply, { message: "Enter a coupon code or enable automatic discount." })
+  .refine((body) => body.scope !== "CATEGORY" || body.category, { message: "Choose a category." })
+  .refine((body) => body.scope !== "SUBCATEGORY" || body.subcategory, { message: "Choose a subcategory." })
+  .refine((body) => body.scope !== "TAG" || body.tag, { message: "Choose a tag." })
+  .refine((body) => body.scope !== "SELECTED_COURSES" || body.courseIds.length > 0, { message: "Select at least one course." });
+export type CreateDiscountCampaignBody = z.infer<typeof createDiscountCampaignBody>;
+export const discountCampaignParams = params("campaignId");
+export const discountCampaignActiveBody = z.object({ active: z.boolean() });
 
 /** Change a course's publish state from the admin catalog. */
 export const courseStatusBody = z.object({
@@ -77,7 +97,10 @@ export const createCouponPoolBody = z.object({
 export type CreateCouponPoolBody = z.infer<typeof createCouponPoolBody>;
 
 export const couponPoolParams = z.object({ orgId: id, poolId: id });
-export const couponPoolActiveBody = z.object({ active: z.boolean() });
+export const couponPoolActiveBody = z.object({
+  active: z.boolean().optional(),
+  maxRedemptions: z.coerce.number().int().min(1).max(1_000_000).optional(),
+}).refine((body) => body.active !== undefined || body.maxRedemptions !== undefined);
 
 export const suspendUserBody = z.object({
   note: z.string().trim().max(240).optional(),

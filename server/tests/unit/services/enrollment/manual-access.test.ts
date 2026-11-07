@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const db = vi.hoisted(() => ({ enrollment: { findFirst: vi.fn(), findUnique: vi.fn(), updateMany: vi.fn() }, user: { findMany: vi.fn() }, payment: { update: vi.fn() }, adminAuditLog: { create: vi.fn() }, $transaction: vi.fn() }));
+const db = vi.hoisted(() => ({ enrollment: { findFirst: vi.fn(), findUnique: vi.fn(), updateMany: vi.fn() }, user: { findMany: vi.fn() }, payment: { update: vi.fn() }, couponUsage: { updateMany: vi.fn() }, adminAuditLog: { create: vi.fn() }, $transaction: vi.fn() }));
 const sendEmail = vi.hoisted(() => vi.fn());
 vi.mock("../../../../src/db/prisma.js", () => ({ prisma: db }));
 vi.mock("../../../../src/config/env.js", () => ({ env: { ADMIN_NOTIFY_EMAIL: ["ops@example.com"] } }));
@@ -19,16 +19,16 @@ describe("manual course access", () => {
     expect(sendEmail.mock.calls[0][0].text).toContain("learner@example.com");
     expect(db.enrollment.updateMany).not.toHaveBeenCalled();
   });
-  it("refuses to report a request as sent when delivery fails", async () => {
+  it("keeps the access request recorded when delivery fails", async () => {
     db.enrollment.findFirst.mockResolvedValue({ lifecycle: "PAYMENT_REQUIRED", user: { email: "learner@example.com" }, course: { title: "Course", priceCents: 1000, currency: "USD" }, payment: null });
     db.user.findMany.mockResolvedValue([]); sendEmail.mockResolvedValue({ sent: false });
-    await expect(requestManualAccess("enrollment", "user")).rejects.toThrow("Could not send");
+    await expect(requestManualAccess("enrollment", "user")).resolves.toEqual({ requested: true, emailSent: false });
   });
   it("accepts a successful delivery even if another administrator's email fails", async () => {
     db.enrollment.findFirst.mockResolvedValue({ lifecycle: "PAYMENT_REQUIRED", user: { email: "learner@example.com" }, course: { title: "Course", priceCents: 1000, currency: "USD" }, payment: null });
     db.user.findMany.mockResolvedValue([{ email: "admin@example.com" }]);
     sendEmail.mockRejectedValueOnce(new Error("network error")).mockResolvedValueOnce({ sent: true });
-    await expect(requestManualAccess("enrollment", "user")).resolves.toBeUndefined();
+    await expect(requestManualAccess("enrollment", "user")).resolves.toEqual({ requested: true, emailSent: true });
   });
   it("activates only a pending enrollment and records the manual payment in one transaction", async () => {
     db.enrollment.findUnique.mockResolvedValue({ lifecycle: "PAYMENT_REQUIRED", payment: {}, startedAt: null });

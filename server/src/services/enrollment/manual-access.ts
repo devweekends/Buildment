@@ -1,8 +1,9 @@
 import { ADMIN_AUDIT_ACTIONS, recordAdminAction, type AdminActor } from "../admin/audit.js";
 import { prisma } from "../../db/prisma.js";
-import { ConflictError, NotFoundError, UnprocessableError } from "../../utils/errors.js";
+import { ConflictError, NotFoundError } from "../../utils/errors.js";
 import { appBaseUrl, sendEmail } from "../email/send.js";
 import { escapeHtml } from "../email/format.js";
+import { cancelIssuedCouponUsage, redeemCouponUsage } from "../coupons/issue.js";
 
 /** The enrollment is the durable request. Sending can be retried if email fails. */
 export async function requestManualAccess(enrollmentId: string, userId: string) {
@@ -12,10 +13,11 @@ export async function requestManualAccess(enrollmentId: string, userId: string) 
   const admins = await prisma.user.findMany({ where: { role: "ADMIN" }, select: { email: true } });
   const { env } = await import("../../config/env.js");
   const recipients = [...new Set([...admins.map(a => a.email), ...env.ADMIN_NOTIFY_EMAIL].map(e => e.trim().toLowerCase()).filter(Boolean))];
-  if (!recipients.length) throw new UnprocessableError("No administrator email is configured.");
   const text = `Course access request\n\nLearner: ${enrollment.user.name ?? ""} (${enrollment.user.email})\nCourse: ${enrollment.course.title}\nPrice: ${enrollment.payment?.amountCents ?? enrollment.course.priceCents} cents ${enrollment.payment?.currency ?? enrollment.course.currency}\n\nReview: ${appBaseUrl()}/admin/course-access`;
   const results = await Promise.allSettled(recipients.map(to => sendEmail({ to, subject: `Course access request: ${enrollment.course.title}`, text, html: `<p>${escapeHtml(text).replace(/\n/g, "<br>")}</p>` })));
-  if (!results.some(result => result.status === "fulfilled" && result.value.sent)) throw new UnprocessableError("Could not send your request. Please try again later.");
+  // The PAYMENT_REQUIRED enrollment is already the durable admin queue item. A mail
+  // outage or an unconfigured local email provider must not discard the request.
+  return { requested: true, emailSent: results.some(result => result.status === "fulfilled" && result.value.sent) };
 }
 
 export async function approveManualAccess(enrollmentId: string, actor: AdminActor) {
@@ -29,7 +31,35 @@ export async function approveManualAccess(enrollmentId: string, actor: AdminActo
       instructorShareCents: Math.floor(enrollment.payment.amountCents / 2),
       instructorPayoutStatus: enrollment.payment.amountCents > 0 ? "PENDING" : "NOT_DUE",
     } });
+    await redeemCouponUsage(tx, enrollmentId);
     await recordAdminAction(tx, { actor, action: ADMIN_AUDIT_ACTIONS.MANUAL_ACCESS_APPROVE, targetType: "Enrollment", targetId: enrollmentId, summary: "Confirmed manual payment and granted course access." });
+  });
+}
+
+/** Decline a pending paid-course access request and remove it from the admin queue. */
+export async function rejectManualAccess(enrollmentId: string, actor: AdminActor) {
+  await prisma.$transaction(async tx => {
+    const enrollment = await tx.enrollment.findUnique({ where: { id: enrollmentId } });
+    if (!enrollment || enrollment.lifecycle !== "PAYMENT_REQUIRED") {
+      throw new ConflictError("This enrollment is not awaiting access.");
+    }
+    const updated = await tx.enrollment.updateMany({
+      where: { id: enrollmentId, lifecycle: "PAYMENT_REQUIRED" },
+      data: { lifecycle: "CANCELLED", status: "DROPPED" },
+    });
+    if (!updated.count) throw new ConflictError("This enrollment is no longer awaiting access.");
+    await cancelIssuedCouponUsage(tx, enrollmentId);
+    await tx.payment.updateMany({
+      where: { enrollmentId, status: "PENDING" },
+      data: { status: "FAILED" },
+    });
+    await recordAdminAction(tx, {
+      actor,
+      action: ADMIN_AUDIT_ACTIONS.MANUAL_ACCESS_REJECT,
+      targetType: "Enrollment",
+      targetId: enrollmentId,
+      summary: "Rejected the course access request.",
+    });
   });
 }
 

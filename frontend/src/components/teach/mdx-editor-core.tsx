@@ -37,6 +37,7 @@ import { normalizeLearningLogQuestionProps } from "@/shared/lib/learning-log";
 import { quizEditorDescriptor } from "@/blocks/quiz/editorDescriptor";
 import { predictEditorDescriptor } from "@/blocks/predict/editorDescriptor";
 import { aiInterviewEditorDescriptor } from "@/blocks/ai-interview/editorDescriptor";
+import { capstoneCheckEditorDescriptor } from "@/blocks/capstone-check/editorDescriptor";
 import { openQuestionEditorDescriptor } from "@/blocks/open-question/editorDescriptor";
 import { codeEditorDescriptor } from "@/blocks/code/editorDescriptor";
 import { mustReadEditorDescriptor } from "@/blocks/must-read/editorDescriptor";
@@ -58,6 +59,7 @@ const blockRegistryDescriptors = [
   quizEditorDescriptor,
   predictEditorDescriptor,
   aiInterviewEditorDescriptor,
+  capstoneCheckEditorDescriptor,
   openQuestionEditorDescriptor,
   codeEditorDescriptor,
   mustReadEditorDescriptor,

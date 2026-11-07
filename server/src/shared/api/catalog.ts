@@ -14,6 +14,8 @@ export type CatalogCourseSummary = {
   estimatedHours: number | null;
   /** Catalog grouping shown as tiles: technical courses and soft-skills courses. */
   category: CourseCategory;
+  subcategory: string | null;
+  tags: string[];
   pricingType: CoursePricingType;
   priceCents: number;
   currency: string;
@@ -76,6 +78,9 @@ export type CourseOverview = {
 
 export type Checkout = {
   course: { id: string; slug: string; title: string; pricingType: CoursePricingType; priceCents: number; currency: string };
+  automaticDiscount: { percentOff: number; label: string } | null;
+  organizationDiscount: { percentOff: number; label: string; amountDueCents: number } | null;
+  amountDueCents: number;
   enrollment: { id: string; lifecycle: EnrollmentLifecycle } | null;
   state: "no_enrollment" | "payment_required" | "already_paid";
 };
