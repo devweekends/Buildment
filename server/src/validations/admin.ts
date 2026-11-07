@@ -6,7 +6,10 @@ export const orgIdParams = params("orgId");
 export const allocationParams = z.object({ orgId: id, courseId: id });
 export const requestIdParams = params("requestId");
 export const userIdParams = params("userId");
+export const userEnrollmentParams = z.object({ userId: id, enrollmentId: id });
 export const courseIdParams = params("courseId");
+export const enrollUserBody = z.object({ courseId: id });
+export type EnrollUserBody = z.infer<typeof enrollUserBody>;
 export const createDiscountCampaignBody = z.object({
   label: z.string().trim().min(2).max(100),
   code: z.string().trim().min(3).max(32).regex(/^[A-Za-z0-9][A-Za-z0-9_-]*$/).nullable().optional(),

@@ -43,19 +43,24 @@ export function AdminBackLink({ href, children }: { href: string; children: Reac
 export function AdminSection({
   title,
   description,
+  action,
   children,
   className,
 }: {
   title: string;
   description?: ReactNode;
+  action?: ReactNode;
   children: ReactNode;
   className?: string;
 }) {
   return (
     <section className={cn("mt-10", className)}>
-      <div>
-        <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
-        {description ? <p className="mt-1 text-sm text-muted-foreground">{description}</p> : null}
+      <div className={cn(action && "flex flex-wrap items-end justify-between gap-3")}>
+        <div>
+          <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
+          {description ? <p className="mt-1 text-sm text-muted-foreground">{description}</p> : null}
+        </div>
+        {action ? <div>{action}</div> : null}
       </div>
       <div className="mt-4">{children}</div>
     </section>

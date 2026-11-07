@@ -36,6 +36,8 @@ export const ADMIN_AUDIT_ACTIONS = {
   USER_REVOKE_SESSIONS: "user.revoke-sessions",
   USER_SUSPEND: "user.suspend",
   USER_REINSTATE: "user.reinstate",
+  USER_ENROLL: "user.enroll",
+  USER_REMOVE_ENROLLMENT: "user.remove-enrollment",
   MFA_ENABLE: "mfa.enable",
   MFA_DISABLE: "mfa.disable",
   MFA_RESET: "mfa.reset",

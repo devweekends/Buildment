@@ -208,6 +208,7 @@ export type AdminUserDetail = {
   };
   enrollments: Array<{
     id: string;
+    courseId?: string;
     courseTitle: string;
     courseSlug: string;
     lifecycle: EnrollmentLifecycle;
@@ -227,6 +228,7 @@ export const ADMIN_ERROR_CODES = {
   ALREADY_VERIFIED: "ALREADY_VERIFIED",
   NOT_SUSPENDED: "NOT_SUSPENDED",
   ALREADY_SUSPENDED: "ALREADY_SUSPENDED",
+  ALREADY_ENROLLED: "ALREADY_ENROLLED",
 } as const;
 
 /** One row of the platform-admin audit trail (newest first). */

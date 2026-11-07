@@ -13,6 +13,7 @@ import {
 } from "../notifications/events.js";
 import { dispatchNotification } from "../notifications/service.js";
 import { ADMIN_AUDIT_ACTIONS, recordAdminAction, type AdminActor } from "./audit.js";
+import { releaseEnrollmentSlot } from "../integrations/allocation.js";
 
 // Accounts and the instructor capability. Granting instructor tools promotes a
 // learner to MENTOR (admins keep their role) and records an approved request so
@@ -146,9 +147,10 @@ export async function getUserDetail(userId: string): Promise<AdminUserDetail> {
       _count: { select: { enrollments: true, coursesOwned: true, sessions: true } },
       enrollments: {
         orderBy: { createdAt: "desc" },
-        take: 20,
+        take: 50,
         select: {
           id: true,
+          courseId: true,
           lifecycle: true,
           percentComplete: true,
           lastActiveAt: true,
@@ -183,6 +185,7 @@ export async function getUserDetail(userId: string): Promise<AdminUserDetail> {
     },
     enrollments: user.enrollments.map((row) => ({
       id: row.id,
+      courseId: row.courseId,
       courseTitle: row.course.title,
       courseSlug: row.course.slug,
       lifecycle: row.lifecycle,
@@ -521,4 +524,103 @@ export async function rejectInstructorRequest(actor: AdminActor, requestId: stri
     });
   });
   await dispatchNotification(() => notifyUserInstructorAccessDecision({ userId: request.userId, approved: false }));
+}
+
+/**
+ * Removes an enrollment for a user from a course. Guards: verifies enrollment belongs to user if specified.
+ * Cleans up organization course slots, responses, and records audit trail.
+ */
+export async function removeUserEnrollment(
+  actor: AdminActor,
+  enrollmentId: string,
+  userId?: string
+): Promise<void> {
+  const enrollment = await prisma.enrollment.findUnique({
+    where: { id: enrollmentId },
+    select: {
+      id: true,
+      userId: true,
+      courseId: true,
+      organizationId: true,
+      course: { select: { title: true } },
+      user: { select: { id: true, email: true } },
+    },
+  });
+  if (!enrollment) throw new NotFoundError("Enrollment not found");
+  if (userId && enrollment.userId !== userId) {
+    throw new ConflictError("Enrollment does not belong to the specified user.");
+  }
+
+  await prisma.$transaction(async (tx) => {
+    if (enrollment.organizationId) {
+      await releaseEnrollmentSlot(tx, enrollment.organizationId, enrollment.courseId);
+    }
+    await tx.response.deleteMany({ where: { enrollmentId } });
+    await tx.enrollment.delete({ where: { id: enrollmentId } });
+    await recordAdminAction(tx, {
+      actor,
+      action: ADMIN_AUDIT_ACTIONS.USER_REMOVE_ENROLLMENT,
+      targetType: "Enrollment",
+      targetId: enrollmentId,
+      summary: `Removed ${enrollment.user?.email ?? "learner"}'s enrollment from ${enrollment.course.title}`,
+      metadata: {
+        userId: enrollment.userId,
+        courseId: enrollment.courseId,
+        courseTitle: enrollment.course.title,
+      },
+    });
+  });
+}
+
+/**
+ * Enrolls a user in a course by platform admin, bypassing paywalls and setting lifecycle to ACTIVE.
+ */
+export async function enrollUser(
+  actor: AdminActor,
+  userId: string,
+  courseId: string
+): Promise<{ id: string }> {
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, email: true } });
+  if (!user) throw new NotFoundError("User not found");
+  const course = await prisma.course.findUnique({ where: { id: courseId }, select: { id: true, title: true } });
+  if (!course) throw new NotFoundError("Course not found");
+
+  const existing = await prisma.enrollment.findUnique({
+    where: { courseId_userId: { courseId, userId } },
+  });
+  if (existing && existing.lifecycle === "ACTIVE") {
+    throw new ConflictError("User is already enrolled in this course.", ADMIN_ERROR_CODES.ALREADY_ENROLLED);
+  }
+
+  const enrollment = await prisma.$transaction(async (tx) => {
+    let row;
+    if (existing) {
+      row = await tx.enrollment.update({
+        where: { id: existing.id },
+        data: { lifecycle: "ACTIVE", status: "IN_PROGRESS", startedAt: existing.startedAt ?? new Date() },
+      });
+    } else {
+      row = await tx.enrollment.create({
+        data: {
+          userId,
+          courseId,
+          lifecycle: "ACTIVE",
+          status: "IN_PROGRESS",
+          source: "DIRECT",
+          startedAt: new Date(),
+        },
+      });
+    }
+    await recordAdminAction(tx, {
+      actor,
+      action: ADMIN_AUDIT_ACTIONS.USER_ENROLL,
+      targetType: "Enrollment",
+      targetId: row.id,
+      summary: `Enrolled ${user.email} in ${course.title}`,
+      metadata: { userId, courseId, courseTitle: course.title },
+    });
+    return row;
+  });
+
+  return { id: enrollment.id };
 }
