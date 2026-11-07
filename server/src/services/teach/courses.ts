@@ -11,6 +11,7 @@ import { publishChapters } from "./chapters.js";
 import { ensureBaselineRelease } from "../courses/releases.js";
 import { type ReleaseContent, variantForRelease } from "../courses/releases.js";
 import { resolveCourseFamily } from "../../shared/lib/course-tracks.js";
+import { CONFIRMED_ENROLLMENT_WHERE } from "../enrollment/lifecycle.js";
 import { publishDashboardStructureRelease } from "./publish-course-release.js";
 
 // Course lifecycle: DRAFT → PUBLISHED → (ARCHIVED when learners exist | DRAFT when none).
@@ -88,7 +89,7 @@ export async function loadCourseBuilder(user: SessionUser, courseSlug: string): 
         familySlug: true,
         variantFamily: true,
         activeReleaseId: true,
-        _count: { select: { enrollments: true } },
+        _count: { select: { enrollments: { where: CONFIRMED_ENROLLMENT_WHERE } } },
         modules: {
           where: { archivedAt: null },
           orderBy: { order: "asc" },
@@ -146,7 +147,12 @@ export async function loadCourseSettings(user: SessionUser, courseSlug: string):
       difficulty: true, estimatedHours: true, category: true, subcategory: true, tags: true, sequential: true, autoGradeOpenQuestions: true, coverUrl: true,
       status: true, pricingType: true, priceCents: true, currency: true, integritySnapshots: true,
       familySlug: true, variantFamily: true, variantAssignment: true,
-      _count: { select: { enrollments: true, chapters: { where: { archivedAt: null } } } },
+      _count: {
+        select: {
+          enrollments: { where: CONFIRMED_ENROLLMENT_WHERE },
+          chapters: { where: { archivedAt: null } },
+        },
+      },
     },
   });
   const account = await prisma.user.findUnique({ where: { id: user.id }, select: { zipImportEnabled: true } });
@@ -308,7 +314,7 @@ export async function unpublishCourse(
   const owned = await requireCourseById(user, courseId);
   if (owned.status !== "PUBLISHED") return { courseSlug: owned.slug };
 
-  const enrollments = await prisma.enrollment.count({ where: { courseId: owned.id } });
+  const enrollments = await prisma.enrollment.count({ where: { courseId: owned.id, ...CONFIRMED_ENROLLMENT_WHERE } });
   if (enrollments > 0 && !options.confirmedWithEnrollments) {
     throw new ConflictError(
       `${enrollments} learner(s) are enrolled. Confirm you want to archive this course.`,
@@ -328,7 +334,7 @@ export async function unpublishCourse(
 export async function restoreCourseToDraft(user: SessionUser, courseId: string): Promise<CourseSlugResult> {
   const owned = await requireCourseById(user, courseId);
   if (owned.status !== "ARCHIVED") return { courseSlug: owned.slug };
-  const learners = await prisma.enrollment.count({ where: { courseId: owned.id } });
+  const learners = await prisma.enrollment.count({ where: { courseId: owned.id, ...CONFIRMED_ENROLLMENT_WHERE } });
   if (learners) throw new ConflictError("This course has learners. Edit it while archived or publish it again so their progress stays safe.");
   await prisma.course.update({ where: { id: owned.id }, data: { status: "DRAFT", publishedAt: null } });
   return { courseSlug: owned.slug };
@@ -346,7 +352,7 @@ export async function deleteCourse(
 ): Promise<CourseSlugResult> {
   const owned = await requireCourseById(user, courseId);
 
-  const enrollments = await prisma.enrollment.count({ where: { courseId: owned.id } });
+  const enrollments = await prisma.enrollment.count({ where: { courseId: owned.id, ...CONFIRMED_ENROLLMENT_WHERE } });
   if (enrollments > 0 && !options.confirmedWithEnrollments) {
     throw new ConflictError(
       `${enrollments} learner(s) are enrolled. Deleting this course permanently removes their progress. Confirm you want to delete it.`,

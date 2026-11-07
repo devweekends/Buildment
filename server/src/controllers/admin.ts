@@ -243,6 +243,25 @@ export async function resetUserMfa(req: Request, res: Response) {
   noContent(res);
 }
 
+// POST /api/v1/admin/users/:userId/enroll
+export async function enrollUser(req: Request, res: Response) {
+  const { courseId } = req.body as { courseId: string };
+  const result = await users.enrollUser(req.user!, param(req, "userId"), courseId);
+  created(res, result);
+}
+
+// DELETE /api/v1/admin/users/:userId/enrollments/:enrollmentId
+export async function removeUserEnrollment(req: Request, res: Response) {
+  await users.removeUserEnrollment(req.user!, param(req, "enrollmentId"), param(req, "userId"));
+  noContent(res);
+}
+
+// DELETE /api/v1/admin/enrollments/:enrollmentId
+export async function removeEnrollment(req: Request, res: Response) {
+  await users.removeUserEnrollment(req.user!, param(req, "enrollmentId"));
+  noContent(res);
+}
+
 // POST /api/v1/admin/mfa/enroll — returns the secret and otpauth URI once
 export async function enrollMfa(req: Request, res: Response) {
   created(res, await mfa.beginTotpEnrollment(req.user!));

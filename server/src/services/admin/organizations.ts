@@ -12,6 +12,7 @@ import type { Prisma } from "../../generated/prisma/index.js";
 import { NotFoundError, UnprocessableError } from "../../utils/errors.js";
 import type { AllocationsBody, CreateOrganizationBody, ListOrganizationsQuery } from "../../validations/admin.js";
 import { hashIntegrationSecret } from "../integrations/credential-hash.js";
+import { CONFIRMED_ENROLLMENT_WHERE } from "../enrollment/lifecycle.js";
 import { ADMIN_AUDIT_ACTIONS, recordAdminAction, type AdminActor } from "./audit.js";
 import { pageInfo, resolvePaging } from "./paging.js";
 
@@ -37,7 +38,12 @@ export async function listOrganizations(filters: ListOrganizationsQuery = {}): P
     skip: paging.skip,
     take: paging.take,
     include: {
-      _count: { select: { courseAllocations: true, enrollments: true } },
+      _count: {
+        select: {
+          courseAllocations: true,
+          enrollments: { where: CONFIRMED_ENROLLMENT_WHERE },
+        },
+      },
       apiCredentials: { where: { active: true }, take: 1, select: { accessKey: true } },
     },
   });
@@ -100,7 +106,7 @@ export async function getOrganization(orgId: string): Promise<AdminOrganizationD
           include: { course: { select: { id: true, title: true, slug: true, status: true } } },
         },
         courseRequests: { where: { status: "PENDING" }, include: { course: { select: { title: true, slug: true } } } },
-        _count: { select: { enrollments: true } },
+        _count: { select: { enrollments: { where: CONFIRMED_ENROLLMENT_WHERE } } },
       },
     }),
     // One extra row tells us whether the cap was hit.

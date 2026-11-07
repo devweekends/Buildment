@@ -1,12 +1,14 @@
 import Link from "next/link";
-import type { AdminUserDetail } from "@/shared/api/admin";
-import { serverApiFetchOrNotFound } from "@/lib/api-server";
+import type { AdminCoursesView, AdminUserDetail } from "@/shared/api/admin";
+import { serverApiFetch, serverApiFetchOrNotFound } from "@/lib/api-server";
 import { Badge } from "@/components/ui/badge";
 import { AdminActionForm } from "@/components/admin/admin-action-form";
+import { AdminEnrollUserDialog } from "@/components/admin/admin-enroll-user-dialog";
 import { requireRole } from "@/server/auth/guards";
 import {
   forceVerifyEmailAction,
   reinstateUserAction,
+  removeUserEnrollmentAction,
   revokeUserSessionsAction,
   suspendUserAction,
 } from "@/server/actions/admin/users";
@@ -43,8 +45,18 @@ export default async function AdminUserDetailPage({
 }) {
   const { userId } = await params;
   const currentAdmin = await requireRole("ADMIN");
-  const { user, enrollments, coursesOwned } = await serverApiFetchOrNotFound<AdminUserDetail>(
-    `/api/v1/admin/users/${encodeURIComponent(userId)}`
+  const [{ user, enrollments, coursesOwned }, coursesData] = await Promise.all([
+    serverApiFetchOrNotFound<AdminUserDetail>(
+      `/api/v1/admin/users/${encodeURIComponent(userId)}`
+    ),
+    serverApiFetch<AdminCoursesView>("/api/v1/admin/courses?pageSize=100&status=PUBLISHED").catch(() => ({
+      courses: [],
+    })),
+  ]);
+
+  const enrolledCourseIds = new Set(enrollments.map((e) => e.courseId));
+  const availableCourses = (coursesData?.courses ?? []).filter(
+    (c) => !enrolledCourseIds.has(c.id)
   );
 
   const isSelf = user.id === currentAdmin.id;
@@ -232,18 +244,32 @@ export default async function AdminUserDetailPage({
 
       <AdminSection
         title="Enrollments"
-        description="The 20 most recent courses this account is enrolled in."
+        description={
+          user.enrollmentCount > enrollments.length
+            ? `Showing the ${enrollments.length} most recent confirmed enrollments of ${user.enrollmentCount}.`
+            : "Confirmed course enrollments for this account."
+        }
+        action={
+          availableCourses.length > 0 ? (
+            <AdminEnrollUserDialog
+              userId={user.id}
+              userEmail={user.email}
+              courses={availableCourses}
+            />
+          ) : null
+        }
       >
         {enrollments.length === 0 ? (
-          <AdminEmptyState title="No enrollments" description="This account has not joined any course yet." />
+          <AdminEmptyState title="No enrollments" description="This account has no confirmed course enrollments yet." />
         ) : (
           <AdminTable minWidth="640px">
             <AdminTableHead>
               <tr>
                 <AdminTableHeaderCell>Course</AdminTableHeaderCell>
-                <AdminTableHeaderCell>Lifecycle</AdminTableHeaderCell>
+                <AdminTableHeaderCell>Status</AdminTableHeaderCell>
                 <AdminTableHeaderCell align="right">Progress</AdminTableHeaderCell>
                 <AdminTableHeaderCell>Last active</AdminTableHeaderCell>
+                <AdminTableHeaderCell align="right">Action</AdminTableHeaderCell>
               </tr>
             </AdminTableHead>
             <AdminTableBody>
@@ -258,13 +284,32 @@ export default async function AdminUserDetailPage({
                     </Link>
                   </AdminTableCell>
                   <AdminTableCell>
-                    <Badge variant="outline">{row.lifecycle}</Badge>
+                    <Badge variant={row.lifecycle === "COMPLETED" ? "secondary" : "outline"}>
+                      {row.lifecycle === "COMPLETED" ? "Completed" : "Active"}
+                    </Badge>
                   </AdminTableCell>
                   <AdminTableCell align="right" className="tabular-nums">
                     {row.percentComplete}%
                   </AdminTableCell>
                   <AdminTableCell className="text-muted-foreground">
                     {row.lastActiveAt ? new Date(row.lastActiveAt).toLocaleDateString() : "—"}
+                  </AdminTableCell>
+                  <AdminTableCell align="right">
+                    <AdminActionForm
+                      action={removeUserEnrollmentAction}
+                      submitLabel="Remove"
+                      pendingLabel="Removing…"
+                      variant="destructive"
+                      size="sm"
+                      confirm={{
+                        question: `Remove enrollment from ${row.courseTitle}?`,
+                        description: `This removes ${user.email ?? "the user"}'s enrollment and course progress from ${row.courseTitle}.`,
+                        confirmLabel: "Remove enrollment",
+                      }}
+                    >
+                      <input type="hidden" name="userId" value={user.id} />
+                      <input type="hidden" name="enrollmentId" value={row.id} />
+                    </AdminActionForm>
                   </AdminTableCell>
                 </AdminTableRow>
               ))}

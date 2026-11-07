@@ -41,6 +41,8 @@ import {
   suspendUserBody,
   totpCodeBody,
   userIdParams,
+  userEnrollmentParams,
+  enrollUserBody,
 } from "../../validations/admin.js";
 
 // Platform administration: organisations and their integration access,
@@ -133,6 +135,13 @@ router.post("/users/:userId/revoke-sessions", validateParams(userIdParams), admi
 router.post("/users/:userId/suspend", validate({ params: userIdParams, body: suspendUserBody }), admin.suspendUser);
 router.post("/users/:userId/reinstate", validateParams(userIdParams), admin.reinstateUser);
 router.post("/users/:userId/reset-mfa", validateParams(userIdParams), admin.resetUserMfa);
+router.post("/users/:userId/enroll", validate({ params: userIdParams, body: enrollUserBody }), admin.enrollUser);
+router.delete(
+  "/users/:userId/enrollments/:enrollmentId",
+  validateParams(userEnrollmentParams),
+  admin.removeUserEnrollment
+);
+router.delete("/enrollments/:enrollmentId", validateParams(enrollmentParams), admin.removeEnrollment);
 
 router.post("/mfa/enroll", admin.enrollMfa);
 router.get("/mfa", admin.getMfa);

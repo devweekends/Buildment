@@ -6,6 +6,7 @@ import { prisma } from "../../db/prisma.js";
 import { NotFoundError } from "../../utils/errors.js";
 import type { SessionUser } from "../../types/auth.js";
 import { inviteAcceptUrl } from "../email/send.js";
+import { CONFIRMED_ENROLLMENT_WHERE } from "../enrollment/lifecycle.js";
 import { requireCourseBySlug } from "./access.js";
 import { loadMenteeEvaluation } from "./evaluation/load-mentee-evaluation.js";
 import { activityState, average, formatLastActive, progressState } from "./helpers.js";
@@ -36,6 +37,7 @@ export async function loadCourseMentees(user: SessionUser, courseSlug: string): 
         select: { id: true, token: true, email: true, createdAt: true },
       },
       enrollments: {
+        where: CONFIRMED_ENROLLMENT_WHERE,
         orderBy: { createdAt: "asc" },
         select: {
           id: true,
