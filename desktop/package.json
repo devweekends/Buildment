@@ -75,6 +75,7 @@
     "unified": "^11.0.5"
   },
   "overrides": {
-    "dompurify": "3.4.17"
+    "dompurify": "3.4.17",
+    "minimatch": "^11.0.5"
   }
 }
