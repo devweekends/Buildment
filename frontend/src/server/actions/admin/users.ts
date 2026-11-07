@@ -206,6 +206,8 @@ export async function removeUserEnrollmentAction(
     await adminCall<void>(endpoint, { method: "DELETE" });
     if (userId) revalidatePath(`/admin/users/${userId}`);
     revalidatePath("/admin/users");
+    revalidatePath("/admin/courses");
+    revalidatePath("/admin/course-access");
     revalidatePath("/admin/audit");
     return "Enrollment removed.";
   });
@@ -227,6 +229,8 @@ export async function enrollUserInCourseAction(
     });
     revalidatePath(`/admin/users/${userId}`);
     revalidatePath("/admin/users");
+    revalidatePath("/admin/courses");
+    revalidatePath("/admin/course-access");
     revalidatePath("/admin/audit");
     return "User enrolled in course.";
   });

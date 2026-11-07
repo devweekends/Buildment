@@ -138,6 +138,7 @@ const listQuery = z.object({
 export const listUsersQuery = listQuery.extend({
   role: z.enum(["MENTEE", "MENTOR", "ADMIN"]).optional(),
   verified: z.enum(["true", "false"]).optional(),
+  enrolled: z.enum(["true", "false"]).optional(),
   /** The pending instructor-access panel pages independently of the account list. */
   requestsPage: z.coerce.number().int().min(1).optional(),
 });

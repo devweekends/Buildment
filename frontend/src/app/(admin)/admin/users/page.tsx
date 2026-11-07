@@ -34,7 +34,14 @@ import { buildListQuery } from "@/components/admin/admin-list-controls";
 import { AdminLiveFilterBar } from "@/components/admin/admin-live-filter-bar";
 import { AdminPagination } from "@/components/admin/admin-pagination";
 
-type SearchParams = { query?: string; role?: string; verified?: string; page?: string; requestsPage?: string };
+type SearchParams = {
+  query?: string;
+  role?: string;
+  verified?: string;
+  enrolled?: string;
+  page?: string;
+  requestsPage?: string;
+};
 
 export default async function AdminUsersPage({
   searchParams,
@@ -43,7 +50,7 @@ export default async function AdminUsersPage({
 }) {
   const currentAdmin = await requireRole("ADMIN");
   const sp = await searchParams;
-  const filters = { query: sp.query, role: sp.role, verified: sp.verified };
+  const filters = { query: sp.query, role: sp.role, verified: sp.verified, enrolled: sp.enrolled };
   const accountsPage = Number(sp.page) || 1;
   const requestsPage = Number(sp.requestsPage) || 1;
 
@@ -64,8 +71,13 @@ export default async function AdminUsersPage({
     `/api/v1/admin/users${qs ? `?${qs}` : ""}`
   );
 
-  const filtering = Boolean(sp.query || sp.role || sp.verified);
-  const exportQuery = buildListQuery({ query: sp.query, role: sp.role, verified: sp.verified });
+  const filtering = Boolean(sp.query || sp.role || sp.verified || sp.enrolled);
+  const exportQuery = buildListQuery({
+    query: sp.query,
+    role: sp.role,
+    verified: sp.verified,
+    enrolled: sp.enrolled,
+  });
 
   return (
     <div>
@@ -90,7 +102,7 @@ export default async function AdminUsersPage({
       <AdminLiveFilterBar
         action="/admin/users"
         showClear={filtering}
-        values={{ query: sp.query, role: sp.role, verified: sp.verified }}
+        values={{ query: sp.query, role: sp.role, verified: sp.verified, enrolled: sp.enrolled }}
         fields={[
           { name: "query", label: "Search name or email", kind: "search", placeholder: "e.g. mentor@" },
           {
@@ -112,6 +124,16 @@ export default async function AdminUsersPage({
               { value: "", label: "Any" },
               { value: "true", label: "Verified" },
               { value: "false", label: "Unverified" },
+            ],
+          },
+          {
+            name: "enrolled",
+            label: "Enrollments",
+            kind: "select",
+            options: [
+              { value: "", label: "Any" },
+              { value: "true", label: "Enrolled" },
+              { value: "false", label: "No enrollments" },
             ],
           },
         ]}

@@ -208,7 +208,7 @@ export type AdminUserDetail = {
   };
   enrollments: Array<{
     id: string;
-    courseId?: string;
+    courseId: string;
     courseTitle: string;
     courseSlug: string;
     lifecycle: EnrollmentLifecycle;

@@ -54,9 +54,9 @@ export default async function AdminUserDetailPage({
     })),
   ]);
 
-  const enrolledCourseSlugs = new Set(enrollments.map((e) => e.courseSlug));
+  const enrolledCourseIds = new Set(enrollments.map((e) => e.courseId));
   const availableCourses = (coursesData?.courses ?? []).filter(
-    (c) => !enrolledCourseSlugs.has(c.slug)
+    (c) => !enrolledCourseIds.has(c.id)
   );
 
   const isSelf = user.id === currentAdmin.id;
@@ -244,7 +244,11 @@ export default async function AdminUserDetailPage({
 
       <AdminSection
         title="Enrollments"
-        description="Courses this account is enrolled in."
+        description={
+          user.enrollmentCount > enrollments.length
+            ? `Showing the ${enrollments.length} most recent confirmed enrollments of ${user.enrollmentCount}.`
+            : "Confirmed course enrollments for this account."
+        }
         action={
           availableCourses.length > 0 ? (
             <AdminEnrollUserDialog
@@ -256,13 +260,13 @@ export default async function AdminUserDetailPage({
         }
       >
         {enrollments.length === 0 ? (
-          <AdminEmptyState title="No enrollments" description="This account has not joined any course yet." />
+          <AdminEmptyState title="No enrollments" description="This account has no confirmed course enrollments yet." />
         ) : (
           <AdminTable minWidth="640px">
             <AdminTableHead>
               <tr>
                 <AdminTableHeaderCell>Course</AdminTableHeaderCell>
-                <AdminTableHeaderCell>Lifecycle</AdminTableHeaderCell>
+                <AdminTableHeaderCell>Status</AdminTableHeaderCell>
                 <AdminTableHeaderCell align="right">Progress</AdminTableHeaderCell>
                 <AdminTableHeaderCell>Last active</AdminTableHeaderCell>
                 <AdminTableHeaderCell align="right">Action</AdminTableHeaderCell>
@@ -280,7 +284,9 @@ export default async function AdminUserDetailPage({
                     </Link>
                   </AdminTableCell>
                   <AdminTableCell>
-                    <Badge variant="outline">{row.lifecycle}</Badge>
+                    <Badge variant={row.lifecycle === "COMPLETED" ? "secondary" : "outline"}>
+                      {row.lifecycle === "COMPLETED" ? "Completed" : "Active"}
+                    </Badge>
                   </AdminTableCell>
                   <AdminTableCell align="right" className="tabular-nums">
                     {row.percentComplete}%
