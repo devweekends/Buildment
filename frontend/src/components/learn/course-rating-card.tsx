@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { CheckCircle2, Pencil, Star } from "lucide-react";
 import { saveCourseRatingAction, dismissCourseRatingAction, type CourseRatingView } from "@/server/actions/course-rating";
-import { StarRating, StarRatingInput } from "@/components/learn/star-rating";
+import { RatingHappyDot, StarRating, StarRatingInput } from "@/components/learn/star-rating";
 import { cn } from "@/lib/utils";
 
 /**
- * One card, after the course is complete. Skippable, editable, never repeated.
- * The copy explains why the rating matters so it does not feel like a survey.
+ * One card on the course overview once the learner has completed at least one chapter.
+ * Skippable, editable, never repeated after dismissal.
  */
 export function CourseRatingCard({
   courseSlug,
@@ -97,6 +97,12 @@ export function CourseRatingCard({
             <p className="mt-1 text-sm text-muted-foreground">
               Your rating helps other learners decide and helps us fix the parts that did not work.
             </p>
+
+            {rating > 0 ? (
+              <div className="mt-3">
+                <RatingHappyDot rating={rating} size={68} />
+              </div>
+            ) : null}
 
             <div className="mt-3">
               <StarRatingInput value={rating} onChange={setRating} disabled={pending} />

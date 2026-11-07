@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import request from "supertest";
 import { createApp } from "../../src/app.js";
 import { prisma } from "../../src/db/prisma.js";
-import { createCourseFixture } from "../helpers/fixtures.js";
+import { completeChapter, createCourseFixture } from "../helpers/fixtures.js";
 
 const app = createApp();
 let fx: Awaited<ReturnType<typeof createCourseFixture>>;
@@ -18,7 +18,13 @@ afterAll(async () => {
 const learner = () => ({ Authorization: `Bearer ${fx.learnerToken}` });
 
 describe("/api/v1/courses/:courseSlug/rating", () => {
-  it("refuses a rating before the course is complete", async () => {
+  it("refuses a rating before any chapter is complete and does not prompt on the first chapter", async () => {
+    const firstChapter = await request(app)
+      .get(`/api/v1/courses/${fx.course.slug}/chapters/${fx.chapterA.slug}`)
+      .set(learner());
+    expect(firstChapter.status).toBe(200);
+    expect(firstChapter.body.data.content.promptCourseRating).toBe(false);
+
     const res = await request(app)
       .put(`/api/v1/courses/${fx.course.slug}/rating`)
       .set(learner())
@@ -26,11 +32,26 @@ describe("/api/v1/courses/:courseSlug/rating", () => {
     expect(res.status).toBe(403);
   });
 
-  it("accepts one editable rating and updates the catalog aggregate", async () => {
+  it("prompts on the next chapter after one chapter is completed and accepts mid-course ratings", async () => {
+    await completeChapter(fx.enrollment.id, fx.chapterA.id);
     await prisma.enrollment.update({
       where: { id: fx.enrollment.id },
-      data: { status: "COMPLETED" },
+      data: { chaptersCompleted: 1, status: "IN_PROGRESS" },
     });
+
+    // Does not prompt on the completed chapter itself (when ending the chapter).
+    const completedChapter = await request(app)
+      .get(`/api/v1/courses/${fx.course.slug}/chapters/${fx.chapterA.slug}`)
+      .set(learner());
+    expect(completedChapter.status).toBe(200);
+    expect(completedChapter.body.data.content.promptCourseRating).toBe(false);
+
+    // Prompts once the learner moves on to the next chapter.
+    const nextChapter = await request(app)
+      .get(`/api/v1/courses/${fx.course.slug}/chapters/${fx.chapterB.slug}`)
+      .set(learner());
+    expect(nextChapter.status).toBe(200);
+    expect(nextChapter.body.data.content.promptCourseRating).toBe(true);
 
     const invalid = await request(app)
       .put(`/api/v1/courses/${fx.course.slug}/rating`)
@@ -44,6 +65,12 @@ describe("/api/v1/courses/:courseSlug/rating", () => {
       .send({ rating: 5, review: "Clear, practical, and worth the time." });
     expect(created.status).toBe(200);
     expect(created.body.data).toMatchObject({ rating: 5, review: "Clear, practical, and worth the time." });
+
+    // Once rated, the chapter reader no longer prompts.
+    const nextAfterRating = await request(app)
+      .get(`/api/v1/courses/${fx.course.slug}/chapters/${fx.chapterB.slug}`)
+      .set(learner());
+    expect(nextAfterRating.body.data.content.promptCourseRating).toBe(false);
 
     const mine = await request(app).get(`/api/v1/courses/${fx.course.slug}/rating`).set(learner());
     expect(mine.body.data.rating).toMatchObject({ rating: 5 });
@@ -70,7 +97,14 @@ describe("/api/v1/courses/:courseSlug/rating", () => {
     expect(catalogAfter.body.data).toMatchObject({ ratingAverage: 3, ratingCount: 1 });
   });
 
-  it("remembers a dismissed prompt so the full card does not return", async () => {
+  it("remembers a dismissed prompt so neither the chapter pop-up nor overview card returns", async () => {
+    await prisma.courseRating.deleteMany({ where: { courseId: fx.course.id, userId: fx.learner.id } });
+
+    const beforeDismiss = await request(app)
+      .get(`/api/v1/courses/${fx.course.slug}/chapters/${fx.chapterB.slug}`)
+      .set(learner());
+    expect(beforeDismiss.body.data.content.promptCourseRating).toBe(true);
+
     const res = await request(app)
       .post(`/api/v1/courses/${fx.course.slug}/rating/dismiss`)
       .set(learner());
@@ -80,6 +114,11 @@ describe("/api/v1/courses/:courseSlug/rating", () => {
       .get(`/api/v1/courses/${fx.course.slug}/overview`)
       .set(learner());
     expect(overview.body.data.ratingDismissed).toBe(true);
+
+    const afterDismiss = await request(app)
+      .get(`/api/v1/courses/${fx.course.slug}/chapters/${fx.chapterB.slug}`)
+      .set(learner());
+    expect(afterDismiss.body.data.content.promptCourseRating).toBe(false);
   });
 
   it("rejects an unverified learner", async () => {

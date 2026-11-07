@@ -2,9 +2,9 @@ import { prisma } from "../../db/prisma.js";
 import { ForbiddenError, NotFoundError } from "../../utils/errors.js";
 import type { SessionUser } from "../../types/auth.js";
 
-// Course ratings are the macro signal: one per learner, only after the course is
-// complete, editable, never prompted again. Lesson-level problems go through the
-// help/report channel instead.
+// Course ratings are the macro signal: one per learner, available once at least
+// one chapter is complete, editable, and prompted once when moving to the next
+// chapter. Lesson-level problems go through the help/report channel instead.
 
 export type CourseRatingView = {
   rating: number;
@@ -56,10 +56,10 @@ export async function saveCourseRating(
   const course = await publishedCourse(courseSlug);
   const enrollment = await prisma.enrollment.findUnique({
     where: { courseId_userId: { courseId: course.id, userId: user.id } },
-    select: { status: true },
+    select: { status: true, chaptersCompleted: true },
   });
-  if (!enrollment || enrollment.status !== "COMPLETED") {
-    throw new ForbiddenError("Complete the course before rating it.");
+  if (!enrollment || (enrollment.chaptersCompleted < 1 && enrollment.status !== "COMPLETED")) {
+    throw new ForbiddenError("Complete at least one chapter before rating this course.");
   }
 
   const review = input.review?.trim() || null;

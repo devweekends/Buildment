@@ -118,13 +118,15 @@ export default async function CourseOverviewPage({
           await upgradeCourseCurriculumAction(course.slug);
         }}
         ratingLink={
-          enrollment.status === "COMPLETED" && !overview.rating && overview.ratingDismissed ? (
-            <CourseRatingLink courseSlug={course.slug} />
+          (enrollment.chaptersCompleted >= 1 || enrollment.status === "COMPLETED") &&
+          !overview.rating &&
+          overview.ratingDismissed ? (
+            <CourseRatingLink courseSlug={course.slug} courseTitle={course.title} />
           ) : null
         }
       />
-      {/* The completion modal asks first; this card is the full form or the edit surface. */}
-      {enrollment.status === "COMPLETED" &&
+      {/* Available once at least one chapter is completed; acts as the overview form or edit surface. */}
+      {(enrollment.chaptersCompleted >= 1 || enrollment.status === "COMPLETED") &&
       (overview.rating || !overview.ratingDismissed) ? (
         <CourseRatingCard
           courseSlug={course.slug}

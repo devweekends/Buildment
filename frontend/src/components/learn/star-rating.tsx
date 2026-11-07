@@ -1,6 +1,7 @@
 "use client";
 
 import { Star } from "lucide-react";
+import { Dot } from "@/components/brand/dot";
 import { cn } from "@/lib/utils";
 
 /** Read-only 1–5 stars with fractional fill for averages like 4.7. */
@@ -51,7 +52,7 @@ export function StarRatingInput({
           aria-checked={value === star}
           aria-label={`${star} star${star === 1 ? "" : "s"}`}
           disabled={disabled}
-          onClick={() => onChange(star)}
+          onClick={() => onChange(value === star ? 0 : star)}
           className={cn(
             "rounded p-0.5 transition-colors focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-brand-yellow",
             star <= value ? "text-amber-500 [&>svg]:fill-current" : "text-muted-foreground/40 hover:text-amber-500/70",
@@ -60,6 +61,22 @@ export function StarRatingInput({
           <Star className="size-7" aria-hidden />
         </button>
       ))}
+    </div>
+  );
+}
+
+/** For 1–5 stars, show Happy Dot yipping; for 0 stars, keep it simple. */
+export function RatingHappyDot({ rating, size = 76 }: { rating: number; size?: number }) {
+  if (rating < 1) return null;
+  return (
+    <div
+      key={rating}
+      data-testid="rating-happy-dot"
+      className="flex flex-col items-center justify-center rounded-xl bg-muted/40 py-3"
+    >
+      <div className="dot-yip">
+        <Dot mood="cheer" size={size} />
+      </div>
     </div>
   );
 }

@@ -65,9 +65,9 @@ export type CourseOverview = {
   };
   access: "active" | "payment_required" | "none";
   enrollment: { percentComplete: number; chaptersCompleted: number; pendingReviews: number; status: EnrollStatus } | null;
-  /** The learner's own rating, once completed. Drives the completion card and the edit link. */
+  /** The learner's own rating, once submitted. Drives the overview card and edit state. */
   rating: { rating: number; review: string | null; updatedAt: string } | null;
-  /** The learner dismissed the post-completion prompt; keep only the small link. */
+  /** The learner dismissed the rating prompt; keep only the small on-demand link. */
   ratingDismissed: boolean;
   /** Present when an org coupon unlocked or discounted this enrollment. */
   coupon: CourseCouponEntitlement | null;

@@ -28,6 +28,7 @@ import type { HelpThreadView } from "@/shared/api/help";
 import type { StreakMilestone } from "@/shared/lib/streak";
 import { HeadingNotesProvider } from "@/components/learn/heading-note";
 import { ChapterAudio } from "@/components/learn/chapter-audio";
+import { CourseRatingPrompt } from "@/components/learn/course-rating-modal";
 import { AskChapterPanel } from "@/components/learn/ask-chapter-panel";
 import { AskChapterProvider } from "@/components/learn/ask-chapter-context";
 import { AskAiFloating, AskAiHeaderButton } from "@/components/learn/ask-ai-floating";
@@ -85,6 +86,7 @@ export function ChapterReaderShell({
   headingNotes = {},
   predictGate = false,
   predictRevealed = true,
+  promptCourseRating = false,
   courseId,
   helpThread,
   narration = null,
@@ -117,6 +119,7 @@ export function ChapterReaderShell({
   headingNotes?: Record<string, string>;
   predictGate?: boolean;
   predictRevealed?: boolean;
+  promptCourseRating?: boolean;
   courseId: string;
   helpThread: HelpThreadView | null;
   /** Listen-along audio for this chapter, when its course has it. */
@@ -541,6 +544,11 @@ export function ChapterReaderShell({
 
         {focusMode && <ReaderFocusDock onExitFocus={() => void exitFocusMode()} />}
         <AskAiFloating focusMode={focusMode} />
+        <CourseRatingPrompt
+          courseSlug={courseSlug}
+          courseTitle={courseTitle}
+          shouldPrompt={promptCourseRating}
+        />
       </ReaderShellFade>
     </div>
     </AskChapterProvider>

@@ -144,7 +144,7 @@ export async function loadChapterReader(courseSlug: string, chapterSlug: string,
     return loadChapterReader(courseSlug, chapterSlug, user, 1, forDownload);
   }
 
-  const [content, currentProgress, helpThreadRow, habit, chapterResponses, predictBlocks, headingNotes] = await Promise.all([
+  const [content, currentProgress, helpThreadRow, habit, chapterResponses, predictBlocks, headingNotes, existingRating] = await Promise.all([
     prisma.chapter.findUnique({ where: { id: chapter.id }, select: { compiled: true, source: true } }),
     prisma.chapterProgress.findUnique({
       where: { enrollmentId_chapterId: { enrollmentId: enrollment.id, chapterId: chapter.id } },
@@ -162,6 +162,10 @@ export async function loadChapterReader(courseSlug: string, chapterSlug: string,
       select: { id: true },
     }),
     prisma.headingNote.findMany({ where: { userId: user.id, chapterId: chapter.id }, select: { headingId: true, body: true } }),
+    prisma.courseRating.findUnique({
+      where: { courseId_userId: { courseId: course.id, userId: user.id } },
+      select: { id: true },
+    }),
   ]);
   if (!content) throw new NotFoundError("Chapter not found");
 
@@ -189,6 +193,12 @@ export async function loadChapterReader(courseSlug: string, chapterSlug: string,
   const latest = latestChapterResponses(chapterResponses);
   const answeredIds = new Set(latest.map((response) => response.blockId));
   const predictGate = predictBlocks.length > 0;
+  const promptCourseRating =
+    !forDownload &&
+    startedEnrollment.chaptersCompleted >= 1 &&
+    !chapterComplete &&
+    !existingRating &&
+    !startedEnrollment.ratingDismissedAt;
 
   return {
     ...base,
@@ -215,6 +225,7 @@ export async function loadChapterReader(courseSlug: string, chapterSlug: string,
       predictGate,
       predictRevealed: !predictGate || predictBlocks.every((block) => answeredIds.has(block.id)),
       helpThread: serializeHelpThread(helpThreadRow),
+      promptCourseRating,
     },
   };
 }
