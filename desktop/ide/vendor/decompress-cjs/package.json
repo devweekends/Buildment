@@ -1,0 +1,11 @@
+{
+  "name": "decompress",
+  "version": "11.1.4-cjs",
+  "private": true,
+  "description": "CommonJS wrapper around the maintained @xhmikosr/decompress fork (fixes GHSA-mp2f-45pm-3cg9 / GHSA-hrh2-vp3x-79xf for Theia require() call sites).",
+  "license": "MIT",
+  "main": "index.js",
+  "dependencies": {
+    "@xhmikosr/decompress": "11.1.4"
+  }
+}
