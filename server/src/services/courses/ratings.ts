@@ -1,10 +1,11 @@
 import { prisma } from "../../db/prisma.js";
 import { ForbiddenError, NotFoundError } from "../../utils/errors.js";
 import type { SessionUser } from "../../types/auth.js";
+import { releaseForEnrollment } from "./releases.js";
 
-// Course ratings are the macro signal: one per learner, available once at least
-// one chapter is complete, editable, and prompted once when moving to the next
-// chapter. Lesson-level problems go through the help/report channel instead.
+// Course ratings are the macro signal: one per learner, unlocked once the learner
+// has finished more than half of the course, editable, and prompted once when
+// moving to the next chapter. Lesson-level problems go through help/report instead.
 
 export type CourseRatingView = {
   rating: number;
@@ -33,7 +34,7 @@ export type CourseReviewsView = {
 async function publishedCourse(courseSlug: string) {
   const course = await prisma.course.findUnique({
     where: { slug: courseSlug },
-    select: { id: true, status: true },
+    select: { id: true, status: true, familySlug: true },
   });
   if (!course || course.status !== "PUBLISHED") throw new NotFoundError("Course not found");
   return course;
@@ -56,10 +57,32 @@ export async function saveCourseRating(
   const course = await publishedCourse(courseSlug);
   const enrollment = await prisma.enrollment.findUnique({
     where: { courseId_userId: { courseId: course.id, userId: user.id } },
-    select: { status: true, chaptersCompleted: true },
+    select: {
+      status: true,
+      chaptersCompleted: true,
+      percentComplete: true,
+      releaseId: true,
+      variantSlug: true,
+    },
   });
-  if (!enrollment || (enrollment.chaptersCompleted < 1 && enrollment.status !== "COMPLETED")) {
-    throw new ForbiddenError("Complete at least one chapter before rating this course.");
+  if (!enrollment) {
+    throw new ForbiddenError("Complete more than half of the course before rating it.");
+  }
+  if (enrollment.status !== "COMPLETED" && enrollment.percentComplete <= 50) {
+    const selected = await releaseForEnrollment(course.id, enrollment, course.familySlug);
+    const totalChapters = selected
+      ? selected.modules.reduce((sum, mod) => sum + mod.chapters.length, 0)
+      : await prisma.chapter.count({
+          where: {
+            courseId: course.id,
+            archivedAt: null,
+            publishedAt: { not: null },
+            module: { archivedAt: null },
+          },
+        });
+    if (totalChapters <= 0 || enrollment.chaptersCompleted * 2 <= totalChapters) {
+      throw new ForbiddenError("Complete more than half of the course before rating it.");
+    }
   }
 
   const review = input.review?.trim() || null;

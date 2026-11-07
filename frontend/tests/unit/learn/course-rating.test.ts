@@ -1,17 +1,18 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
-import { RatingHappyDot, StarRatingInput } from "@/components/learn/star-rating";
+import { RatingHappyDot, RATING_LABELS, StarRatingInput } from "@/components/learn/star-rating";
 import { CourseRatingModal } from "@/components/learn/course-rating-modal";
 import { CourseRatingCard } from "@/components/learn/course-rating-card";
 import { ChapterCompleteCelebrationModal } from "@/components/learn/chapter-complete-celebration-modal";
+import { playRatingPromptSound, playRatingStarSound, playRatingSubmitSound } from "@/lib/rating-sound";
 
 vi.mock("@/server/actions/course-rating", () => ({
   saveCourseRatingAction: vi.fn(),
   dismissCourseRatingAction: vi.fn(),
 }));
 
-describe("course rating UI", () => {
+describe("course rating UI & sound effects", () => {
   it("keeps zero stars simple without rendering Dot", () => {
     const dotHtml = renderToStaticMarkup(createElement(RatingHappyDot, { rating: 0 }));
     expect(dotHtml).toBe("");
@@ -22,10 +23,13 @@ describe("course rating UI", () => {
         onClose: () => undefined,
         courseSlug: "system-design",
         courseTitle: "System Design",
+        badgeLabel: "Halfway milestone",
         dismissLabel: "Not now",
       }),
     );
-    expect(modalHtml).toContain("How is System Design so far?");
+    expect(modalHtml).toContain("How is System Design going?");
+    expect(modalHtml).toContain("Halfway milestone");
+    expect(modalHtml).toContain("Tap a star to rate");
     expect(modalHtml).toContain("Not now");
     expect(modalHtml).not.toContain("rating-happy-dot");
     expect(modalHtml).not.toContain("Dot, cheer");
@@ -46,15 +50,24 @@ describe("course rating UI", () => {
       expect(html).toContain('data-testid="rating-happy-dot"');
       expect(html).toContain("dot-yip");
       expect(html).toContain('aria-label="Dot, cheer"');
+      expect(html).toContain(RATING_LABELS[stars]!);
     }
   });
 
-  it("renders StarRatingInput radio buttons cleanly", () => {
+  it("renders StarRatingInput radio buttons and sound toggle cleanly", () => {
     const html = renderToStaticMarkup(
-      createElement(StarRatingInput, { value: 4, onChange: () => undefined }),
+      createElement(StarRatingInput, { value: 4, onChange: () => undefined, size: "lg" }),
     );
-    expect(html).toContain('aria-label="4 stars"');
+    expect(html).toContain('aria-label="4 stars — Really good"');
     expect(html).toContain('aria-checked="true"');
+
+    // Sound helpers safely no-op in non-browser/SSR environments without throwing.
+    expect(() => {
+      playRatingPromptSound();
+      playRatingStarSound(0);
+      playRatingStarSound(5);
+      playRatingSubmitSound();
+    }).not.toThrow();
   });
 
   it("does not ask for a course rating inside the chapter-end celebration modal", () => {
@@ -67,7 +80,7 @@ describe("course rating UI", () => {
       }),
     );
     expect(html).toContain("You completed the course");
-    expect(html).not.toContain("Submit rating");
+    expect(html).not.toContain("Submit review");
     expect(html).not.toContain("How was the course?");
   });
 });

@@ -6,9 +6,23 @@ import { completeChapter, createCourseFixture } from "../helpers/fixtures.js";
 
 const app = createApp();
 let fx: Awaited<ReturnType<typeof createCourseFixture>>;
+let chapterCSlug = "chapter-c";
 
 beforeAll(async () => {
   fx = await createCourseFixture();
+  const mod = await prisma.module.findFirstOrThrow({ where: { courseId: fx.course.id } });
+  const chC = await prisma.chapter.create({
+    data: {
+      courseId: fx.course.id,
+      moduleId: mod.id,
+      slug: "chapter-c",
+      title: "Chapter C",
+      order: 3,
+      source: "# C",
+      publishedAt: new Date(),
+    },
+  });
+  chapterCSlug = chC.slug;
 });
 afterAll(async () => {
   await prisma.courseRating.deleteMany({ where: { courseId: fx.course.id } });
@@ -18,37 +32,51 @@ afterAll(async () => {
 const learner = () => ({ Authorization: `Bearer ${fx.learnerToken}` });
 
 describe("/api/v1/courses/:courseSlug/rating", () => {
-  it("refuses a rating before any chapter is complete and does not prompt on the first chapter", async () => {
+  it("refuses ratings and does not prompt until the learner has finished more than half of the course", async () => {
     const firstChapter = await request(app)
       .get(`/api/v1/courses/${fx.course.slug}/chapters/${fx.chapterA.slug}`)
       .set(learner());
     expect(firstChapter.status).toBe(200);
     expect(firstChapter.body.data.content.promptCourseRating).toBe(false);
 
-    const res = await request(app)
-      .put(`/api/v1/courses/${fx.course.slug}/rating`)
-      .set(learner())
-      .send({ rating: 5, review: "Great course." });
-    expect(res.status).toBe(403);
-  });
-
-  it("prompts on the next chapter after one chapter is completed and accepts mid-course ratings", async () => {
+    // 1 of 3 chapters complete (33% <= 50%): still under half, so do not prompt or accept a rating yet.
     await completeChapter(fx.enrollment.id, fx.chapterA.id);
     await prisma.enrollment.update({
       where: { id: fx.enrollment.id },
-      data: { chaptersCompleted: 1, status: "IN_PROGRESS" },
+      data: { chaptersCompleted: 1, percentComplete: 33, status: "IN_PROGRESS" },
+    });
+
+    const secondChapter = await request(app)
+      .get(`/api/v1/courses/${fx.course.slug}/chapters/${fx.chapterB.slug}`)
+      .set(learner());
+    expect(secondChapter.status).toBe(200);
+    expect(secondChapter.body.data.content.promptCourseRating).toBe(false);
+
+    const earlyRes = await request(app)
+      .put(`/api/v1/courses/${fx.course.slug}/rating`)
+      .set(learner())
+      .send({ rating: 5, review: "Great start." });
+    expect(earlyRes.status).toBe(403);
+  });
+
+  it("prompts on the next chapter once more than half of the course is finished and accepts ratings", async () => {
+    // 2 of 3 chapters complete (67% > 50%): more than half of the course is finished.
+    await completeChapter(fx.enrollment.id, fx.chapterB.id);
+    await prisma.enrollment.update({
+      where: { id: fx.enrollment.id },
+      data: { chaptersCompleted: 2, percentComplete: 67, status: "IN_PROGRESS" },
     });
 
     // Does not prompt on the completed chapter itself (when ending the chapter).
     const completedChapter = await request(app)
-      .get(`/api/v1/courses/${fx.course.slug}/chapters/${fx.chapterA.slug}`)
+      .get(`/api/v1/courses/${fx.course.slug}/chapters/${fx.chapterB.slug}`)
       .set(learner());
     expect(completedChapter.status).toBe(200);
     expect(completedChapter.body.data.content.promptCourseRating).toBe(false);
 
     // Prompts once the learner moves on to the next chapter.
     const nextChapter = await request(app)
-      .get(`/api/v1/courses/${fx.course.slug}/chapters/${fx.chapterB.slug}`)
+      .get(`/api/v1/courses/${fx.course.slug}/chapters/${chapterCSlug}`)
       .set(learner());
     expect(nextChapter.status).toBe(200);
     expect(nextChapter.body.data.content.promptCourseRating).toBe(true);
@@ -68,7 +96,7 @@ describe("/api/v1/courses/:courseSlug/rating", () => {
 
     // Once rated, the chapter reader no longer prompts.
     const nextAfterRating = await request(app)
-      .get(`/api/v1/courses/${fx.course.slug}/chapters/${fx.chapterB.slug}`)
+      .get(`/api/v1/courses/${fx.course.slug}/chapters/${chapterCSlug}`)
       .set(learner());
     expect(nextAfterRating.body.data.content.promptCourseRating).toBe(false);
 
@@ -101,7 +129,7 @@ describe("/api/v1/courses/:courseSlug/rating", () => {
     await prisma.courseRating.deleteMany({ where: { courseId: fx.course.id, userId: fx.learner.id } });
 
     const beforeDismiss = await request(app)
-      .get(`/api/v1/courses/${fx.course.slug}/chapters/${fx.chapterB.slug}`)
+      .get(`/api/v1/courses/${fx.course.slug}/chapters/${chapterCSlug}`)
       .set(learner());
     expect(beforeDismiss.body.data.content.promptCourseRating).toBe(true);
 
@@ -116,7 +144,7 @@ describe("/api/v1/courses/:courseSlug/rating", () => {
     expect(overview.body.data.ratingDismissed).toBe(true);
 
     const afterDismiss = await request(app)
-      .get(`/api/v1/courses/${fx.course.slug}/chapters/${fx.chapterB.slug}`)
+      .get(`/api/v1/courses/${fx.course.slug}/chapters/${chapterCSlug}`)
       .set(learner());
     expect(afterDismiss.body.data.content.promptCourseRating).toBe(false);
   });

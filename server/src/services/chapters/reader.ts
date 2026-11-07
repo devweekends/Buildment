@@ -193,9 +193,13 @@ export async function loadChapterReader(courseSlug: string, chapterSlug: string,
   const latest = latestChapterResponses(chapterResponses);
   const answeredIds = new Set(latest.map((response) => response.blockId));
   const predictGate = predictBlocks.length > 0;
+  const moreThanHalfComplete =
+    startedEnrollment.status === "COMPLETED" ||
+    startedEnrollment.percentComplete > 50 ||
+    (flatChapters.length > 0 && startedEnrollment.chaptersCompleted * 2 > flatChapters.length);
   const promptCourseRating =
     !forDownload &&
-    startedEnrollment.chaptersCompleted >= 1 &&
+    moreThanHalfComplete &&
     !chapterComplete &&
     !existingRating &&
     !startedEnrollment.ratingDismissedAt;

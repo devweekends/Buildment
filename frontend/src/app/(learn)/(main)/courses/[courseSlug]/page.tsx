@@ -108,6 +108,11 @@ export default async function CourseOverviewPage({
   // Enroll, sign-up and the variant picker send ?start=1: open the lesson to read next, like a player.
   if (start === "1" && continueHref) redirect(continueHref);
 
+  const canRateCourse =
+    enrollment.status === "COMPLETED" ||
+    enrollment.percentComplete > 50 ||
+    (syllabus.chapterCount > 0 && enrollment.chaptersCompleted * 2 > syllabus.chapterCount);
+
   return (
     <WebCourseNavigation>
       <CourseOverviewContent
@@ -118,23 +123,21 @@ export default async function CourseOverviewPage({
           await upgradeCourseCurriculumAction(course.slug);
         }}
         ratingLink={
-          (enrollment.chaptersCompleted >= 1 || enrollment.status === "COMPLETED") &&
-          !overview.rating &&
-          overview.ratingDismissed ? (
+          canRateCourse && !overview.rating && overview.ratingDismissed ? (
             <CourseRatingLink courseSlug={course.slug} courseTitle={course.title} />
           ) : null
         }
+        ratingBanner={
+          canRateCourse && (overview.rating || !overview.ratingDismissed) ? (
+            <CourseRatingCard
+              courseSlug={course.slug}
+              courseTitle={course.title}
+              initialRating={overview.rating}
+              initialDismissed={overview.ratingDismissed}
+            />
+          ) : null
+        }
       />
-      {/* Available once at least one chapter is completed; acts as the overview form or edit surface. */}
-      {(enrollment.chaptersCompleted >= 1 || enrollment.status === "COMPLETED") &&
-      (overview.rating || !overview.ratingDismissed) ? (
-        <CourseRatingCard
-          courseSlug={course.slug}
-          courseTitle={course.title}
-          initialRating={overview.rating}
-          initialDismissed={overview.ratingDismissed}
-        />
-      ) : null}
     </WebCourseNavigation>
   );
 }

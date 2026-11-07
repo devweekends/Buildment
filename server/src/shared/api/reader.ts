@@ -26,7 +26,7 @@ export type ChapterReaderContent = {
   predictGate: boolean;
   predictRevealed: boolean;
   helpThread: HelpThreadView | null;
-  /** True when the learner completed a chapter, moved on, and has neither rated nor dismissed the prompt. */
+  /** True when the learner finished more than half of the course, moved on, and has neither rated nor dismissed the prompt. */
   promptCourseRating?: boolean;
 };
 

@@ -1,14 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { CheckCircle2, Pencil, Star } from "lucide-react";
-import { saveCourseRatingAction, dismissCourseRatingAction, type CourseRatingView } from "@/server/actions/course-rating";
+import { fireMiniConfetti } from "@buildment/learning-ui/components/learn/mini-confetti";
+import {
+  saveCourseRatingAction,
+  dismissCourseRatingAction,
+  type CourseRatingView,
+} from "@/server/actions/course-rating";
 import { RatingHappyDot, StarRating, StarRatingInput } from "@/components/learn/star-rating";
-import { cn } from "@/lib/utils";
+import { playRatingSubmitSound } from "@/lib/rating-sound";
+import { Button } from "@/components/ui/button";
 
 /**
- * One card on the course overview once the learner has completed at least one chapter.
- * Skippable, editable, never repeated after dismissal.
+ * Course overview rating bar, unlocked once the learner finishes more than half
+ * of the course. Skippable, editable, and kept simple at 0 stars with Happy Dot
+ * yipping once any star (1–5) is chosen.
  */
 export function CourseRatingCard({
   courseSlug,
@@ -21,6 +28,7 @@ export function CourseRatingCard({
   initialRating: CourseRatingView | null;
   initialDismissed?: boolean;
 }) {
+  const cardRef = useRef<HTMLDivElement>(null);
   const [rating, setRating] = useState(initialRating?.rating ?? 0);
   const [review, setReview] = useState(initialRating?.review ?? "");
   const [saved, setSaved] = useState<CourseRatingView | null>(initialRating);
@@ -47,6 +55,10 @@ export function CourseRatingCard({
     const res = await saveCourseRatingAction({ courseSlug, rating, review: review.trim() || null });
     setPending(false);
     if (res.ok) {
+      playRatingSubmitSound();
+      if (cardRef.current) {
+        fireMiniConfetti(cardRef.current);
+      }
       setSaved(res.data);
       setEditing(false);
     } else {
@@ -56,11 +68,12 @@ export function CourseRatingCard({
 
   if (dismissed && !saved && !editing) {
     return (
-      <div className="mx-auto mt-6 w-full max-w-4xl px-6">
+      <div className="flex items-center justify-between gap-3 rounded-[12px] border border-border bg-card px-4 py-3 text-sm">
+        <span className="text-muted-foreground">Ready to share how this course is going?</span>
         <button
           type="button"
           onClick={() => setEditing(true)}
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+          className="inline-flex items-center gap-1.5 font-semibold text-primary hover:underline"
         >
           <Star className="size-4" aria-hidden /> Rate this course
         </button>
@@ -69,88 +82,116 @@ export function CourseRatingCard({
   }
 
   return (
-    <section className="mx-auto mt-6 w-full max-w-4xl px-6">
-      <div className="rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-6">
+    <section aria-label="Course rating">
+      <div
+        ref={cardRef}
+        className="overflow-hidden rounded-[14px] border border-border bg-card p-5 text-card-foreground shadow-2xs sm:p-6"
+      >
         {saved && !editing ? (
-          <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <p className="text-sm font-medium text-foreground">Your rating</p>
-              <div className="mt-1 flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2.5">
+                <span className="text-sm font-bold text-foreground">Your rating</span>
                 <StarRating value={saved.rating} size={18} />
-                <span className="text-sm text-muted-foreground">{saved.rating} / 5</span>
+                <span className="font-mono text-xs font-semibold tabular-nums text-muted-foreground">
+                  {saved.rating}.0 / 5
+                </span>
+                <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                  <CheckCircle2 className="size-3.5 text-primary" aria-hidden /> Saved
+                </span>
               </div>
               {saved.review ? (
-                <p className="mt-2 max-w-2xl text-sm text-muted-foreground">&ldquo;{saved.review}&rdquo;</p>
+                <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                  &ldquo;{saved.review}&rdquo;
+                </p>
               ) : null}
             </div>
-            <button
+            <Button
               type="button"
+              variant="outline"
+              size="sm"
               onClick={() => setEditing(true)}
-              className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm hover:bg-muted"
+              className="gap-1.5 rounded-[10px]"
             >
               <Pencil className="size-3.5" aria-hidden /> Edit review
-            </button>
+            </Button>
           </div>
         ) : (
           <>
-            <h2 className="text-base font-semibold text-foreground">How was {courseTitle}?</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Your rating helps other learners decide and helps us fix the parts that did not work.
-            </p>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 className="font-heading text-base font-bold tracking-tight text-foreground sm:text-lg">
+                  How is {courseTitle} going?
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  You&apos;re past the halfway mark — your rating helps other learners decide and helps us improve.
+                </p>
+              </div>
+              <div className="shrink-0">
+                <StarRatingInput value={rating} onChange={setRating} disabled={pending} />
+              </div>
+            </div>
 
             {rating > 0 ? (
-              <div className="mt-3">
-                <RatingHappyDot rating={rating} size={68} />
+              <div className="mt-4">
+                <RatingHappyDot rating={rating} size={64} compact />
               </div>
             ) : null}
 
-            <div className="mt-3">
-              <StarRatingInput value={rating} onChange={setRating} disabled={pending} />
-            </div>
-
-            <label className="mt-3 block text-sm">
+            <label className="mt-4 block text-sm">
               <span className="sr-only">Review (optional)</span>
               <textarea
                 value={review}
                 onChange={(event) => setReview(event.target.value)}
-                rows={3}
+                rows={2}
                 maxLength={1000}
                 placeholder="Anything you want to add? (optional)"
-                className="w-full resize-y rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-ring"
+                className="w-full resize-y rounded-[12px] border border-border bg-background px-3.5 py-2.5 text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/15"
               />
             </label>
 
             {error ? <p className="mt-2 text-sm text-destructive">{error}</p> : null}
 
             <div className="mt-3 flex flex-wrap items-center justify-end gap-2">
-              <button
+              {!saved ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={notNow}
+                  disabled={pending}
+                  className="rounded-[10px]"
+                >
+                  Not now
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setRating(saved.rating);
+                    setReview(saved.review ?? "");
+                    setEditing(false);
+                  }}
+                  disabled={pending}
+                  className="rounded-[10px]"
+                >
+                  Cancel
+                </Button>
+              )}
+              <Button
                 type="button"
-                onClick={notNow}
-                disabled={pending}
-                className="rounded-md px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted"
-              >
-                Not now
-              </button>
-              <button
-                type="button"
+                size="sm"
                 onClick={submit}
                 disabled={pending || rating < 1}
-                className={cn(
-                  "inline-flex items-center gap-2 rounded-md bg-foreground px-4 py-1.5 text-sm font-medium text-background",
-                  (pending || rating < 1) && "opacity-60",
-                )}
+                className="rounded-[10px] font-semibold"
               >
-                {saved ? "Update rating" : "Submit rating"}
-              </button>
+                {pending ? "Saving…" : saved ? "Update review" : "Submit review"}
+              </Button>
             </div>
           </>
         )}
-
-        {saved && !editing ? (
-          <p className="mt-3 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-            <CheckCircle2 className="size-3.5 text-primary" aria-hidden /> Thanks. You can change this any time.
-          </p>
-        ) : null}
       </div>
     </section>
   );
