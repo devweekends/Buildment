@@ -8,6 +8,7 @@ import { ChapterRecapComponent } from "./chapter-recap/Component";
 import { CodeExerciseComponent } from "./code/Component";
 import { PredictComponent } from "./predict/Component";
 import { AiInterviewComponent } from "./ai-interview/Component";
+import { CapstoneCheckComponent } from "./capstone-check/Component";
 import { MustReadComponent } from "./must-read/Component";
 import { VideoComponent } from "./video/Component";
 import { VisualWalkthroughComponent } from "./visual-walkthrough/Component";
@@ -36,4 +37,5 @@ export const blockRegistry = {
   CODE: { ...blockDefinitions.CODE, Component: CodeExerciseComponent },
   PREDICT: { ...blockDefinitions.PREDICT, Component: PredictComponent },
   AI_INTERVIEW: { ...blockDefinitions.AI_INTERVIEW, Component: AiInterviewComponent },
+  CAPSTONE_CHECK: { ...blockDefinitions.CAPSTONE_CHECK, Component: CapstoneCheckComponent },
 } as const;

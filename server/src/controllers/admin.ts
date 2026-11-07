@@ -119,6 +119,13 @@ export async function bulkRejectCourseRequests(req: Request, res: Response) {
   ok(res, await courseRequests.bulkRejectCourseRequests(req.user!, ids));
 }
 
+// PATCH /api/v1/admin/organizations/:orgId/allocations/:courseId/allowed
+export async function setAllocationAllowed(req: Request, res: Response) {
+  const { enabled } = req.body as { enabled: boolean };
+  await organizations.setAllocationAllowed(req.user!, param(req, "orgId"), param(req, "courseId"), enabled);
+  noContent(res);
+}
+
 // PATCH /api/v1/admin/organizations/:orgId/allocations/:courseId/leaderboard
 export async function setAllocationLeaderboard(req: Request, res: Response) {
   const { enabled } = req.body as { enabled: boolean };
@@ -154,9 +161,9 @@ export async function createCouponPool(req: Request, res: Response) {
 
 // PATCH /api/v1/admin/organizations/:orgId/coupons/:poolId
 export async function setCouponPoolActive(req: Request, res: Response) {
-  const { active } = req.body as { active: boolean };
-  const { setCouponPoolActive: setActive } = await import("../services/coupons/pools.js");
-  await setActive(param(req, "orgId"), param(req, "poolId"), active);
+  const body = req.body as { active?: boolean; maxRedemptions?: number };
+  const { updateCouponPool } = await import("../services/coupons/pools.js");
+  await updateCouponPool(param(req, "orgId"), param(req, "poolId"), body);
   noContent(res);
 }
 

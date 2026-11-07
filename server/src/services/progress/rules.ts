@@ -14,6 +14,8 @@ export const COMPLETABLE_BLOCK_TYPES = new Set<BlockType>([
   "PREDICT",
   // Counts once a session has finished and its feedback is saved; never scored.
   "AI_INTERVIEW",
+  // Counts once a finished check is sent to the mentor; the mentor verdict is the quality signal.
+  "CAPSTONE_CHECK",
 ]);
 
 export type BlockForProgress = {

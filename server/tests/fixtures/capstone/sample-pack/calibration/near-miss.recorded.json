@@ -1,0 +1,14 @@
+{
+  "summary": "Proposal links exist but visits are not recorded. The README is complete.",
+  "criteria": [
+    { "id": "proposal-links", "score": 1, "evidence": ["src/links.py: a fixed list of links"], "missing": ["Visit recording"] },
+    { "id": "readme", "score": 2, "evidence": ["README.md: run, test and deploy"], "missing": [] },
+    { "id": "tests", "score": 1, "evidence": [], "missing": ["A test for recording a visit"] }
+  ],
+  "whatIsLeft": [
+    { "criterionId": "proposal-links", "title": "Tracked proposal links", "steps": ["Add a recordVisit function.", "Call it when a proposal page loads."] },
+    { "criterionId": "tests", "title": "Tests for the link tracker", "steps": ["Write a test that records a visit."] }
+  ],
+  "qualityNotes": { "strengths": ["The README is easy to follow."], "improvements": ["Links are hard-coded."] },
+  "confidence": "medium"
+}

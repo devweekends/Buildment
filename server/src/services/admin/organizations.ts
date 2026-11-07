@@ -248,6 +248,46 @@ export function approvePendingRequestsFor(tx: Prisma.TransactionClient, organiza
   });
 }
 
+/**
+ * Switches integration enrollments on or off for ONE allocation.
+ *
+ * `isAllowed` is the flag `/integrations/v1/courses` filters on, so an
+ * allocation with it off is invisible to the organisation's integration even
+ * though the catalog shows it in place with seats and no expiry. Until this
+ * existed the flag could only be set by the bulk form's single checkbox, which
+ * applies to every selected course at once — so one save with it unticked left
+ * a whole catalog unassignable, with no way back but re-selecting everything.
+ *
+ * Audited like a bulk allocation change, because it grants or withdraws access.
+ */
+export async function setAllocationAllowed(
+  actor: AdminActor,
+  orgId: string,
+  courseId: string,
+  isAllowed: boolean
+): Promise<void> {
+  const allocation = await prisma.organizationCourse.findUnique({
+    where: { organizationId_courseId: { organizationId: orgId, courseId } },
+    select: { organization: { select: { name: true } }, course: { select: { title: true } } },
+  });
+  if (!allocation) throw new NotFoundError("Allocation not found");
+
+  await prisma.$transaction(async (tx) => {
+    await tx.organizationCourse.update({
+      where: { organizationId_courseId: { organizationId: orgId, courseId } },
+      data: { isAllowed },
+    });
+    await recordAdminAction(tx, {
+      actor,
+      action: ADMIN_AUDIT_ACTIONS.ORGANIZATION_ALLOCATE,
+      targetType: "Organization",
+      targetId: orgId,
+      summary: `${isAllowed ? "Enabled" : "Disabled"} integration enrollments for ${allocation.course.title} at ${allocation.organization.name}`,
+      metadata: { courseIds: [courseId], isAllowed },
+    });
+  });
+}
+
 /** Lets (or stops) this organization's learners joining the course's weekly leaderboards. */
 export async function setAllocationLeaderboard(orgId: string, courseId: string, enabled: boolean): Promise<void> {
   const { count } = await prisma.organizationCourse.updateMany({

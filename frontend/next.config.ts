@@ -35,6 +35,13 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    // The Listen area became Audiobooks; old links and bookmarks land on the shelf.
+    return [
+      { source: "/listen", destination: "/audiobooks", permanent: true },
+      { source: "/listen/:path*", destination: "/audiobooks", permanent: true },
+    ];
+  },
   async rewrites() {
     return {
       beforeFiles: [],

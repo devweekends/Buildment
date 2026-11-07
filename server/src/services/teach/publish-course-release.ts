@@ -223,15 +223,17 @@ export async function publishCourseRelease(tx: Prisma.TransactionClient, courseI
   }
   // Tutor settings are not release content: they follow the manifest even when no chapter changed.
   const assistant = plan.manifest.assistant ? (plan.manifest.assistant as Prisma.InputJsonValue) : Prisma.DbNull;
+  // Certificate settings are course settings too; issued certificates keep their own snapshot.
+  const certificate = plan.manifest.certificate ? (plan.manifest.certificate as Prisma.InputJsonValue) : Prisma.DbNull;
   if (canonical(next) === canonical(previous)) {
-    await tx.course.update({ where: { id: courseId }, data: { assistant,
+    await tx.course.update({ where: { id: courseId }, data: { assistant, certificate,
       ...(plan.manifest.availableVariantSlugs ? { availableVariantSlugs: plan.manifest.availableVariantSlugs } : {}) } });
     return baseline;
   }
   const sourceHash = createHash("sha256").update(canonical({ base: baseline.id, plan })).digest("hex");
   const release = await tx.courseRelease.create({ data: { id: ulid(), courseId, number: baseline.number + 1,
     content: next as unknown as Prisma.InputJsonValue, sourceHash } });
-  await tx.course.update({ where: { id: courseId }, data: { activeReleaseId: release.id, assistant,
+  await tx.course.update({ where: { id: courseId }, data: { activeReleaseId: release.id, assistant, certificate,
     ...(plan.manifest.availableVariantSlugs ? { availableVariantSlugs: plan.manifest.availableVariantSlugs } : {}) } });
   await onNewCourseReleasePublished(tx, courseId, release.id);
   return release;

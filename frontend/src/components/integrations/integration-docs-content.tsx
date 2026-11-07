@@ -50,10 +50,67 @@ function enrollmentExample(origin: string) {
   }'`;
 }
 
+function progressExample(origin: string) {
+  return `curl -sS -G "${origin}/integrations/v1/progress" \\
+  --data-urlencode "course_id=<course-id>" \\
+  --data-urlencode "learner_email=learner@example.com" \\
+  -H "${INTEGRATION_ACCESS_KEY_HEADER}: <access-key>" \\
+  -H "${INTEGRATION_SECRET_KEY_HEADER}: <secret-key>"`;
+}
+
+const PROGRESS_RESPONSE_EXAMPLE = `{
+  "overall_progress": 50,
+  "completed_chapters": 1,
+  "total_chapters": 2,
+  "time_spent_seconds": 3600,
+  "current_chapter": {
+    "id": "chapter-b",
+    "title": "Chapter B",
+    "module_title": "Module 1",
+    "status": "IN_PROGRESS",
+    "progress": 25
+  },
+  "modules": [
+    {
+      "id": "module-1",
+      "title": "Module 1",
+      "status": "IN_PROGRESS",
+      "progress_percent": 63,
+      "completed_chapters": 1,
+      "total_chapters": 2,
+      "chapters": [
+        {
+          "id": "chapter-a",
+          "title": "Chapter A",
+          "status": "COMPLETED",
+          "completed": true,
+          "progress_percent": 100,
+          "blocks_completed": 4,
+          "blocks_total": 4,
+          "score": 8,
+          "max_score": 10,
+          "time_spent_seconds": 2400
+        },
+        {
+          "id": "chapter-b",
+          "title": "Chapter B",
+          "status": "IN_PROGRESS",
+          "completed": false,
+          "progress_percent": 25,
+          "blocks_completed": 1,
+          "blocks_total": 4,
+          "time_spent_seconds": 1200
+        }
+      ]
+    }
+  ]
+}`;
+
 export function IntegrationDocsContent({ baseUrl }: { baseUrl: string }) {
   const origin = baseUrl.replace(/\/$/, "");
   const connectionCurl = connectionExample(origin);
   const enrollCurl = enrollmentExample(origin);
+  const progressCurl = progressExample(origin);
 
   return (
     <div className="mx-auto w-full max-w-6xl px-5 pb-20 pt-10 sm:px-6 sm:pt-14">
@@ -186,6 +243,39 @@ export function IntegrationDocsContent({ baseUrl }: { baseUrl: string }) {
                 {enrollCurl}
               </pre>
             </div>
+          </section>
+
+          <section id="learner-progress-report" aria-labelledby="learner-progress-heading">
+            <h2 id="learner-progress-heading" className="text-xl font-semibold tracking-tight">
+              Read a learner&apos;s course progress
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              Enroll the learner once, then request this report as they make progress. It includes every chapter in
+              their assigned course release, including chapters they have not started. Check each chapter&apos;s
+              <code className="mx-1 rounded bg-muted px-1 font-mono text-xs">status</code>
+              and
+              <code className="mx-1 rounded bg-muted px-1 font-mono text-xs">completed</code>
+              fields to show progress in your platform. The report is scoped to your organization&apos;s enrollment.
+            </p>
+            <div className="mt-4 rounded-2xl border bg-muted/20 p-4 sm:p-5">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Sample request</p>
+                <CopyCodeButton text={progressCurl} />
+              </div>
+              <pre className="mt-3 overflow-x-auto rounded-lg bg-background p-3 font-mono text-xs leading-relaxed">
+                {progressCurl}
+              </pre>
+            </div>
+            <div className="mt-4 rounded-2xl border bg-muted/20 p-4 sm:p-5">
+              <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Response fields</p>
+              <pre className="mt-3 overflow-x-auto rounded-lg bg-background p-3 font-mono text-xs leading-relaxed">
+                {PROGRESS_RESPONSE_EXAMPLE}
+              </pre>
+            </div>
+            <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+              The response also includes enrollment lifecycle, dates, review counts, course-level scores, and a
+              report timestamp. See <code className="rounded bg-muted px-1 font-mono text-xs">docs/organization-api.mdx</code> in the repository for the complete contract.
+            </p>
           </section>
 
       </div>

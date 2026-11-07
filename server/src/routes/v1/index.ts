@@ -19,6 +19,7 @@ import notificationRoutes from "./notifications.js";
 import engagementRoutes from "./engagement.js";
 import eventRoutes from "./events.js";
 import publicRoutes from "./public.js";
+import certificateRoutes from "./certificates.js";
 
 // First-party API, versioned. JSON routes use the { success, data } envelope;
 // the media route streams image bytes.
@@ -44,5 +45,6 @@ router.use("/notifications", notificationRoutes);
 router.use("/events", engagementRoutes);
 router.use("/events", eventRoutes);
 router.use("/public", publicRoutes);
+router.use("/certificates", certificateRoutes);
 
 export default router;

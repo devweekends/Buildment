@@ -84,6 +84,15 @@ enum VariantAssignment {
 enum CourseCategory {
   TECH
   SOFT_SKILLS
+  CLOUD_DEVOPS
+}
+
+enum DiscountTargetScope {
+  ALL
+  CATEGORY
+  SUBCATEGORY
+  TAG
+  SELECTED_COURSES
 }
 
 enum CourseInstructorRole {
@@ -132,6 +141,12 @@ enum PaymentStatus {
   REFUNDED
 }
 
+enum InstructorPayoutStatus {
+  NOT_DUE
+  PENDING
+  PAID
+}
+
 /// Org coupon seat that has been reserved for a learner (mentor assign / Pathment enroll).
 enum CouponUsageStatus {
   ISSUED
@@ -161,6 +176,7 @@ enum BlockType {
   VISUAL_DIAGRAM
   ROADMAP
   AI_INTERVIEW
+  CAPSTONE_CHECK
 }
 
 enum ResponseStatus {
@@ -280,6 +296,9 @@ model User {
   profile       UserProfile?
   learnerProfile LearnerProfile?
   coursesOwned  Course[]     @relation("CourseMentor")
+  instructorCouponsCreated InstructorCoupon[] @relation("InstructorCouponCreator")
+  discountCampaignsCreated CourseDiscountCampaign[]
+  instructorCouponRedemptions InstructorCouponRedemption[]
   courseMemberships CourseInstructor[]
   courseInstructorInvitesSent CourseInstructorInvite[] @relation("CourseInstructorInviteSender")
   enrollments   Enrollment[]
@@ -295,6 +314,8 @@ model User {
   aiCredential                  AiCredential?
   aiInterviewSessions           AiInterviewSession[]
   learnerQuestions              LearnerQuestion[]
+  capstoneChecks                CapstoneCheck[]
+  certificates                  Certificate[]
   appActivity                   UserAppActivity?
   appActivityDays               AppActivityDay[]
   notifications                 Notification[]
@@ -408,6 +429,8 @@ model Course {
   difficulty     String?
   estimatedHours Int?
   category       CourseCategory @default(TECH)
+  subcategory    String?
+  tags           String[]       @default([])
   status         CourseStatus @default(DRAFT)
   pricingType    CoursePricingType @default(FREE)
   priceCents     Int          @default(0)
@@ -418,6 +441,8 @@ model Course {
   familySlug     String? // course family in src/shared/lib/course-tracks.ts; null = no variants
   variantFamily  Json? // creator-defined variant catalog; null uses a built-in family
   assistant      Json? // tutor settings from course.yaml (effort, guidance, starters); null means defaults
+  certificate    Json? // certificate settings from course.yaml (program, title, code, skills); null means no certificate
+  certificates   Certificate[]
   availableVariantSlugs String[] @default([]) // empty means every family variant is available
   variantAssignment VariantAssignment @default(SELF_SELECT)
   activeReleaseId String? // latest approved content release; set atomically with publication
@@ -439,6 +464,7 @@ model Course {
   organizationCourseRequests OrganizationCourseRequest[]
   couponPools    OrganizationCouponPool[]
   couponUsages   CouponUsage[]
+  instructorCoupons InstructorCoupon[]
   invites        Invite[]
   helpThreads    HelpThread[]
   publishedAt    DateTime?
@@ -645,6 +671,7 @@ model Block {
   responses  Response[]
   stats      BlockStats?
   aiInterviewSessions AiInterviewSession[]
+  capstoneChecks CapstoneCheck[]
 
   @@index([chapterId, order])
 }
@@ -689,8 +716,10 @@ model Enrollment {
   studySessions     StudySession[]
   integrityAttempts IntegrityAttempt[]
   payment           Payment?
+  instructorCouponRedemption InstructorCouponRedemption?
   xpEntries         XpEntry[]
   couponUsage       CouponUsage?
+  certificate       Certificate?
 
   @@unique([courseId, userId])
   @@unique([courseId, learnerProfileId])
@@ -739,8 +768,74 @@ model OrganizationCouponPool {
   @@index([organizationId, code])
 }
 
+/// Course-specific percentage coupons and automatic discounts created by instructors or admins.
+model InstructorCoupon {
+  id              String       @id @default(cuid())
+  courseId        String
+  course          Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdById     String
+  createdBy       User         @relation("InstructorCouponCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  code            String?
+  label           String
+  percentOff      Int          @default(100)
+  autoApply       Boolean      @default(false)
+  maxRedemptions  Int
+  redemptionCount Int          @default(0)
+  active          Boolean      @default(true)
+  expiresAt       DateTime?
+  campaignId      String?
+  campaign        CourseDiscountCampaign? @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  redemptions     InstructorCouponRedemption[]
+
+  @@unique([courseId, code])
+  @@index([courseId, active])
+}
+
+/// Admin-owned discount campaigns can target a category, subcategory, tag, selected courses, or all paid courses.
+model CourseDiscountCampaign {
+  id              String              @id @default(cuid())
+  createdById     String
+  createdBy       User                @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  label           String
+  code            String?             @unique
+  scope           DiscountTargetScope
+  category        CourseCategory?
+  subcategory     String?
+  tag             String?
+  courseIds       String[]            @default([])
+  percentOff      Int
+  maxRedemptions  Int
+  redemptionCount Int                 @default(0)
+  autoApply       Boolean             @default(false)
+  active          Boolean             @default(true)
+  expiresAt       DateTime?
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  coupons         InstructorCoupon[]
+
+  @@index([active, scope])
+  @@index([category, active])
+  @@index([subcategory, active])
+}
+
+model InstructorCouponRedemption {
+  id          String          @id @default(cuid())
+  couponId    String
+  coupon      InstructorCoupon @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  enrollmentId String         @unique
+  enrollment  Enrollment      @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  percentOff  Int
+  redeemedAt  DateTime        @default(now())
+
+  @@index([couponId, redeemedAt])
+}
+
 /// One reserved seat from a pool, created when a mentor/Pathment assigns the course.
-/// Marked redeemed when the learner first opens the course (banner + audit).
+/// Marked redeemed when access is granted (immediately for full discounts, after manual approval for partial discounts).
 model CouponUsage {
   id             String            @id @default(cuid())
   poolId         String
@@ -826,6 +921,9 @@ model Payment {
   provider     String?
   providerRef  String?
   paidAt       DateTime?
+  instructorShareCents Int   @default(0)
+  instructorPayoutStatus InstructorPayoutStatus @default(NOT_DUE)
+  instructorPayoutPaidAt DateTime?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 }
@@ -1140,6 +1238,7 @@ model Response {
   startedAt    DateTime?
   submittedAt  DateTime       @default(now())
   review       Review?
+  capstoneCheck CapstoneCheck?
 
   @@index([blockId, userId, attempt])
   @@index([enrollmentId])
@@ -1368,4 +1467,82 @@ model LearnerQuestion {
 
   @@index([createdAt])
   @@index([userId, createdAt])
+}
+
+enum CapstoneCheckStatus {
+  QUEUED
+  RUNNING
+  DONE
+  FAILED
+}
+
+/// One run of a CAPSTONE_CHECK block (docs/16-capstone-checker-and-certificates.mdx).
+/// Automated checks run first; the AI grade runs only when the hard gates pass.
+/// A DONE check creates the PENDING_REVIEW Response a mentor confirms or overrides.
+model CapstoneCheck {
+  id           String              @id @default(cuid())
+  blockId      String
+  block        Block               @relation(fields: [blockId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  enrollmentId String
+  responseId   String?             @unique
+  response     Response?           @relation(fields: [responseId], references: [id], onDelete: SetNull)
+  attempt      Int
+  status       CapstoneCheckStatus @default(QUEUED)
+  repoUrl      String
+  liveUrl      String?
+  commitSha    String?             @db.VarChar(64)
+  packId       String              @db.VarChar(80)
+  packVersion  Int
+  /// AutomatedCheckResult[] in the order the pack lists them.
+  automated    Json?
+  /// CapstoneReport: the recomputed grade, criteria, what is left and quality notes.
+  report       Json?
+  percent      Int?
+  completed    Boolean?
+  /// Set when the same commit and pack version were already graded; no model call was made.
+  reusedFromId String?
+  /// True once the platform-wide daily model budget was reserved for this check.
+  aiCalled     Boolean             @default(false)
+  model        String?             @db.VarChar(120)
+  inputTokens  Int                 @default(0)
+  outputTokens Int                 @default(0)
+  costMicroUsd Int                 @default(0)
+  error        String?             @db.Text
+  createdAt    DateTime            @default(now())
+  startedAt    DateTime?
+  finishedAt   DateTime?
+
+  @@index([blockId, userId, createdAt])
+  @@index([status, createdAt])
+  @@index([aiCalled, createdAt])
+}
+
+/// A completion certificate for a passed track. The code is the public id on /verify/<code>.
+/// Names and titles are snapshots so a later course rename never changes an issued certificate.
+model Certificate {
+  id            String     @id @default(cuid())
+  code          String     @unique @db.VarChar(32)
+  userId        String
+  user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId      String
+  course        Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  enrollmentId  String     @unique
+  enrollment    Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  recipientName String
+  program       String
+  title         String
+  issuerName    String
+  issuerTitle   String?
+  skills        String[]   @default([])
+  /// [{ chapterTitle, repoUrl, liveUrl, commitSha, percent }] for the confirmed capstones.
+  evidence      Json?
+  issuedAt      DateTime   @default(now())
+  revokedAt     DateTime?
+  revokedReason String?
+  revokedById   String?
+
+  @@index([userId])
+  @@index([courseId])
 }

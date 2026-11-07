@@ -99,3 +99,56 @@ describe("quiz chapter state", () => {
     expect(res.body.data.initialAnswers[fx.quizChapterBlocks[0]!.id]).toEqual([]);
   });
 });
+
+describe("paid course access", () => {
+  it("protects block state and offline downloads until enrollment is active", async () => {
+    await prisma.course.update({ where: { id: fx.course.id }, data: { pricingType: "PAID", priceCents: 1000 } });
+    try {
+      expect((await request(app).get(`/api/v1/blocks/${fx.quizBlock.id}/state`)).status).toBe(401);
+      await prisma.enrollment.update({ where: { id: fx.enrollment.id }, data: { lifecycle: "PAYMENT_REQUIRED" } });
+      const block = await request(app).get(`/api/v1/blocks/${fx.quizBlock.id}/state`).set(auth());
+      expect(block.status).toBe(403);
+      expect(block.body.code).toBe("payment_required");
+      expect((await request(app).get(`/api/v1/courses/${fx.course.slug}/chapters/chapter-a/download`).set(auth())).status).toBe(403);
+      await prisma.enrollment.update({ where: { id: fx.enrollment.id }, data: { lifecycle: "ACTIVE" } });
+      expect((await request(app).get(`/api/v1/blocks/${fx.quizBlock.id}/state`).set(auth())).status).toBe(200);
+    } finally {
+      await prisma.enrollment.update({ where: { id: fx.enrollment.id }, data: { lifecycle: "ACTIVE" } });
+      await prisma.course.update({ where: { id: fx.course.id }, data: { pricingType: "FREE", priceCents: 0 } });
+    }
+  });
+});
+
+describe("chapter download", () => {
+  it("denies learners without access and unverified accounts", async () => {
+    const anon = await request(app).get(`/api/v1/courses/${fx.course.slug}/chapters/chapter-a/download`);
+    expect(anon.status).toBe(401);
+    const unverified = await request(app)
+      .get(`/api/v1/courses/${fx.course.slug}/chapters/chapter-a/download`)
+      .set({ Authorization: `Bearer ${fx.unverifiedToken}` });
+    expect(unverified.status).toBe(403);
+  });
+
+  it("returns read-only lesson content and sanitized blocks without starting the chapter or mutating seen reviews", async () => {
+    const res = await request(app)
+      .get(`/api/v1/courses/${fx.course.slug}/chapters/chapter-a/download`)
+      .set(auth());
+    expect(res.status).toBe(200);
+    expect(res.body.data.releaseId).toBeDefined();
+    expect(res.body.data.lesson.chapter.slug).toBe("chapter-a");
+    expect(res.body.data.lesson.content.source).toBe("# A");
+    expect(res.body.data.blocks).toBeDefined();
+    for (const block of Object.values(res.body.data.blocks) as Array<{ config?: { correctOptionIds?: unknown } }>) {
+      expect(block.config?.correctOptionIds).toBeUndefined();
+    }
+  });
+
+  it("returns locked lesson metadata with empty blocks", async () => {
+    const res = await request(app)
+      .get(`/api/v1/courses/${fx.course.slug}/chapters/chapter-b/download`)
+      .set(auth());
+    expect(res.status).toBe(200);
+    expect(res.body.data.lesson.locked).toBe(true);
+    expect(res.body.data.blocks).toEqual({});
+  });
+});

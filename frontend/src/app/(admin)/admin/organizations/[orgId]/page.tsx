@@ -19,6 +19,7 @@ import { OrganizationCourseDrawer } from "@/components/admin/organization-course
 import {
   createOrganizationCouponPoolAction,
   rotateOrganizationCredentialFormAction,
+  setAllocationAllowedAction,
   setAllocationLeaderboardAction,
   setOrganizationCouponPoolActiveAction,
 } from "@/server/actions/admin/organizations";
@@ -200,7 +201,7 @@ export default async function AdminOrganizationDetailPage({
               <AdminTableHeaderCell>Course</AdminTableHeaderCell>
               <AdminTableHeaderCell align="right">Used / max</AdminTableHeaderCell>
               <AdminTableHeaderCell>Expires</AdminTableHeaderCell>
-              <AdminTableHeaderCell>Allowed</AdminTableHeaderCell>
+              <AdminTableHeaderCell>Assignable</AdminTableHeaderCell>
               <AdminTableHeaderCell>Leaderboards</AdminTableHeaderCell>
             </tr>
           </AdminTableHead>
@@ -230,11 +231,26 @@ export default async function AdminOrganizationDetailPage({
                     {row.expiresAt ? new Date(row.expiresAt).toLocaleDateString() : "—"}
                   </AdminTableCell>
                   <AdminTableCell>
-                    {row.isAllowed ? (
-                      <Badge variant="secondary">Yes</Badge>
-                    ) : (
-                      <Badge variant="outline">No</Badge>
-                    )}
+                    <form action={setAllocationAllowedAction} className="flex items-center gap-2">
+                      <input type="hidden" name="organizationId" value={org.id} />
+                      <input type="hidden" name="courseId" value={row.course.id} />
+                      <input type="hidden" name="enabled" value={row.isAllowed ? "false" : "true"} />
+                      {row.isAllowed ? (
+                        <Badge variant="secondary">Yes</Badge>
+                      ) : (
+                        <Badge variant="destructive" title="The integration cannot see this course, so it cannot be assigned">
+                          Not assignable
+                        </Badge>
+                      )}
+                      <Button
+                        type="submit"
+                        size="sm"
+                        variant="ghost"
+                        aria-label={`${row.isAllowed ? "Turn off" : "Turn on"} integration enrollments for ${row.course.title}`}
+                      >
+                        {row.isAllowed ? "Turn off" : "Turn on"}
+                      </Button>
+                    </form>
                   </AdminTableCell>
                   <AdminTableCell>
                     <form action={setAllocationLeaderboardAction} className="flex items-center gap-2">
@@ -271,7 +287,7 @@ export default async function AdminOrganizationDetailPage({
 
       <AdminSection
         title="Coupon pools"
-        description="Limited seats this organization can grant. Course-specific pools first; general pools cover any allocated course. Assigning or Pathment enroll consumes a seat and shows the learner a free/discount banner."
+        description="Discount seats reserved for organization assignments. Course-specific pools are used before general pools. Partial discounts leave a payment balance for admin confirmation."
         className="mt-12"
       >
         <AdminPanel className="mb-6">
@@ -307,8 +323,8 @@ export default async function AdminOrganizationDetailPage({
                 <input name="percentOff" type="number" min={1} max={100} defaultValue={100} className="h-10 w-full rounded-lg border border-input bg-background px-3 text-sm" />
               </label>
               <label className="text-sm">
-                <span className="mb-1 block font-medium">Code (optional)</span>
-                <input name="code" maxLength={64} placeholder="DW-LIFETIME" className="h-10 w-full rounded-lg border border-input bg-background px-3 text-sm" />
+                <span className="mb-1 block font-medium">Internal reference (optional)</span>
+                <input name="code" maxLength={64} placeholder="Pathment cohort 2026" className="h-10 w-full rounded-lg border border-input bg-background px-3 text-sm" />
               </label>
               <label className="text-sm">
                 <span className="mb-1 block font-medium">Expires (optional)</span>
@@ -323,7 +339,7 @@ export default async function AdminOrganizationDetailPage({
             <tr>
               <AdminTableHeaderCell>Pool</AdminTableHeaderCell>
               <AdminTableHeaderCell>Scope</AdminTableHeaderCell>
-              <AdminTableHeaderCell align="right">Used / max</AdminTableHeaderCell>
+              <AdminTableHeaderCell align="right">Seats</AdminTableHeaderCell>
               <AdminTableHeaderCell>Status</AdminTableHeaderCell>
               <AdminTableHeaderCell>Actions</AdminTableHeaderCell>
             </tr>
@@ -348,12 +364,14 @@ export default async function AdminOrganizationDetailPage({
                   </AdminTableCell>
                   <AdminTableCell align="right" className="tabular-nums">
                     {pool.redemptionCount} / {pool.maxRedemptions}
+                    <span className="mt-1 block text-xs text-muted-foreground">{pool.reservedCount} reserved · {pool.redeemedCount} redeemed</span>
                   </AdminTableCell>
                   <AdminTableCell>
                     {pool.active ? <Badge variant="secondary">Active</Badge> : <Badge variant="outline">Off</Badge>}
                   </AdminTableCell>
                   <AdminTableCell>
-                    <form action={setOrganizationCouponPoolActiveAction}>
+                    <div className="flex flex-col items-start gap-2">
+                    <form action={setOrganizationCouponPoolActiveAction} className="flex items-center gap-2">
                       <input type="hidden" name="organizationId" value={org.id} />
                       <input type="hidden" name="poolId" value={pool.id} />
                       <input type="hidden" name="active" value={pool.active ? "false" : "true"} />
@@ -361,6 +379,13 @@ export default async function AdminOrganizationDetailPage({
                         {pool.active ? "Turn off" : "Turn on"}
                       </Button>
                     </form>
+                    <form action={setOrganizationCouponPoolActiveAction} className="flex items-center gap-2">
+                      <input type="hidden" name="organizationId" value={org.id} />
+                      <input type="hidden" name="poolId" value={pool.id} />
+                      <input name="maxRedemptions" type="number" min={pool.maxRedemptions} max={1_000_000} defaultValue={pool.maxRedemptions} aria-label={`Seat limit for ${pool.label}`} className="h-8 w-24 rounded-md border border-input bg-background px-2 text-xs" />
+                      <Button type="submit" size="sm" variant="outline">Update seats</Button>
+                    </form>
+                    </div>
                   </AdminTableCell>
                 </AdminTableRow>
               ))

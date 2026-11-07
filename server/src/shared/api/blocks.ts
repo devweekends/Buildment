@@ -14,6 +14,8 @@ import type { VisualDiagramConfig } from "../blocks/visual-diagram/schema.js";
 import type { VisualWalkthroughConfig } from "../blocks/visual-walkthrough/schema.js";
 import type { SanitizedAiInterviewConfig } from "../blocks/ai-interview/schema.js";
 import type { AiInterviewInitialState } from "./ai.js";
+import type { SanitizedCapstoneCheckConfig } from "../blocks/capstone-check/schema.js";
+import type { CapstoneCheckState } from "../blocks/capstone-check/report.js";
 
 // Wire contract for GET /api/v1/blocks/:blockId/state: the client-safe config plus
 // the caller's latest answer, shaped for each block's client component.
@@ -74,6 +76,13 @@ export type AiInterviewBlockState = {
   initialState: AiInterviewInitialState;
 };
 
+export type CapstoneCheckBlockState = {
+  type: "CAPSTONE_CHECK";
+  config: SanitizedCapstoneCheckConfig;
+  /** Null for a signed-out reader. */
+  initialState: CapstoneCheckState | null;
+};
+
 /** Presentation blocks carry no answer; the reader only needs their config. */
 export type ContentBlockState =
   | { type: "STEPS"; config: StepsConfig }
@@ -92,6 +101,7 @@ export type BlockState =
   | OpenQuestionBlockState
   | MustReadBlockState
   | AiInterviewBlockState
+  | CapstoneCheckBlockState
   | ContentBlockState;
 
 /** Quiz-mode chapter: every question's last answer, for the wizard's initial state. */

@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 export function ReaderFocusDock({ onExitFocus }: { onExitFocus: () => void }) {
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-5 z-[60] flex justify-end px-5 sm:bottom-6 sm:px-6">
+    <div className="pointer-events-none fixed inset-x-0 bottom-5 z-[60] mb-[var(--audiobook-bar-space,0px)] flex justify-end px-5 sm:bottom-6 sm:px-6">
       <button
         type="button"
         onClick={onExitFocus}

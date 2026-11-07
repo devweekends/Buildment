@@ -1,3 +1,4 @@
+import { ulid } from "ulid";
 import type { Prisma } from "../../generated/prisma/index.js";
 import { prisma } from "../../db/prisma.js";
 import {
@@ -8,7 +9,7 @@ import {
   type RewardKind,
 } from "../../shared/gamification/rewards.js";
 import { BadRequestError, NotFoundError } from "../../utils/errors.js";
-import { creditBalance, spendCredits } from "./credits.js";
+import { creditBalance } from "./credits.js";
 import { gamificationFeatures } from "./flags.js";
 
 // The rewards marketplace: list what the learner can spend Build Credits on, and buy an item.
@@ -106,31 +107,49 @@ export async function purchaseReward(userId: string, rewardId: string): Promise<
     if (isCosmetic(reward)) {
       const existing = await tx.unlockedCosmetic.findUnique({ where: { userId_cosmetic: { userId, cosmetic: rewardId } }, select: { id: true } });
       if (existing) return { balance: await creditBalance(userId, tx), owned: true, quantity: 0 };
+
+      const debited = await tx.user.updateMany({
+        where: { id: userId, buildCredits: { gte: reward.price } },
+        data: { buildCredits: { decrement: reward.price } },
+      });
+      if (debited.count === 0) throw new BadRequestError("Not enough Build Credits");
+
+      // A cosmetic is bought once, so a stable key is idempotent across concurrent clicks.
+      const { count } = await tx.creditEntry.createMany({
+        data: [{ userId, source: "rewards", sourceKey: `rewards:buy:${rewardId}`, amount: -reward.price }],
+        skipDuplicates: true,
+      });
+      if (count === 0) {
+        await tx.user.update({ where: { id: userId }, data: { buildCredits: { increment: reward.price } } });
+      }
+      await tx.unlockedCosmetic.createMany({ data: [{ userId, cosmetic: rewardId }], skipDuplicates: true });
+      return { balance: await creditBalance(userId, tx), owned: true, quantity: 0 };
     }
 
-    const balance = await creditBalance(userId, tx);
-    if (balance < reward.price) throw new BadRequestError("Not enough Build Credits");
+    // Consumables can be bought, used up (pruned back to 0), and bought again. Give each purchase
+    // its own ULID ledger key and atomically debit `buildCredits >= price` so re-buying after
+    // consumption always charges and concurrent requests cannot overdraft the balance.
+    const debited = await tx.user.updateMany({
+      where: { id: userId, buildCredits: { gte: reward.price } },
+      data: { buildCredits: { decrement: reward.price } },
+    });
+    if (debited.count === 0) throw new BadRequestError("Not enough Build Credits");
 
-    if (isCosmetic(reward)) {
-      // A cosmetic is bought exactly once, so a stable key is correct and idempotent.
-      const remaining = await spendCredits(tx, userId, `rewards:buy:${rewardId}`, reward.price);
-      await tx.unlockedCosmetic.create({ data: { userId, cosmetic: rewardId } });
-      return { balance: remaining, owned: true, quantity: 0 };
-    }
-
-    // Consumables can be bought repeatedly, so each purchase MUST record its own spend. The spend
-    // key is idempotent, so a *stable* key would silently skip the charge on every buy after the
-    // first while the inventory still incremented — a free item. Increment first to get this
-    // purchase's ordinal, then spend against a per-unit key (`rewards:buy:<id>:<n>`) so the Nth buy
-    // charges exactly once.
+    await tx.creditEntry.create({
+      data: {
+        userId,
+        source: "rewards",
+        sourceKey: `rewards:buy:${rewardId}:${ulid()}`,
+        amount: -reward.price,
+      },
+    });
     const row = await tx.rewardInventory.upsert({
       where: { userId_rewardId: { userId, rewardId } },
       create: { userId, rewardId, quantity: 1 },
       update: { quantity: { increment: 1 } },
       select: { quantity: true },
     });
-    const remaining = await spendCredits(tx, userId, `rewards:buy:${rewardId}:${row.quantity}`, reward.price);
-    return { balance: remaining, owned: true, quantity: row.quantity };
+    return { balance: await creditBalance(userId, tx), owned: true, quantity: row.quantity };
   });
 }
 

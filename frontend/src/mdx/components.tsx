@@ -2,6 +2,7 @@ import type { MDXComponents } from "next-mdx-remote-client/rsc";
 import { QuizComponent } from "@/blocks/quiz/Component";
 import { PredictComponent } from "@/blocks/predict/Component";
 import { AiInterviewComponent } from "@/blocks/ai-interview/Component";
+import { CapstoneCheckComponent } from "@/blocks/capstone-check/Component";
 import { OpenQuestionComponent } from "@/blocks/open-question/Component";
 import { CodeExerciseComponent } from "@/blocks/code/Component";
 import { StepsComponent } from "@/blocks/steps/Component";
@@ -36,6 +37,7 @@ export const mdxComponents: MDXComponents = {
   Quiz: QuizComponent,
   Predict: PredictComponent,
   AiInterview: AiInterviewComponent,
+  CapstoneCheck: CapstoneCheckComponent,
   OpenQuestion: OpenQuestionComponent,
   CodeExercise: CodeExerciseComponent,
   Steps: StepsComponent,

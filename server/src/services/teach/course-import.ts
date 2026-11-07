@@ -11,8 +11,10 @@ import { ulid } from "ulid";
 import { prisma } from "../../db/prisma.js";
 import { BadRequestError, ConflictError, TooManyRequestsError, UnprocessableError } from "../../utils/errors.js";
 import type { SessionUser } from "../../types/auth.js";
+import { courseCategoryFromSource, type CourseCategorySource } from "../../shared/domain/enums.js";
 import type { CourseFamily } from "../../shared/lib/course-tracks.js";
 import type { CourseAssistant } from "../ai/chapter-qa/assistant.js";
+import type { CertificateSettings } from "../../shared/lib/certificates.js";
 import { publishCourseRelease } from "./publish-course-release.js";
 import type { UpdateMapping } from "./course-update-matching.js";
 
@@ -52,7 +54,7 @@ export function readCourseZip(buffer: Buffer, source: CourseZipSource = "dashboa
     if ((total += bytes.length) > limit.expanded) throw new BadRequestError(`ZIP expands beyond ${limit.expanded / 1024 / 1024} MB.`);
     if (!name.startsWith(prefix)) throw new BadRequestError("All files must be inside the course folder.");
     const relative = name.slice(prefix.length);
-    if (!/^(course\.yaml|COURSE-OUTLINE\.md|(?:variants\/[a-z0-9-]+\/)?\d+-[a-z0-9-]+\/\d+\.\d+-[a-z0-9-]+\.md)$/.test(relative)) {
+    if (!/^(course\.yaml|COURSE-OUTLINE\.md|capstone\/[a-z0-9-]+\.yaml|(?:variants\/[a-z0-9-]+\/)?\d+-[a-z0-9-]+\/\d+\.\d+-[a-z0-9-]+\.md)$/.test(relative)) {
       throw new BadRequestError(`Unsupported course file: ${relative}`);
     }
     result[relative] = bytes;
@@ -63,9 +65,10 @@ export function readCourseZip(buffer: Buffer, source: CourseZipSource = "dashboa
 export type ImportPlan = {
   manifest: {
     title: string; description: string; projectGoal: string; difficulty: string;
-    estimatedHours: number; coverUrl?: string; family?: string; category?: "tech" | "soft-skills";
+    estimatedHours: number; coverUrl?: string; family?: string; category?: CourseCategorySource; subcategory?: string; tags?: string[];
     variantFamily?: CourseFamily;
     assistant?: CourseAssistant;
+    certificate?: CertificateSettings;
     availableVariantSlugs?: string[];
     publication?: "create" | "update"; creatorEmail?: string;
   };
@@ -140,10 +143,13 @@ async function runCourseImport(user: SessionUser, buffer: Buffer, source: Course
   if (plan.manifest.publication === "update") throw new BadRequestError("This package declares an update. Open the existing course and use Update from ZIP.");
   if (!plan.modules.length) throw new BadRequestError("A new course needs at least one module.");
   const { title, description, projectGoal, difficulty, estimatedHours, coverUrl, family, variantFamily } = plan.manifest;
-  const category = plan.manifest.category === "soft-skills" ? "SOFT_SKILLS" as const : "TECH" as const;
+  const category = courseCategoryFromSource(plan.manifest.category);
   const metadata = { title, description, projectGoal, difficulty, estimatedHours, coverUrl, category,
+    subcategory: plan.manifest.subcategory?.trim() || null,
+    tags: [...new Set((plan.manifest.tags ?? []).map((tag) => tag.trim().toLowerCase()).filter(Boolean))],
     familySlug: family ?? null, variantFamily: variantFamily as unknown as Prisma.InputJsonValue | undefined,
     assistant: plan.manifest.assistant as Prisma.InputJsonValue | undefined,
+    certificate: plan.manifest.certificate as Prisma.InputJsonValue | undefined,
     availableVariantSlugs: plan.manifest.availableVariantSlugs ?? [] };
   try {
     const course = await prisma.$transaction(async tx => {

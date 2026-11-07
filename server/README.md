@@ -58,6 +58,12 @@ Procfile             Heroku APP_BASE=server: release = migrate, web = node dist/
   directly. Email bodies are EJS templates in `services/email/templates`. See
   [`docs/12-notifications.mdx`](../docs/12-notifications.mdx).
 
+## Organization integrations
+
+The public partner contract is under `/integrations/v1`. See the [organization progress report
+contract](../docs/organization-api.mdx) for the authenticated learner progress request and its
+module/chapter response fields.
+
 ## Course images (Cloudflare R2)
 
 Set `R2_ENDPOINT`, `R2_BUCKET`, `R2_ACCESS_KEY_ID`, and `R2_SECRET_ACCESS_KEY` in the API environment. The endpoint is the account S3 endpoint, without the bucket suffix. Use an R2 S3 token scoped to the `buildment` bucket. Never put the secret in the frontend environment or source code.

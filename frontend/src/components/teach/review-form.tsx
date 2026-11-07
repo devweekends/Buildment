@@ -13,15 +13,22 @@ type ReviewFormProps = {
   responseId: string;
   maxScore: number;
   action: (formData: FormData) => Promise<void>;
+  /** Prefill, for example from a capstone AI check the mentor confirms or overrides. */
+  initialFeedback?: string;
+  initialScore?: number | null;
+  /** The OpenRouter draft only applies to open questions. */
+  aiDraft?: boolean;
+  /** Replaces the default line under the heading. */
+  note?: string;
 };
 
 function verdictLabel(verdict: AiReviewDraft["suggestedVerdict"]) {
   return verdict === "APPROVED" ? "Approve" : "Needs revision";
 }
 
-export function ReviewForm({ responseId, maxScore, action }: ReviewFormProps) {
-  const [feedback, setFeedback] = useState("");
-  const [score, setScore] = useState("");
+export function ReviewForm({ responseId, maxScore, action, initialFeedback = "", initialScore = null, aiDraft = true, note }: ReviewFormProps) {
+  const [feedback, setFeedback] = useState(initialFeedback);
+  const [score, setScore] = useState(initialScore === null ? "" : String(initialScore));
   const [draft, setDraft] = useState<AiReviewDraft | null>(null);
   const [model, setModel] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -49,10 +56,10 @@ export function ReviewForm({ responseId, maxScore, action }: ReviewFormProps) {
         <div>
           <h2 className="text-sm font-semibold">Your review</h2>
           <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-            You make the final decision. Drafted feedback is never submitted automatically.
+            {note ?? "You make the final decision. Drafted feedback is never submitted automatically."}
           </p>
         </div>
-        <Button
+        {aiDraft ? <Button
           type="button"
           variant="outline"
           size="sm"
@@ -62,14 +69,14 @@ export function ReviewForm({ responseId, maxScore, action }: ReviewFormProps) {
         >
           {draft ? <RefreshCw className={isGenerating ? "animate-spin" : ""} /> : <Sparkles />}
           {isGenerating ? "Drafting…" : draft ? "Draft again" : "Draft with AI"}
-        </Button>
+        </Button> : null}
       </div>
 
-      <p className="mt-3 rounded-lg border bg-muted/40 px-3 py-2 text-xs leading-relaxed text-muted-foreground">
+      {aiDraft ? <p className="mt-3 rounded-lg border bg-muted/40 px-3 py-2 text-xs leading-relaxed text-muted-foreground">
         When you click <span className="font-medium text-foreground">Draft with AI</span>, this
         answer, its question, the mentor-only rubric/reference answer, and recent feedback are sent
         to OpenRouter. Verify the result before using it.
-      </p>
+      </p> : null}
 
       {error ? (
         <p className="mt-3 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive" role="alert">

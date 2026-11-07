@@ -144,6 +144,9 @@ export async function submitBlockResponse(input: {
     if (found.type === "AI_INTERVIEW") {
       throw new BadRequestError("Finish the interview to complete this block.", "USE_AI_INTERVIEW");
     }
+    if (found.type === "CAPSTONE_CHECK") {
+      throw new BadRequestError("Use Check my capstone to submit this block.", "USE_CAPSTONE_CHECK");
+    }
   });
 
   const previousAttempts = await prisma.response.count({ where: { blockId, userId: learner.id } });

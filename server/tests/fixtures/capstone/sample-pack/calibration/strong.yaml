@@ -1,0 +1,4 @@
+snapshot: ./strong/
+liveUrl: https://example.dev
+expected: { completed: true, percent: 90, tolerance: 5 }
+note: Tracked links and tests; README covers running only.

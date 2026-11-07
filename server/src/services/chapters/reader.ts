@@ -10,13 +10,13 @@ import { requireBlockSubmissionAccess } from "../enrollment/api-learn-access.js"
 import { loadChapterThread } from "../help/threads.js";
 import { serializeHelpThread } from "../help/serialize.js";
 import { chapterChecksLine, chapterNextLine, chapterOpenLine, latestChapterResponses } from "../progress/chapter-recap.js";
-import { ensureChapterStarted, recomputeEnrollmentRollup } from "../progress/compute.js";
+import { ensureChapterStarted } from "../progress/compute.js";
 import { syllabusForEnrollment } from "../progress/enrollment-syllabus.js";
 import { loadCourseGate } from "../progress/gate.js";
 import { loadLearnerHabit } from "../progress/learner-habit.js";
 import { milestoneReflectionBlocked } from "../progress/reflection.js";
 import { isCompletableBlock, previousChapterId } from "../progress/rules.js";
-import { releaseForEnrollment, releaseModulesWithBlocks, variantForRelease } from "../courses/releases.js";
+import { releaseForEnrollment, releaseModulesWithBlocks, upgradeEnrollmentToRelease, variantForRelease } from "../courses/releases.js";
 import { resolveCourseFamily } from "../../shared/lib/course-tracks.js";
 import { findChapterIndex } from "./chapter-slug.js";
 
@@ -26,7 +26,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
  * Everything the chapter reader shows for the signed-in learner. Opening an
  * unlocked chapter also starts it and marks pending review feedback as seen.
  */
-export async function loadChapterReader(courseSlug: string, chapterSlug: string, user: SessionUser, retry = 0): Promise<ChapterReaderView> {
+export async function loadChapterReader(courseSlug: string, chapterSlug: string, user: SessionUser, retry = 0, forDownload = false): Promise<ChapterReaderView> {
   const course = await prisma.course.findUnique({
     where: { slug: courseSlug },
     select: {
@@ -71,13 +71,10 @@ export async function loadChapterReader(courseSlug: string, chapterSlug: string,
   const currentRelease = await releaseForEnrollment(course.id, enrollment, course.familySlug);
   const inCurrentRelease = !currentRelease || currentRelease.modules.some(m => m.chapters.some(c => c.slug === chapterSlug));
 
-  if (!inCurrentRelease && course.activeReleaseId && enrollment.releaseId !== course.activeReleaseId && enrollment.status !== "COMPLETED") {
-    await prisma.enrollment.update({
-      where: { id: enrollment.id },
-      data: { releaseId: course.activeReleaseId },
-    });
-    enrollment.releaseId = course.activeReleaseId;
-    await recomputeEnrollmentRollup(prisma, enrollment.id, { preserveActivity: true });
+  if (!forDownload && !inCurrentRelease && course.activeReleaseId && enrollment.releaseId !== course.activeReleaseId && enrollment.status !== "COMPLETED") {
+    const upgraded = await prisma.$transaction((tx) =>
+      upgradeEnrollmentToRelease(tx, enrollment.id, course.activeReleaseId!), { timeout: 60_000 });
+    if (upgraded) enrollment.releaseId = course.activeReleaseId;
   }
 
   const bypassLocking = shouldBypassProgressGating(user);
@@ -132,17 +129,19 @@ export async function loadChapterReader(courseSlug: string, chapterSlug: string,
     return { ...base, locked: true, previous: previous ? { slug: previous.slug, title: previous.title } : null, content: null };
   }
 
-  try {
-    await prisma.$transaction(async tx => { await ensureChapterStarted(tx, enrollment.id, chapter.id); });
-  } catch (error) {
-    if (error instanceof NotFoundError && retry === 0) return loadChapterReader(courseSlug, chapterSlug, user, 1);
-    throw error;
+  if (!forDownload) {
+    try {
+      await prisma.$transaction(async tx => { await ensureChapterStarted(tx, enrollment.id, chapter.id); });
+    } catch (error) {
+      if (error instanceof NotFoundError && retry === 0) return loadChapterReader(courseSlug, chapterSlug, user, 1);
+      throw error;
+    }
   }
   const startedEnrollment = await prisma.enrollment.findUniqueOrThrow({ where: { id: enrollment.id } });
   const expectedVariant = variantForRelease(resolveCourseFamily(course.familySlug, course.variantFamily), enrollment.variantSlug);
   if (retry === 0 && (expectedVariant !== variantForRelease(resolveCourseFamily(course.familySlug, course.variantFamily), startedEnrollment.variantSlug) ||
       (selectedRelease && selectedRelease.release.id !== startedEnrollment.releaseId))) {
-    return loadChapterReader(courseSlug, chapterSlug, user, 1);
+    return loadChapterReader(courseSlug, chapterSlug, user, 1, forDownload);
   }
 
   const [content, currentProgress, helpThreadRow, habit, chapterResponses, predictBlocks, headingNotes] = await Promise.all([
@@ -166,13 +165,15 @@ export async function loadChapterReader(courseSlug: string, chapterSlug: string,
   ]);
   if (!content) throw new NotFoundError("Chapter not found");
 
-  await prisma.review.updateMany({
+  if (!forDownload) await prisma.review.updateMany({
     where: { seenAt: null, response: { userId: user.id, block: { chapterId: chapter.id } } },
     data: { seenAt: new Date() },
   });
-  for (const mod of modules) {
-    for (const ch of mod.chapters) {
-      if (ch.id === chapter.id && ch.status === "NOT_STARTED") ch.status = "IN_PROGRESS";
+  if (!forDownload) {
+    for (const mod of modules) {
+      for (const ch of mod.chapters) {
+        if (ch.id === chapter.id && ch.status === "NOT_STARTED") ch.status = "IN_PROGRESS";
+      }
     }
   }
 

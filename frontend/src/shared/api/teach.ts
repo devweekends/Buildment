@@ -1,4 +1,5 @@
 // GENERATED from server/src/shared — do not edit here. Run `pnpm sync-shared` in server/.
+import type { CapstoneMentorView } from "../blocks/capstone-check/report";
 import type {
   ChapterReaderMode,
   CourseCategory,
@@ -125,6 +126,8 @@ export type CourseBuilderCourse = {
   difficulty: string | null;
   estimatedHours: number | null;
   category: CourseCategory;
+  subcategory: string | null;
+  tags: string[];
   sequential: boolean;
   coverUrl: string | null;
   status: CourseStatus;
@@ -143,7 +146,7 @@ export type CourseBuilderView = {
 
 export type CourseSettingsView = Pick<CourseBuilderCourse,
   "id" | "slug" | "title" | "description" | "projectGoal" | "difficulty" |
-  "estimatedHours" | "category" | "sequential" | "coverUrl" | "status" | "pricingType" |
+  "estimatedHours" | "category" | "subcategory" | "tags" | "sequential" | "coverUrl" | "status" | "pricingType" |
   "priceCents" | "currency"
 > & {
   autoGradeOpenQuestions: boolean;
@@ -216,6 +219,8 @@ export type CourseSettingsInput = {
   difficulty: string;
   estimatedHours: string;
   category: string;
+  subcategory: string | null;
+  tags: string[];
   sequential: boolean;
   autoGradeOpenQuestions: boolean;
   /** Only sent for a course in a family; omitted leaves it as it is. */
@@ -553,6 +558,8 @@ export type ReviewDetailView = {
   history: Array<{ id: string; attempt: number; verdict: ReviewVerdict; feedback: string; reviewerName: string | null }>;
   /** Quiz integrity attempts on this chapter by this learner, newest first. */
   integrity: IntegrityAttemptSummary[];
+  /** Capstone checks: the check under review and the learner's other checks on this block, newest first. */
+  capstone: { title: string; current: CapstoneMentorView | null; history: CapstoneMentorView[] } | null;
 };
 
 export type AiReviewDraft = {

@@ -14,6 +14,7 @@ import { zipSync } from "fflate";
 import { load as loadYaml, dump as dumpYaml } from "js-yaml";
 import { z } from "zod";
 import { CourseManifestSchema, coursesRootForServer } from "./course-source.js";
+import { courseCategoryFromSource, type CourseCategory } from "../src/shared/domain/enums.js";
 import { findCourseFamily } from "../src/shared/lib/course-tracks.js";
 import type { Prisma } from "../src/generated/prisma/index.js";
 import type { SessionUser } from "../src/types/auth.js";
@@ -21,6 +22,7 @@ import type { SessionUser } from "../src/types/auth.js";
 const SERVER_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const COURSES_ROOT = coursesRootForServer(SERVER_ROOT);
 const REPO_ROOT = path.dirname(COURSES_ROOT);
+const CAPSTONE_PACK_FILE = /^capstone\/[a-z0-9-]+\.yaml$/;
 const ZIP_FILE = /^(?:variants\/[a-z0-9-]+\/)?\d+-[a-z0-9-]+\/\d+\.\d+-[a-z0-9-]+\.md$/;
 
 type Package = { slug: string; dir: string; manifest: ReturnType<typeof CourseManifestSchema.parse> };
@@ -70,7 +72,9 @@ function filesForZip(dir: string): Record<string, Uint8Array> {
       if (entry.isDirectory()) { visit(full); continue; }
       if (!entry.isFile()) throw new Error(`Unsupported course package entry: ${full}`);
       const relative = path.relative(dir, full).split(path.sep).join("/");
-      if (relative !== "course.yaml" && relative !== "COURSE-OUTLINE.md" && !ZIP_FILE.test(relative)) {
+      // Calibration examples are for the checker's own tests; they never ship to learners.
+      if (relative.startsWith("capstone/calibration/")) continue;
+      if (relative !== "course.yaml" && relative !== "COURSE-OUTLINE.md" && !CAPSTONE_PACK_FILE.test(relative) && !ZIP_FILE.test(relative)) {
         throw new Error(`Unsupported course package file: ${relative}`);
       }
       files[relative] = fs.readFileSync(full);
@@ -92,7 +96,7 @@ export function courseSourceHash(pkg: Package): string {
 }
 
 type CourseDetails = { title: string; description: string | null; projectGoal: string | null; difficulty: string | null;
-  estimatedHours: number | null; category: "TECH" | "SOFT_SKILLS"; coverUrl: string | null; assistant: unknown };
+  estimatedHours: number | null; category: CourseCategory; subcategory?: string | null; tags?: string[]; coverUrl: string | null; assistant: unknown; certificate?: unknown };
 
 // The repository owns a published course's details, so a publish copies them from course.yaml.
 // ZIP updates leave details alone, which kept an early preview's title on System Design.
@@ -100,11 +104,14 @@ export function courseDetailsUpdate(manifest: Package["manifest"], current: Cour
   const wanted: Partial<CourseDetails> = {
     title: manifest.title, description: manifest.description, projectGoal: manifest.projectGoal,
     difficulty: manifest.difficulty, estimatedHours: manifest.estimatedHours,
-    category: manifest.category === "soft-skills" ? "SOFT_SKILLS" : "TECH",
+    category: courseCategoryFromSource(manifest.category),
+    subcategory: manifest.subcategory ?? null,
+    tags: manifest.tags,
     // No cover in the source keeps whatever cover the course has.
     ...(manifest.coverUrl ? { coverUrl: manifest.coverUrl } : {}),
     // Tutor settings are a JSON column, so they compare by value; no block clears whatever is stored.
     assistant: manifest.assistant ?? null,
+    certificate: manifest.certificate ?? null,
   };
   const changed = Object.fromEntries(Object.entries(wanted).filter(([key, value]) =>
     JSON.stringify(current[key as keyof CourseDetails] ?? null) !== JSON.stringify(value)));
@@ -194,12 +201,13 @@ async function publish(packages: Package[], instructorEmail: string) {
       const sourceHash = courseSourceHash(pkg);
       const prior = await prisma.course.findUnique({ where: { slug: targetSlug }, select: {
         id: true, status: true, activeReleaseId: true, repositorySourceHash: true, repositoryReleaseId: true,
-        title: true, description: true, projectGoal: true, difficulty: true, estimatedHours: true, category: true, coverUrl: true, assistant: true,
+        title: true, description: true, projectGoal: true, difficulty: true, estimatedHours: true, category: true, subcategory: true, tags: true, coverUrl: true, assistant: true, certificate: true,
       } });
       const details = prior ? courseDetailsUpdate(pkg.manifest, prior) : null;
       if (prior && details) {
         await prisma.course.update({ where: { id: prior.id }, data: { ...details,
-          ...("assistant" in details ? { assistant: details.assistant ?? Prisma.DbNull } : {}) } as Prisma.CourseUpdateInput });
+          ...("assistant" in details ? { assistant: details.assistant ?? Prisma.DbNull } : {}),
+          ...("certificate" in details ? { certificate: details.certificate ?? Prisma.DbNull } : {}) } as Prisma.CourseUpdateInput });
         console.log(`${pkg.slug}: course details updated (${Object.keys(details).join(", ")})`);
       }
       if (prior?.status === "PUBLISHED" && prior.repositorySourceHash === sourceHash &&

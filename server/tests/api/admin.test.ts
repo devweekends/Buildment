@@ -119,6 +119,31 @@ describe("organizations", () => {
     expect(bad.status).toBe(422);
     expect(bad.body.code).toBe("COURSE_NOT_PUBLISHED");
   });
+
+  it("turns integration enrollments off and back on for a single allocation", async () => {
+    await request(app)
+      .put(`/api/v1/admin/organizations/${createdOrgId}/allocations`)
+      .set(admin())
+      .send({ isAllowed: true, courses: [{ courseId: fx.course.id, maxEnrollments: 25 }] });
+
+    const url = `/api/v1/admin/organizations/${createdOrgId}/allocations/${fx.course.id}/allowed`;
+    const key = { organizationId_courseId: { organizationId: createdOrgId, courseId: fx.course.id } };
+
+    const off = await request(app).patch(url).set(admin()).send({ enabled: false });
+    expect(off.status).toBe(204);
+    expect(await prisma.organizationCourse.findUnique({ where: key })).toMatchObject({ isAllowed: false, maxEnrollments: 25 });
+
+    const on = await request(app).patch(url).set(admin()).send({ enabled: true });
+    expect(on.status).toBe(204);
+    expect(await prisma.organizationCourse.findUnique({ where: key })).toMatchObject({ isAllowed: true, maxEnrollments: 25 });
+
+    // An allocation that does not exist is a 404, not a silent no-op.
+    const missing = await request(app)
+      .patch(`/api/v1/admin/organizations/${createdOrgId}/allocations/${org.organization.id}/allowed`)
+      .set(admin())
+      .send({ enabled: true });
+    expect(missing.status).toBe(404);
+  });
 });
 
 describe("course requests", () => {
