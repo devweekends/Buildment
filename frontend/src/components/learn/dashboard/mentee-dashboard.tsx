@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { helpUiCopy } from "@/shared/lib/help-ui-copy";
 import { formatStudyAmount } from "@/lib/format-study-duration";
 import { WeeklyGoalEditor } from "@/components/learn/dashboard/weekly-goal-editor";
+import { WeeklyQuests } from "@/components/learn/dashboard/weekly-quests";
 import { CourseStageLine, LearningMomentum } from "@/components/learn/dashboard/gamification";
 import { showsGameElements } from "@/lib/gamification";
 import { MascotStill } from "@/components/mascot/mascot-tip";
@@ -493,6 +494,7 @@ export function MenteeDashboard({ model }: { model: MenteeDashboardViewModel }) 
             {model.primaryCourse ? <ContinueLearning course={model.primaryCourse} /> : null}
             <WeeklySnapshot model={model} />
           </div>
+          <WeeklyQuests />
           <CourseListPreview courses={model.courses} />
           <div className="grid grid-cols-1 gap-5 border-t border-border pt-6 xl:grid-cols-2">
             <ActionCenter actions={model.actions} hasCourse={Boolean(model.primaryCourse)} />
