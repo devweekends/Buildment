@@ -68,6 +68,57 @@ export async function notifyMentorHelpQuestion(input: {
   });
 }
 
+/** The course mentor hears about a lesson report (error, typo, confusing passage, suggestion). */
+export async function notifyMentorLessonReport(input: {
+  threadId: string;
+  messageId: string;
+  body: string;
+  category: string;
+  menteeName: string | null;
+}): Promise<void> {
+  const thread = await prisma.helpThread.findUnique({
+    where: { id: input.threadId },
+    select: {
+      id: true,
+      courseId: true,
+      course: { select: { title: true, mentorId: true } },
+      chapter: { select: { title: true } },
+    },
+  });
+  if (!thread) return;
+
+  const menteeLabel = input.menteeName?.trim() || "A learner";
+  const courseTitle = thread.course.title;
+  const lesson = chapterLabel(thread.chapter?.title);
+  const preview = formatMessagePreview(input.body);
+  const path = `/help/${thread.id}`;
+  const category = input.category.toLowerCase().replace("_", " ");
+
+  await notify({
+    // Reuses the help-question channel so the mentor's existing preferences and
+    // inbox cover reports too; the title and preview make the kind obvious.
+    type: "help.question",
+    recipients: [{ userId: thread.course.mentorId }],
+    dedupeKey: `help-report:${input.messageId}`,
+    title: `${menteeLabel} reported a lesson issue (${category})`,
+    body: `${courseTitle} · ${lesson}: ${formatMessagePreview(input.body, 140)}`,
+    url: path,
+    courseId: thread.courseId,
+    email: async ({ name }) => ({
+      subject: `${menteeLabel} reported a lesson issue · ${courseTitle}`,
+      html: await renderEmailTemplate("notify-mentor-help-question", {
+        name: name ?? "there",
+        learnerName: menteeLabel,
+        courseTitle,
+        lesson,
+        preview,
+        url: `${appBaseUrl()}${path}`,
+      }),
+      text: `${menteeLabel} reported a ${category} in ${courseTitle} (${lesson}):\n\n${preview}\n\nReview: ${appBaseUrl()}${path}`,
+    }),
+  });
+}
+
 /** The mentee hears when their mentor replies on a help thread. */
 export async function notifyMenteeHelpReply(input: {
   threadId: string;

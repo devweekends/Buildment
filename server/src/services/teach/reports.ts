@@ -5,6 +5,7 @@ import { resolveCourseFamily } from "../../shared/lib/course-tracks.js";
 import { toCsv } from "../../utils/csv.js";
 import type { SessionUser } from "../../types/auth.js";
 import { requireCourseBySlug } from "./access.js";
+import { loadCourseRatingReport } from "../courses/ratings.js";
 
 // Course insights (docs/06-reports.mdx). Cohort numbers come from the
 // denormalised Enrollment rollups; the chapter report reads BlockStats and
@@ -24,7 +25,7 @@ export async function loadCourseReport(user: SessionUser, courseSlug: string, ch
   const owned = await requireCourseBySlug(user, courseSlug);
   const now = Date.now();
 
-  const [course, enrollments, chapterProgress] = await Promise.all([
+  const [course, enrollments, chapterProgress, ratings] = await Promise.all([
     prisma.course.findUniqueOrThrow({
       where: { id: owned.id },
       select: {
@@ -38,6 +39,7 @@ export async function loadCourseReport(user: SessionUser, courseSlug: string, ch
     }),
     prisma.enrollment.findMany({ where: { courseId: owned.id }, orderBy: { createdAt: "asc" }, include: learnerInclude }),
     prisma.chapterProgress.findMany({ where: { enrollment: { courseId: owned.id } }, select: { enrollmentId: true, timeSpentSeconds: true } }),
+    loadCourseRatingReport(owned.id),
   ]);
 
   const studySeconds = new Map<string, number>();
@@ -86,6 +88,7 @@ export async function loadCourseReport(user: SessionUser, courseSlug: string, ch
       atRisk: isAtRisk(e),
     })),
     chapterReport: chapterId && chapterIds.has(chapterId) ? await loadChapterReport(owned.id, chapterId) : null,
+    ratings,
   };
 }
 

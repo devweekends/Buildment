@@ -60,7 +60,17 @@ export async function getCourseOverview(courseSlug: string, user: SessionUser): 
   const enrollment = await prisma.enrollment.findUnique({
     where: { courseId_userId: { courseId: course.id, userId: user.id } },
   });
-  if (!enrollment) return { ...base, access: "none", enrollment: null, coupon: null, track: null, syllabus: null };
+  const myRatingRow = await prisma.courseRating.findUnique({
+    where: { courseId_userId: { courseId: course.id, userId: user.id } },
+    select: { rating: true, review: true, updatedAt: true },
+  });
+  const rating = myRatingRow
+    ? { rating: myRatingRow.rating, review: myRatingRow.review, updatedAt: myRatingRow.updatedAt.toISOString() }
+    : null;
+  const ratingDismissed = Boolean(enrollment?.ratingDismissedAt);
+  if (!enrollment) {
+    return { ...base, access: "none", enrollment: null, rating, ratingDismissed, coupon: null, track: null, syllabus: null };
+  }
 
   let curriculumUpgradeAvailable = false;
   if (activeReleaseId && enrollment.releaseId !== activeReleaseId) {
@@ -87,9 +97,10 @@ export async function getCourseOverview(courseSlug: string, user: SessionUser): 
     percentComplete: enrollment.percentComplete,
     chaptersCompleted: enrollment.chaptersCompleted,
     pendingReviews: enrollment.pendingReviews,
+    status: enrollment.status,
   };
   if (!enrollmentGrantsContentAccess(enrollment.lifecycle)) {
-    return { ...base, access: "payment_required", enrollment: summary, coupon: null, track: null, syllabus: null };
+    return { ...base, access: "payment_required", enrollment: summary, rating, ratingDismissed, coupon: null, track: null, syllabus: null };
   }
 
   const coupon = await redeemCouponOnCourseOpen(enrollment.id);
@@ -106,6 +117,8 @@ export async function getCourseOverview(courseSlug: string, user: SessionUser): 
     ...base,
     access: "active",
     enrollment: summary,
+    rating,
+    ratingDismissed,
     coupon,
     track: buildCourseTrack(variantFamily ? resolveCourseFamily(familySlug, variantFamily) : familySlug, enrollment, availableVariantSlugs),
     curriculumUpgradeAvailable,

@@ -295,6 +295,7 @@ model User {
   courseMemberships CourseInstructor[]
   courseInstructorInvitesSent CourseInstructorInvite[] @relation("CourseInstructorInviteSender")
   enrollments   Enrollment[]
+  courseRatings CourseRating[]
   responses     Response[]
   reviewsGiven          Review[]       @relation("Reviewer")
   invitesSent           Invite[]       @relation("InviteSender")
@@ -454,6 +455,10 @@ model Course {
   instructorCoupons InstructorCoupon[]
   invites        Invite[]
   helpThreads    HelpThread[]
+  ratings        CourseRating[]
+  /// Cached aggregate of CourseRating, maintained on every write so catalog cards stay one query.
+  ratingAverage  Float?
+  ratingCount    Int          @default(0)
   publishedAt    DateTime?
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
@@ -461,6 +466,25 @@ model Course {
   @@index([mentorId, status])
   leaderboardGroups     LeaderboardGroup[]
   leaderboardPlacements LeaderboardPlacement[]
+}
+
+/// One learner's rating of a completed course. Editable, never duplicated.
+model CourseRating {
+  id        String   @id @default(cuid())
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// 1–5 stars.
+  rating    Int
+  /// Optional written review. Public when present.
+  review    String?  @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([courseId, userId])
+  @@index([courseId, createdAt])
+  @@index([userId])
 }
 
 model CreditEntry {
@@ -662,6 +686,9 @@ model Enrollment {
   lastNudgeSentAt   DateTime?
   startedAt         DateTime?
   completedAt       DateTime?
+  /// Set when the learner dismisses the post-completion rating prompt. Keeps
+  /// the one-time ask from reappearing; the course page keeps a small link.
+  ratingDismissedAt DateTime?
   variantSlug       String? // learner's variant in the course family; null = not picked yet
   variantChosenAt   DateTime?
   variantLockedAt   DateTime? // first chapter start fixes the learner's variant
@@ -1219,6 +1246,20 @@ model Review {
 }
 
 // Mentee help requests — separate from the open-question review queue (demo Day 3).
+enum HelpThreadKind {
+  QUESTION
+  LESSON_REPORT
+}
+
+enum HelpThreadCategory {
+  ERROR
+  TYPO
+  CONFUSING
+  BROKEN_LINK
+  SUGGESTION
+  OTHER
+}
+
 model HelpThread {
   id         String           @id @default(cuid())
   courseId   String
@@ -1228,6 +1269,13 @@ model HelpThread {
   menteeId   String
   mentee     User             @relation("HelpThreadsAsked", fields: [menteeId], references: [id], onDelete: Cascade)
   status     HelpThreadStatus @default(OPEN)
+  // A question is a conversation the learner starts with the mentor. A lesson
+  // report is the same thread machinery, tagged with a category and an optional
+  // block/quote so the instructor can find the exact passage that is wrong.
+  kind       HelpThreadKind     @default(QUESTION)
+  category   HelpThreadCategory?
+  blockId    String?
+  quote      String?            @db.Text
   menteeLastReadAt DateTime?
   createdAt  DateTime         @default(now())
   updatedAt  DateTime         @updatedAt
@@ -1237,6 +1285,7 @@ model HelpThread {
   @@index([courseId, status, updatedAt])
   @@index([menteeId, updatedAt])
   @@index([chapterId, menteeId])
+  @@index([courseId, kind, status])
 }
 
 model HelpMessage {

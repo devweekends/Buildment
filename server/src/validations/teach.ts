@@ -112,5 +112,7 @@ export type SubmitReviewBody = z.infer<typeof submitReviewBody>;
 export const helpInboxQuery = z.object({
   courseId: z.string().optional(),
   status: z.enum(["open", "resolved", "all"]).optional(),
+  /** "reports" narrows the inbox to lesson reports; "questions" hides them. */
+  kind: z.enum(["all", "questions", "reports"]).optional(),
 });
 export type HelpInboxQuery = z.infer<typeof helpInboxQuery>;

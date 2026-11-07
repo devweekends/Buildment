@@ -499,6 +499,12 @@ export type CourseReportView = {
   atRiskDays: number;
   enrollments: ReportEnrollmentRow[];
   chapterReport: ChapterReportView | null;
+  ratings: {
+    average: number | null;
+    count: number;
+    distribution: Array<{ stars: number; count: number }>;
+    recent: Array<{ id: string; rating: number; review: string | null; reviewer: string; createdAt: string }>;
+  };
 };
 
 export type CourseActivityView = {
@@ -579,6 +585,9 @@ export type AiReviewDraftResult = { draft: AiReviewDraft; model: string };
 export type MentorHelpInboxThread = {
   id: string;
   status: HelpThreadStatus;
+  kind: "QUESTION" | "LESSON_REPORT";
+  category: "ERROR" | "TYPO" | "CONFUSING" | "BROKEN_LINK" | "SUGGESTION" | "OTHER" | null;
+  quote: string | null;
   menteeLabel: string;
   courseTitle: string;
   chapterTitle: string | null;
